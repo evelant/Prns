@@ -378,6 +378,7 @@ where
                 commands,
                 lifecycle,
             },
+            handle.inspection_responder(),
             |journaled| {
                 if let Journaled::CommandSettled { id, settlement } = &journaled {
                     if handle.settle(*id, settlement.clone()) {
@@ -522,6 +523,7 @@ where
                 commands: *commands,
                 lifecycle: *lifecycle,
             },
+            handle.inspection_responder(),
             |journaled| {
                 if let Journaled::CommandSettled { id, settlement } = &journaled {
                     if handle.settle(*id, settlement.clone()) {

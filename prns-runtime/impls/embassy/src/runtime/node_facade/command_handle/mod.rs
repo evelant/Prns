@@ -15,6 +15,10 @@ use crate::wire::DestinationHash;
 
 use super::super::request_endpoints::RespondToken;
 use super::super::{PrnsNodeApi, SendError};
+use super::inspection::{
+    EmbassyInspectionLane, InspectedRoute, InspectionError, InspectionQuery, InspectionResponder,
+    InspectionValue,
+};
 
 const NO_AWAITER: u64 = u64::MAX;
 
@@ -92,6 +96,7 @@ impl<M: RawMutex, const N: usize> CompletionPool<M, N> {
 pub struct PrnsNodeHandle<'a, M: RawMutex, const COMMANDS: usize, const N: usize> {
     commands: Sender<'a, M, IssuedCommand, COMMANDS>,
     pool: &'a CompletionPool<M, N>,
+    inspection: Option<&'a EmbassyInspectionLane<M>>,
 }
 
 impl<M: RawMutex, const COMMANDS: usize, const N: usize> Clone
@@ -113,7 +118,75 @@ impl<'a, M: RawMutex, const COMMANDS: usize, const N: usize> PrnsNodeHandle<'a, 
         commands: Sender<'a, M, IssuedCommand, COMMANDS>,
         pool: &'a CompletionPool<M, N>,
     ) -> Self {
-        Self { commands, pool }
+        Self {
+            commands,
+            pool,
+            inspection: None,
+        }
+    }
+
+    /// Construct a handle with an independent live-engine inspection lane.
+    #[must_use]
+    pub fn new_with_inspection(
+        commands: Sender<'a, M, IssuedCommand, COMMANDS>,
+        pool: &'a CompletionPool<M, N>,
+        inspection: &'a EmbassyInspectionLane<M>,
+    ) -> Self {
+        Self {
+            commands,
+            pool,
+            inspection: Some(inspection),
+        }
+    }
+
+    /// Count routes visible in the live engine at the instant of the query.
+    pub async fn route_count(&self) -> Result<u32, InspectionError> {
+        match self.inspect(InspectionQuery::RouteCount).await? {
+            InspectionValue::Count(count) => Ok(count),
+            InspectionValue::Route(_) => Err(InspectionError::Unavailable),
+        }
+    }
+
+    /// Count active links visible in the live engine at the instant of the query.
+    pub async fn link_count(&self) -> Result<u32, InspectionError> {
+        match self.inspect(InspectionQuery::LinkCount).await? {
+            InspectionValue::Count(count) => Ok(count),
+            InspectionValue::Route(_) => Err(InspectionError::Unavailable),
+        }
+    }
+
+    /// Read one exact destination from the live route table.
+    pub async fn route(
+        &self,
+        destination: DestinationHash,
+    ) -> Result<Option<InspectedRoute>, InspectionError> {
+        match self.inspect(InspectionQuery::Route(destination)).await? {
+            InspectionValue::Route(route) => Ok(route),
+            InspectionValue::Count(_) => Err(InspectionError::Unavailable),
+        }
+    }
+
+    /// Read the lexicographically next live route after an optional destination.
+    ///
+    /// Paging is best-effort: callers that require a stable snapshot must own
+    /// that policy because the route table can change between independent reads.
+    pub async fn next_route_after(
+        &self,
+        after: Option<DestinationHash>,
+    ) -> Result<Option<InspectedRoute>, InspectionError> {
+        match self.inspect(InspectionQuery::NextRouteAfter(after)).await? {
+            InspectionValue::Route(route) => Ok(route),
+            InspectionValue::Count(_) => Err(InspectionError::Unavailable),
+        }
+    }
+
+    async fn inspect(&self, query: InspectionQuery) -> Result<InspectionValue, InspectionError> {
+        let inspection = self.inspection.ok_or(InspectionError::Unavailable)?;
+        inspection.inspect(query).await
+    }
+
+    pub(crate) fn inspection_responder(&self) -> Option<InspectionResponder<'a, M>> {
+        self.inspection.map(EmbassyInspectionLane::responder)
     }
 
     /// Queues a command without awaiting settlement and returns its ID, or `None` when the command lane is full.

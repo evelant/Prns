@@ -102,17 +102,19 @@ pub use prns_runtime_tokio::runtime::{
 
 #[cfg(all(feature = "embassy-host", not(feature = "tokio-host")))]
 pub use prns_runtime_embassy::runtime::{
-    EmbeddedCompactionPolicy, EmbeddedFlashPersistence, EmbeddedPersistenceDiagnostic,
-    EmbeddedPersistenceFailure, EmbeddedPersistencePolicy, EmbeddedPersistenceRestoreReport,
-    EmbeddedPersistenceTarget, FixedRouteSnapshotKeys, Fleet, PrnsNode, PrnsNodeHandle,
-    RouteSnapshotKeyError, RouteSnapshotKeys, SharedNorFlash,
+    EmbassyInspectionLane, EmbeddedCompactionPolicy, EmbeddedFlashPersistence,
+    EmbeddedPersistenceDiagnostic, EmbeddedPersistenceFailure, EmbeddedPersistencePolicy,
+    EmbeddedPersistenceRestoreReport, EmbeddedPersistenceTarget, FixedRouteSnapshotKeys, Fleet,
+    InspectedRoute, InspectionError, PrnsNode, PrnsNodeHandle, RouteSnapshotKeyError,
+    RouteSnapshotKeys, SharedNorFlash,
 };
 
 #[cfg(all(feature = "embassy-host", feature = "tokio-host"))]
 pub use prns_runtime_embassy::runtime::{
-    EmbeddedCompactionPolicy, EmbeddedFlashPersistence, EmbeddedPersistenceDiagnostic,
-    EmbeddedPersistenceFailure, EmbeddedPersistencePolicy, EmbeddedPersistenceRestoreReport,
-    EmbeddedPersistenceTarget, FixedRouteSnapshotKeys, PrnsNode as EmbassyPrnsNode,
+    EmbassyInspectionLane, EmbeddedCompactionPolicy, EmbeddedFlashPersistence,
+    EmbeddedPersistenceDiagnostic, EmbeddedPersistenceFailure, EmbeddedPersistencePolicy,
+    EmbeddedPersistenceRestoreReport, EmbeddedPersistenceTarget, FixedRouteSnapshotKeys,
+    InspectedRoute, InspectionError, PrnsNode as EmbassyPrnsNode,
     PrnsNodeHandle as EmbassyPrnsNodeHandle, RouteSnapshotKeyError, RouteSnapshotKeys,
     SharedNorFlash,
 };

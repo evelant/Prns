@@ -2,6 +2,7 @@ use std::cell::{Cell, RefCell};
 use std::rc::Rc;
 
 use embassy_futures::block_on;
+use embassy_futures::join::join;
 use embassy_futures::select::{select, Either};
 use embassy_futures::yield_now;
 use embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex;
@@ -17,12 +18,39 @@ use crate::interfaces::InterfaceIfac;
 use crate::interfaces::{InterfaceDescriptor, InterfaceId};
 use crate::manifold::grant::{GrantProducer, ManifoldLaneReader};
 use crate::manifold::interface_seam::EMBEDDED_MAX_WIRE_FRAME_LEN;
-use crate::runtime::{ManifoldPersistence, NoInterfaceInspectionStore, NoManifoldPersistence};
+use crate::runtime::{
+    CompletionPool, EmbassyInspectionLane, ManifoldPersistence, NoInterfaceInspectionStore,
+    NoManifoldPersistence, PrnsNodeHandle,
+};
 use crate::storage::{GrowableHeap, StorageLayout};
 
 use super::super::test_support::{descriptor, WATCHDOG};
 use super::super::{leaked_grant_lane, EmbassyHost, PooledEgress};
-use super::{inbound_source, run_pooled, InterfaceLifecycle, PooledWiring};
+use super::{answer_inspection, inbound_source, run_pooled, InterfaceLifecycle, PooledWiring};
+
+#[test]
+fn live_inspection_answers_from_the_engine_without_a_mirrored_route_table() {
+    let lane: EmbassyInspectionLane<CriticalSectionRawMutex> = EmbassyInspectionLane::new();
+    let commands: Channel<CriticalSectionRawMutex, IssuedCommand, 1> = Channel::new();
+    let completion: CompletionPool<CriticalSectionRawMutex, 1> = CompletionPool::new();
+    let handle = PrnsNodeHandle::new_with_inspection(commands.sender(), &completion, &lane);
+    let responder = lane.responder();
+    let engine = EngineState::<GrowableHeap>::default();
+    let descriptors: [InterfaceDescriptor; 0] = [];
+
+    let (count, ()) = block_on(join(handle.route_count(), async {
+        let request = responder.wait().await;
+        answer_inspection(
+            &responder,
+            request,
+            &engine,
+            crate::interfaces::AttachedInterfaces::new(&descriptors),
+            InstantMillis(42),
+        );
+    }));
+
+    assert_eq!(count, Ok(0));
+}
 
 struct AlwaysDuePersistence {
     progress: Rc<Cell<usize>>,
@@ -89,6 +117,7 @@ fn continuously_due_persistence_yields_to_sibling_tasks() {
                 commands: commands.receiver(),
                 lifecycle: lifecycle.receiver(),
             },
+            None,
             |_| {},
             crate::manifold::decline_all(),
             &NoInterfaceInspectionStore,
@@ -190,6 +219,7 @@ fn a_pooled_ifac_slot_added_at_runtime_opens_inbound_then_frees_on_remove() {
                 lifecycle: lifecycle.receiver(),
                 ifacs: &mut ifacs,
             },
+            None,
             app,
             crate::manifold::decline_all(),
             &NoInterfaceInspectionStore,
@@ -312,6 +342,7 @@ fn a_pooled_slot_retagged_at_runtime_carries_traffic_under_the_new_id() {
                 lifecycle: lifecycle.receiver(),
                 ifacs: &mut ifacs,
             },
+            None,
             app,
             crate::manifold::decline_all(),
             &NoInterfaceInspectionStore,

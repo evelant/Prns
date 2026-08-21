@@ -1,4 +1,4 @@
-use embassy_futures::select::{select6, Either6};
+use embassy_futures::select::{select, select6, Either, Either6};
 use embassy_futures::yield_now;
 use embassy_sync::blocking_mutex::raw::RawMutex;
 use embassy_sync::channel::Receiver;
@@ -18,6 +18,11 @@ use crate::manifold::{AppDeciders, Host};
 use crate::routing::links::resources::ResourceOffer;
 use crate::runtime::{InterfaceInspectionStore, ManifoldPersistence};
 use crate::storage::{DirtyInterfaceSet, StorageLayout};
+
+use crate::runtime::{
+    InspectedRoute, InspectionQuery, InspectionRequest, InspectionResponder, InspectionResponse,
+    InspectionValue,
+};
 
 use super::egress::{
     flush_due_pacers, ifac_for, route_reaction, soonest_pacer_release, InterfacePacer,
@@ -87,6 +92,10 @@ pub struct PooledWiring<
 }
 
 /// Runs a mutable descriptor set over a fixed lane pool; `LANE_COUNT` bounds pacers.
+#[allow(
+    clippy::too_many_arguments,
+    reason = "the manifold loop receives each independently owned runtime lane and policy explicitly"
+)]
 pub(crate) async fn run_pooled<
     S,
     H,
@@ -101,6 +110,7 @@ pub(crate) async fn run_pooled<
     engine: &mut EngineState<S>,
     host: &mut H,
     wiring: PooledWiring<'_, M, LANE_COUNT, INTERFACE_CAPACITY, NOTIFY, COMMANDS, LIFECYCLE>,
+    inspection: Option<InspectionResponder<'_, M>>,
     mut on_journaled: impl FnMut(Journaled<'_>),
     deciders: AppDeciders<impl FnMut(&ProofRequest) -> bool, impl FnMut(&ResourceOffer) -> bool>,
     store: &Store,
@@ -140,200 +150,101 @@ pub(crate) async fn run_pooled<
         let pacer_wake = soonest_pacer_release(&pacers);
 
         let persistence_deadline = persistence.deadline(host.now());
-        match select6(
-            notify.receive(),
-            commands.receive(),
-            wait_for_due_reason(&*host, wake),
-            wait_for_pacer(&*host, pacer_wake),
-            lifecycle.receive(),
-            wait_for_persistence(&*host, persistence_deadline),
+        let event = select(
+            select6(
+                notify.receive(),
+                commands.receive(),
+                wait_for_due_reason(&*host, wake),
+                wait_for_pacer(&*host, pacer_wake),
+                lifecycle.receive(),
+                wait_for_persistence(&*host, persistence_deadline),
+            ),
+            wait_for_inspection(inspection.as_ref()),
         )
-        .await
-        {
-            Either6::First(_) => {
-                while notify.try_receive().is_ok() {}
-                for (lane_id, lane) in inbound.iter_mut() {
-                    while let Some((target, packet_phy, frame)) = lane.try_read() {
-                        let FrameTarget::Direct(stamped_source) = target else {
-                            lane.release();
-                            continue;
-                        };
-                        // A dedicated lane's live key is authoritative. Runtime retagging updates
-                        // that key atomically with the descriptor, while the already-constructed
-                        // interface seam can still have stamped a queued frame with its prior id.
-                        // Fleet lanes have no descriptor of their own, so their per-member stamp
-                        // remains authoritative instead.
-                        let source = inbound_source(*lane_id, stamped_source, descriptors);
-                        let mut unmasked = [0u8; EMBEDDED_MAX_WIRE_FRAME_LEN];
-                        let bytes = match ifac_for(ifacs, *lane_id) {
-                            Some(entry) => {
-                                let Some(clean_len) =
-                                    entry.context.unmask_inbound(frame, &mut unmasked)
-                                else {
-                                    lane.release();
-                                    continue;
-                                };
-                                &mut unmasked[..clean_len]
-                            }
-                            None => frame,
-                        };
-                        let now = host.now();
-                        let packet = ClassifiedInboundPacket::classify(InboundPacket {
-                            arrived_at: now,
-                            source_interface: source,
-                            bytes,
-                        });
-                        retain_packet_phy(store, &packet, packet_phy);
-                        let delta = engine.ingest_classified_into(
-                            packet,
-                            IngestIo {
-                                interfaces: AttachedInterfaces::new(&*descriptors),
-                                now,
-                                fill_entropy: &mut |entropy| host.fill_entropy(entropy),
-                                should_prove: &mut should_prove,
-                                should_accept_resource: &mut should_accept_resource,
-                                sink: &mut |reaction| {
-                                    route_reaction(
-                                        reaction,
-                                        &mut *egress,
-                                        ifacs,
-                                        &mut pacers,
-                                        now,
-                                        &mut |journaled| {
-                                            persistence.observe(&journaled, now);
-                                            on_journaled(journaled);
-                                        },
-                                    )
+        .await;
+        match event {
+            Either::Second((inspection, request)) => answer_inspection(
+                &inspection,
+                request,
+                engine,
+                AttachedInterfaces::new(&*descriptors),
+                host.now(),
+            ),
+            Either::First(event) => match event {
+                Either6::First(_) => {
+                    while notify.try_receive().is_ok() {}
+                    for (lane_id, lane) in inbound.iter_mut() {
+                        while let Some((target, packet_phy, frame)) = lane.try_read() {
+                            let FrameTarget::Direct(stamped_source) = target else {
+                                lane.release();
+                                continue;
+                            };
+                            // A dedicated lane's live key is authoritative. Runtime retagging updates
+                            // that key atomically with the descriptor, while the already-constructed
+                            // interface seam can still have stamped a queued frame with its prior id.
+                            // Fleet lanes have no descriptor of their own, so their per-member stamp
+                            // remains authoritative instead.
+                            let source = inbound_source(*lane_id, stamped_source, descriptors);
+                            let mut unmasked = [0u8; EMBEDDED_MAX_WIRE_FRAME_LEN];
+                            let bytes = match ifac_for(ifacs, *lane_id) {
+                                Some(entry) => {
+                                    let Some(clean_len) =
+                                        entry.context.unmask_inbound(frame, &mut unmasked)
+                                    else {
+                                        lane.release();
+                                        continue;
+                                    };
+                                    &mut unmasked[..clean_len]
+                                }
+                                None => frame,
+                            };
+                            let now = host.now();
+                            let packet = ClassifiedInboundPacket::classify(InboundPacket {
+                                arrived_at: now,
+                                source_interface: source,
+                                bytes,
+                            });
+                            retain_packet_phy(store, &packet, packet_phy);
+                            let delta = engine.ingest_classified_into(
+                                packet,
+                                IngestIo {
+                                    interfaces: AttachedInterfaces::new(&*descriptors),
+                                    now,
+                                    fill_entropy: &mut |entropy| host.fill_entropy(entropy),
+                                    should_prove: &mut should_prove,
+                                    should_accept_resource: &mut should_accept_resource,
+                                    sink: &mut |reaction| {
+                                        route_reaction(
+                                            reaction,
+                                            &mut *egress,
+                                            ifacs,
+                                            &mut pacers,
+                                            now,
+                                            &mut |journaled| {
+                                                persistence.observe(&journaled, now);
+                                                on_journaled(journaled);
+                                            },
+                                        )
+                                    },
                                 },
-                            },
-                        );
-                        lane.release();
-                        merge_wake_schedules_delta(
-                            &mut wake_schedules,
-                            delta,
-                            &*engine,
-                            AttachedInterfaces::new(&*descriptors),
-                        );
-                    }
-                }
-            }
-            Either6::Second(issued) => {
-                let now = host.now();
-                let delta = engine.ingest_command_into(
-                    issued,
-                    AttachedInterfaces::new(&*descriptors),
-                    now,
-                    &mut |entropy| host.fill_entropy(entropy),
-                    &mut |reaction| {
-                        route_reaction(
-                            reaction,
-                            &mut *egress,
-                            ifacs,
-                            &mut pacers,
-                            now,
-                            &mut |journaled| {
-                                persistence.observe(&journaled, now);
-                                on_journaled(journaled);
-                            },
-                        )
-                    },
-                );
-                merge_wake_schedules_delta(
-                    &mut wake_schedules,
-                    delta,
-                    &*engine,
-                    AttachedInterfaces::new(&*descriptors),
-                );
-            }
-            Either6::Third(reason) => {
-                let now = host.now();
-                let delta = fire_due_reason(
-                    &mut *engine,
-                    reason,
-                    now,
-                    AttachedInterfaces::new(&*descriptors),
-                    &mut |bytes| host.fill_entropy(bytes),
-                    &mut |reaction| {
-                        route_reaction(
-                            reaction,
-                            &mut *egress,
-                            ifacs,
-                            &mut pacers,
-                            now,
-                            &mut |journaled| {
-                                persistence.observe(&journaled, now);
-                                on_journaled(journaled);
-                            },
-                        )
-                    },
-                );
-                merge_wake_schedules_delta(
-                    &mut wake_schedules,
-                    delta,
-                    &*engine,
-                    AttachedInterfaces::new(&*descriptors),
-                );
-            }
-            Either6::Fourth(()) => {
-                let now = host.now();
-                flush_due_pacers(&mut pacers, now, &mut *egress, ifacs);
-            }
-            Either6::Fifth(message) => match message {
-                InterfaceLifecycle::Add { descriptor } => {
-                    let descriptor = clamp_to_embedded_ceiling(descriptor);
-                    let id = descriptor.id;
-                    let present = descriptors.iter().any(|existing| existing.id == id);
-                    if !present {
-                        engine.interface_attached(id, host.now());
-                        let _ = descriptors.push(descriptor);
-                        if let Some(lane) = egress.lane_for(id) {
-                            if !pacers.iter().any(|pacer| pacer.id == lane) {
-                                let _ =
-                                    pacers.push(InterfacePacer::from_descriptor(lane, &descriptor));
-                            }
+                            );
+                            lane.release();
+                            merge_wake_schedules_delta(
+                                &mut wake_schedules,
+                                delta,
+                                &*engine,
+                                AttachedInterfaces::new(&*descriptors),
+                            );
                         }
-                        wake_schedules =
-                            engine.wake_schedules(AttachedInterfaces::new(&*descriptors));
                     }
-                    #[cfg(feature = "log")]
-                    log::info!(
-                        target: "personal_hopspot_esp32",
-                        "manifold: Add kind={:?} present={present} descriptors={}",
-                        id.kind(),
-                        descriptors.len()
-                    );
                 }
-                InterfaceLifecycle::Remove { id } => {
+                Either6::Second(issued) => {
                     let now = host.now();
-                    let departed_lane = egress.lane_for(id);
-                    engine.interface_departed(id, Departure::Forgotten, now);
-                    let found = descriptors
-                        .iter()
-                        .position(|descriptor| descriptor.id == id);
-                    if let Some(pos) = found {
-                        let _ = descriptors.swap_remove(pos);
-                    }
-                    #[cfg(feature = "log")]
-                    log::info!(
-                        target: "personal_hopspot_esp32",
-                        "manifold: Remove kind={:?} found={} descriptors={}",
-                        id.kind(),
-                        found.is_some(),
-                        descriptors.len()
-                    );
-                    if let Some(lane) = departed_lane {
-                        let lane_still_serves_a_descriptor = descriptors
-                            .iter()
-                            .any(|descriptor| egress.lane_for(descriptor.id) == Some(lane));
-                        if !lane_still_serves_a_descriptor {
-                            if let Some(pos) = pacers.iter().position(|pacer| pacer.id == lane) {
-                                let _ = pacers.swap_remove(pos);
-                            }
-                        }
-                    }
-                    engine.cull_expired_routes(
-                        now,
+                    let delta = engine.ingest_command_into(
+                        issued,
                         AttachedInterfaces::new(&*descriptors),
+                        now,
+                        &mut |entropy| host.fill_entropy(entropy),
                         &mut |reaction| {
                             route_reaction(
                                 reaction,
@@ -348,59 +259,175 @@ pub(crate) async fn run_pooled<
                             )
                         },
                     );
-                    wake_schedules = engine.wake_schedules(AttachedInterfaces::new(&*descriptors));
+                    merge_wake_schedules_delta(
+                        &mut wake_schedules,
+                        delta,
+                        &*engine,
+                        AttachedInterfaces::new(&*descriptors),
+                    );
                 }
-                InterfaceLifecycle::Update { descriptor } => {
-                    let descriptor = clamp_to_embedded_ceiling(descriptor);
-                    if let Some(slot) = descriptors
-                        .iter()
-                        .position(|existing| existing.id == descriptor.id)
-                    {
-                        descriptors[slot] = descriptor;
-                        if let Some(lane) = egress.lane_for(descriptor.id) {
-                            if let Some(pos) = pacers.iter().position(|pacer| pacer.id == lane) {
-                                pacers[pos] = InterfacePacer::from_descriptor(lane, &descriptor);
+                Either6::Third(reason) => {
+                    let now = host.now();
+                    let delta = fire_due_reason(
+                        &mut *engine,
+                        reason,
+                        now,
+                        AttachedInterfaces::new(&*descriptors),
+                        &mut |bytes| host.fill_entropy(bytes),
+                        &mut |reaction| {
+                            route_reaction(
+                                reaction,
+                                &mut *egress,
+                                ifacs,
+                                &mut pacers,
+                                now,
+                                &mut |journaled| {
+                                    persistence.observe(&journaled, now);
+                                    on_journaled(journaled);
+                                },
+                            )
+                        },
+                    );
+                    merge_wake_schedules_delta(
+                        &mut wake_schedules,
+                        delta,
+                        &*engine,
+                        AttachedInterfaces::new(&*descriptors),
+                    );
+                }
+                Either6::Fourth(()) => {
+                    let now = host.now();
+                    flush_due_pacers(&mut pacers, now, &mut *egress, ifacs);
+                }
+                Either6::Fifth(message) => match message {
+                    InterfaceLifecycle::Add { descriptor } => {
+                        let descriptor = clamp_to_embedded_ceiling(descriptor);
+                        let id = descriptor.id;
+                        let present = descriptors.iter().any(|existing| existing.id == id);
+                        if !present {
+                            engine.interface_attached(id, host.now());
+                            let _ = descriptors.push(descriptor);
+                            if let Some(lane) = egress.lane_for(id) {
+                                if !pacers.iter().any(|pacer| pacer.id == lane) {
+                                    let _ = pacers
+                                        .push(InterfacePacer::from_descriptor(lane, &descriptor));
+                                }
+                            }
+                            wake_schedules =
+                                engine.wake_schedules(AttachedInterfaces::new(&*descriptors));
+                        }
+                        #[cfg(feature = "log")]
+                        log::info!(
+                            target: "personal_hopspot_esp32",
+                            "manifold: Add kind={:?} present={present} descriptors={}",
+                            id.kind(),
+                            descriptors.len()
+                        );
+                    }
+                    InterfaceLifecycle::Remove { id } => {
+                        let now = host.now();
+                        let departed_lane = egress.lane_for(id);
+                        engine.interface_departed(id, Departure::Forgotten, now);
+                        let found = descriptors
+                            .iter()
+                            .position(|descriptor| descriptor.id == id);
+                        if let Some(pos) = found {
+                            let _ = descriptors.swap_remove(pos);
+                        }
+                        #[cfg(feature = "log")]
+                        log::info!(
+                            target: "personal_hopspot_esp32",
+                            "manifold: Remove kind={:?} found={} descriptors={}",
+                            id.kind(),
+                            found.is_some(),
+                            descriptors.len()
+                        );
+                        if let Some(lane) = departed_lane {
+                            let lane_still_serves_a_descriptor = descriptors
+                                .iter()
+                                .any(|descriptor| egress.lane_for(descriptor.id) == Some(lane));
+                            if !lane_still_serves_a_descriptor {
+                                if let Some(pos) = pacers.iter().position(|pacer| pacer.id == lane)
+                                {
+                                    let _ = pacers.swap_remove(pos);
+                                }
                             }
                         }
+                        engine.cull_expired_routes(
+                            now,
+                            AttachedInterfaces::new(&*descriptors),
+                            &mut |reaction| {
+                                route_reaction(
+                                    reaction,
+                                    &mut *egress,
+                                    ifacs,
+                                    &mut pacers,
+                                    now,
+                                    &mut |journaled| {
+                                        persistence.observe(&journaled, now);
+                                        on_journaled(journaled);
+                                    },
+                                )
+                            },
+                        );
                         wake_schedules =
                             engine.wake_schedules(AttachedInterfaces::new(&*descriptors));
                     }
-                }
-                InterfaceLifecycle::Retag {
-                    old_id,
-                    new_id,
-                    descriptor,
-                } => {
-                    let descriptor = clamp_to_embedded_ceiling(descriptor);
-                    let present = descriptors
-                        .iter()
-                        .position(|existing| existing.id == old_id);
-                    let collides = descriptors.iter().any(|existing| existing.id == new_id);
-                    if let (Some(slot), false) = (present, collides) {
-                        let old_lane = egress.lane_for(old_id);
-                        descriptors[slot] = descriptor;
-                        egress.retag(old_id, new_id);
-                        if let Some(entry) = inbound.iter_mut().find(|(id, _)| *id == old_id) {
-                            entry.0 = new_id;
-                        }
-                        if let Some(entry) = ifacs.iter_mut().find(|entry| entry.id == old_id) {
-                            entry.id = new_id;
-                        }
-                        if let (Some(old_lane), Some(new_lane)) =
-                            (old_lane, egress.lane_for(new_id))
+                    InterfaceLifecycle::Update { descriptor } => {
+                        let descriptor = clamp_to_embedded_ceiling(descriptor);
+                        if let Some(slot) = descriptors
+                            .iter()
+                            .position(|existing| existing.id == descriptor.id)
                         {
-                            if let Some(pos) = pacers.iter().position(|pacer| pacer.id == old_lane)
-                            {
-                                pacers[pos] =
-                                    InterfacePacer::from_descriptor(new_lane, &descriptor);
+                            descriptors[slot] = descriptor;
+                            if let Some(lane) = egress.lane_for(descriptor.id) {
+                                if let Some(pos) = pacers.iter().position(|pacer| pacer.id == lane)
+                                {
+                                    pacers[pos] =
+                                        InterfacePacer::from_descriptor(lane, &descriptor);
+                                }
                             }
+                            wake_schedules =
+                                engine.wake_schedules(AttachedInterfaces::new(&*descriptors));
                         }
-                        wake_schedules =
-                            engine.wake_schedules(AttachedInterfaces::new(&*descriptors));
                     }
-                }
+                    InterfaceLifecycle::Retag {
+                        old_id,
+                        new_id,
+                        descriptor,
+                    } => {
+                        let descriptor = clamp_to_embedded_ceiling(descriptor);
+                        let present = descriptors
+                            .iter()
+                            .position(|existing| existing.id == old_id);
+                        let collides = descriptors.iter().any(|existing| existing.id == new_id);
+                        if let (Some(slot), false) = (present, collides) {
+                            let old_lane = egress.lane_for(old_id);
+                            descriptors[slot] = descriptor;
+                            egress.retag(old_id, new_id);
+                            if let Some(entry) = inbound.iter_mut().find(|(id, _)| *id == old_id) {
+                                entry.0 = new_id;
+                            }
+                            if let Some(entry) = ifacs.iter_mut().find(|entry| entry.id == old_id) {
+                                entry.id = new_id;
+                            }
+                            if let (Some(old_lane), Some(new_lane)) =
+                                (old_lane, egress.lane_for(new_id))
+                            {
+                                if let Some(pos) =
+                                    pacers.iter().position(|pacer| pacer.id == old_lane)
+                                {
+                                    pacers[pos] =
+                                        InterfacePacer::from_descriptor(new_lane, &descriptor);
+                                }
+                            }
+                            wake_schedules =
+                                engine.wake_schedules(AttachedInterfaces::new(&*descriptors));
+                        }
+                    }
+                },
+                Either6::Sixth(()) => {}
             },
-            Either6::Sixth(()) => {}
         }
         let now = host.now();
         if persistence
@@ -429,6 +456,58 @@ pub(crate) async fn run_pooled<
             }
         }
     }
+}
+
+async fn wait_for_inspection<'lane, M: RawMutex>(
+    inspection: Option<&InspectionResponder<'lane, M>>,
+) -> (InspectionResponder<'lane, M>, InspectionRequest) {
+    match inspection {
+        Some(inspection) => (*inspection, inspection.wait().await),
+        None => core::future::pending().await,
+    }
+}
+
+fn answer_inspection<S: StorageLayout, M: RawMutex>(
+    inspection: &InspectionResponder<'_, M>,
+    request: InspectionRequest,
+    engine: &EngineState<S>,
+    interfaces: AttachedInterfaces<'_>,
+    observed_at: crate::engine::InstantMillis,
+) {
+    let value = match request.query {
+        InspectionQuery::RouteCount => {
+            let mut count = 0_u32;
+            engine.visit_route_snapshots(interfaces, |_| count = count.saturating_add(1));
+            InspectionValue::Count(count)
+        }
+        InspectionQuery::LinkCount => InspectionValue::Count(engine.link_count()),
+        InspectionQuery::Route(destination) => InspectionValue::Route(
+            engine
+                .route_snapshot(destination, interfaces)
+                .map(|route| InspectedRoute { observed_at, route }),
+        ),
+        InspectionQuery::NextRouteAfter(after) => {
+            let mut next = None;
+            engine.visit_route_snapshots(interfaces, |route| {
+                let is_after = after
+                    .as_ref()
+                    .is_none_or(|after| route.destination.as_bytes() > after.as_bytes());
+                let is_earlier =
+                    next.as_ref()
+                        .is_none_or(|current: &crate::engine::RouteSnapshot| {
+                            route.destination.as_bytes() < current.destination.as_bytes()
+                        });
+                if is_after && is_earlier {
+                    next = Some(route);
+                }
+            });
+            InspectionValue::Route(next.map(|route| InspectedRoute { observed_at, route }))
+        }
+    };
+    inspection.respond(InspectionResponse {
+        id: request.id,
+        value,
+    });
 }
 
 async fn wait_for_persistence(host: &impl Host, deadline: Option<crate::engine::InstantMillis>) {
