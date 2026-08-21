@@ -15,6 +15,7 @@ use crate::manifold::driver::{
 };
 use crate::manifold::grant::ManifoldLaneReader;
 use crate::manifold::Host;
+use crate::routing::announce::AnnounceObservation;
 use crate::storage::StorageLayout;
 
 use super::super::request_endpoints::RequestEndpointSet;
@@ -28,6 +29,19 @@ use super::super::{
 use super::command_handle::PrnsNodeHandle;
 use prns_runtime::runtime::placement::assemble_node_in_place;
 use prns_runtime::runtime::{assemble_node, AssembledNode, NoPersistence};
+
+/// Allocation-free callback for complete, already-accepted Reticulum announces.
+///
+/// Embedded applications can retain application-specific projections without
+/// expanding the owned [`PrnsEvent`] diagnostic surface or reaching into the
+/// routing engine. The observation is valid only for the duration of the call.
+pub type AcceptedAnnounceObserver = for<'a> fn(AnnounceObservation<'a>);
+
+fn notify_accepted_announce(observer: Option<AcceptedAnnounceObserver>, journaled: &Journaled<'_>) {
+    if let (Journaled::AnnounceHeard { observation, .. }, Some(observer)) = (journaled, observer) {
+        observer(*observation);
+    }
+}
 
 pub struct ManifoldWiring<
     M,
@@ -78,6 +92,7 @@ pub struct PrnsNode<
     host: H,
     descriptors: HeaplessVec<InterfaceDescriptor, INTERFACE_CAPACITY>,
     ifacs: HeaplessVec<InterfaceIfac, LANE_COUNT>,
+    accepted_announce_observer: Option<AcceptedAnnounceObserver>,
 }
 
 pub struct RequestRoutingCapacity<const REQUESTS: usize, const REQUEST_BYTES: usize>;
@@ -246,6 +261,7 @@ where
             core::ptr::addr_of_mut!((*node).host).write(host);
             core::ptr::addr_of_mut!((*node).descriptors).write(HeaplessVec::new());
             core::ptr::addr_of_mut!((*node).ifacs).write(ifacs);
+            core::ptr::addr_of_mut!((*node).accepted_announce_observer).write(None);
             persistence
         };
         let node = unsafe { slot.assume_init_mut() };
@@ -302,11 +318,28 @@ where
             host,
             descriptors,
             ifacs: wiring.ifacs,
+            accepted_announce_observer: None,
         }
     }
 
     pub fn set_protocol_policy(&mut self, policy: crate::engine::EngineProtocolPolicy) {
         self.node.engine.set_protocol_policy(policy);
+    }
+
+    /// Observe complete authenticated announces accepted by this node.
+    ///
+    /// A function pointer keeps the embedded node allocation-free. Applications
+    /// that need owned or buffered observations must copy them during the call.
+    #[must_use]
+    pub fn with_accepted_announce_observer(mut self, observer: AcceptedAnnounceObserver) -> Self {
+        self.accepted_announce_observer = Some(observer);
+        self
+    }
+
+    /// Install the complete accepted-announce observer before driving a
+    /// statically initialized node.
+    pub fn set_accepted_announce_observer(&mut self, observer: AcceptedAnnounceObserver) {
+        self.accepted_announce_observer = Some(observer);
     }
 
     #[must_use]
@@ -355,6 +388,7 @@ where
             mut host,
             mut descriptors,
             mut ifacs,
+            accepted_announce_observer,
         } = self;
         let AssembledNode {
             mut engine,
@@ -388,6 +422,7 @@ where
                 if let Some(request) = RunnerRequest::copy_from(&journaled) {
                     let _ = request_sender.try_send(request);
                 }
+                notify_accepted_announce(accepted_announce_observer, &journaled);
                 on_event(PrnsEvent::from(journaled), &state);
             },
             crate::manifold::decline_all(),
@@ -501,6 +536,7 @@ where
             host,
             descriptors,
             ifacs,
+            accepted_announce_observer,
         } = self;
         let AssembledNode {
             engine,
@@ -533,6 +569,7 @@ where
                 if let Some(request) = RunnerRequest::copy_from(&journaled) {
                     let _ = request_sender.try_send(request);
                 }
+                notify_accepted_announce(*accepted_announce_observer, &journaled);
                 on_event(PrnsEvent::from(journaled), state);
             },
             crate::manifold::decline_all(),

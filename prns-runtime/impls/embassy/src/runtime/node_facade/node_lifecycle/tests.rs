@@ -17,9 +17,74 @@ use embassy_sync::signal::Signal;
 use embassy_time::{with_timeout, Duration, Timer};
 use std::cell::RefCell;
 use std::rc::Rc;
+use std::sync::Mutex;
 
 type Mtx = CriticalSectionRawMutex;
 const FRAME: usize = EMBEDDED_MAX_WIRE_FRAME_LEN;
+
+type CapturedAnnounce = (
+    crate::wire::DestinationHash,
+    crate::identity::IdentityHash,
+    crate::units::HopCount,
+    InterfaceId,
+    crate::units::InstantMillis,
+    std::vec::Vec<u8>,
+    bool,
+);
+
+static CAPTURED_ANNOUNCE: Mutex<Option<CapturedAnnounce>> = Mutex::new(None);
+
+fn capture_accepted_announce(observation: crate::routing::announce::AnnounceObservation<'_>) {
+    *CAPTURED_ANNOUNCE.lock().unwrap() = Some((
+        observation.destination,
+        observation.announced_identity,
+        observation.hops,
+        observation.source_interface,
+        observation.arrived_at,
+        observation.app_data.to_vec(),
+        observation.is_path_response,
+    ));
+}
+
+#[test]
+fn accepted_announce_observer_receives_the_complete_borrowed_observation() {
+    use crate::routing::announce::{AnnounceObservation, AnnounceRateAccounting};
+    use crate::units::{HopCount, InstantMillis};
+    use crate::wire::DestinationHash;
+
+    *CAPTURED_ANNOUNCE.lock().unwrap() = None;
+    let app_data = [0x42, 0x43, 0x44];
+    let observation = AnnounceObservation {
+        destination: DestinationHash::new([0x11; 16]),
+        announced_identity: crate::identity::IdentityHash::new([0x22; 16]),
+        hops: HopCount(3),
+        source_interface: InterfaceId::new([0x33; 8]),
+        arrived_at: InstantMillis(4_000),
+        app_data: &app_data,
+        is_path_response: false,
+    };
+
+    notify_accepted_announce(
+        Some(capture_accepted_announce),
+        &Journaled::AnnounceHeard {
+            observation,
+            rate_accounting: AnnounceRateAccounting::NotApplied,
+        },
+    );
+
+    assert_eq!(
+        *CAPTURED_ANNOUNCE.lock().unwrap(),
+        Some((
+            observation.destination,
+            observation.announced_identity,
+            observation.hops,
+            observation.source_interface,
+            observation.arrived_at,
+            app_data.to_vec(),
+            observation.is_path_response,
+        ))
+    );
+}
 
 fn descriptor(id: InterfaceId) -> InterfaceDescriptor {
     InterfaceDescriptor {
