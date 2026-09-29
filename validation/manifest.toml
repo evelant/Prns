@@ -149,6 +149,7 @@ cargo_manifests = [
     "validation/integration/Cargo.toml",
     "validation/oracles/Cargo.toml",
     "validation/simulation/Cargo.toml",
+    "vendor/object-0.39.1/Cargo.toml",
 ]
 format_manifests = [
     "Cargo.toml",

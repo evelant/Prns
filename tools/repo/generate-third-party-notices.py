@@ -169,6 +169,45 @@ VENDORED = (
     ),
 )
 
+# Path-patched crates have no registry checksum in Cargo.lock. Keep their
+# manifest/license/provenance inputs explicit without duplicating cargo-about's
+# graph-derived notices or scanning unrelated vendor checkouts.
+OBJECT_VENDOR = "vendor/object-0.39.1"
+OBJECT_NOTICE_INPUTS = (
+    "Cargo.toml", "Cargo.toml.orig", "LICENSE-APACHE", "LICENSE-MIT",
+    "PROVENANCE.json",
+)
+
+
+def verify_object_vendor() -> None:
+    """Enforce the recorded manifest-only compatibility patch before notice checks."""
+    directory = ROOT / OBJECT_VENDOR
+    try:
+        provenance = json.loads((directory / "PROVENANCE.json").read_text())
+        if provenance["crate"] != "object" or provenance["version"] != "0.39.1":
+            raise ValueError("unexpected package identity")
+        originals = provenance["upstreamFilesSha256"]
+        patches = provenance["patchedFiles"]
+        if set(patches) != {"Cargo.toml", "Cargo.toml.orig"}:
+            raise ValueError("only the two dependency manifests may be patched")
+        if not set(OBJECT_NOTICE_INPUTS[:-1]).issubset(originals):
+            raise ValueError("manifest or license provenance is missing")
+        for relative, upstream_hash in originals.items():
+            path = directory / relative
+            if not path.resolve().is_relative_to(directory.resolve()):
+                raise ValueError(f"source path escapes the vendored package: {relative}")
+            expected = upstream_hash
+            if relative in patches:
+                patch = patches[relative]
+                if patch["upstreamSha256"] != upstream_hash:
+                    raise ValueError(f"inconsistent original hash: {relative}")
+                expected = patch["patchedSha256"]
+            if hashlib.sha256(path.read_bytes()).hexdigest() != expected:
+                raise ValueError(f"source differs from recorded provenance: {relative}")
+    except (OSError, ValueError, TypeError, KeyError) as error:
+        raise RuntimeError(f"{OBJECT_VENDOR} provenance check failed: {error}") from error
+
+
 INPUT_FINGERPRINT_PREFIX = "Notice input fingerprint: `sha256:"
 INPUT_FINGERPRINT_PATTERN = re.compile(
     rf"^{re.escape(INPUT_FINGERPRINT_PREFIX)}([0-9a-f]{{64}})`\.$",
@@ -193,6 +232,7 @@ def notice_input_paths() -> tuple[Path, ...]:
         if "node_modules" not in Path(relative).parts
     )
     paths.update(ROOT / relative for _, _, relative, _ in VENDORED)
+    paths.update(ROOT / OBJECT_VENDOR / relative for relative in OBJECT_NOTICE_INPUTS)
     tracked = subprocess.run(
         ["git", "ls-files", "--cached", "--full-name", "-z"],
         cwd=ROOT,
@@ -216,6 +256,7 @@ def notice_input_paths() -> tuple[Path, ...]:
 
 
 def notice_input_fingerprint() -> str:
+    verify_object_vendor()
     digest = hashlib.sha256()
     for path in notice_input_paths():
         if not path.is_file():
@@ -359,6 +400,7 @@ def generate_graph(
 
 
 def notice_bundle() -> str:
+    verify_object_vendor()
     binary = about_binary()
     version = about_version(binary)
     notices: dict[tuple[str, str], dict] = {}
