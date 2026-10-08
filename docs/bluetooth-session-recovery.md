@@ -1,63 +1,231 @@
 # Bluetooth session recovery
 
-This SDK boundary implements native Bluetooth ownership and bounded Android
-platform I/O. Retained post-handshake controls, correlated control completion and
-negotiated peer liveness belong to the following Bluetooth integration. A
-foreground restart trial does not qualify long idle or OS restoration.
+Native Bluetooth recovery combines session ownership, retained controls,
+correlated control-write completion and optional negotiated liveness. Tokio
+drives negotiated liveness with Apple and Android backends; embedded and other
+backends retain legacy behavior. The contracts below describe the implementation.
+Physical restart, silent-peer expiry, long idle and OS lifecycle behavior need
+separate acceptance on the actual app and firmware builds.
 
-## Current ownership
+## Ownership and current repairs
 
-- The allocation-free connection policy preserves a healthy incumbent. A BLE
-  greeting claims a transport identity; it does not authenticate an LXMF sender,
-  and a competing Hello alone cannot authorize eviction.
-- Tokio close notifications carry the admitted status instance. A late close
-  cannot remove a replacement member or clean up its backend session.
-- Android Rust links retain one physical-connection lease through the handshake
-  and both data halves. The final owner retires only that connection and checks
-  queue identity against connection-ID reuse. Address-wide cleanup cannot close
-  unrelated owners.
-- Android platform operations retain callback ownership and deadlines. Rust
-  queue admission is not a completed GATT write. These bounds cannot establish
-  whether an idle remote application is still responsive.
+- The pure connection policy in `prns-core` keeps the healthy incumbent. A BLE
+  greeting asserts a transport identity; it does not authenticate an LXMF sender.
+  A competing Hello alone must not evict a working connection.
+- Tokio member close notifications carry the exact admission's
+  `TokioInterfaceStatus` identity, compared using `same_instance`. A delayed
+  notification cannot remove a newer member, even at the same identity and
+  address, or trigger backend cleanup for it.
+- Android Rust links retain one physical-connection lease through handshake,
+  both data halves and the settled native control owner. Its final drop retires
+  only the owned connection and checks the queue identity against connection-ID
+  reuse. Address-level policy cleanup no longer closes every physical link at
+  that address.
+- Android platform I/O requires its own callback ownership and deadlines; a
+  Rust queue admission is not a completed GATT write. These bounds cannot detect
+  an idle dead application whose operating-system connection still appears live.
 
-The SDK owns generic Android platform mechanics; Hopspot consumes the same
-transport helpers. Applications own contacts, mail and product policy through
-public host APIs. Authenticated LXMF key retention uses the existing core API and
-does not substitute for Bluetooth recovery.
+The SDK owns generic Android platform mechanics; the same transport helpers are
+consumed by Hopspot. The application consumes public host APIs and owns contacts,
+mail, names and product policy. LXMF authenticated-key retention uses the
+existing core retention API independently of Bluetooth recovery.
 
-## Following integration
+## Retain controls through settlement
 
-Keep a native control owner through settlement, with a shared source/sink/control
-split used consistently by all backends. Columba has no native control channel.
-Do not advertise a liveness capability until the runtime drives the protocol and
-the backend supports its bounded completion contract. Missing or unsupported
-capabilities must preserve legacy behavior.
+The shared `BleLink::into_parts` seam returns source, sink and an optional
+transport-only `BleControl` owner. Native connections retain the control owner
+for their entire session, including legacy connections. Columba
+has no native control channel and returns none. Handshake operations forward to
+the same control implementation; no second codec or policy belongs in backends.
 
-Queued control writes need exact-session operation receipts, a retained result
-across caller cancellation, and one deadline covering admission, Busy retries
-and completion. Native completion remains distinct from remote receipt.
-Callbacks without operation identities require serialization and quarantine after
-uncertain completion; they must not release an ambiguous lane for new work.
+Tokio, Embassy, Apple, Android, BlueZ, WinRT, Trouble, nRF and their test adapters
+use this split. Columba's data-only path never creates and immediately drops a
+control owner. Embedded slot leases broadcast a latched closure on **any** owner
+drop, while the last owner releases slot reuse. The native worker and all
+control/data owners retain that slot until exit. BlueZ requires the native data
+characteristic rather than assigning its control stream two competing readers.
 
-Negotiated probes must be bounded, driven by shared allocation-free policy and
-scoped to the actual connection. Wrong or late replies, ordinary data traffic and
-competing greetings must not extend an outstanding probe deadline. Only
-established failure evidence may retire an incumbent. Legacy peers cannot be
-declared dead from a competing greeting alone.
+Apple's peripheral tracks an explicit handshaking, settled or retired phase for
+each exact session. Dropping the retained control owner retires that session;
+a closed handshake receiver alone does not authorize replacing a settled peer.
+Atomic batch admission, rollback and ownership of pending GATT/L2CAP work are
+preserved. A fresh Hello cannot evict a healthy incumbent. A failed handshake
+can be replaced only after both receivers end. An unprobeable legacy incumbent
+cannot be declared dead solely from a competing Hello.
 
-Cooperative shutdown also needs a supported bounded close before dropping session
-owners. Radio or permission loss still requires immediate local teardown; do not
-invent a new shutdown reason for legacy peers.
+Tokio owns one persistent control-loop future per member alongside its data
+work, including a blocked outbound send. Embassy retains the control owner in
+its live member slot and polls cancellation-safe receives alongside idle and
+duplex data work. A control Close or receive error ends only that member. Late
+Hello/Welcome messages are ignored with bounded yielding so they cannot starve
+data or timers. Columba continues without a native control loop.
 
-## Qualification
+Embassy still only receives after settlement. Tokio additionally drives the
+negotiated probe policy described below. It retains each started send across
+unrelated data work; controls and GATT data share a physical write lane in the
+mobile backends. Neither runtime introduces a new shutdown message.
 
-Host regressions cover ownership, stale callbacks, callback deadlines and recovery
-contracts. The next controls/liveness slice must additionally cover both legacy
-directions, stalled capability reads, silent incumbents, cancellation, slot reuse
-and backend builds. These checks do not establish RF or mobile lifecycle results.
+## Bound actual control I/O
 
-Retain exact-source and exact-binary receipts for physical restart/send trials in
-both native roles. Verify unchanged identities and queued messages, duplicate
-counts and actual reconnection behavior. Separate system-radio changes, permission
-loss, silent-peer expiry, long idle and natural suspension. A periodic app reset
-or manual announcement is not evidence that transport recovery works.
+Android and embedded queued controls now carry an operation sequence through
+submission and completion within the exact session owner. Queue admission alone
+does not finish a control send. The backend determines its completion point:
+
+| Backend | Local completion point |
+| --- | --- |
+| Android client | Matching characteristic-write callback |
+| Android server | Matching notification callback, fenced by registration and retained owner |
+| nRF central | Acknowledged GATT write response |
+| nRF peripheral | Connection-local notification completion count from `on_notify_tx_complete` |
+| Trouble central | Acknowledged GATT write response |
+| Trouble peripheral | Subscribed notification admitted to the host's outbound queue |
+
+None of these completion points proves peer liveness or remote application
+receipt. Trouble checks the exact connection's subscription rather than accepting
+the notification API's unsubscribed no-op as success. Its single-executor server
+cannot process a subscription change between that check and packet assembly.
+
+Each queued backend retains the original message identity, sequence, deadline
+and terminal result outside cancelable send futures. Resuming the same send
+joins its existing operation, including while waiting for capacity; another
+message cannot consume its result. Timely completion remains available after a
+delayed resumption, but a late callback cannot turn expiry into success.
+Embedded receipts hash the canonical control bytes only to check resumption
+consistency, not to authenticate the peer. This resumption contract is specific
+to these implementations; callers must not assume every `BleControl` backend
+can resume a canceled send.
+
+Acknowledged control and data writes share one lane per physical connection.
+For nRF and Trouble, canceling or failing an admitted write retires that
+connection before releasing its untagged response lane. Canceling a waiter that
+has not acquired the lane does not poison the active operation. Independent
+receive and L2CAP work continue. nRF registers each notification before native
+submission; surplus completion counts never become credit for a future write.
+Its existing four shared control-wire buffers remain bounded and are held until
+the worker completes. Pool availability uses bounded broadcast waiters, not a
+single consumable wakeup; this is an admission hint, not a fairness guarantee.
+
+Android's shared Rust bridge and private SDK/Hopspot JNI adapters carry exact
+operation receipts. Both Kotlin consumers use the native codec's control
+capacity, including a maximum 153-byte greeting, and distinguish an undersized
+buffer from no output. No public host contract or generated application binding
+changes are needed. Callback registration precedes native submission, and a
+submitted-ticket watermark rejects a stale pump read after completion. Rust
+watchdog scheduling is bounded and does not keep a physical connection leased.
+
+Submission, Busy retries and completion share the original deadline. Expiry
+retires the physical attempt, not merely its operation lane. Android retains
+uncertain server notification/disconnect ownership and fences registration
+changes. Platform callbacks do not themselves carry the Rust operation ticket;
+receipt matching therefore cannot distinguish arbitrary duplicate OS callbacks
+for successive writes on the same characteristic and physical client. Exact
+native ownership, serialization and timeout quarantine remain necessary.
+
+Address quarantine is safe but is not automatic recovery. A future automatic
+server-registration reset must explicitly retire all affected peripheral
+sessions; it cannot pretend only one peer was reset. Keep that policy separate
+from completion handling.
+
+## Negotiated mobile liveness
+
+Hello/Welcome, their discovery groups and the 153-byte control limit are unchanged.
+The native service's optional read-only `NATIVE_LIVENESS_UUID` characteristic
+uses suffix `e9` and exactly six capability bytes, `50 52 4e 53 01 01`. Unknown values,
+missing characteristics and completed read errors preserve legacy behavior.
+The read happens before notification subscriptions, within the original native
+startup deadline. An accepted read that never completes ends that physical
+attempt; it cannot release its lane for a subsequent operation.
+
+Tokio opts in before starting the radio. Backends default to disabled, so a
+consumer that does not drive the protocol cannot advertise working support.
+Android snapshots capability publication per server registration. Apple's
+prepared service can exist before the runtime is ready; its dynamic read rejects
+requests until opt-in and rejects requests from an already admitted legacy
+session. Restoration never reuses prior central capability evidence.
+
+Apple replaces a known legacy restored service at startup, after PoweredOn and
+before listener admission. It removes only that exact service and publishes a
+fresh one; a complete current service retains its existing objects. Live owners
+defer replacement, and malformed or duplicate restored Prns services fail startup
+without removal. Readiness accepts only the matching publication callback.
+Reads, writes and subscription callbacks also match current characteristic
+objects, so delayed same-UUID callbacks cannot affect the replacement. Mixed
+old/new write batches still fail atomically.
+
+Only a central that read supported bytes on this exact connection initiates
+probes. Its first probe is immediate after settlement. A listener answers and
+starts its own checks only after receiving a valid probe on that session, not
+after merely publishing the characteristic. The fixed session mode is never
+reconstructed from an address. Columba has no native control channel and remains
+outside this protocol. Embedded, BlueZ and WinRT do not opt in.
+
+The allocation-free core policy owns at most one outstanding probe, one pending
+reply and one active write. Probe and reply wire tags are `04` and `05`, each
+followed by an eight-byte big-endian nonce. Nonces start from fresh session
+entropy and increment without wrapping; they correlate responses but do not
+authenticate a peer. The timings are:
+
+- Initiators probe immediately; listeners first probe 30 seconds after activation.
+- A matched reply schedules the next probe 30 seconds later.
+- Each probe has 30 seconds from its original due time for both native write
+  completion and the matching reply. Queue waits and retries do not renew it.
+- A reply has one 30-second write budget, capped by any earlier outstanding
+  expiration. Excess incoming probes are ignored, with at most one reply
+  admitted per second and no replacement of the retained nonce.
+
+Wrong, late or duplicate replies, greetings, data activity and competing
+connections cannot postpone these deadlines. Tokio checks expiration before
+queued input and retains one write future until it settles or the session ends.
+Long local suspension may therefore expire a connection on resume; that means
+responsiveness was not established within the budget, not that the remote app
+died. A listener whose peer disappears before sending its first valid probe is
+still unprobeable and retains legacy behavior.
+
+Healthy incumbents remain protected. Challengers are rejected through the
+existing bounded connection policy; they neither trigger eviction nor create a
+pending challenger queue. After an incumbent expires, normal discovery and retry
+can admit a replacement. No app retry or periodic Bluetooth reset is added.
+
+Android consumers retain an eight-second startup limit; Apple retains a
+15-second limit. Late callbacks cannot extend startup by beating a delayed
+watchdog. Resource gates and physical phone acceptance remain separate from
+codec and ownership tests.
+
+## Remaining hardening
+
+Qualify competing connections, startup retries and long-idle stability before
+making recovery-time guarantees. Any backoff change must remain bounded, preserve
+unrelated addresses and inbound admission, and include ownership/retry tests and
+firmware resource checks.
+
+Do not indefinitely suppress an address because a greeting claims an existing
+peer's identity. That identity is unauthenticated; even a responsive incumbent
+does not authenticate the claimed address association. Address reuse, rotation
+and forged identities must retain bounded recovery opportunities. No alias
+suppression or retry-policy change is implemented.
+
+## Shutdown and acceptance
+
+Cooperative shutdown notification remains follow-up work: stop admitting work,
+request a bounded supported close
+while native pumps still run, then drop the session owners and stop the radio.
+Radio loss or permission loss still requires immediate local teardown. Do not
+send a new shutdown reason to legacy peers or label normal shutdown as a
+duplicate-link rejection.
+
+Automated gates must cover both old/new directions, unsupported and stalled
+capability reads, healthy keepers, silent incumbents, duplicate or late probe
+replies, concurrent challengers, cancellation during send, stale callbacks after
+replacement, and graceful-close timeout. Include embedded slot reuse and Apple
+batch rollback regressions. Run backend target builds, including generated
+embedded GATT discovery, before advertising support.
+
+Physical acceptance repeats the controlled baseline/restart/send journey in
+both directions on rebuilt iOS and Android binaries, without manual announce,
+Bluetooth reset, or an alternate transport. Record delivery, duplicate count,
+unchanged persisted records and actual reconnect time. Repeat the lifecycle cases
+in both native roles. Current-build Android app-interface off/on, iOS system-radio
+recovery, permission loss, silent-peer expiry, long idle and natural suspension
+remain separate acceptance gaps. Passing queue or codec tests does not qualify them.
+First confirm that both nodes remain Running through an interval save; a stopped
+persistence worker must not be misdiagnosed as Bluetooth recovery failure.
