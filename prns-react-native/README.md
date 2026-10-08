@@ -232,8 +232,8 @@ backend-selecting root entry point.
 
 ## Qualification
 
-See the [standalone qualification record](docs/qualification.md) for executed
-checks and the remaining device/publication limits.
+See the [qualification guide](docs/qualification.md) for repeatable checks,
+phone acceptance and the remaining publication requirements.
 
 Strict TypeScript checking covers the generated binding/adapter, SDK native/web
 exports, and example. Iterator tests cover abort before readiness, abort after
