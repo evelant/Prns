@@ -8120,8 +8120,9 @@
     {
       "schema_version": 9,
       "source": {
-        "kind": "clean-commit",
-        "commit": "875203b20a6f73648f347b3c6ab04db3c5c5082d"
+        "kind": "working-tree",
+        "head": "eb8f4dcf19997ccda30721a2dc297b8ddda64730",
+        "diff_fingerprint": "0a8469a92c42eab6bf48ba6923e0ddd45daa40d9a163bd4efebc2588245f3969"
       },
       "target": {
         "id": "xiao-esp32-c6",
@@ -8196,7 +8197,7 @@
         "linker_version": "LLD 21.1.3 (https://github.com/espressif/llvm-project e4569c12a2b74dfd5f1657910f1dbcdf774e9413) (compatible with GNU linkers)"
       },
       "memory_contract": {
-        "fingerprint": "a7c69198c8c6721c99b5b6f654de59e0f652e5a0474b9b195d35da1e90832dbb",
+        "fingerprint": "accb5e3156118b47b235febf7955b8a55398b87b3ab171523c8e4def7e305e19",
         "address_spaces": [
           {
             "id": "internal-flash",
@@ -8224,7 +8225,7 @@
             "linker_ranges": [
               {
                 "start": 1082130432,
-                "end": 1083179008
+                "end": 1082582544
               }
             ],
             "backing_store": "internal-sram",
@@ -8239,10 +8240,27 @@
             "linker_ranges": [
               {
                 "start": 1082130432,
-                "end": 1083179008
+                "end": 1082582544
               }
             ],
             "backing_store": "internal-sram",
+            "backing_offset": 0
+          },
+          {
+            "id": "reclaimed-ram",
+            "kind": "reclaimed-ram",
+            "geometry": {
+              "kind": "fixed",
+              "start": 1082582544,
+              "end": 1082648080
+            },
+            "linker_ranges": [
+              {
+                "start": 1082582544,
+                "end": 1082648080
+              }
+            ],
+            "backing_store": "reclaimed-sram",
             "backing_offset": 0
           }
         ],
@@ -8367,13 +8385,41 @@
         },
         "runtime_reservations": [
           {
-            "id": "radio-runtime-heap",
-            "address_space": "data-ram",
-            "bytes": 90112,
+            "id": "radio-reclaimed-heap",
+            "address_space": "reclaimed-ram",
+            "bytes": 65536,
             "accounting": {
               "kind": "shared-pool",
-              "pool": "radio-runtime-heap",
+              "pool": "radio-reclaimed-heap",
               "charge": "included-in-static-image"
+            }
+          },
+          {
+            "id": "radio-internal-heap",
+            "address_space": "data-ram",
+            "bytes": 24576,
+            "accounting": {
+              "kind": "shared-pool",
+              "pool": "radio-internal-heap",
+              "charge": "included-in-static-image"
+            }
+          },
+          {
+            "id": "runtime-stack-guard",
+            "address_space": "data-ram",
+            "bytes": 4112,
+            "accounting": {
+              "kind": "dedicated",
+              "charge": "additional-to-static"
+            }
+          },
+          {
+            "id": "minimum-runtime-stack",
+            "address_space": "data-ram",
+            "bytes": 49152,
+            "accounting": {
+              "kind": "dedicated",
+              "charge": "additional-to-static"
             }
           }
         ]
@@ -8387,8 +8433,8 @@
           "region": "firmware",
           "start": 65536,
           "end": 4059136,
-          "image_bytes": 1778608,
-          "headroom_bytes": 2214992
+          "image_bytes": 1784064,
+          "headroom_bytes": 2209536
         }
       },
       "static_ram": {
@@ -8403,12 +8449,28 @@
             "capacity": {
               "kind": "known",
               "bytes": 452112,
-              "headroom_bytes": 1480
+              "headroom_bytes": 8840
             },
-            "static_section_bytes": 450624,
+            "static_section_bytes": 390000,
             "linker_padding_bytes": 8,
+            "additional_reservation_bytes": 53264,
+            "included_reservation_bytes": 24576,
+            "external_reservation_bytes": 0
+          },
+          {
+            "backing_store": "reclaimed-sram",
+            "address_spaces": [
+              "reclaimed-ram"
+            ],
+            "capacity": {
+              "kind": "known",
+              "bytes": 65536,
+              "headroom_bytes": 0
+            },
+            "static_section_bytes": 65536,
+            "linker_padding_bytes": 0,
             "additional_reservation_bytes": 0,
-            "included_reservation_bytes": 90112,
+            "included_reservation_bytes": 65536,
             "external_reservation_bytes": 0
           }
         ]
@@ -8428,13 +8490,13 @@
           },
           {
             "path": "firmware/hopspot/xiao-esp32-c6/0.3.8/application.bin",
-            "bytes": 1778608,
-            "fingerprint": "4767bbfa679f790feabadb719f4d7afcc146c8ef1201b3454d8d466ce2ad9963"
+            "bytes": 1784064,
+            "fingerprint": "9133fe34d438234807dfdfbd94a440c2caa6f339fb162697ccff9337f4796cd9"
           }
         ]
       },
       "analysis": {
-        "linker_map_bytes": 18911801,
+        "linker_map_bytes": 19382781,
         "allocated_sections": {
           "kind": "complete",
           "value": [
@@ -8469,16 +8531,16 @@
               "name": ".data",
               "kind": "initialized-data",
               "run_address": 1082212800,
-              "run_end": 1082246836,
-              "run_bytes": 34036,
-              "load_bytes": 34036,
+              "run_end": 1082246524,
+              "run_bytes": 33724,
+              "load_bytes": 33724,
               "alignment": 8
             },
             {
               "name": ".data.wifi",
               "kind": "initialized-data",
-              "run_address": 1082246840,
-              "run_end": 1082247592,
+              "run_address": 1082246528,
+              "run_end": 1082247280,
               "run_bytes": 752,
               "load_bytes": 752,
               "alignment": 8
@@ -8486,9 +8548,9 @@
             {
               "name": ".bss",
               "kind": "zero-fill",
-              "run_address": 1082247592,
-              "run_end": 1082581064,
-              "run_bytes": 333472,
+              "run_address": 1082247280,
+              "run_end": 1082520440,
+              "run_bytes": 273160,
               "load_bytes": 0,
               "alignment": 8
             },
@@ -8505,16 +8567,16 @@
               "name": ".rodata",
               "kind": "read-only-data",
               "run_address": 1107296544,
-              "run_end": 1107467992,
-              "run_bytes": 171448,
-              "load_bytes": 171448,
+              "run_end": 1107474240,
+              "run_bytes": 177696,
+              "load_bytes": 177696,
               "alignment": 8
             },
             {
               "name": ".rodata.wifi",
               "kind": "read-only-data",
-              "run_address": 1107467992,
-              "run_end": 1107508744,
+              "run_address": 1107474240,
+              "run_end": 1107514992,
               "run_bytes": 40752,
               "load_bytes": 40752,
               "alignment": 4
@@ -8522,9 +8584,9 @@
             {
               "name": ".text_gap",
               "kind": "zero-fill",
-              "run_address": 1107508744,
+              "run_address": 1107514992,
               "run_end": 1107558432,
-              "run_bytes": 49688,
+              "run_bytes": 43440,
               "load_bytes": 0,
               "alignment": 1
             },
@@ -8532,17 +8594,26 @@
               "name": ".text",
               "kind": "code",
               "run_address": 1107558432,
-              "run_end": 1109007314,
-              "run_bytes": 1448882,
-              "load_bytes": 1448882,
+              "run_end": 1109006844,
+              "run_bytes": 1448412,
+              "load_bytes": 1448412,
               "alignment": 4
             },
             {
               "name": ".stack",
               "kind": "zero-fill",
-              "run_address": 1082581064,
+              "run_address": 1082520440,
               "run_end": 1082582544,
-              "run_bytes": 1480,
+              "run_bytes": 62104,
+              "load_bytes": 0,
+              "alignment": 4
+            },
+            {
+              "name": ".dram2_uninit",
+              "kind": "zero-fill",
+              "run_address": 1082582544,
+              "run_end": 1082648080,
+              "run_bytes": 65536,
               "load_bytes": 0,
               "alignment": 4
             }
@@ -8553,26 +8624,26 @@
           "value": {
             "crates": {
               "coverage": {
-                "analyzed_bytes": 1778490,
-                "attributed_bytes": 944015,
-                "unclassified_bytes": 834475
+                "analyzed_bytes": 1783956,
+                "attributed_bytes": 943853,
+                "unclassified_bytes": 840103
               },
               "largest": [
                 {
                   "name": "prns_core",
-                  "bytes": 310140
+                  "bytes": 300588
                 },
                 {
                   "name": "embassy_futures",
-                  "bytes": 137016
+                  "bytes": 138836
                 },
                 {
                   "name": "prns_runtime_embassy",
-                  "bytes": 86198
+                  "bytes": 87268
                 },
                 {
                   "name": "embassy_executor",
-                  "bytes": 69475
+                  "bytes": 68769
                 },
                 {
                   "name": "sha2",
@@ -8580,27 +8651,27 @@
                 },
                 {
                   "name": "trouble_host",
-                  "bytes": 51924
+                  "bytes": 52308
                 },
                 {
                   "name": "prns_runtime",
-                  "bytes": 40656
+                  "bytes": 40754
                 },
                 {
                   "name": "core",
-                  "bytes": 36242
+                  "bytes": 36726
+                },
+                {
+                  "name": "prns_interfaces_embassy",
+                  "bytes": 30122
                 },
                 {
                   "name": "curve25519_dalek",
                   "bytes": 28426
                 },
                 {
-                  "name": "prns_interfaces_embassy",
-                  "bytes": 24384
-                },
-                {
                   "name": "embassy_sync",
-                  "bytes": 18954
+                  "bytes": 19728
                 },
                 {
                   "name": "esp_radio",
@@ -8612,7 +8683,7 @@
                 },
                 {
                   "name": "personal_hopspot_esp32",
-                  "bytes": 5414
+                  "bytes": 6174
                 },
                 {
                   "name": "esp_hal",
@@ -8620,7 +8691,7 @@
                 },
                 {
                   "name": "esp_rtos",
-                  "bytes": 4400
+                  "bytes": 4396
                 },
                 {
                   "name": "bt_hci",
@@ -8628,11 +8699,11 @@
                 },
                 {
                   "name": "personal_hopspot_core",
-                  "bytes": 2842
+                  "bytes": 2852
                 },
                 {
                   "name": "esp_sync",
-                  "bytes": 2576
+                  "bytes": 2588
                 },
                 {
                   "name": "hkdf",
@@ -8655,41 +8726,41 @@
                   "bytes": 1712
                 },
                 {
-                  "name": "embassy_time",
-                  "bytes": 1606
+                  "name": "x25519_dalek",
+                  "bytes": 1302
                 }
               ]
             },
             "symbols": {
               "coverage": {
-                "analyzed_bytes": 1778490,
-                "attributed_bytes": 944401,
-                "unclassified_bytes": 834089
+                "analyzed_bytes": 1783956,
+                "attributed_bytes": 944239,
+                "unclassified_bytes": 839717
               },
               "largest": [
-                {
-                  "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_command_into_with_timing::<prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::host::EmbassyHost…s_runtime_embassy::runtime::embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#4}>::{closure#0}> [sha256:b8b680c29383]",
-                  "bytes": 51382
-                },
                 {
                   "name": "sha2::sha512::compress512",
                   "bytes": 49886
                 },
                 {
                   "name": "<embassy_executor::raw::TaskStorage<hopspot_xiao_esp32_c6::__main::____embassy_main_task::____embassy_main_task_inner_function::{closure#0}>>::poll",
-                  "bytes": 41843
+                  "bytes": 41745
+                },
+                {
+                  "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_command_into_with_timing::<prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::host::EmbassyHost…s_runtime_embassy::runtime::embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#4}>::{closure#0}> [sha256:b8b680c29383]",
+                  "bytes": 37362
                 },
                 {
                   "name": "<embassy_futures::join::MaybeDone<prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::host::EmbassyHost<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, personal_hopspot_esp32::c6::entropy::C6E…shotKeys<36>, fn(prns_runtime_embassy::runtime::embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}>>::poll [sha256:da5fa0686558]",
-                  "bytes": 34296
+                  "bytes": 33412
+                },
+                {
+                  "name": "<embassy_futures::join::MaybeDone<prns_runtime_embassy::runtime::request_runner::run_router<personal_hopspot_core::remote_control_executor::HopspotCommandHandle<1>, prns_runtime::runtime::remote_control::RemoteControlNodeControls<prns_runtime::runtime::remote_control::RemoteControlSupportedHost<personal_hopspot_core::r…node_pages::NodePageRoutes, embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, 8, 4, 0, 0, 4, 403>::{closure#0}>>::poll [sha256:8237cb1bce5d]",
+                  "bytes": 32324
                 },
                 {
                   "name": "prns_runtime_embassy::manifold::driver::inline_work::fulfill_owed_work_inline::<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::host::EmbassyHost<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, personal_hopspot_esp32::c6::entropy::C6EntropySource>, prns_ru…::embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>::{closure#0}::{closure#0}>::{closure#0}::{closure#0}>::{closure#0}> [sha256:9733d3b2cc45]",
                   "bytes": 31786
-                },
-                {
-                  "name": "<embassy_futures::join::MaybeDone<prns_runtime_embassy::runtime::request_runner::run_router<personal_hopspot_core::remote_control_executor::HopspotCommandHandle<1>, prns_runtime::runtime::remote_control::RemoteControlNodeControls<prns_runtime::runtime::remote_control::RemoteControlSupportedHost<personal_hopspot_core::r…node_pages::NodePageRoutes, embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, 8, 4, 0, 0, 4, 403>::{closure#0}>>::poll [sha256:8237cb1bce5d]",
-                  "bytes": 31406
                 },
                 {
                   "name": "prns_runtime::manifold::wake_schedule::fire_due_reason::<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::host::EmbassyHost<embassy_sync::blo…ys<36>, fn(prns_runtime_embassy::runtime::embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#8}> [sha256:8b8da3abdddb]",
@@ -8697,19 +8768,19 @@
                 },
                 {
                   "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_classified_into_report_with_request_diagnostics::<true, prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifo…ys<36>, fn(prns_runtime_embassy::runtime::embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:c4de6c0787d7]",
-                  "bytes": 19076
+                  "bytes": 19078
                 },
                 {
                   "name": "<embassy_futures::select::Select<core::future::poll_fn::PollFn<<embassy_sync::signal::Signal<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, ()>>::wait::{closure#0}>, prns_interfaces_embassy::bluetooth_auto::trouble::sessions::serve_central<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<esp_radio::ble::controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll",
-                  "bytes": 17180
+                  "bytes": 17060
                 },
                 {
                   "name": "<embassy_futures::join::Join<<prns_interfaces_embassy::esp_now::EspNowInterface<personal_hopspot_esp32::c6::EspNowAdapter> as prns_runtime::manifold::interface_seam::Interface>::run<prns_runtime_embassy::manifold::driver::interface_seam::EmbassyInterfaceSeam<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, p…ce, 3, 1470>>::{closure#0}, personal_hopspot_esp32::c6::remote_control::run::{closure#0}> as core::future::future::Future>::poll [sha256:81778b408afc]",
-                  "bytes": 13954
+                  "bytes": 14412
                 },
                 {
                   "name": "<embassy_futures::join::MaybeDone<<prns_interfaces_embassy::bluetooth_auto::runtime::BluetoothAuto<prns_interfaces_embassy::bluetooth_auto::trouble::backend::EmbeddedBleBackend, 8>>::run<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, 500, 3, 32>::{closure#0}>>::poll",
-                  "bytes": 13832
+                  "bytes": 14234
                 },
                 {
                   "name": "sha2::sha256::compress256",
@@ -8717,15 +8788,15 @@
                 },
                 {
                   "name": "<embassy_futures::join::Join<prns_interfaces_embassy::bluetooth_auto::trouble::tasks::acceptor<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<esp_radio::ble::controller::BleConnector>>::{closure#0}, prns_interfaces_embassy::bluetooth_auto::trouble::tasks::dialer<prns_interfaces_emb…_transport::CooperativeTransport<esp_radio::ble::controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll [sha256:f251237d995e]",
-                  "bytes": 12936
-                },
-                {
-                  "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
-                  "bytes": 11202
+                  "bytes": 12968
                 },
                 {
                   "name": "<core::pin::Pin<&mut <trouble_host::host::RxRunner<bt_hci::controller::ExternalController<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<esp_radio::ble::controller::BleConnector>, 20>, trouble_host::packet_pool::StaticPacketPool<embassy_sync::blocking_mutex::raw::CriticalSectionRaw…dler<prns_interfaces_embassy::bluetooth_auto::trouble::backend::ScanFunnel>::{closure#0}> as core::future::future::Future>::poll [sha256:e0d579c34ef4]",
-                  "bytes": 11118
+                  "bytes": 11148
+                },
+                {
+                  "name": "<embassy_futures::select::Select<core::future::poll_fn::PollFn<<embassy_sync::signal::Signal<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, ()>>::wait::{closure#0}>, prns_interfaces_embassy::bluetooth_auto::trouble::sessions::serve_peripheral<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<esp_radio::ble::controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll",
+                  "bytes": 11030
                 },
                 {
                   "name": "<trouble_host::host::ControlRunner<bt_hci::controller::ExternalController<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<esp_radio::ble::controller::BleConnector>, 20>, trouble_host::packet_pool::StaticPacketPool<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, 512, 32>>>::run::{closure#0}",
@@ -8736,12 +8807,12 @@
                   "bytes": 10876
                 },
                 {
-                  "name": "<embassy_futures::select::Select<core::future::poll_fn::PollFn<<embassy_sync::signal::Signal<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, ()>>::wait::{closure#0}>, prns_interfaces_embassy::bluetooth_auto::trouble::sessions::serve_peripheral<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<esp_radio::ble::controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll",
-                  "bytes": 10436
+                  "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
+                  "bytes": 10470
                 },
                 {
                   "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__manifold_task_task::__manifold_task_task_inner_function::{closure#0}>>::poll",
-                  "bytes": 9108
+                  "bytes": 9106
                 },
                 {
                   "name": "<curve25519_dalek::backend::serial::u32::scalar::Scalar29>::mul",
@@ -8761,7 +8832,7 @@
                 },
                 {
                   "name": "<prns_runtime::runtime::remote_control::RemoteControlRequestEndpoint>::handle_admitted::<personal_hopspot_core::remote_control_executor::HopspotCommandHandle<1>, prns_runtime::runtime::remote_control::RemoteControlNodeControls<prns_runtime::runtime::remote_control::RemoteControlSupportedHost<personal_hopspot_core::remo…ime::node_facade::command_handle::PrnsNodeHandle<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, 8, 4>>::{closure#0} [sha256:439a99e2d1d8]",
-                  "bytes": 4644
+                  "bytes": 4728
                 },
                 {
                   "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::continue_static_response_into::<prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::host::EmbassyHost<e…ys<36>, fn(prns_runtime_embassy::runtime::embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:35a8c195755e]",
@@ -8796,11 +8867,11 @@
               {
                 "file_offset": 86464,
                 "run_address": 1082212800,
-                "run_end": 1082581064,
+                "run_end": 1082520440,
                 "load_address": 1082212800,
-                "load_end": 1082581064,
-                "file_bytes": 34792,
-                "memory_bytes": 368264,
+                "load_end": 1082520440,
+                "file_bytes": 34480,
+                "memory_bytes": 307640,
                 "alignment": 4096,
                 "permissions": [
                   "read",
@@ -8813,7 +8884,7 @@
                 "run_end": 1107558432,
                 "load_address": 1107296288,
                 "load_end": 1107558432,
-                "file_bytes": 212456,
+                "file_bytes": 218704,
                 "memory_bytes": 262144,
                 "alignment": 4096,
                 "permissions": [
@@ -8821,13 +8892,13 @@
                 ]
               },
               {
-                "file_offset": 335904,
+                "file_offset": 344096,
                 "run_address": 1107558432,
-                "run_end": 1109007314,
+                "run_end": 1109006844,
                 "load_address": 1107558432,
-                "load_end": 1109007314,
-                "file_bytes": 1448882,
-                "memory_bytes": 1448882,
+                "load_end": 1109006844,
+                "file_bytes": 1448412,
+                "memory_bytes": 1448412,
                 "alignment": 4096,
                 "permissions": [
                   "read",
@@ -8835,16 +8906,30 @@
                 ]
               },
               {
-                "file_offset": 1785928,
-                "run_address": 1082581064,
+                "file_offset": 1794936,
+                "run_address": 1082520440,
                 "run_end": 1082582544,
-                "load_address": 1082581064,
+                "load_address": 1082520440,
                 "load_end": 1082582544,
                 "file_bytes": 0,
-                "memory_bytes": 1480,
+                "memory_bytes": 62104,
                 "alignment": 4096,
                 "permissions": [
                   "read"
+                ]
+              },
+              {
+                "file_offset": 1795600,
+                "run_address": 1082582544,
+                "run_end": 1082648080,
+                "load_address": 1082582544,
+                "load_end": 1082648080,
+                "file_bytes": 0,
+                "memory_bytes": 65536,
+                "alignment": 4096,
+                "permissions": [
+                  "read",
+                  "write"
                 ]
               }
             ],
@@ -8855,7 +8940,7 @@
                 "end": 1082132020,
                 "bytes": 1588,
                 "alignment": 256,
-                "fingerprint": "6cedf8e00c81be42a93614a4a5e1968b21a54f808d43eb5f97d59f77f5369ac9"
+                "fingerprint": "02946a8529ee4b2be5a9e833cf56707bd26a336df4e6d6d366ab42d56c90604e"
               },
               {
                 "name": ".rwtext",
@@ -8863,7 +8948,7 @@
                 "end": 1082136876,
                 "bytes": 4856,
                 "alignment": 4,
-                "fingerprint": "462e2a4a2df997a061263fa2d112589dcc3d0c5780281ac72d382e644443a3c3"
+                "fingerprint": "e5cfad8c90ea8a91d20130e60c7c626ed98b58ed9e93dd87b929ebc73dd65c27"
               },
               {
                 "name": ".rwtext.wifi",
@@ -8871,15 +8956,15 @@
                 "end": 1082212796,
                 "bytes": 75920,
                 "alignment": 2,
-                "fingerprint": "f0230b974037004790cd5dc980c7a31869d2e5eed24a67050bbc2bc1f71622ea"
+                "fingerprint": "5981f6441dc5b25e6b9ce39e1b5754e244edd2ef70bace0c3cda74a7900ac083"
               },
               {
                 "name": ".text",
                 "address": 1107558432,
-                "end": 1109007314,
-                "bytes": 1448882,
+                "end": 1109006844,
+                "bytes": 1448412,
                 "alignment": 4,
-                "fingerprint": "a19b9fe8142590b0ad1af6fddb3b597a77f26770d97a201c74490a7de35d7308"
+                "fingerprint": "e207400059de6abfb617aa35d2e3770566e2b60ae0302ba2077407430f1c8091"
               }
             ],
             "startup": {
@@ -8900,153 +8985,153 @@
             },
             "functions": {
               "normalization": "linked-function-body-sha256-v1",
-              "boundary_count": 5132,
-              "boundaries_fingerprint": "c25b711f539ac14af83dc9efb76e0f4df4997906940739c88eac59e4b0a8f991",
+              "boundary_count": 5161,
+              "boundaries_fingerprint": "78c1c8807c857fab45c5976bd1def62cff256fc856a2549965418826c6979a70",
               "boundaries_artifact": {
                 "path": "work/xiao-esp32-c6/function-boundaries.json",
-                "bytes": 1295579,
-                "fingerprint": "821bd0f915ffc95886e60fd489a1455b615fda8b0875b9694316325ff30e6261"
+                "bytes": 1306683,
+                "fingerprint": "e059c5e69696b0cacaf1dea2522e3a5a9772a5c0690d7dbb7844d39b81ae4e33"
               },
-              "classified_bytes": 1529530,
+              "classified_bytes": 1529060,
               "unclassified_bytes": 1716,
               "largest": [
                 {
-                  "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_command_into_with_timing::<prns_runtime_embassy::man…::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#4}>::{closure#0}> [sha256:b8b680c29383]",
-                  "address": 1107728670,
-                  "end": 1107779640,
-                  "bytes": 50970,
-                  "fingerprint": "dd6632f828d5d0cffb07b60377b77647f8263427b1cf6d6beb36cef6d070f457"
-                },
-                {
                   "name": "sha2::sha512::compress512",
-                  "address": 1108441900,
-                  "end": 1108491786,
+                  "address": 1108441430,
+                  "end": 1108491316,
                   "bytes": 49886,
-                  "fingerprint": "64fc6205a0f7b5c94e3e406285c5df821c92f241945c7f69e060e04b255da9f4"
+                  "fingerprint": "cbdc9f2e64743ab0231b563bef4077fd7c0b49164753327087f17780d2bc01f8"
                 },
                 {
                   "name": "<embassy_executor::raw::TaskStorage<hopspot_xiao_esp32_c6::__main::____embassy_main_task::____embassy_main_task_inner_function::{closure#0}>>::poll",
-                  "address": 1107559186,
-                  "end": 1107601024,
-                  "bytes": 41838,
-                  "fingerprint": "2114fe4998e4a1ff9dfb401441bba00cac65b2eabe8df06501c131ff2c333485"
+                  "address": 1107559182,
+                  "end": 1107600922,
+                  "bytes": 41740,
+                  "fingerprint": "0ff36a272b1223dd244b3f4302b3de753e9f5caa5725ea68f7ed23030963427b"
+                },
+                {
+                  "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_command_into_with_timing::<prns_runtime_embassy::man…::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#4}>::{closure#0}> [sha256:b8b680c29383]",
+                  "address": 1107729000,
+                  "end": 1107766050,
+                  "bytes": 37050,
+                  "fingerprint": "a7213ee3dcb4f83746ba9fa695cfd0dd620887450f1d802ecb9b8233d0382d70"
                 },
                 {
                   "name": "<embassy_futures::join::MaybeDone<prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage…embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}>>::poll [sha256:da5fa0686558]",
-                  "address": 1108128866,
-                  "end": 1108163090,
-                  "bytes": 34224,
-                  "fingerprint": "4347f8c6626476a338a6b71ca3e71d86e02d050cfe2ca2f1861b84b180fc4498"
-                },
-                {
-                  "name": "prns_runtime_embassy::manifold::driver::inline_work::fulfill_owed_work_inline::<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy…ostic), 32>>::{closure#0}::{closure#0}>::{closure#0}::{closure#0}>::{closure#0}> [sha256:9733d3b2cc45]",
-                  "address": 1108251282,
-                  "end": 1108282996,
-                  "bytes": 31714,
-                  "fingerprint": "9b42db44f80fbaf9be9fd90f83d3cf04b57b9c4c284577fd33c1214f1ac8972f"
+                  "address": 1108126492,
+                  "end": 1108159812,
+                  "bytes": 33320,
+                  "fingerprint": "7a7a302a533f99e67b96a1dbc514ddd5c45996c25794e992674892e03bc32d76"
                 },
                 {
                   "name": "<embassy_futures::join::MaybeDone<prns_runtime_embassy::runtime::request_runner::run_router<personal_hopspot_core::remote_control_executor::HopspotCommandHandle…ng_mutex::raw::CriticalSectionRawMutex, 8, 4, 0, 0, 4, 403>::{closure#0}>>::poll [sha256:8237cb1bce5d]",
-                  "address": 1108163090,
-                  "end": 1108194024,
-                  "bytes": 30934,
-                  "fingerprint": "cf83ceecd3f74db6210cfed314018ad714bd0005d704d11e124a560a4993b81c"
+                  "address": 1108159812,
+                  "end": 1108191648,
+                  "bytes": 31836,
+                  "fingerprint": "a82afb9e757ccb5e034a5911463f34a3672ff3d43c0857c5327cce0996b763e1"
+                },
+                {
+                  "name": "prns_runtime_embassy::manifold::driver::inline_work::fulfill_owed_work_inline::<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy…ostic), 32>>::{closure#0}::{closure#0}>::{closure#0}::{closure#0}>::{closure#0}> [sha256:9733d3b2cc45]",
+                  "address": 1108249000,
+                  "end": 1108280714,
+                  "bytes": 31714,
+                  "fingerprint": "2bf469764ccaeee0eeabb71056ed2e416c247d4bab2eb1d1dd8a749151277112"
                 },
                 {
                   "name": "prns_runtime::manifold::wake_schedule::fire_due_reason::<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy::manifold::driver::poo…ed_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#8}> [sha256:8b8da3abdddb]",
-                  "address": 1108224380,
-                  "end": 1108251282,
+                  "address": 1108222098,
+                  "end": 1108249000,
                   "bytes": 26902,
-                  "fingerprint": "b161dbbc35162a650fb815540b2839cc57df663927c4dc49805f3e5b95becc85"
+                  "fingerprint": "67db2995aca080d670e1354dcb24373ac73297d22a83276abcb26762f2e618df"
                 },
                 {
                   "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_classified_into_report_with_request_diagnostics::<tr…ed_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:c4de6c0787d7]",
-                  "address": 1107817816,
-                  "end": 1107836688,
-                  "bytes": 18872,
-                  "fingerprint": "af3339c2ca3d72db604389633661796b226ccf8e0ee30d0c182cfb65f605c3ed"
+                  "address": 1107807586,
+                  "end": 1107826460,
+                  "bytes": 18874,
+                  "fingerprint": "03ec5e1a758e431632d7d9fc278f313f489de46ebeee511ce3dc670c31cd65df"
                 },
                 {
                   "name": "<embassy_futures::select::Select<core::future::poll_fn::PollFn<<embassy_sync::signal::Signal<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, ()>>::w…:controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll [sha256:612d63326fca]",
-                  "address": 1107967992,
-                  "end": 1107984964,
-                  "bytes": 16972,
-                  "fingerprint": "4a7b0ba79da5c8511b9aa57cba8fc306c5cae403139adb8ea18ee2ee5f3f140c"
+                  "address": 1107959626,
+                  "end": 1107976478,
+                  "bytes": 16852,
+                  "fingerprint": "f03b490a7d3d10e21d77da819785a91c9be9fb4d8e18ce461a679f141ce2d052"
                 },
                 {
                   "name": "<embassy_futures::join::Join<<prns_interfaces_embassy::esp_now::EspNowInterface<personal_hopspot_esp32::c6::EspNowAdapter> as prns_runtime::manifold::interface_…32::c6::remote_control::run::{closure#0}> as core::future::future::Future>::poll [sha256:81778b408afc]",
-                  "address": 1108317460,
-                  "end": 1108331330,
-                  "bytes": 13870,
-                  "fingerprint": "1b92e5d7081547cacbd4cd78111929b2536d543fac029d5da5ef4fa982578899"
+                  "address": 1108316074,
+                  "end": 1108330242,
+                  "bytes": 14168,
+                  "fingerprint": "1a4a4aa8da0ca5bdd81ef6877d595795b5697b18eb200de45856a8792b020659"
                 },
                 {
                   "name": "<embassy_futures::join::MaybeDone<<prns_interfaces_embassy::bluetooth_auto::runtime::BluetoothAuto<prns_interfaces_embassy::bluetooth_auto::trouble::backend::Em…::blocking_mutex::raw::CriticalSectionRawMutex, 500, 3, 32>::{closure#0}>>::poll [sha256:64ef75ed62d9]",
-                  "address": 1108036194,
-                  "end": 1108049786,
-                  "bytes": 13592,
-                  "fingerprint": "886cc6a0b04557996f1809369aca233fd84f86fd4caf3037de7ea0f4edbe6b5d"
+                  "address": 1108030252,
+                  "end": 1108044246,
+                  "bytes": 13994,
+                  "fingerprint": "745b0417d67da69d97619a3554f9ad5ba8e0e175d7676857de7b4729a94a86ee"
                 },
                 {
                   "name": "sha2::sha256::compress256",
-                  "address": 1108428894,
-                  "end": 1108441900,
+                  "address": 1108428424,
+                  "end": 1108441430,
                   "bytes": 13006,
-                  "fingerprint": "df27e6628615774ad22c0d8b546b44d8e939425db0e019738402d1d23c6238ad"
+                  "fingerprint": "decfc885f4da2cb79dff8ed143b2a6cc783296a6dd19a47dc382690d94fcb87a"
                 },
                 {
                   "name": "<embassy_futures::join::Join<prns_interfaces_embassy::bluetooth_auto::trouble::tasks::acceptor<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::C…:controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll [sha256:f251237d995e]",
-                  "address": 1108066666,
-                  "end": 1108079218,
-                  "bytes": 12552,
-                  "fingerprint": "91a8e91c4533b2630b508251c63e46daae0877e9d0faa7091c9ba7de88837454"
-                },
-                {
-                  "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
-                  "address": 1108021962,
-                  "end": 1108033136,
-                  "bytes": 11174,
-                  "fingerprint": "72dc9b195593c112c9889ac952ab250453b162303dea8ced6f6811663a46f040"
+                  "address": 1108064076,
+                  "end": 1108076660,
+                  "bytes": 12584,
+                  "fingerprint": "54cec496bce02cd61f146f83823ce04c6f70c32dd5dfc0c9a09d874667feaa46"
                 },
                 {
                   "name": "<core::pin::Pin<&mut <trouble_host::host::RxRunner<bt_hci::controller::ExternalController<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::Cooper…ouble::backend::ScanFunnel>::{closure#0}> as core::future::future::Future>::poll [sha256:e0d579c34ef4]",
-                  "address": 1108084038,
-                  "end": 1108095060,
-                  "bytes": 11022,
-                  "fingerprint": "02136009f3ad4308d381d4234ef0a8d0ca13a3643c9ab7d13b08f3d142e2d2c7"
-                },
-                {
-                  "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_classified_with_mode",
-                  "address": 1107836688,
-                  "end": 1107847452,
-                  "bytes": 10764,
-                  "fingerprint": "3ee31edff9a6187a093aa6b2cc35ca40ac0a6e5bc58d4072b418c35905332194"
-                },
-                {
-                  "name": "<trouble_host::host::ControlRunner<bt_hci::controller::ExternalController<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<e…sync::blocking_mutex::raw::CriticalSectionRawMutex, 512, 32>>>::run::{closure#0} [sha256:55bf92ed19a6]",
-                  "address": 1108095060,
-                  "end": 1108105648,
-                  "bytes": 10588,
-                  "fingerprint": "70c6f879ccd6d33442715381f9ccb77685233c74074ce7141a6998aa752fe596"
+                  "address": 1108081630,
+                  "end": 1108092682,
+                  "bytes": 11052,
+                  "fingerprint": "68eb419f0ba505101d76d331c206427277ad3b26d969e5f811e2993dd7814224"
                 },
                 {
                   "name": "<embassy_futures::select::Select<core::future::poll_fn::PollFn<<embassy_sync::signal::Signal<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, ()>>::w…:controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll [sha256:8d636c1996f8]",
-                  "address": 1107957756,
-                  "end": 1107967992,
-                  "bytes": 10236,
-                  "fingerprint": "dda11135dfbba55e4904f22648fadf9fd6f9f51ab4a177d154cb9d334c4d6a3b"
+                  "address": 1107948820,
+                  "end": 1107959626,
+                  "bytes": 10806,
+                  "fingerprint": "24364f0fd5a8558b2d326a7b8e0439f0cf69e21581d083d55e5bdac64636ca91"
+                },
+                {
+                  "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_classified_with_mode",
+                  "address": 1107826460,
+                  "end": 1107837224,
+                  "bytes": 10764,
+                  "fingerprint": "e8314e0572980401533cdfc2fa3c3f83dd67f745d798f6942703b2caa41da294"
+                },
+                {
+                  "name": "<trouble_host::host::ControlRunner<bt_hci::controller::ExternalController<prns_interfaces_embassy::bluetooth_auto::cooperative_transport::CooperativeTransport<e…sync::blocking_mutex::raw::CriticalSectionRawMutex, 512, 32>>>::run::{closure#0} [sha256:55bf92ed19a6]",
+                  "address": 1108092682,
+                  "end": 1108103270,
+                  "bytes": 10588,
+                  "fingerprint": "25656248acffe9b7f7e611da7926bb6672bfee9c3c8ddcc1842be5b7cbb31953"
+                },
+                {
+                  "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
+                  "address": 1108016018,
+                  "end": 1108026460,
+                  "bytes": 10442,
+                  "fingerprint": "3c25c7cc362af2e4b48ce1983f33b69e989b975a0acd97049bb4cd1b407c0a01"
                 },
                 {
                   "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__manifold_task_task::__manifold_task_task_inner_function::{closure#0}>>::poll",
-                  "address": 1108111558,
-                  "end": 1108120618,
-                  "bytes": 9060,
-                  "fingerprint": "bc7709ebdae2e8799776726f61aa38bb3c5f0f6244b772b49466c269b5158711"
+                  "address": 1108109180,
+                  "end": 1108118238,
+                  "bytes": 9058,
+                  "fingerprint": "2e418d659702a11e00b9a22943ad2f3eb1529813b74e7edb07bc9a45f7895c8e"
                 },
                 {
                   "name": "<curve25519_dalek::backend::serial::u32::scalar::Scalar29>::mul",
-                  "address": 1107646104,
-                  "end": 1107654082,
+                  "address": 1107646010,
+                  "end": 1107653988,
                   "bytes": 7978,
                   "fingerprint": "1c0124c95b76dbd2b551f1d3b1d11c1b80f41f4ef3a4c8f06ea99754d6f467ee"
                 }
@@ -9056,181 +9141,172 @@
               "adapter": "riscv32imac",
               "flavor": "llvm-objdump",
               "program": "llvm-objdump",
-              "version": "LLVM version 22.1.8-rust-1.98.0-stable",
-              "executable_bytes": 1531246,
-              "decoded_bytes": 1530844,
+              "version": "LLVM version 22.1.8-rust-1.98.1-stable",
+              "executable_bytes": 1530776,
+              "decoded_bytes": 1530374,
               "undecoded_bytes": 402,
-              "instruction_count": 506085
+              "instruction_count": 505954
             },
             "stack": {
               "kind": "partial",
               "value": {
                 "frame_source": "dwarf-debug-frame",
-                "source_bytes": 134900,
-                "frame_count": 2162,
+                "source_bytes": 136104,
+                "frame_count": 2191,
                 "functions_without_frames": 2969,
                 "largest_frames": [
                   {
-                    "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
-                    "address": 1108021962,
-                    "bytes": 34000
+                    "name": "<embassy_executor::raw::TaskStorage<hopspot_xiao_esp32_c6::__main::____embassy_main_task::____embassy_main_task_inner_function::{closure#0}>>::poll",
+                    "address": 1107559182,
+                    "bytes": 32016
                   },
                   {
-                    "name": "<embassy_executor::raw::TaskStorage<hopspot_xiao_esp32_c6::__main::____embassy_main_task::____embassy_main_task_inner_function::{closure#0}>>::poll",
-                    "address": 1107559186,
-                    "bytes": 31984
+                    "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
+                    "address": 1108016018,
+                    "bytes": 27520
+                  },
+                  {
+                    "name": "personal_hopspot_esp32::bluetooth_auto::initialize_hub",
+                    "address": 1108026520,
+                    "bytes": 17824
                   },
                   {
                     "name": "prns_runtime_embassy::manifold::driver::inline_work::fulfill_owed_work_inline::<personal_hopspot_esp32::storage::internal::InternalStorage, prns_runtime_embassy…ostic), 32>>::{closure#0}::{closure#0}>::{closure#0}::{closure#0}>::{closure#0}> [sha256:9733d3b2cc45]",
-                    "address": 1108251282,
+                    "address": 1108249000,
                     "bytes": 16176
                   },
                   {
                     "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_classified_into_report_with_request_diagnostics::<tr…ed_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:c4de6c0787d7]",
-                    "address": 1107817816,
-                    "bytes": 13776
+                    "address": 1107807586,
+                    "bytes": 13792
                   },
                   {
                     "name": "<embassy_futures::join::MaybeDone<prns_runtime_embassy::manifold::driver::pooled_topology::run_pooled<personal_hopspot_esp32::storage::internal::InternalStorage…embedded_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}>>::poll [sha256:da5fa0686558]",
-                    "address": 1108128866,
-                    "bytes": 13440
+                    "address": 1108126492,
+                    "bytes": 13616
                   },
                   {
                     "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::ingest_command_into_with_timing::<prns_runtime_embassy::man…::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#4}>::{closure#0}> [sha256:b8b680c29383]",
-                    "address": 1107728670,
-                    "bytes": 8480
+                    "address": 1107729000,
+                    "bytes": 8528
                   },
                   {
                     "name": "<embassy_futures::join::MaybeDone<prns_runtime_embassy::runtime::request_runner::run_router<personal_hopspot_core::remote_control_executor::HopspotCommandHandle…ng_mutex::raw::CriticalSectionRawMutex, 8, 4, 0, 0, 4, 403>::{closure#0}>>::poll [sha256:8237cb1bce5d]",
-                    "address": 1108163090,
+                    "address": 1108159812,
                     "bytes": 8336
                   },
                   {
                     "name": "<embassy_futures::join::MaybeDone<<prns_interfaces_embassy::bluetooth_auto::runtime::BluetoothAuto<prns_interfaces_embassy::bluetooth_auto::trouble::backend::Em…::blocking_mutex::raw::CriticalSectionRawMutex, 500, 3, 32>::{closure#0}>>::poll [sha256:64ef75ed62d9]",
-                    "address": 1108036194,
-                    "bytes": 7232
+                    "address": 1108030252,
+                    "bytes": 7696
                   },
                   {
                     "name": "prns_core::crypto::sign::ed25519_verify",
-                    "address": 1108352388,
+                    "address": 1108351228,
                     "bytes": 5344
                   },
                   {
-                    "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__usb_device_task_task::__usb_device_task_task_inner_function::{closure#0}>>::poll",
-                    "address": 1108298340,
-                    "bytes": 4928
-                  },
-                  {
                     "name": "<embassy_futures::select::Select<core::future::poll_fn::PollFn<<embassy_sync::signal::Signal<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, ()>>::w…:controller::BleConnector>>::{closure#0}> as core::future::future::Future>::poll [sha256:612d63326fca]",
-                    "address": 1107967992,
+                    "address": 1107959626,
                     "bytes": 4256
                   },
                   {
                     "name": "<prns_core::identity::vault::impls::flash::FlashVault<personal_hopspot_esp32::flash::EspRomFlash, 3>>::store_payload",
-                    "address": 1107699320,
+                    "address": 1107699530,
                     "bytes": 4240
                   },
                   {
                     "name": "prns_runtime::manifold::reaction_routing::route_reaction::<prns_core::engine::reaction::OwedWork, prns_runtime_embassy::manifold::driver::egress::EmbassyDirecti…{closure#0}::{closure#0}>::{closure#0}::{closure#0}>::{closure#0}>::{closure#0}> [sha256:1a7219e85a5a]",
-                    "address": 1107721342,
+                    "address": 1107721672,
                     "bytes": 4144
                   },
                   {
                     "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::conclude_resource::<prns_runtime_embassy::manifold::driver:…ed_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:7b83f22a03c2]",
-                    "address": 1107852510,
+                    "address": 1107842282,
                     "bytes": 3952
                   },
                   {
                     "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::conclude_resource::<prns_runtime_embassy::manifold::driver:…{closure#0}::{closure#0}>::{closure#0}::{closure#0}>::{closure#0}>::{closure#6}> [sha256:dd602f305300]",
-                    "address": 1107927510,
+                    "address": 1107917462,
                     "bytes": 3952
                   },
                   {
                     "name": "<embassy_futures::join::Join<<prns_interfaces_embassy::esp_now::EspNowInterface<personal_hopspot_esp32::c6::EspNowAdapter> as prns_runtime::manifold::interface_…32::c6::remote_control::run::{closure#0}> as core::future::future::Future>::poll [sha256:81778b408afc]",
-                    "address": 1108317460,
+                    "address": 1108316074,
                     "bytes": 3408
                   },
                   {
-                    "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::dispatch_remote_control_pairing_response::<prns_runtime_emb…ed_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:a55ed554e380]",
-                    "address": 1107885402,
-                    "bytes": 3264
-                  },
-                  {
                     "name": "prns_runtime_embassy::runtime::request_runner::begin_controller_grant_change::<embassy_sync::blocking_mutex::raw::CriticalSectionRawMutex, 8, 4, 0, 0>",
-                    "address": 1108211750,
-                    "bytes": 3264
-                  },
-                  {
-                    "name": "<embassy_executor::raw::util::UninitCell<personal_hopspot_esp32::c6::__usb_device_task_task::__usb_device_task_task_inner_function::{closure#0}>>::write_in_place::<personal_hopspot_esp32::c6::usb_device_task::{closure#0}>",
-                    "address": 1107707694,
-                    "bytes": 3248
+                    "address": 1108209458,
+                    "bytes": 3312
                   },
                   {
                     "name": "prns_runtime_embassy::runtime::embedded_persistence::apply_record::<personal_hopspot_esp32::storage::internal::InternalStorage>",
-                    "address": 1108121320,
-                    "bytes": 3248
+                    "address": 1108118940,
+                    "bytes": 3280
+                  },
+                  {
+                    "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::dispatch_remote_control_pairing_response::<prns_runtime_emb…ed_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:a55ed554e380]",
+                    "address": 1107875174,
+                    "bytes": 3264
+                  },
+                  {
+                    "name": "<prns_core::engine::state::EngineState<personal_hopspot_esp32::storage::internal::InternalStorage>>::admit_remote_control_controller_pairing_response_into::<prn…ed_persistence::EmbeddedPersistenceDiagnostic), 32>>>::{closure#0}::{closure#2}> [sha256:32fafc71874d]",
+                    "address": 1107848272,
+                    "bytes": 3184
                   }
                 ],
                 "roots": [
                   {
                     "role": "embassy-task",
                     "name": "<embassy_executor::raw::TaskStorage<hopspot_xiao_esp32_c6::__main::____embassy_main_task::____embassy_main_task_inner_function::{closure#0}>>::poll",
-                    "address": 1107559186
+                    "address": 1107559182
                   },
                   {
                     "role": "embassy-task",
                     "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::bluetooth_auto::__serve_slot_task_task::__serve_slot_task_task_inner_function::{closure#0}>>::poll",
-                    "address": 1107955160
+                    "address": 1107945892
                   },
                   {
                     "role": "embassy-task",
                     "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
-                    "address": 1108021962
+                    "address": 1108016018
                   },
                   {
                     "role": "embassy-task",
                     "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__manifold_task_task::__manifold_task_task_inner_function::{closure#0}>>::poll",
-                    "address": 1108111558
+                    "address": 1108109180
                   },
                   {
                     "role": "embassy-task",
                     "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__usb_device_task_task::__usb_device_task_task_inner_function::{closure#0}>>::poll",
-                    "address": 1108298340
+                    "address": 1108297052
                   }
                 ],
-                "direct_call_count": 10545,
+                "direct_call_count": 10576,
                 "largest_modeled_direct_call_chain": {
-                  "bytes": 42480,
+                  "bytes": 45344,
                   "frames": [
                     {
                       "name": "<embassy_executor::raw::TaskStorage<personal_hopspot_esp32::c6::__ble_task_task::__ble_task_task_inner_function::{closure#0}>>::poll",
-                      "address": 1108021962,
-                      "frame_bytes": 34000
+                      "address": 1108016018,
+                      "frame_bytes": 27520
                     },
                     {
-                      "name": "<embassy_futures::join::MaybeDone<<prns_interfaces_embassy::bluetooth_auto::runtime::BluetoothAuto<prns_interfaces_embassy::bluetooth_auto::trouble::backend::Em…::blocking_mutex::raw::CriticalSectionRawMutex, 500, 3, 32>::{closure#0}>>::poll [sha256:64ef75ed62d9]",
-                      "address": 1108036194,
-                      "frame_bytes": 7232
-                    },
-                    {
-                      "name": "<embassy_futures::select::Select<prns_interfaces_embassy::bluetooth_auto::runtime::advance_handshake<prns_interfaces_embassy::bluetooth_auto::trouble::backend::…::backend::EmbeddedBleLink>::{closure#0}> as core::future::future::Future>::poll [sha256:b9d9ebe616c1]",
-                      "address": 1108060388,
-                      "frame_bytes": 112
-                    },
-                    {
-                      "name": "prns_interfaces_embassy::bluetooth_auto::runtime::advance_handshake::<prns_interfaces_embassy::bluetooth_auto::trouble::backend::EmbeddedBleLink>::{closure#0}",
-                      "address": 1108062476,
-                      "frame_bytes": 960
-                    },
-                    {
-                      "name": "<prns_core::interfaces::bluetooth_auto::handshake::PeerDiscoveryGroups>::shares_group_with",
-                      "address": 1108381846,
-                      "frame_bytes": 176
+                      "name": "personal_hopspot_esp32::bluetooth_auto::initialize_hub",
+                      "address": 1108026520,
+                      "frame_bytes": 17824
                     }
                   ]
                 },
                 "reservation": {
-                  "kind": "undeclared"
+                  "kind": "declared",
+                  "reservation": "minimum-runtime-stack",
+                  "bytes": 49152,
+                  "assessment": {
+                    "kind": "within-reservation",
+                    "remaining_bytes": 3808
+                  }
                 },
                 "gaps": [
                   {
@@ -9251,11 +9327,11 @@
                   },
                   {
                     "kind": "direct-call-outside-functions",
-                    "occurrences": 13953
+                    "occurrences": 14007
                   },
                   {
                     "kind": "indirect-call",
-                    "occurrences": 2450
+                    "occurrences": 2478
                   },
                   {
                     "kind": "recursive-call-cycle",
@@ -9272,16 +9348,12 @@
                   {
                     "kind": "interrupt-nesting-unmodeled",
                     "occurrences": 1
-                  },
-                  {
-                    "kind": "stack-reservation-undeclared",
-                    "occurrences": 1
                   }
                 ],
                 "artifact": {
                   "path": "work/xiao-esp32-c6/stack-evidence.json",
-                  "bytes": 3297981,
-                  "fingerprint": "83ab23ac04bd47778c51a40512083d135ef75a10bd6cf6f0fe3c88427f8cdf11"
+                  "bytes": 3319209,
+                  "fingerprint": "4a7b91a983cdf3b94622a956fc921ee2e3c8a183eeb8c115637f3d068caac8f5"
                 }
               }
             }
@@ -9291,36 +9363,36 @@
           "kind": "complete",
           "value": {
             "task_pool_accounting": "included-in-static-ram",
-            "task_pool_bytes": 69016,
+            "task_pool_bytes": 72768,
             "task_pools": [
               {
                 "task": "hopspot_xiao_esp32_c6::__main::__embassy_main",
-                "address": 1082247632,
-                "bytes": 6360,
+                "address": 1082247320,
+                "bytes": 6400,
                 "section": ".bss"
               },
               {
                 "task": "personal_hopspot_esp32::bluetooth_auto::serve_slot_task",
-                "address": 1082499760,
-                "bytes": 31296,
+                "address": 1082429424,
+                "bytes": 34496,
                 "section": ".bss"
               },
               {
                 "task": "personal_hopspot_esp32::c6::manifold_task",
-                "address": 1082531056,
-                "bytes": 15816,
+                "address": 1082470080,
+                "bytes": 15896,
                 "section": ".bss"
               },
               {
                 "task": "personal_hopspot_esp32::c6::usb_device_task",
-                "address": 1082546872,
-                "bytes": 3280,
+                "address": 1082485976,
+                "bytes": 3328,
                 "section": ".bss"
               },
               {
                 "task": "personal_hopspot_esp32::c6::ble_task",
-                "address": 1082550152,
-                "bytes": 12264,
+                "address": 1082489304,
+                "bytes": 12648,
                 "section": ".bss"
               }
             ],
