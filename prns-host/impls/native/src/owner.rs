@@ -54,12 +54,26 @@ struct SessionSlot;
 
 impl SessionSlot {
     fn acquire() -> Result<Self, SessionError> {
-        LIVE_SESSIONS
-            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |count| {
-                (count < MAX_LIVE_SESSIONS).then_some(count + 1)
-            })
-            .map(|_| Self)
-            .map_err(|_| SessionError::Busy)
+        Self::reserve(&LIVE_SESSIONS)?;
+        Ok(Self)
+    }
+
+    fn reserve(live_sessions: &AtomicUsize) -> Result<(), SessionError> {
+        let mut count = live_sessions.load(Ordering::Acquire);
+        loop {
+            if count >= MAX_LIVE_SESSIONS {
+                return Err(SessionError::Busy);
+            }
+            match live_sessions.compare_exchange_weak(
+                count,
+                count + 1,
+                Ordering::AcqRel,
+                Ordering::Acquire,
+            ) {
+                Ok(_) => return Ok(()),
+                Err(current) => count = current,
+            }
+        }
     }
 }
 
@@ -383,6 +397,35 @@ mod tests {
             .enable_all()
             .build()
             .expect("test runtime")
+    }
+
+    #[test]
+    fn concurrent_admission_stays_bounded_and_reuses_released_capacity() {
+        let live_sessions = AtomicUsize::new(0);
+        let admitted = AtomicUsize::new(0);
+        let ready = std::sync::Barrier::new(8);
+        std::thread::scope(|threads| {
+            for _ in 0..8 {
+                threads.spawn(|| {
+                    ready.wait();
+                    while SessionSlot::reserve(&live_sessions).is_ok() {
+                        admitted.fetch_add(1, Ordering::Relaxed);
+                    }
+                });
+            }
+        });
+        assert_eq!(admitted.load(Ordering::Relaxed), MAX_LIVE_SESSIONS);
+        assert_eq!(live_sessions.load(Ordering::Acquire), MAX_LIVE_SESSIONS);
+        assert_eq!(
+            SessionSlot::reserve(&live_sessions),
+            Err(SessionError::Busy)
+        );
+        live_sessions.fetch_sub(1, Ordering::AcqRel);
+        assert_eq!(SessionSlot::reserve(&live_sessions), Ok(()));
+        assert_eq!(
+            SessionSlot::reserve(&live_sessions),
+            Err(SessionError::Busy)
+        );
     }
 
     #[test]
