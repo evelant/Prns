@@ -2,7 +2,7 @@
 
 This checked bundle covers the shipped and qualification Rust, JavaScript, and Android product graphs.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:f2bb8096dae9a1fbee05dd23e6b253946862e4ca820ab3307ded9db3df6014a3`.
+Notice input fingerprint: `sha256:ef644884222882d55b9d50508ee5ffb3f6dc1d45ee64270268ba696b4322cfeb`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by SPDX identifier and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
@@ -2042,7 +2042,7 @@ License: BSD 3-Clause "New" or "Revised" License
 
 Used by: `curve25519-dalek 4.1.3`, `nrf-pac 0.3.0`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, nRF52840
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS, nRF52840
 
 ```text
 Copyright (c) <year> <owner>.
@@ -2384,7 +2384,7 @@ express Statement of Purpose.
 
 License: Community Data License Agreement Permissive 2.0
 
-Used by: `webpki-roots 1.0.10`
+Used by: `webpki-roots 1.0.9`
 
 Release graphs: engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64
 
@@ -2480,7 +2480,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 License: ISC License
 
-Used by: `rustls-webpki 0.103.16`
+Used by: `rustls-webpki 0.103.15`
 
 Release graphs: Expo Android, Expo host, Expo iOS, Group headless peer, Group libraries, Group secure storage, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64
 
@@ -2698,7 +2698,7 @@ License: MIT License
 
 Used by: `const-oid 0.9.6`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2020-2022 The RustCrypto Project Developers
@@ -2734,7 +2734,7 @@ License: MIT License
 
 Used by: `mls-rs 0.56.0`, `prns-groups-mls 0.1.0`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 MIT License
@@ -2754,7 +2754,7 @@ License: MIT License
 
 Used by: `crypto-bigint 0.5.5`, `pem-rfc7468 0.7.0`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2021 The RustCrypto Project Developers
@@ -2881,7 +2881,7 @@ License: MIT License
 
 Used by: `spki 0.7.3`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2021-2023 The RustCrypto Project Developers
@@ -3013,7 +3013,7 @@ License: MIT License
 
 Used by: `base16ct 0.2.0`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2014 Steve "Sc00bz" Thomas (steve at tobtu dot com)
@@ -3349,7 +3349,7 @@ License: MIT License
 
 Used by: `half 2.7.1`, `ident_case 1.0.1`
 
-Release graphs: ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Host SDK native, Node addon Linux, daemon Linux, desktop Linux, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, nRF52840, website Rust/WASM
+Release graphs: ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Host SDK native, Node addon Linux, Prns app Android, Prns app iOS, daemon Linux, desktop Linux, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, nRF52840, website Rust/WASM
 
 ```text
 MIT License
@@ -3697,7 +3697,7 @@ License: MIT License
 
 Used by: `chacha20 0.9.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2019-2023 The RustCrypto Project Developers
@@ -4598,7 +4598,7 @@ License: MIT License
 
 Used by: `polyval 0.6.2`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2019-2023 RustCrypto Developers
@@ -6026,7 +6026,7 @@ License: MIT License
 
 Used by: `spin 0.10.1`, `spin 0.9.9`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Node addon Linux, Node addon Windows, Node addon macOS, daemon Linux, daemon Windows, daemon macOS, website Rust/WASM
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, website Rust/WASM
 
 ```text
 The MIT License (MIT)
@@ -6058,7 +6058,7 @@ License: MIT License
 
 Used by: `der 0.7.10`, `pkcs8 0.10.2`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2020-2023 The RustCrypto Project Developers
@@ -6466,7 +6466,7 @@ License: MIT License
 
 Used by: `opaque-debug 0.3.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2018-2024 The RustCrypto Project Developers
@@ -6502,7 +6502,7 @@ License: MIT License
 
 Used by: `base64ct 1.8.3`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2014 Steve "Sc00bz" Thomas (steve at tobtu dot com)
@@ -6611,7 +6611,7 @@ License: MIT License
 
 Used by: `universal-hash 0.5.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2019-2020 RustCrypto Developers
@@ -6679,7 +6679,7 @@ License: MIT License
 
 Used by: `ed25519 2.2.3`, `signature 2.2.0`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2018-2023 RustCrypto Developers
@@ -7220,7 +7220,7 @@ License: MIT License
 
 Used by: `maybe-async 0.2.11`, `maybe-async-cfg 0.2.5`
 
-Release graphs: ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2020 Guoli Lyu
@@ -7250,7 +7250,7 @@ License: MIT License
 
 Used by: `p256 0.13.2`, `primeorder 0.13.6`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2020-2023 RustCrypto Developers
@@ -7518,7 +7518,7 @@ License: MIT License
 
 Used by: `strsim 0.10.0`, `strsim 0.11.1`
 
-Release graphs: ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, daemon Linux, daemon Windows, daemon macOS, desktop Linux, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, nRF52840
+Release graphs: ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, desktop Linux, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, nRF52840
 
 ```text
 The MIT License (MIT)
@@ -8057,7 +8057,7 @@ License: MIT License
 
 Used by: `hex 0.4.3`
 
-Release graphs: Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, daemon Linux, desktop Linux, engine
+Release graphs: Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Prns app Android, Prns app iOS, daemon Linux, desktop Linux, engine
 
 ```text
 Copyright (c) 2013-2014 The Rust Project Developers.
@@ -8155,7 +8155,7 @@ License: MIT License
 
 Used by: `embedded-nal 0.9.0`, `embedded-storage 0.3.1`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, WASM, desktop Linux, desktop Windows, desktop macOS, engine, iOS, nRF52840
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Prns app Android, Prns app iOS, WASM, desktop Linux, desktop Windows, desktop macOS, engine, iOS, nRF52840
 
 ```text
 Copyright (c) 2020 Jonathan 'theJPster' Pallant
@@ -8301,7 +8301,7 @@ License: MIT License
 
 Used by: `ff 0.13.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 The MIT License (MIT)
@@ -8640,7 +8640,7 @@ License: MIT License
 
 Used by: `sec1 0.7.3`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2021-2022 The RustCrypto Project Developers
@@ -9014,7 +9014,7 @@ License: MIT License
 
 Used by: `aead 0.5.2`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2019 The RustCrypto Project Developers
@@ -9948,7 +9948,7 @@ License: MIT License
 
 Used by: `darling 0.13.4`, `darling 0.20.11`, `darling 0.21.3`, `darling 0.23.0`, `darling_core 0.13.4`, `darling_core 0.20.11`, `darling_core 0.21.3`, `darling_core 0.23.0`, `darling_macro 0.13.4`, `darling_macro 0.20.11`, `darling_macro 0.21.3`, `darling_macro 0.23.0`
 
-Release graphs: ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Host SDK native, Node addon Linux, daemon Linux, desktop Linux, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, nRF52840, website Rust/WASM
+Release graphs: ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo host, Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Host SDK native, Node addon Linux, Prns app Android, Prns app iOS, daemon Linux, desktop Linux, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, nRF52840, website Rust/WASM
 
 ```text
 MIT License
@@ -10212,7 +10212,7 @@ License: MIT License
 
 Used by: `ecdsa 0.16.9`, `rfc6979 0.4.0`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2018-2022 RustCrypto Developers
@@ -10248,7 +10248,7 @@ License: MIT License
 
 Used by: `sec1 0.8.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2021-2026 The RustCrypto Project Developers
@@ -10746,7 +10746,7 @@ License: MIT License
 
 Used by: `poly1305 0.8.0`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2015-2019 RustCrypto Developers
@@ -10782,7 +10782,7 @@ License: MIT License
 
 Used by: `aes-gcm 0.10.3`, `chacha20poly1305 0.10.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2019 The RustCrypto Project Developers
@@ -10854,7 +10854,7 @@ License: MIT License
 
 Used by: `elliptic-curve 0.13.8`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2020-2022 RustCrypto Developers
@@ -10992,7 +10992,7 @@ License: MIT License
 
 Used by: `p384 0.13.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2020-2021 RustCrypto Developers
@@ -11273,7 +11273,7 @@ License: MIT License
 
 Used by: `ghash 0.5.1`
 
-Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage
+Release graphs: Group MLS adapter, Group headless peer, Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2019 RustCrypto Developers

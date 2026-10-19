@@ -5,6 +5,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "src/contract.rs",
         "src/contract/remote_management.rs",
         "src/contract/remote_wifi.rs",
+        "src/contract/groups.rs",
+        "src/contract/group_announces.rs",
+        "src/contract/group_actions.rs",
     ];
     for source in CONTRACT_SOURCES {
         println!("cargo:rerun-if-changed={source}");

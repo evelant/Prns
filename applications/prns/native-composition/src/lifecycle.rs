@@ -1,4 +1,7 @@
 pub(crate) mod admission;
+pub(crate) mod group_actions;
+pub(crate) mod group_announces;
+pub(crate) mod groups;
 pub(crate) mod profile;
 
 use std::net::SocketAddr;
@@ -511,6 +514,7 @@ pub(crate) fn prepare_apple_bluetooth_restoration(
     peripheral_identifier: String,
 ) -> AppleBluetoothRestorationPreparationOutcome {
     crate::ios_restoration_probe::install();
+    crate::group_diagnostics::install();
     let preparation = AppleBluetoothPreparation::Restoration {
         central: central_identifier,
         peripheral: peripheral_identifier,
@@ -729,6 +733,7 @@ fn start_configured_with_supervisor(
     input: DevelopmentNodeStartInput,
     bluetooth_preparation: AppleBluetoothPreparation,
 ) -> DevelopmentNodeStartOutcome {
+    crate::group_diagnostics::install();
     let mut state = supervisor.lock_state();
     reap_completed_worker_locked(supervisor, &mut state);
     if state.worker.is_some() {
@@ -884,12 +889,18 @@ fn start_configured_with_supervisor(
             };
         }
     };
-    let (mailbox_submitter, bluetooth_enabled, messaging_name) =
+    let (mailbox_submitter, group_client, group_health, bluetooth_enabled, messaging_name) =
         match ensure_application_owner_locked(&mut state, &paths).and_then(|owner| {
             owner.read_bluetooth_blocking().and_then(|enabled| {
-                owner
-                    .read_messaging_name_blocking()
-                    .map(|name| (owner.mailbox_submitter(), enabled, name))
+                owner.read_messaging_name_blocking().map(|name| {
+                    (
+                        owner.mailbox_submitter(),
+                        owner.group_client(),
+                        owner.group_health(),
+                        enabled,
+                        name,
+                    )
+                })
             })
         }) {
             Ok(value) => value,
@@ -997,6 +1008,8 @@ fn start_configured_with_supervisor(
                 paths,
                 primary_identity_secret,
                 mailbox_submitter,
+                group_client,
+                group_health,
                 development_tcp_target,
                 worker_bluetooth_preparation,
                 command_rx,
@@ -1541,6 +1554,16 @@ fn ensure_application_owner_locked<'a>(
             &paths.application,
         )?);
     }
+    if let PrimaryIdentityState::Present { identity_hash } =
+        inspect_identity_locked(state, &paths.root)
+    {
+        let identity: [u8; 16] = identity_hash.try_into().map_err(|_| {
+            DevelopmentStoreFailure::unavailable("The primary identity hash has an invalid width.")
+        })?;
+        if let Some(owner) = state.application_owner.as_ref() {
+            owner.initialize_groups_blocking(prns_host::IdentityHash::new(identity))?;
+        }
+    }
     state.application_owner.as_ref().ok_or_else(|| {
         DevelopmentStoreFailure::unavailable("the development database owner was not initialized")
     })
@@ -1591,6 +1614,14 @@ fn stop_locked(supervisor: &Supervisor, state: &mut SupervisorState) -> Developm
         discard_prepared_owner(&mut state.pending_apple_bluetooth);
     }
     let Some(worker) = state.worker.as_mut() else {
+        if let Some(owner) = state.application_owner.as_ref() {
+            if let Err(failure) = owner.drain_blocking() {
+                return DevelopmentNodeStopOutcome::Failed {
+                    stage: DevelopmentNodeStopStage::Persistence,
+                    detail: format!("Could not drain admitted native work: {failure:?}"),
+                };
+            }
+        }
         return DevelopmentNodeStopOutcome::AlreadyStopped;
     };
 
@@ -1615,6 +1646,19 @@ fn stop_locked(supervisor: &Supervisor, state: &mut SupervisorState) -> Developm
         Ok(Ok(())) => {
             join_finished_worker(worker);
             state.worker = None;
+            if let Some(owner) = state.application_owner.as_ref() {
+                if let Err(failure) = owner.drain_blocking() {
+                    let detail = format!("Could not drain admitted native group work: {failure:?}");
+                    supervisor.snapshots.fail(DevelopmentNodeFailure {
+                        stage: DevelopmentNodeFailureStage::Storage,
+                        detail: detail.clone(),
+                    });
+                    return DevelopmentNodeStopOutcome::Failed {
+                        stage: DevelopmentNodeStopStage::Persistence,
+                        detail,
+                    };
+                }
+            }
             supervisor
                 .operation_admitted
                 .store(false, Ordering::Release);
@@ -1849,6 +1893,8 @@ fn run_worker(
     paths: NodeStoragePaths,
     primary_identity_secret: IdentitySecretKey,
     mailbox_submitter: Arc<dyn prns_lxmf::mailbox::MailboxSubmitter>,
+    group_client: prns_groups_runner_native::Client,
+    group_health: crate::groups::GroupHealth,
     development_tcp_target: Option<String>,
     bluetooth_preparation: WorkerBluetoothPreparation,
     commands: mpsc::Receiver<Command>,
@@ -1875,6 +1921,8 @@ fn run_worker(
         paths,
         primary_identity_secret,
         mailbox_submitter,
+        group_client,
+        group_health,
         development_tcp_target,
         bluetooth_preparation,
         commands,
@@ -1895,6 +1943,8 @@ async fn run_generation(
     paths: NodeStoragePaths,
     primary_identity_secret: IdentitySecretKey,
     mailbox_submitter: Arc<dyn prns_lxmf::mailbox::MailboxSubmitter>,
+    group_client: prns_groups_runner_native::Client,
+    group_health: crate::groups::GroupHealth,
     development_tcp_target: Option<String>,
     bluetooth_preparation: WorkerBluetoothPreparation,
     commands: mpsc::Receiver<Command>,
@@ -2021,6 +2071,32 @@ async fn run_generation(
             format!("could not derive the built-in LXMF destination: {error:?}"),
         )
     })?;
+    let prepared_groups = crate::groups::prepare_network(group_client)
+        .await
+        .map_err(|detail| {
+            boot_failure(
+                &ready,
+                &snapshots,
+                DevelopmentNodeFailureStage::Storage,
+                detail.to_string(),
+            )
+        })?;
+    let group_ingress = prepared_groups
+        .as_ref()
+        .map(crate::groups::PreparedNetwork::ingress);
+    let mut destinations = vec![lxmf_destination];
+    if let Some(groups) = prepared_groups.as_ref() {
+        for destination in groups.destination_configs().map_err(|detail| {
+            boot_failure(
+                &ready,
+                &snapshots,
+                DevelopmentNodeFailureStage::Contract,
+                detail.to_string(),
+            )
+        })? {
+            destinations.push(prns_host::DestinationConfig::Single(destination));
+        }
+    }
     let host_config = prns_host::HostConfig {
         identity: prns_host::IdentityConfig::Existing(prns_host::IdentitySecret::new(
             *primary_identity_secret,
@@ -2029,7 +2105,7 @@ async fn run_generation(
             path: paths.network.to_string_lossy().into_owned(),
         },
         role: prns_host::HostRole::Endpoint,
-        destinations: vec![lxmf_destination],
+        destinations,
         required_capabilities: Vec::new(),
         limits: prns_host::PrnsLimits::balanced(),
     };
@@ -2070,7 +2146,7 @@ async fn run_generation(
         all(feature = "android", target_os = "android"),
     ));
     let embedding = NativeEmbedding {
-        link_diagnostics: None,
+        link_diagnostics: crate::group_diagnostics::links::observers(),
         remote_control_config: None,
         remote_control,
         plan_context: Some(
@@ -2078,7 +2154,11 @@ async fn run_generation(
         ),
         application_events: ApplicationEventDispatch::NativeCallback,
         on_event: Some(Box::new(move |event| {
+            crate::group_diagnostics::on_event(&event);
             let _lxmf_outcome = lxmf_events.on_prns_event(&event);
+            if let Some(ingress) = group_ingress.as_ref() {
+                ingress.on_event_ref(&event);
+            }
             send_event(&event_tx, &event_overflowed, event);
         })),
         accepted_announces: Some(
@@ -2162,6 +2242,7 @@ async fn run_generation(
             }
         });
 
+        let group_driver = crate::groups::run_network(prepared_groups, host_client.clone(), group_health, shutdown_rx.clone());
         let actor = run_actor(
             handle,
             lxmf_service,
@@ -2178,15 +2259,23 @@ async fn run_generation(
             ready,
             shutdown_rx,
         );
-        tokio::pin!(actor);
+        tokio::pin!(actor, group_driver);
         let host_events = host_client.events();
         tokio::select! {
             actor_result = &mut actor => {
-                actor_result
+                shutdown.request();
+                let group_result = group_driver.await.map_err(|detail| (DevelopmentNodeStopStage::Worker, detail.to_string()));
+                actor_result.and(group_result)
+            }
+            group_result = &mut group_driver => {
+                shutdown.request();
+                let actor_result = actor.await;
+                actor_result.and(group_result.map_err(|detail| (DevelopmentNodeStopStage::Worker, detail.to_string())))
             }
             terminal = host_events.wait_terminal() => {
                 shutdown.request();
                 let actor_result = actor.await;
+                let _ = group_driver.await;
                 actor_result.and(Err((DevelopmentNodeStopStage::Node,
                     format!("shared host stopped before app shutdown completed: {:?}", terminal.state))))
             }

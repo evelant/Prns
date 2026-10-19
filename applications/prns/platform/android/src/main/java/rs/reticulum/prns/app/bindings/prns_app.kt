@@ -648,6 +648,10 @@ internal object IntegrityCheckingUniffiLib {
         uniffiCheckContractApiVersion(this)
         uniffiCheckApiChecksums(this)
     }
+    external fun uniffi_prns_app_checksum_func_acknowledge_group_action(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_announce_groups(
+    ): Int
     external fun uniffi_prns_app_checksum_func_announce_lxmf(
     ): Int
     external fun uniffi_prns_app_checksum_func_announce_target(
@@ -664,21 +668,41 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_clear_network_activity(
     ): Int
+    external fun uniffi_prns_app_checksum_func_create_group(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_create_group_request_id(
+    ): Int
     external fun uniffi_prns_app_checksum_func_create_manual_contact(
     ): Int
     external fun uniffi_prns_app_checksum_func_delete_contact(
     ): Int
     external fun uniffi_prns_app_checksum_func_describe_target(
     ): Int
+    external fun uniffi_prns_app_checksum_func_discard_expired_group_action(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_execute_group_action(
+    ): Int
     external fun uniffi_prns_app_checksum_func_finish_remote_wifi_trial(
     ): Int
     external fun uniffi_prns_app_checksum_func_get_contact(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_get_group_announce_settings(
     ): Int
     external fun uniffi_prns_app_checksum_func_initiate_pairing(
     ): Int
     external fun uniffi_prns_app_checksum_func_inspect_remote_wifi_trial(
     ): Int
+    external fun uniffi_prns_app_checksum_func_invite_to_group(
+    ): Int
     external fun uniffi_prns_app_checksum_func_list_contacts(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_list_group_actions(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_list_group_conversations(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_list_group_invitations(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_list_group_messages(
     ): Int
     external fun uniffi_prns_app_checksum_func_list_lxmf_conversations(
     ): Int
@@ -706,6 +730,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_native_stop(
     ): Int
+    external fun uniffi_prns_app_checksum_func_prepare_group_action(
+    ): Int
     external fun uniffi_prns_app_checksum_func_preview_identity_import(
     ): Int
     external fun uniffi_prns_app_checksum_func_read_bluetooth_settings(
@@ -718,6 +744,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_reject_pairing(
     ): Int
+    external fun uniffi_prns_app_checksum_func_respond_group_invitation(
+    ): Int
     external fun uniffi_prns_app_checksum_func_retry_lxmf_message(
     ): Int
     external fun uniffi_prns_app_checksum_func_save_discovered_contact(
@@ -726,11 +754,15 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_send_direct_text(
     ): Int
+    external fun uniffi_prns_app_checksum_func_send_group_text(
+    ): Int
     external fun uniffi_prns_app_checksum_func_set_bluetooth_enabled(
     ): Int
     external fun uniffi_prns_app_checksum_func_set_contact_alias(
     ): Int
     external fun uniffi_prns_app_checksum_func_set_contact_pinned(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_set_group_announce_settings(
     ): Int
     external fun uniffi_prns_app_checksum_func_set_messaging_name(
     ): Int
@@ -752,7 +784,11 @@ internal object UniffiLib {
         rs.reticulum.prns.host.bindings.uniffiEnsureInitialized()
 
     }
-    external fun uniffi_prns_app_fn_func_announce_lxmf(
+    external fun uniffi_prns_app_fn_func_acknowledge_group_action(`reference`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_announce_groups(
+): Long
+external fun uniffi_prns_app_fn_func_announce_lxmf(
 ): Long
 external fun uniffi_prns_app_fn_func_announce_target(`input`: RustBuffer.ByValue,
 ): Long
@@ -768,21 +804,41 @@ external fun uniffi_prns_app_fn_func_clear_lxmf_discovery(
 ): Long
 external fun uniffi_prns_app_fn_func_clear_network_activity(`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_create_group(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_create_group_request_id(
+): Long
 external fun uniffi_prns_app_fn_func_create_manual_contact(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_delete_contact(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_describe_target(`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_discard_expired_group_action(`reference`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_execute_group_action(`reference`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_func_finish_remote_wifi_trial(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_get_contact(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_get_group_announce_settings(
 ): Long
 external fun uniffi_prns_app_fn_func_initiate_pairing(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_inspect_remote_wifi_trial(`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_invite_to_group(`input`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_func_list_contacts(
+): Long
+external fun uniffi_prns_app_fn_func_list_group_actions(
+): Long
+external fun uniffi_prns_app_fn_func_list_group_conversations(
+): Long
+external fun uniffi_prns_app_fn_func_list_group_invitations(
+): Long
+external fun uniffi_prns_app_fn_func_list_group_messages(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_list_lxmf_conversations(`input`: RustBuffer.ByValue,
 ): Long
@@ -810,6 +866,8 @@ external fun uniffi_prns_app_fn_func_native_start_with_apple_bluetooth_restorati
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
+external fun uniffi_prns_app_fn_func_prepare_group_action(`input`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_func_preview_identity_import(`identity`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_read_bluetooth_settings(
@@ -822,6 +880,8 @@ external fun uniffi_prns_app_fn_func_read_snapshot(
 ): Long
 external fun uniffi_prns_app_fn_func_reject_pairing(`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_respond_group_invitation(`input`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_func_retry_lxmf_message(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_save_discovered_contact(`input`: RustBuffer.ByValue,
@@ -830,11 +890,15 @@ external fun uniffi_prns_app_fn_func_save_observed_destination(`input`: RustBuff
 ): Long
 external fun uniffi_prns_app_fn_func_send_direct_text(`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_send_group_text(`input`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_func_set_bluetooth_enabled(`enabled`: Byte,
 ): Long
 external fun uniffi_prns_app_fn_func_set_contact_alias(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_set_contact_pinned(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_set_group_announce_settings(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_set_messaging_name(`name`: RustBuffer.ByValue,
 ): Long
@@ -961,6 +1025,12 @@ private fun uniffiCheckContractApiVersion(lib: IntegrityCheckingUniffiLib) {
 }
 @Suppress("UNUSED_PARAMETER")
 private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
+    if (lib.uniffi_prns_app_checksum_func_acknowledge_group_action() != 33412) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_announce_groups() != 31801) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_announce_lxmf() != 40331) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -985,6 +1055,12 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_clear_network_activity() != 38833) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_create_group() != 34827) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_create_group_request_id() != 33804) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_create_manual_contact() != 1882) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -994,10 +1070,19 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_describe_target() != 49809) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_discard_expired_group_action() != 2362) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_execute_group_action() != 3415) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_finish_remote_wifi_trial() != 11313) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_get_contact() != 18891) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_get_group_announce_settings() != 25903) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_initiate_pairing() != 58991) {
@@ -1006,7 +1091,22 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_inspect_remote_wifi_trial() != 22782) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_invite_to_group() != 26962) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_list_contacts() != 57283) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_list_group_actions() != 45687) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_list_group_conversations() != 48151) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_list_group_invitations() != 2989) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_list_group_messages() != 18375) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_list_lxmf_conversations() != 3437) {
@@ -1048,6 +1148,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_native_stop() != 41536) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_prepare_group_action() != 9779) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_preview_identity_import() != 31445) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1066,6 +1169,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_reject_pairing() != 34936) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_respond_group_invitation() != 50214) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_retry_lxmf_message() != 20310) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1078,6 +1184,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_send_direct_text() != 24289) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_send_group_text() != 51044) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_set_bluetooth_enabled() != 13413) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1085,6 +1194,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_set_contact_pinned() != 4387) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_set_group_announce_settings() != 31011) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_set_messaging_name() != 62039) {
@@ -1745,6 +1857,44 @@ public object FfiConverterTypeContactDestinationInput: FfiConverterRustBuffer<Co
 
 
 
+data class CreateGroupInput (
+    var `clientRequestId`: Bytes32
+    ,
+    var `title`: kotlin.String
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeCreateGroupInput: FfiConverterRustBuffer<CreateGroupInput> {
+    override fun read(buf: ByteBuffer): CreateGroupInput {
+        return CreateGroupInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: CreateGroupInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`) +
+            FfiConverterString.allocationSize(value.`title`)
+    )
+
+    override fun write(value: CreateGroupInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+            FfiConverterString.write(value.`title`, buf)
+    }
+}
+
+
+
 data class CreateManualContactInput (
     var `destination`: Bytes16
     ,
@@ -2091,6 +2241,537 @@ public object FfiConverterTypeFinishRemoteWifiTrialInput: FfiConverterRustBuffer
 
 
 
+data class GroupAction (
+    var `ownerIdentity`: Bytes16
+    ,
+    var `input`: GroupActionInput
+    ,
+    var `state`: GroupActionState
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupAction: FfiConverterRustBuffer<GroupAction> {
+    override fun read(buf: ByteBuffer): GroupAction {
+        return GroupAction(
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeGroupActionInput.read(buf),
+            FfiConverterTypeGroupActionState.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupAction) = (
+            FfiConverterTypeBytes16.allocationSize(value.`ownerIdentity`) +
+            FfiConverterTypeGroupActionInput.allocationSize(value.`input`) +
+            FfiConverterTypeGroupActionState.allocationSize(value.`state`)
+    )
+
+    override fun write(value: GroupAction, buf: ByteBuffer) {
+            FfiConverterTypeBytes16.write(value.`ownerIdentity`, buf)
+            FfiConverterTypeGroupActionInput.write(value.`input`, buf)
+            FfiConverterTypeGroupActionState.write(value.`state`, buf)
+    }
+}
+
+
+
+data class GroupActionReference (
+    var `ownerIdentity`: Bytes16
+    ,
+    var `clientRequestId`: Bytes32
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupActionReference: FfiConverterRustBuffer<GroupActionReference> {
+    override fun read(buf: ByteBuffer): GroupActionReference {
+        return GroupActionReference(
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupActionReference) = (
+            FfiConverterTypeBytes16.allocationSize(value.`ownerIdentity`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`)
+    )
+
+    override fun write(value: GroupActionReference, buf: ByteBuffer) {
+            FfiConverterTypeBytes16.write(value.`ownerIdentity`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+    }
+}
+
+
+
+data class GroupAnnounceSettings (
+    /**
+     * None disables automatic startup and periodic announces; manual still works.
+     */
+    var `intervalMinutes`: kotlin.UInt?
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupAnnounceSettings: FfiConverterRustBuffer<GroupAnnounceSettings> {
+    override fun read(buf: ByteBuffer): GroupAnnounceSettings {
+        return GroupAnnounceSettings(
+            FfiConverterOptionalUInt.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupAnnounceSettings) = (
+            FfiConverterOptionalUInt.allocationSize(value.`intervalMinutes`)
+    )
+
+    override fun write(value: GroupAnnounceSettings, buf: ByteBuffer) {
+            FfiConverterOptionalUInt.write(value.`intervalMinutes`, buf)
+    }
+}
+
+
+
+data class GroupConversation (
+    var `groupId`: Bytes32
+    ,
+    var `title`: kotlin.String
+    ,
+    var `revision`: kotlin.ULong
+    ,
+    /**
+     * Current membership provenance, distinct from the record/change revision.
+     */
+    var `controlHead`: Bytes32
+    ,
+    var `members`: List<GroupMember>
+    ,
+    var `memberCount`: kotlin.UInt
+    ,
+    var `ownerIdentity`: Bytes16?
+    ,
+    var `canInvite`: kotlin.Boolean
+    ,
+    var `synchronization`: GroupSynchronizationState
+    ,
+    /**
+     * Bounded, transient peer activity; durable delivery evidence remains on records.
+     */
+    var `progress`: GroupSynchronizationProgress
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupConversation: FfiConverterRustBuffer<GroupConversation> {
+    override fun read(buf: ByteBuffer): GroupConversation {
+        return GroupConversation(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterSequenceTypeGroupMember.read(buf),
+            FfiConverterUInt.read(buf),
+            FfiConverterOptionalTypeBytes16.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterTypeGroupSynchronizationState.read(buf),
+            FfiConverterTypeGroupSynchronizationProgress.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupConversation) = (
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterString.allocationSize(value.`title`) +
+            FfiConverterULong.allocationSize(value.`revision`) +
+            FfiConverterTypeBytes32.allocationSize(value.`controlHead`) +
+            FfiConverterSequenceTypeGroupMember.allocationSize(value.`members`) +
+            FfiConverterUInt.allocationSize(value.`memberCount`) +
+            FfiConverterOptionalTypeBytes16.allocationSize(value.`ownerIdentity`) +
+            FfiConverterBoolean.allocationSize(value.`canInvite`) +
+            FfiConverterTypeGroupSynchronizationState.allocationSize(value.`synchronization`) +
+            FfiConverterTypeGroupSynchronizationProgress.allocationSize(value.`progress`)
+    )
+
+    override fun write(value: GroupConversation, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterString.write(value.`title`, buf)
+            FfiConverterULong.write(value.`revision`, buf)
+            FfiConverterTypeBytes32.write(value.`controlHead`, buf)
+            FfiConverterSequenceTypeGroupMember.write(value.`members`, buf)
+            FfiConverterUInt.write(value.`memberCount`, buf)
+            FfiConverterOptionalTypeBytes16.write(value.`ownerIdentity`, buf)
+            FfiConverterBoolean.write(value.`canInvite`, buf)
+            FfiConverterTypeGroupSynchronizationState.write(value.`synchronization`, buf)
+            FfiConverterTypeGroupSynchronizationProgress.write(value.`progress`, buf)
+    }
+}
+
+
+
+data class GroupInvitation (
+    var `invitationId`: Bytes32
+    ,
+    var `groupId`: Bytes32
+    ,
+    var `title`: kotlin.String
+    ,
+    var `inviterIdentity`: Bytes16
+    ,
+    var `recipientIdentity`: Bytes16
+    ,
+    var `expiresAtMillis`: kotlin.ULong
+    ,
+    var `outgoing`: kotlin.Boolean
+    ,
+    var `state`: GroupInvitationState
+    ,
+    /**
+     * The owner has deferred Add for its own unfinished current-era deliveries.
+     * This does not imply that every member's outgoing queue has been checked.
+     */
+    var `waitingForDelivery`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupInvitation: FfiConverterRustBuffer<GroupInvitation> {
+    override fun read(buf: ByteBuffer): GroupInvitation {
+        return GroupInvitation(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterTypeGroupInvitationState.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupInvitation) = (
+            FfiConverterTypeBytes32.allocationSize(value.`invitationId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterString.allocationSize(value.`title`) +
+            FfiConverterTypeBytes16.allocationSize(value.`inviterIdentity`) +
+            FfiConverterTypeBytes16.allocationSize(value.`recipientIdentity`) +
+            FfiConverterULong.allocationSize(value.`expiresAtMillis`) +
+            FfiConverterBoolean.allocationSize(value.`outgoing`) +
+            FfiConverterTypeGroupInvitationState.allocationSize(value.`state`) +
+            FfiConverterBoolean.allocationSize(value.`waitingForDelivery`)
+    )
+
+    override fun write(value: GroupInvitation, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`invitationId`, buf)
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterString.write(value.`title`, buf)
+            FfiConverterTypeBytes16.write(value.`inviterIdentity`, buf)
+            FfiConverterTypeBytes16.write(value.`recipientIdentity`, buf)
+            FfiConverterULong.write(value.`expiresAtMillis`, buf)
+            FfiConverterBoolean.write(value.`outgoing`, buf)
+            FfiConverterTypeGroupInvitationState.write(value.`state`, buf)
+            FfiConverterBoolean.write(value.`waitingForDelivery`, buf)
+    }
+}
+
+
+
+data class GroupMember (
+    var `endpointId`: Bytes32
+    ,
+    var `endpointIncarnation`: kotlin.ULong
+    ,
+    var `identity`: Bytes16
+    ,
+    var `isLocal`: kotlin.Boolean
+    ,
+    var `isOwner`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupMember: FfiConverterRustBuffer<GroupMember> {
+    override fun read(buf: ByteBuffer): GroupMember {
+        return GroupMember(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupMember) = (
+            FfiConverterTypeBytes32.allocationSize(value.`endpointId`) +
+            FfiConverterULong.allocationSize(value.`endpointIncarnation`) +
+            FfiConverterTypeBytes16.allocationSize(value.`identity`) +
+            FfiConverterBoolean.allocationSize(value.`isLocal`) +
+            FfiConverterBoolean.allocationSize(value.`isOwner`)
+    )
+
+    override fun write(value: GroupMember, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`endpointId`, buf)
+            FfiConverterULong.write(value.`endpointIncarnation`, buf)
+            FfiConverterTypeBytes16.write(value.`identity`, buf)
+            FfiConverterBoolean.write(value.`isLocal`, buf)
+            FfiConverterBoolean.write(value.`isOwner`, buf)
+    }
+}
+
+
+
+data class GroupPeerSynchronizationProgress (
+    var `endpointId`: Bytes32
+    ,
+    var `endpointIncarnation`: kotlin.ULong
+    ,
+    var `identity`: Bytes16
+    ,
+    var `phase`: GroupSynchronizationPhase
+    ,
+    /**
+     * None means the outgoing queue has not been observed, not that it is empty.
+     */
+    var `pending`: kotlin.Boolean?
+    ,
+    var `retryAfterMillis`: kotlin.ULong?
+    ,
+    var `failures`: kotlin.UByte
+    ,
+    var `updatedAgoMillis`: kotlin.ULong
+    ,
+    var `lastIssue`: GroupSynchronizationIssue?
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupPeerSynchronizationProgress: FfiConverterRustBuffer<GroupPeerSynchronizationProgress> {
+    override fun read(buf: ByteBuffer): GroupPeerSynchronizationProgress {
+        return GroupPeerSynchronizationProgress(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeGroupSynchronizationPhase.read(buf),
+            FfiConverterOptionalBoolean.read(buf),
+            FfiConverterOptionalULong.read(buf),
+            FfiConverterUByte.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterOptionalTypeGroupSynchronizationIssue.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupPeerSynchronizationProgress) = (
+            FfiConverterTypeBytes32.allocationSize(value.`endpointId`) +
+            FfiConverterULong.allocationSize(value.`endpointIncarnation`) +
+            FfiConverterTypeBytes16.allocationSize(value.`identity`) +
+            FfiConverterTypeGroupSynchronizationPhase.allocationSize(value.`phase`) +
+            FfiConverterOptionalBoolean.allocationSize(value.`pending`) +
+            FfiConverterOptionalULong.allocationSize(value.`retryAfterMillis`) +
+            FfiConverterUByte.allocationSize(value.`failures`) +
+            FfiConverterULong.allocationSize(value.`updatedAgoMillis`) +
+            FfiConverterOptionalTypeGroupSynchronizationIssue.allocationSize(value.`lastIssue`)
+    )
+
+    override fun write(value: GroupPeerSynchronizationProgress, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`endpointId`, buf)
+            FfiConverterULong.write(value.`endpointIncarnation`, buf)
+            FfiConverterTypeBytes16.write(value.`identity`, buf)
+            FfiConverterTypeGroupSynchronizationPhase.write(value.`phase`, buf)
+            FfiConverterOptionalBoolean.write(value.`pending`, buf)
+            FfiConverterOptionalULong.write(value.`retryAfterMillis`, buf)
+            FfiConverterUByte.write(value.`failures`, buf)
+            FfiConverterULong.write(value.`updatedAgoMillis`, buf)
+            FfiConverterOptionalTypeGroupSynchronizationIssue.write(value.`lastIssue`, buf)
+    }
+}
+
+
+
+data class GroupSynchronizationProgress (
+    var `running`: kotlin.Boolean
+    ,
+    var `observed`: kotlin.Boolean
+    ,
+    var `peers`: List<GroupPeerSynchronizationProgress>
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupSynchronizationProgress: FfiConverterRustBuffer<GroupSynchronizationProgress> {
+    override fun read(buf: ByteBuffer): GroupSynchronizationProgress {
+        return GroupSynchronizationProgress(
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterSequenceTypeGroupPeerSynchronizationProgress.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupSynchronizationProgress) = (
+            FfiConverterBoolean.allocationSize(value.`running`) +
+            FfiConverterBoolean.allocationSize(value.`observed`) +
+            FfiConverterSequenceTypeGroupPeerSynchronizationProgress.allocationSize(value.`peers`)
+    )
+
+    override fun write(value: GroupSynchronizationProgress, buf: ByteBuffer) {
+            FfiConverterBoolean.write(value.`running`, buf)
+            FfiConverterBoolean.write(value.`observed`, buf)
+            FfiConverterSequenceTypeGroupPeerSynchronizationProgress.write(value.`peers`, buf)
+    }
+}
+
+
+
+data class GroupTextMessage (
+    var `messageId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32?
+    ,
+    var `sequence`: kotlin.ULong
+    ,
+    var `author`: Bytes16
+    ,
+    var `text`: kotlin.String
+    ,
+    var `outgoing`: kotlin.Boolean
+    ,
+    /**
+     * Authenticated device receipts, not human read receipts.
+     */
+    var `receivedCount`: kotlin.UInt
+    ,
+    var `recipientCount`: kotlin.UInt
+    ,
+    var `membershipChanged`: kotlin.Boolean
+    ,
+    var `sentAtMillis`: kotlin.ULong
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupTextMessage: FfiConverterRustBuffer<GroupTextMessage> {
+    override fun read(buf: ByteBuffer): GroupTextMessage {
+        return GroupTextMessage(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterOptionalTypeBytes32.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterUInt.read(buf),
+            FfiConverterUInt.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: GroupTextMessage) = (
+            FfiConverterTypeBytes32.allocationSize(value.`messageId`) +
+            FfiConverterOptionalTypeBytes32.allocationSize(value.`clientRequestId`) +
+            FfiConverterULong.allocationSize(value.`sequence`) +
+            FfiConverterTypeBytes16.allocationSize(value.`author`) +
+            FfiConverterString.allocationSize(value.`text`) +
+            FfiConverterBoolean.allocationSize(value.`outgoing`) +
+            FfiConverterUInt.allocationSize(value.`receivedCount`) +
+            FfiConverterUInt.allocationSize(value.`recipientCount`) +
+            FfiConverterBoolean.allocationSize(value.`membershipChanged`) +
+            FfiConverterULong.allocationSize(value.`sentAtMillis`)
+    )
+
+    override fun write(value: GroupTextMessage, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`messageId`, buf)
+            FfiConverterOptionalTypeBytes32.write(value.`clientRequestId`, buf)
+            FfiConverterULong.write(value.`sequence`, buf)
+            FfiConverterTypeBytes16.write(value.`author`, buf)
+            FfiConverterString.write(value.`text`, buf)
+            FfiConverterBoolean.write(value.`outgoing`, buf)
+            FfiConverterUInt.write(value.`receivedCount`, buf)
+            FfiConverterUInt.write(value.`recipientCount`, buf)
+            FfiConverterBoolean.write(value.`membershipChanged`, buf)
+            FfiConverterULong.write(value.`sentAtMillis`, buf)
+    }
+}
+
+
+
 data class InitiateRemoteControlPairingInput (
     var `candidateId`: kotlin.String
     ,
@@ -2157,6 +2838,92 @@ public object FfiConverterTypeInspectRemoteWifiTrialInput: FfiConverterRustBuffe
 
     override fun write(value: InspectRemoteWifiTrialInput, buf: ByteBuffer) {
             FfiConverterByteArray.write(value.`targetIdentityFingerprint`, buf)
+    }
+}
+
+
+
+data class InviteToGroupInput (
+    var `clientRequestId`: Bytes32
+    ,
+    var `groupId`: Bytes32
+    ,
+    var `recipientIdentity`: Bytes16
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeInviteToGroupInput: FfiConverterRustBuffer<InviteToGroupInput> {
+    override fun read(buf: ByteBuffer): InviteToGroupInput {
+        return InviteToGroupInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: InviteToGroupInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterTypeBytes16.allocationSize(value.`recipientIdentity`)
+    )
+
+    override fun write(value: InviteToGroupInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterTypeBytes16.write(value.`recipientIdentity`, buf)
+    }
+}
+
+
+
+data class ListGroupMessagesInput (
+    var `groupId`: Bytes32
+    ,
+    var `beforeSequence`: kotlin.ULong?
+    ,
+    var `limit`: kotlin.UInt
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeListGroupMessagesInput: FfiConverterRustBuffer<ListGroupMessagesInput> {
+    override fun read(buf: ByteBuffer): ListGroupMessagesInput {
+        return ListGroupMessagesInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterOptionalULong.read(buf),
+            FfiConverterUInt.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ListGroupMessagesInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterOptionalULong.allocationSize(value.`beforeSequence`) +
+            FfiConverterUInt.allocationSize(value.`limit`)
+    )
+
+    override fun write(value: ListGroupMessagesInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterOptionalULong.write(value.`beforeSequence`, buf)
+            FfiConverterUInt.write(value.`limit`, buf)
     }
 }
 
@@ -2832,6 +3599,47 @@ public object FfiConverterTypeMeasureLxmfTextInput: FfiConverterRustBuffer<Measu
     override fun write(value: MeasureLxmfTextInput, buf: ByteBuffer) {
             FfiConverterString.write(value.`title`, buf)
             FfiConverterString.write(value.`content`, buf)
+    }
+}
+
+
+
+data class PrepareGroupActionInput (
+    /**
+     * Caller-visible identity; mismatches fail before any durable mutation.
+     */
+    var `ownerIdentity`: Bytes16
+    ,
+    var `input`: GroupActionInput
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypePrepareGroupActionInput: FfiConverterRustBuffer<PrepareGroupActionInput> {
+    override fun read(buf: ByteBuffer): PrepareGroupActionInput {
+        return PrepareGroupActionInput(
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeGroupActionInput.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: PrepareGroupActionInput) = (
+            FfiConverterTypeBytes16.allocationSize(value.`ownerIdentity`) +
+            FfiConverterTypeGroupActionInput.allocationSize(value.`input`)
+    )
+
+    override fun write(value: PrepareGroupActionInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes16.write(value.`ownerIdentity`, buf)
+            FfiConverterTypeGroupActionInput.write(value.`input`, buf)
     }
 }
 
@@ -3693,6 +4501,49 @@ public object FfiConverterTypeRemoteWifiOperation: FfiConverterRustBuffer<Remote
 
 
 
+data class RespondGroupInvitationInput (
+    var `clientRequestId`: Bytes32
+    ,
+    var `invitationId`: Bytes32
+    ,
+    var `accept`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeRespondGroupInvitationInput: FfiConverterRustBuffer<RespondGroupInvitationInput> {
+    override fun read(buf: ByteBuffer): RespondGroupInvitationInput {
+        return RespondGroupInvitationInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: RespondGroupInvitationInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`invitationId`) +
+            FfiConverterBoolean.allocationSize(value.`accept`)
+    )
+
+    override fun write(value: RespondGroupInvitationInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+            FfiConverterTypeBytes32.write(value.`invitationId`, buf)
+            FfiConverterBoolean.write(value.`accept`, buf)
+    }
+}
+
+
+
 data class RetryLxmfMessageInput (
     var `localRecordId`: kotlin.ULong
 
@@ -3764,6 +4615,49 @@ public object FfiConverterTypeSendDirectTextInput: FfiConverterRustBuffer<SendDi
             FfiConverterTypeBytes16.write(value.`destination`, buf)
             FfiConverterString.write(value.`title`, buf)
             FfiConverterString.write(value.`content`, buf)
+    }
+}
+
+
+
+data class SendGroupTextInput (
+    var `groupId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32
+    ,
+    var `text`: kotlin.String
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeSendGroupTextInput: FfiConverterRustBuffer<SendGroupTextInput> {
+    override fun read(buf: ByteBuffer): SendGroupTextInput {
+        return SendGroupTextInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: SendGroupTextInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`) +
+            FfiConverterString.allocationSize(value.`text`)
+    )
+
+    override fun write(value: SendGroupTextInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+            FfiConverterString.write(value.`text`, buf)
     }
 }
 
@@ -3895,6 +4789,8 @@ public object FfiConverterTypeStartRemoteWifiTrialInput: FfiConverterRustBuffer<
 
 enum class AnnounceLxmfOutcome {
 
+    QUEUED,
+    THROTTLED,
     REQUESTED,
     NO_USABLE_CONNECTION,
     LOCAL_NODE_STOPPED,
@@ -4950,6 +5846,165 @@ public object FfiConverterTypeContactMutationOutcome : FfiConverterRustBuffer<Co
 
 
 
+sealed class CreateGroupOutcome {
+
+    data class Accepted(
+        val `groupId`: rs.reticulum.prns.app.bindings.Bytes32) : CreateGroupOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    object RetryExpired : CreateGroupOutcome()
+
+
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    object StorageFull : CreateGroupOutcome()
+
+
+    object Busy : CreateGroupOutcome()
+
+
+    data class InvalidInput(
+        val `reason`: rs.reticulum.prns.app.bindings.GroupRejectionReason,
+        val `detail`: kotlin.String) : CreateGroupOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : CreateGroupOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeCreateGroupOutcome : FfiConverterRustBuffer<CreateGroupOutcome>{
+    override fun read(buf: ByteBuffer): CreateGroupOutcome {
+        return when(buf.getInt()) {
+            1 -> CreateGroupOutcome.Accepted(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            2 -> CreateGroupOutcome.RetryExpired
+            3 -> CreateGroupOutcome.StorageFull
+            4 -> CreateGroupOutcome.Busy
+            5 -> CreateGroupOutcome.InvalidInput(
+                FfiConverterTypeGroupRejectionReason.read(buf),
+                FfiConverterString.read(buf),
+                )
+            6 -> CreateGroupOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: CreateGroupOutcome) = when(value) {
+        is CreateGroupOutcome.Accepted -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`groupId`)
+            )
+        }
+        is CreateGroupOutcome.RetryExpired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is CreateGroupOutcome.StorageFull -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is CreateGroupOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is CreateGroupOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupRejectionReason.allocationSize(value.`reason`)
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is CreateGroupOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: CreateGroupOutcome, buf: ByteBuffer) {
+        when(value) {
+            is CreateGroupOutcome.Accepted -> {
+                buf.putInt(1)
+                FfiConverterTypeBytes32.write(value.`groupId`, buf)
+                Unit
+            }
+            is CreateGroupOutcome.RetryExpired -> {
+                buf.putInt(2)
+                Unit
+            }
+            is CreateGroupOutcome.StorageFull -> {
+                buf.putInt(3)
+                Unit
+            }
+            is CreateGroupOutcome.Busy -> {
+                buf.putInt(4)
+                Unit
+            }
+            is CreateGroupOutcome.InvalidInput -> {
+                buf.putInt(5)
+                FfiConverterTypeGroupRejectionReason.write(value.`reason`, buf)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is CreateGroupOutcome.Unavailable -> {
+                buf.putInt(6)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
 
 enum class DevelopmentNodeFailureStage {
 
@@ -5304,6 +6359,1837 @@ public object FfiConverterTypeDevelopmentNodeStopStage: FfiConverterRustBuffer<D
 
 
 
+sealed class GroupActionAcknowledgeOutcome {
+
+    object Removed : GroupActionAcknowledgeOutcome()
+
+
+    /**
+     * Pending work cannot be discarded; expired work requires reviewed discard.
+     */
+    object NeedsReview : GroupActionAcknowledgeOutcome()
+
+
+    object Busy : GroupActionAcknowledgeOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupActionAcknowledgeOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupActionAcknowledgeOutcome : FfiConverterRustBuffer<GroupActionAcknowledgeOutcome>{
+    override fun read(buf: ByteBuffer): GroupActionAcknowledgeOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupActionAcknowledgeOutcome.Removed
+            2 -> GroupActionAcknowledgeOutcome.NeedsReview
+            3 -> GroupActionAcknowledgeOutcome.Busy
+            4 -> GroupActionAcknowledgeOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupActionAcknowledgeOutcome) = when(value) {
+        is GroupActionAcknowledgeOutcome.Removed -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionAcknowledgeOutcome.NeedsReview -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionAcknowledgeOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionAcknowledgeOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupActionAcknowledgeOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupActionAcknowledgeOutcome.Removed -> {
+                buf.putInt(1)
+                Unit
+            }
+            is GroupActionAcknowledgeOutcome.NeedsReview -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupActionAcknowledgeOutcome.Busy -> {
+                buf.putInt(3)
+                Unit
+            }
+            is GroupActionAcknowledgeOutcome.Unavailable -> {
+                buf.putInt(4)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupActionInput {
+
+    data class Create(
+        val `input`: rs.reticulum.prns.app.bindings.CreateGroupInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class Invite(
+        val `input`: rs.reticulum.prns.app.bindings.InviteToGroupInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class Respond(
+        val `input`: rs.reticulum.prns.app.bindings.RespondGroupInvitationInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class Send(
+        val `input`: rs.reticulum.prns.app.bindings.SendGroupTextInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupActionInput : FfiConverterRustBuffer<GroupActionInput>{
+    override fun read(buf: ByteBuffer): GroupActionInput {
+        return when(buf.getInt()) {
+            1 -> GroupActionInput.Create(
+                FfiConverterTypeCreateGroupInput.read(buf),
+                )
+            2 -> GroupActionInput.Invite(
+                FfiConverterTypeInviteToGroupInput.read(buf),
+                )
+            3 -> GroupActionInput.Respond(
+                FfiConverterTypeRespondGroupInvitationInput.read(buf),
+                )
+            4 -> GroupActionInput.Send(
+                FfiConverterTypeSendGroupTextInput.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupActionInput) = when(value) {
+        is GroupActionInput.Create -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeCreateGroupInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.Invite -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeInviteToGroupInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.Respond -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeRespondGroupInvitationInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.Send -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeSendGroupTextInput.allocationSize(value.`input`)
+            )
+        }
+    }
+
+    override fun write(value: GroupActionInput, buf: ByteBuffer) {
+        when(value) {
+            is GroupActionInput.Create -> {
+                buf.putInt(1)
+                FfiConverterTypeCreateGroupInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.Invite -> {
+                buf.putInt(2)
+                FfiConverterTypeInviteToGroupInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.Respond -> {
+                buf.putInt(3)
+                FfiConverterTypeRespondGroupInvitationInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.Send -> {
+                buf.putInt(4)
+                FfiConverterTypeSendGroupTextInput.write(value.`input`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupActionListOutcome {
+
+    data class Ready(
+        val `actions`: List<rs.reticulum.prns.app.bindings.GroupAction>) : GroupActionListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : GroupActionListOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupActionListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupActionListOutcome : FfiConverterRustBuffer<GroupActionListOutcome>{
+    override fun read(buf: ByteBuffer): GroupActionListOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupActionListOutcome.Ready(
+                FfiConverterSequenceTypeGroupAction.read(buf),
+                )
+            2 -> GroupActionListOutcome.Busy
+            3 -> GroupActionListOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupActionListOutcome) = when(value) {
+        is GroupActionListOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterSequenceTypeGroupAction.allocationSize(value.`actions`)
+            )
+        }
+        is GroupActionListOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionListOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupActionListOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupActionListOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterSequenceTypeGroupAction.write(value.`actions`, buf)
+                Unit
+            }
+            is GroupActionListOutcome.Busy -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupActionListOutcome.Unavailable -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupActionOutcome {
+
+    data class Ready(
+        val `action`: rs.reticulum.prns.app.bindings.GroupAction) : GroupActionOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class InvalidInput(
+        val `detail`: kotlin.String) : GroupActionOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object StorageFull : GroupActionOutcome()
+
+
+    object Busy : GroupActionOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupActionOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupActionOutcome : FfiConverterRustBuffer<GroupActionOutcome>{
+    override fun read(buf: ByteBuffer): GroupActionOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupActionOutcome.Ready(
+                FfiConverterTypeGroupAction.read(buf),
+                )
+            2 -> GroupActionOutcome.InvalidInput(
+                FfiConverterString.read(buf),
+                )
+            3 -> GroupActionOutcome.StorageFull
+            4 -> GroupActionOutcome.Busy
+            5 -> GroupActionOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupActionOutcome) = when(value) {
+        is GroupActionOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupAction.allocationSize(value.`action`)
+            )
+        }
+        is GroupActionOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is GroupActionOutcome.StorageFull -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupActionOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupActionOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeGroupAction.write(value.`action`, buf)
+                Unit
+            }
+            is GroupActionOutcome.InvalidInput -> {
+                buf.putInt(2)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is GroupActionOutcome.StorageFull -> {
+                buf.putInt(3)
+                Unit
+            }
+            is GroupActionOutcome.Busy -> {
+                buf.putInt(4)
+                Unit
+            }
+            is GroupActionOutcome.Unavailable -> {
+                buf.putInt(5)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupActionResult {
+
+    data class Created(
+        val `groupId`: rs.reticulum.prns.app.bindings.Bytes32) : GroupActionResult()
+
+    {
+
+
+        companion object
+    }
+
+    data class Invited(
+        val `invitationId`: rs.reticulum.prns.app.bindings.Bytes32) : GroupActionResult()
+
+    {
+
+
+        companion object
+    }
+
+    object Responded : GroupActionResult()
+
+
+    data class Sent(
+        val `messageId`: rs.reticulum.prns.app.bindings.Bytes32) : GroupActionResult()
+
+    {
+
+
+        companion object
+    }
+
+    data class Rejected(
+        val `reason`: rs.reticulum.prns.app.bindings.GroupRejectionReason,
+        val `detail`: kotlin.String) : GroupActionResult()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupActionResult : FfiConverterRustBuffer<GroupActionResult>{
+    override fun read(buf: ByteBuffer): GroupActionResult {
+        return when(buf.getInt()) {
+            1 -> GroupActionResult.Created(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            2 -> GroupActionResult.Invited(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            3 -> GroupActionResult.Responded
+            4 -> GroupActionResult.Sent(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            5 -> GroupActionResult.Rejected(
+                FfiConverterTypeGroupRejectionReason.read(buf),
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupActionResult) = when(value) {
+        is GroupActionResult.Created -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`groupId`)
+            )
+        }
+        is GroupActionResult.Invited -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`invitationId`)
+            )
+        }
+        is GroupActionResult.Responded -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionResult.Sent -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`messageId`)
+            )
+        }
+        is GroupActionResult.Rejected -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupRejectionReason.allocationSize(value.`reason`)
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupActionResult, buf: ByteBuffer) {
+        when(value) {
+            is GroupActionResult.Created -> {
+                buf.putInt(1)
+                FfiConverterTypeBytes32.write(value.`groupId`, buf)
+                Unit
+            }
+            is GroupActionResult.Invited -> {
+                buf.putInt(2)
+                FfiConverterTypeBytes32.write(value.`invitationId`, buf)
+                Unit
+            }
+            is GroupActionResult.Responded -> {
+                buf.putInt(3)
+                Unit
+            }
+            is GroupActionResult.Sent -> {
+                buf.putInt(4)
+                FfiConverterTypeBytes32.write(value.`messageId`, buf)
+                Unit
+            }
+            is GroupActionResult.Rejected -> {
+                buf.putInt(5)
+                FfiConverterTypeGroupRejectionReason.write(value.`reason`, buf)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupActionState {
+
+    /**
+     * Input is committed; execution may not have started or its reply was lost.
+     */
+    object Pending : GroupActionState()
+
+
+    /**
+     * Confirmed local result. This does not indicate remote delivery.
+     */
+    data class Completed(
+        val `result`: rs.reticulum.prns.app.bindings.GroupActionResult) : GroupActionState()
+
+    {
+
+
+        companion object
+    }
+
+    /**
+     * Execution evidence expired. Requires explicit review before discarding.
+     */
+    object RetryExpired : GroupActionState()
+
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupActionState : FfiConverterRustBuffer<GroupActionState>{
+    override fun read(buf: ByteBuffer): GroupActionState {
+        return when(buf.getInt()) {
+            1 -> GroupActionState.Pending
+            2 -> GroupActionState.Completed(
+                FfiConverterTypeGroupActionResult.read(buf),
+                )
+            3 -> GroupActionState.RetryExpired
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupActionState) = when(value) {
+        is GroupActionState.Pending -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionState.Completed -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupActionResult.allocationSize(value.`result`)
+            )
+        }
+        is GroupActionState.RetryExpired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+    }
+
+    override fun write(value: GroupActionState, buf: ByteBuffer) {
+        when(value) {
+            is GroupActionState.Pending -> {
+                buf.putInt(1)
+                Unit
+            }
+            is GroupActionState.Completed -> {
+                buf.putInt(2)
+                FfiConverterTypeGroupActionResult.write(value.`result`, buf)
+                Unit
+            }
+            is GroupActionState.RetryExpired -> {
+                buf.putInt(3)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupAnnounceOutcome {
+
+    /**
+     * Coalesced in this runtime; waiting for an interface or the shared budget.
+     */
+    object Queued : GroupAnnounceOutcome()
+
+
+    /**
+     * The local host accepted both commands. This is not peer receipt evidence.
+     */
+    object Requested : GroupAnnounceOutcome()
+
+
+    data class Throttled(
+        val `retryAfterMillis`: kotlin.ULong) : GroupAnnounceOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : GroupAnnounceOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupAnnounceOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupAnnounceOutcome : FfiConverterRustBuffer<GroupAnnounceOutcome>{
+    override fun read(buf: ByteBuffer): GroupAnnounceOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupAnnounceOutcome.Queued
+            2 -> GroupAnnounceOutcome.Requested
+            3 -> GroupAnnounceOutcome.Throttled(
+                FfiConverterULong.read(buf),
+                )
+            4 -> GroupAnnounceOutcome.Busy
+            5 -> GroupAnnounceOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupAnnounceOutcome) = when(value) {
+        is GroupAnnounceOutcome.Queued -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupAnnounceOutcome.Requested -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupAnnounceOutcome.Throttled -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterULong.allocationSize(value.`retryAfterMillis`)
+            )
+        }
+        is GroupAnnounceOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupAnnounceOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupAnnounceOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupAnnounceOutcome.Queued -> {
+                buf.putInt(1)
+                Unit
+            }
+            is GroupAnnounceOutcome.Requested -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupAnnounceOutcome.Throttled -> {
+                buf.putInt(3)
+                FfiConverterULong.write(value.`retryAfterMillis`, buf)
+                Unit
+            }
+            is GroupAnnounceOutcome.Busy -> {
+                buf.putInt(4)
+                Unit
+            }
+            is GroupAnnounceOutcome.Unavailable -> {
+                buf.putInt(5)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupAnnounceSettingsOutcome {
+
+    data class Ready(
+        val `settings`: rs.reticulum.prns.app.bindings.GroupAnnounceSettings) : GroupAnnounceSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : GroupAnnounceSettingsOutcome()
+
+
+    data class InvalidInput(
+        val `detail`: kotlin.String) : GroupAnnounceSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupAnnounceSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupAnnounceSettingsOutcome : FfiConverterRustBuffer<GroupAnnounceSettingsOutcome>{
+    override fun read(buf: ByteBuffer): GroupAnnounceSettingsOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupAnnounceSettingsOutcome.Ready(
+                FfiConverterTypeGroupAnnounceSettings.read(buf),
+                )
+            2 -> GroupAnnounceSettingsOutcome.Busy
+            3 -> GroupAnnounceSettingsOutcome.InvalidInput(
+                FfiConverterString.read(buf),
+                )
+            4 -> GroupAnnounceSettingsOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupAnnounceSettingsOutcome) = when(value) {
+        is GroupAnnounceSettingsOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupAnnounceSettings.allocationSize(value.`settings`)
+            )
+        }
+        is GroupAnnounceSettingsOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupAnnounceSettingsOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is GroupAnnounceSettingsOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupAnnounceSettingsOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupAnnounceSettingsOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeGroupAnnounceSettings.write(value.`settings`, buf)
+                Unit
+            }
+            is GroupAnnounceSettingsOutcome.Busy -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupAnnounceSettingsOutcome.InvalidInput -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is GroupAnnounceSettingsOutcome.Unavailable -> {
+                buf.putInt(4)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupConversationListOutcome {
+
+    data class Ready(
+        val `conversations`: List<rs.reticulum.prns.app.bindings.GroupConversation>) : GroupConversationListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object NotProvisioned : GroupConversationListOutcome()
+
+
+    object Busy : GroupConversationListOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupConversationListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupConversationListOutcome : FfiConverterRustBuffer<GroupConversationListOutcome>{
+    override fun read(buf: ByteBuffer): GroupConversationListOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupConversationListOutcome.Ready(
+                FfiConverterSequenceTypeGroupConversation.read(buf),
+                )
+            2 -> GroupConversationListOutcome.NotProvisioned
+            3 -> GroupConversationListOutcome.Busy
+            4 -> GroupConversationListOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupConversationListOutcome) = when(value) {
+        is GroupConversationListOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterSequenceTypeGroupConversation.allocationSize(value.`conversations`)
+            )
+        }
+        is GroupConversationListOutcome.NotProvisioned -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupConversationListOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupConversationListOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupConversationListOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupConversationListOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterSequenceTypeGroupConversation.write(value.`conversations`, buf)
+                Unit
+            }
+            is GroupConversationListOutcome.NotProvisioned -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupConversationListOutcome.Busy -> {
+                buf.putInt(3)
+                Unit
+            }
+            is GroupConversationListOutcome.Unavailable -> {
+                buf.putInt(4)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupInvitationListOutcome {
+
+    data class Ready(
+        val `invitations`: List<rs.reticulum.prns.app.bindings.GroupInvitation>) : GroupInvitationListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : GroupInvitationListOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupInvitationListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupInvitationListOutcome : FfiConverterRustBuffer<GroupInvitationListOutcome>{
+    override fun read(buf: ByteBuffer): GroupInvitationListOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupInvitationListOutcome.Ready(
+                FfiConverterSequenceTypeGroupInvitation.read(buf),
+                )
+            2 -> GroupInvitationListOutcome.Busy
+            3 -> GroupInvitationListOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupInvitationListOutcome) = when(value) {
+        is GroupInvitationListOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterSequenceTypeGroupInvitation.allocationSize(value.`invitations`)
+            )
+        }
+        is GroupInvitationListOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupInvitationListOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupInvitationListOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupInvitationListOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterSequenceTypeGroupInvitation.write(value.`invitations`, buf)
+                Unit
+            }
+            is GroupInvitationListOutcome.Busy -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupInvitationListOutcome.Unavailable -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+
+enum class GroupInvitationState {
+
+    OFFERED,
+    JOINING,
+    /**
+     * Incoming: enrollment committed locally. Outgoing: authenticated peer
+     * acknowledgement after its durable enrollment.
+     */
+    JOINED,
+    DECLINED,
+    EXPIRED;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupInvitationState: FfiConverterRustBuffer<GroupInvitationState> {
+    override fun read(buf: ByteBuffer) = try {
+        GroupInvitationState.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: GroupInvitationState) = 4UL
+
+    override fun write(value: GroupInvitationState, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+sealed class GroupMessageListOutcome {
+
+    data class Ready(
+        val `messages`: List<rs.reticulum.prns.app.bindings.GroupTextMessage>,
+        val `revision`: kotlin.ULong,
+        val `nextBeforeSequence`: kotlin.ULong?) : GroupMessageListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object NotProvisioned : GroupMessageListOutcome()
+
+
+    data class InvalidInput(
+        val `detail`: kotlin.String) : GroupMessageListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : GroupMessageListOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupMessageListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupMessageListOutcome : FfiConverterRustBuffer<GroupMessageListOutcome>{
+    override fun read(buf: ByteBuffer): GroupMessageListOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupMessageListOutcome.Ready(
+                FfiConverterSequenceTypeGroupTextMessage.read(buf),
+                FfiConverterULong.read(buf),
+                FfiConverterOptionalULong.read(buf),
+                )
+            2 -> GroupMessageListOutcome.NotProvisioned
+            3 -> GroupMessageListOutcome.InvalidInput(
+                FfiConverterString.read(buf),
+                )
+            4 -> GroupMessageListOutcome.Busy
+            5 -> GroupMessageListOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupMessageListOutcome) = when(value) {
+        is GroupMessageListOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterSequenceTypeGroupTextMessage.allocationSize(value.`messages`)
+                + FfiConverterULong.allocationSize(value.`revision`)
+                + FfiConverterOptionalULong.allocationSize(value.`nextBeforeSequence`)
+            )
+        }
+        is GroupMessageListOutcome.NotProvisioned -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupMessageListOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is GroupMessageListOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupMessageListOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupMessageListOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupMessageListOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterSequenceTypeGroupTextMessage.write(value.`messages`, buf)
+                FfiConverterULong.write(value.`revision`, buf)
+                FfiConverterOptionalULong.write(value.`nextBeforeSequence`, buf)
+                Unit
+            }
+            is GroupMessageListOutcome.NotProvisioned -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupMessageListOutcome.InvalidInput -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is GroupMessageListOutcome.Busy -> {
+                buf.putInt(4)
+                Unit
+            }
+            is GroupMessageListOutcome.Unavailable -> {
+                buf.putInt(5)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+/**
+ * Stable rejection categories; old saved actions have no category and decode
+ * as Unknown. Names and UI advice are separate application projections.
+ */
+
+enum class GroupRejectionReason {
+
+    UNKNOWN,
+    INVALID_INPUT,
+    NO_RECIPIENTS,
+    REQUEST_CONFLICT,
+    INVITATION_EXPIRED,
+    NOT_FOUND,
+    MEMBERSHIP_CONFLICT,
+    NOT_OWNER,
+    NOT_JOINED,
+    AUTHENTICATION_FAILED;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupRejectionReason: FfiConverterRustBuffer<GroupRejectionReason> {
+    override fun read(buf: ByteBuffer) = try {
+        GroupRejectionReason.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: GroupRejectionReason) = 4UL
+
+    override fun write(value: GroupRejectionReason, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+sealed class GroupRequestIdOutcome {
+
+    data class Ready(
+        val `clientRequestId`: rs.reticulum.prns.app.bindings.Bytes32) : GroupRequestIdOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupRequestIdOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupRequestIdOutcome : FfiConverterRustBuffer<GroupRequestIdOutcome>{
+    override fun read(buf: ByteBuffer): GroupRequestIdOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupRequestIdOutcome.Ready(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            2 -> GroupRequestIdOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupRequestIdOutcome) = when(value) {
+        is GroupRequestIdOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`)
+            )
+        }
+        is GroupRequestIdOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupRequestIdOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupRequestIdOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+                Unit
+            }
+            is GroupRequestIdOutcome.Unavailable -> {
+                buf.putInt(2)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+
+enum class GroupSynchronizationIssue {
+
+    TRANSPORT,
+    STORAGE_BUSY,
+    STORAGE_FULL,
+    STORAGE_UNAVAILABLE,
+    MEMBERSHIP_CHANGED,
+    TIME_UNCERTAIN,
+    REJECTED,
+    UNSUPPORTED_PEER,
+    CONFIGURATION;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupSynchronizationIssue: FfiConverterRustBuffer<GroupSynchronizationIssue> {
+    override fun read(buf: ByteBuffer) = try {
+        GroupSynchronizationIssue.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: GroupSynchronizationIssue) = 4UL
+
+    override fun write(value: GroupSynchronizationIssue, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
+enum class GroupSynchronizationPhase {
+
+    UNKNOWN,
+    WAITING,
+    CONNECTING,
+    SYNCHRONIZING,
+    RETRY_SCHEDULED,
+    STORAGE_BLOCKED,
+    MEMBERSHIP_CATCH_UP;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupSynchronizationPhase: FfiConverterRustBuffer<GroupSynchronizationPhase> {
+    override fun read(buf: ByteBuffer) = try {
+        GroupSynchronizationPhase.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: GroupSynchronizationPhase) = 4UL
+
+    override fun write(value: GroupSynchronizationPhase, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+sealed class GroupSynchronizationState {
+
+    object Stopped : GroupSynchronizationState()
+
+
+    /**
+     * The native synchronization worker is enabled; this is not delivery evidence.
+     */
+    object Running : GroupSynchronizationState()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupSynchronizationState()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupSynchronizationState : FfiConverterRustBuffer<GroupSynchronizationState>{
+    override fun read(buf: ByteBuffer): GroupSynchronizationState {
+        return when(buf.getInt()) {
+            1 -> GroupSynchronizationState.Stopped
+            2 -> GroupSynchronizationState.Running
+            3 -> GroupSynchronizationState.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupSynchronizationState) = when(value) {
+        is GroupSynchronizationState.Stopped -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupSynchronizationState.Running -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupSynchronizationState.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupSynchronizationState, buf: ByteBuffer) {
+        when(value) {
+            is GroupSynchronizationState.Stopped -> {
+                buf.putInt(1)
+                Unit
+            }
+            is GroupSynchronizationState.Running -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupSynchronizationState.Unavailable -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class GroupTextSendOutcome {
+
+    /**
+     * Durable local acceptance; peer receipt counts are queried separately.
+     */
+    data class Accepted(
+        val `messageId`: rs.reticulum.prns.app.bindings.Bytes32) : GroupTextSendOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object NotProvisioned : GroupTextSendOutcome()
+
+
+    data class InvalidInput(
+        val `reason`: rs.reticulum.prns.app.bindings.GroupRejectionReason,
+        val `detail`: kotlin.String) : GroupTextSendOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    object RetryExpired : GroupTextSendOutcome()
+
+
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    object StorageFull : GroupTextSendOutcome()
+
+
+    object Busy : GroupTextSendOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : GroupTextSendOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupTextSendOutcome : FfiConverterRustBuffer<GroupTextSendOutcome>{
+    override fun read(buf: ByteBuffer): GroupTextSendOutcome {
+        return when(buf.getInt()) {
+            1 -> GroupTextSendOutcome.Accepted(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            2 -> GroupTextSendOutcome.NotProvisioned
+            3 -> GroupTextSendOutcome.InvalidInput(
+                FfiConverterTypeGroupRejectionReason.read(buf),
+                FfiConverterString.read(buf),
+                )
+            4 -> GroupTextSendOutcome.RetryExpired
+            5 -> GroupTextSendOutcome.StorageFull
+            6 -> GroupTextSendOutcome.Busy
+            7 -> GroupTextSendOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: GroupTextSendOutcome) = when(value) {
+        is GroupTextSendOutcome.Accepted -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`messageId`)
+            )
+        }
+        is GroupTextSendOutcome.NotProvisioned -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupTextSendOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupRejectionReason.allocationSize(value.`reason`)
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is GroupTextSendOutcome.RetryExpired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupTextSendOutcome.StorageFull -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupTextSendOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupTextSendOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: GroupTextSendOutcome, buf: ByteBuffer) {
+        when(value) {
+            is GroupTextSendOutcome.Accepted -> {
+                buf.putInt(1)
+                FfiConverterTypeBytes32.write(value.`messageId`, buf)
+                Unit
+            }
+            is GroupTextSendOutcome.NotProvisioned -> {
+                buf.putInt(2)
+                Unit
+            }
+            is GroupTextSendOutcome.InvalidInput -> {
+                buf.putInt(3)
+                FfiConverterTypeGroupRejectionReason.write(value.`reason`, buf)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is GroupTextSendOutcome.RetryExpired -> {
+                buf.putInt(4)
+                Unit
+            }
+            is GroupTextSendOutcome.StorageFull -> {
+                buf.putInt(5)
+                Unit
+            }
+            is GroupTextSendOutcome.Busy -> {
+                buf.putInt(6)
+                Unit
+            }
+            is GroupTextSendOutcome.Unavailable -> {
+                buf.putInt(7)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
 sealed class IdentityCreationOutcome {
 
     data class Created(
@@ -5502,6 +8388,165 @@ public object FfiConverterTypeIdentityImportPreviewOutcome : FfiConverterRustBuf
             }
             is IdentityImportPreviewOutcome.InvalidLength -> {
                 buf.putInt(2)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class InviteToGroupOutcome {
+
+    data class Queued(
+        val `invitationId`: rs.reticulum.prns.app.bindings.Bytes32) : InviteToGroupOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    object RetryExpired : InviteToGroupOutcome()
+
+
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    object StorageFull : InviteToGroupOutcome()
+
+
+    object Busy : InviteToGroupOutcome()
+
+
+    data class InvalidInput(
+        val `reason`: rs.reticulum.prns.app.bindings.GroupRejectionReason,
+        val `detail`: kotlin.String) : InviteToGroupOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : InviteToGroupOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeInviteToGroupOutcome : FfiConverterRustBuffer<InviteToGroupOutcome>{
+    override fun read(buf: ByteBuffer): InviteToGroupOutcome {
+        return when(buf.getInt()) {
+            1 -> InviteToGroupOutcome.Queued(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            2 -> InviteToGroupOutcome.RetryExpired
+            3 -> InviteToGroupOutcome.StorageFull
+            4 -> InviteToGroupOutcome.Busy
+            5 -> InviteToGroupOutcome.InvalidInput(
+                FfiConverterTypeGroupRejectionReason.read(buf),
+                FfiConverterString.read(buf),
+                )
+            6 -> InviteToGroupOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: InviteToGroupOutcome) = when(value) {
+        is InviteToGroupOutcome.Queued -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`invitationId`)
+            )
+        }
+        is InviteToGroupOutcome.RetryExpired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is InviteToGroupOutcome.StorageFull -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is InviteToGroupOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is InviteToGroupOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupRejectionReason.allocationSize(value.`reason`)
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is InviteToGroupOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: InviteToGroupOutcome, buf: ByteBuffer) {
+        when(value) {
+            is InviteToGroupOutcome.Queued -> {
+                buf.putInt(1)
+                FfiConverterTypeBytes32.write(value.`invitationId`, buf)
+                Unit
+            }
+            is InviteToGroupOutcome.RetryExpired -> {
+                buf.putInt(2)
+                Unit
+            }
+            is InviteToGroupOutcome.StorageFull -> {
+                buf.putInt(3)
+                Unit
+            }
+            is InviteToGroupOutcome.Busy -> {
+                buf.putInt(4)
+                Unit
+            }
+            is InviteToGroupOutcome.InvalidInput -> {
+                buf.putInt(5)
+                FfiConverterTypeGroupRejectionReason.write(value.`reason`, buf)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is InviteToGroupOutcome.Unavailable -> {
+                buf.putInt(6)
+                FfiConverterString.write(value.`detail`, buf)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
@@ -10186,6 +13231,158 @@ public object FfiConverterTypeRemoteWifiTransaction : FfiConverterRustBuffer<Rem
 
 
 
+sealed class RespondGroupInvitationOutcome {
+
+    /**
+     * The decision is durable; joining can still require network exchanges.
+     */
+    object Saved : RespondGroupInvitationOutcome()
+
+
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    object RetryExpired : RespondGroupInvitationOutcome()
+
+
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    object StorageFull : RespondGroupInvitationOutcome()
+
+
+    object Busy : RespondGroupInvitationOutcome()
+
+
+    data class InvalidInput(
+        val `reason`: rs.reticulum.prns.app.bindings.GroupRejectionReason,
+        val `detail`: kotlin.String) : RespondGroupInvitationOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : RespondGroupInvitationOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeRespondGroupInvitationOutcome : FfiConverterRustBuffer<RespondGroupInvitationOutcome>{
+    override fun read(buf: ByteBuffer): RespondGroupInvitationOutcome {
+        return when(buf.getInt()) {
+            1 -> RespondGroupInvitationOutcome.Saved
+            2 -> RespondGroupInvitationOutcome.RetryExpired
+            3 -> RespondGroupInvitationOutcome.StorageFull
+            4 -> RespondGroupInvitationOutcome.Busy
+            5 -> RespondGroupInvitationOutcome.InvalidInput(
+                FfiConverterTypeGroupRejectionReason.read(buf),
+                FfiConverterString.read(buf),
+                )
+            6 -> RespondGroupInvitationOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: RespondGroupInvitationOutcome) = when(value) {
+        is RespondGroupInvitationOutcome.Saved -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is RespondGroupInvitationOutcome.RetryExpired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is RespondGroupInvitationOutcome.StorageFull -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is RespondGroupInvitationOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is RespondGroupInvitationOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeGroupRejectionReason.allocationSize(value.`reason`)
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is RespondGroupInvitationOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: RespondGroupInvitationOutcome, buf: ByteBuffer) {
+        when(value) {
+            is RespondGroupInvitationOutcome.Saved -> {
+                buf.putInt(1)
+                Unit
+            }
+            is RespondGroupInvitationOutcome.RetryExpired -> {
+                buf.putInt(2)
+                Unit
+            }
+            is RespondGroupInvitationOutcome.StorageFull -> {
+                buf.putInt(3)
+                Unit
+            }
+            is RespondGroupInvitationOutcome.Busy -> {
+                buf.putInt(4)
+                Unit
+            }
+            is RespondGroupInvitationOutcome.InvalidInput -> {
+                buf.putInt(5)
+                FfiConverterTypeGroupRejectionReason.write(value.`reason`, buf)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is RespondGroupInvitationOutcome.Unavailable -> {
+                buf.putInt(6)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
 sealed class RetryLxmfMessageOutcome {
 
     data class Accepted(
@@ -11100,6 +14297,38 @@ public object FfiConverterOptionalTypeRemoteWifiOperation: FfiConverterRustBuffe
 /**
  * @suppress
  */
+public object FfiConverterOptionalTypeGroupSynchronizationIssue: FfiConverterRustBuffer<GroupSynchronizationIssue?> {
+    override fun read(buf: ByteBuffer): GroupSynchronizationIssue? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeGroupSynchronizationIssue.read(buf)
+    }
+
+    override fun allocationSize(value: GroupSynchronizationIssue?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeGroupSynchronizationIssue.allocationSize(value)
+        }
+    }
+
+    override fun write(value: GroupSynchronizationIssue?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeGroupSynchronizationIssue.write(value, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterOptionalTypeBytes16: FfiConverterRustBuffer<Bytes16?> {
     override fun read(buf: ByteBuffer): Bytes16? {
         if (buf.get().toInt() == 0) {
@@ -11122,6 +14351,38 @@ public object FfiConverterOptionalTypeBytes16: FfiConverterRustBuffer<Bytes16?> 
         } else {
             buf.put(1)
             FfiConverterTypeBytes16.write(value, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterOptionalTypeBytes32: FfiConverterRustBuffer<Bytes32?> {
+    override fun read(buf: ByteBuffer): Bytes32? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeBytes32.read(buf)
+    }
+
+    override fun allocationSize(value: Bytes32?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeBytes32.allocationSize(value)
+        }
+    }
+
+    override fun write(value: Bytes32?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeBytes32.write(value, buf)
         }
     }
 }
@@ -11206,6 +14467,174 @@ public object FfiConverterSequenceTypeContact: FfiConverterRustBuffer<List<Conta
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeContact.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeGroupAction: FfiConverterRustBuffer<List<GroupAction>> {
+    override fun read(buf: ByteBuffer): List<GroupAction> {
+        val len = buf.getInt()
+        return List<GroupAction>(len) {
+            FfiConverterTypeGroupAction.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<GroupAction>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeGroupAction.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<GroupAction>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeGroupAction.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeGroupConversation: FfiConverterRustBuffer<List<GroupConversation>> {
+    override fun read(buf: ByteBuffer): List<GroupConversation> {
+        val len = buf.getInt()
+        return List<GroupConversation>(len) {
+            FfiConverterTypeGroupConversation.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<GroupConversation>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeGroupConversation.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<GroupConversation>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeGroupConversation.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeGroupInvitation: FfiConverterRustBuffer<List<GroupInvitation>> {
+    override fun read(buf: ByteBuffer): List<GroupInvitation> {
+        val len = buf.getInt()
+        return List<GroupInvitation>(len) {
+            FfiConverterTypeGroupInvitation.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<GroupInvitation>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeGroupInvitation.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<GroupInvitation>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeGroupInvitation.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeGroupMember: FfiConverterRustBuffer<List<GroupMember>> {
+    override fun read(buf: ByteBuffer): List<GroupMember> {
+        val len = buf.getInt()
+        return List<GroupMember>(len) {
+            FfiConverterTypeGroupMember.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<GroupMember>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeGroupMember.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<GroupMember>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeGroupMember.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeGroupPeerSynchronizationProgress: FfiConverterRustBuffer<List<GroupPeerSynchronizationProgress>> {
+    override fun read(buf: ByteBuffer): List<GroupPeerSynchronizationProgress> {
+        val len = buf.getInt()
+        return List<GroupPeerSynchronizationProgress>(len) {
+            FfiConverterTypeGroupPeerSynchronizationProgress.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<GroupPeerSynchronizationProgress>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeGroupPeerSynchronizationProgress.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<GroupPeerSynchronizationProgress>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeGroupPeerSynchronizationProgress.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeGroupTextMessage: FfiConverterRustBuffer<List<GroupTextMessage>> {
+    override fun read(buf: ByteBuffer): List<GroupTextMessage> {
+        val len = buf.getInt()
+        return List<GroupTextMessage>(len) {
+            FfiConverterTypeGroupTextMessage.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<GroupTextMessage>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeGroupTextMessage.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<GroupTextMessage>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeGroupTextMessage.write(it, buf)
         }
     }
 }
@@ -11497,6 +14926,16 @@ public object FfiConverterSequenceTypeRemoteControlRequestKind: FfiConverterRust
  * is needed because the UDL type name is used in function/method signatures.
  * It's also what we have an external type that references a custom type.
  */
+public typealias Bytes10 = kotlin.ByteArray
+public typealias FfiConverterTypeBytes10 = FfiConverterByteArray
+
+
+
+/**
+ * Typealias from the type name used in the UDL file to the builtin type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ * It's also what we have an external type that references a custom type.
+ */
 public typealias Bytes16 = kotlin.ByteArray
 public typealias FfiConverterTypeBytes16 = FfiConverterByteArray
 
@@ -11540,6 +14979,37 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
 
 
 
+
+        /**
+         * Remove a confirmed result after the UI has displayed or reconciled it.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `acknowledgeGroupAction`(`reference`: GroupActionReference) : GroupActionAcknowledgeOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_acknowledge_group_action(FfiConverterTypeGroupActionReference.lower(`reference`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionAcknowledgeOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `announceGroups`() : GroupAnnounceOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_announce_groups(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupAnnounceOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
 
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `announceLxmf`() : AnnounceLxmfOutcome {
@@ -11653,6 +15123,34 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     }
 
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `createGroup`(`input`: CreateGroupInput) : CreateGroupOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_create_group(FfiConverterTypeCreateGroupInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeCreateGroupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `createGroupRequestId`() : GroupRequestIdOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_create_group_request_id(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupRequestIdOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `createManualContact`(`input`: CreateManualContactInput) : ContactMutationOutcome {
         return uniffiRustCallAsync(
         UniffiLib.uniffi_prns_app_fn_func_create_manual_contact(FfiConverterTypeCreateManualContactInput.lower(`input`),),
@@ -11694,6 +15192,37 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     )
     }
 
+        /**
+         * Explicit user review is required; a discarded operation may have executed.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `discardExpiredGroupAction`(`reference`: GroupActionReference) : GroupActionAcknowledgeOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_discard_expired_group_action(FfiConverterTypeGroupActionReference.lower(`reference`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionAcknowledgeOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `executeGroupAction`(`reference`: GroupActionReference) : GroupActionOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_execute_group_action(FfiConverterTypeGroupActionReference.lower(`reference`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `finishRemoteWifiTrial`(`input`: FinishRemoteWifiTrialInput) : RemoteWifiCommandOutcome {
         return uniffiRustCallAsync(
@@ -11717,6 +15246,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeContactLookupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `getGroupAnnounceSettings`() : GroupAnnounceSettingsOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_get_group_announce_settings(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupAnnounceSettingsOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -11751,6 +15294,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     }
 
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `inviteToGroup`(`input`: InviteToGroupInput) : InviteToGroupOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_invite_to_group(FfiConverterTypeInviteToGroupInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeInviteToGroupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `listContacts`() : ContactListOutcome {
         return uniffiRustCallAsync(
         UniffiLib.uniffi_prns_app_fn_func_list_contacts(),
@@ -11759,6 +15316,62 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeContactListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `listGroupActions`() : GroupActionListOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_list_group_actions(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `listGroupConversations`() : GroupConversationListOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_list_group_conversations(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupConversationListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `listGroupInvitations`() : GroupInvitationListOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_list_group_invitations(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupInvitationListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `listGroupMessages`(`input`: ListGroupMessagesInput) : GroupMessageListOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_list_group_messages(FfiConverterTypeListGroupMessagesInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupMessageListOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -11942,6 +15555,23 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
 
 
         /**
+         * Commit immutable UI recovery input before submitting a group operation.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `prepareGroupAction`(`input`: PrepareGroupActionInput) : GroupActionOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_prepare_group_action(FfiConverterTypePrepareGroupActionInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+        /**
          * Bounded local validation; no storage or native lifecycle admission.
          */ fun `previewIdentityImport`(`identity`: kotlin.ByteArray): IdentityImportPreviewOutcome {
             return FfiConverterTypeIdentityImportPreviewOutcome.lift(
@@ -12031,6 +15661,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     }
 
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `respondGroupInvitation`(`input`: RespondGroupInvitationInput) : RespondGroupInvitationOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_respond_group_invitation(FfiConverterTypeRespondGroupInvitationInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeRespondGroupInvitationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `retryLxmfMessage`(`input`: RetryLxmfMessageInput) : RetryLxmfMessageOutcome {
         return uniffiRustCallAsync(
         UniffiLib.uniffi_prns_app_fn_func_retry_lxmf_message(FfiConverterTypeRetryLxmfMessageInput.lower(`input`),),
@@ -12086,6 +15730,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     )
     }
 
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `sendGroupText`(`input`: SendGroupTextInput) : GroupTextSendOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_send_group_text(FfiConverterTypeSendGroupTextInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupTextSendOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
         /**
          * Persist application participation and apply it to the existing native BLE supervisor.
          */
@@ -12126,6 +15784,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeContactMutationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `setGroupAnnounceSettings`(`input`: GroupAnnounceSettings) : GroupAnnounceSettingsOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_set_group_announce_settings(FfiConverterTypeGroupAnnounceSettings.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupAnnounceSettingsOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )

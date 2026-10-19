@@ -400,8 +400,13 @@ assert.match(
 );
 assert.match(
   nativeCargo,
-  /ios-restoration-probe = \["apple", "dep:log", "prns-interfaces-tokio\/log"\]/,
+  /ios-restoration-probe = \["apple", "prns-interfaces-tokio\/log"\]/,
   "the private restoration logger must remain an explicit app feature",
+);
+assert.match(
+  nativeRestorationProbe,
+  /pub\(crate\) fn install\(\) \{\s*#\[cfg\(feature = "ios-restoration-probe"\)\]\s*enabled::install\(\);/,
+  "the shared logging dependency must not enable restoration diagnostics by itself",
 );
 assert.match(
   bindingsBuild,

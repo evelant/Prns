@@ -121,6 +121,36 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
         peers: [],
       }),
     ),
+    listGroupActions: jest.fn(async () =>
+      Bindings.GroupActionListOutcome.Ready.new({ actions: [] }),
+    ),
+    getGroupAnnounceSettings: jest.fn(async () =>
+      Bindings.GroupAnnounceSettingsOutcome.Ready.new({ settings: { intervalMinutes: 60 } }),
+    ),
+    setGroupAnnounceSettings: jest.fn(async () => Bindings.GroupAnnounceSettingsOutcome.Busy.new()),
+    announceGroups: jest.fn(async () => Bindings.GroupAnnounceOutcome.Requested.new()),
+    prepareGroupAction: jest.fn(async () => Bindings.GroupActionOutcome.Busy.new()),
+    executeGroupAction: jest.fn(async () => Bindings.GroupActionOutcome.Busy.new()),
+    acknowledgeGroupAction: jest.fn(async () =>
+      Bindings.GroupActionAcknowledgeOutcome.NeedsReview.new(),
+    ),
+    discardExpiredGroupAction: jest.fn(async () =>
+      Bindings.GroupActionAcknowledgeOutcome.NeedsReview.new(),
+    ),
+    createGroupRequestId: jest.fn(async () =>
+      Bindings.GroupRequestIdOutcome.Ready.new({ clientRequestId: new Uint8Array(32).fill(1) }),
+    ),
+    createGroup: jest.fn(async () => Bindings.CreateGroupOutcome.Busy.new()),
+    inviteToGroup: jest.fn(async () => Bindings.InviteToGroupOutcome.Busy.new()),
+    listGroupInvitations: jest.fn(async () =>
+      Bindings.GroupInvitationListOutcome.Ready.new({ invitations: [] }),
+    ),
+    respondGroupInvitation: jest.fn(async () => Bindings.RespondGroupInvitationOutcome.Busy.new()),
+    listGroupConversations: jest.fn(async () =>
+      Bindings.GroupConversationListOutcome.NotProvisioned.new(),
+    ),
+    listGroupMessages: jest.fn(async () => Bindings.GroupMessageListOutcome.NotProvisioned.new()),
+    sendGroupText: jest.fn(async () => Bindings.GroupTextSendOutcome.NotProvisioned.new()),
     listLxmfConversations: jest.fn(async () =>
       Bindings.LxmfMessageListOutcome.Listed.new({ messages: [] }),
     ),

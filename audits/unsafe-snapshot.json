@@ -253,6 +253,16 @@
           "alloc",
           "getrandom",
           "rand_core"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "getrandom",
+          "rand_core"
         ]
       },
       "name": "aead",
@@ -342,6 +352,22 @@
           "zeroize"
         ],
         "group-secure-storage": [
+          "aes",
+          "alloc",
+          "default",
+          "getrandom",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-android": [
+          "aes",
+          "alloc",
+          "default",
+          "getrandom",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-ios": [
           "aes",
           "alloc",
           "default",
@@ -877,6 +903,12 @@
           "alloc"
         ],
         "group-secure-storage": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ]
       },
@@ -3084,6 +3116,12 @@
         ],
         "group-secure-storage": [
           "zeroize"
+        ],
+        "prns-app-android": [
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "zeroize"
         ]
       },
       "name": "chacha20",
@@ -3115,6 +3153,16 @@
           "rand_core"
         ],
         "group-secure-storage": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
+        "prns-app-ios": [
           "alloc",
           "getrandom",
           "rand_core"
@@ -3230,10 +3278,12 @@
           "block-padding"
         ],
         "prns-app-android": [
-          "block-padding"
+          "block-padding",
+          "zeroize"
         ],
         "prns-app-ios": [
-          "block-padding"
+          "block-padding",
+          "zeroize"
         ],
         "sdk-native-linux": [
           "block-padding"
@@ -3686,7 +3736,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "const-oid",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -4663,6 +4715,16 @@
           "generic-array",
           "rand_core",
           "zeroize"
+        ],
+        "prns-app-android": [
+          "generic-array",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "generic-array",
+          "rand_core",
+          "zeroize"
         ]
       },
       "name": "crypto-bigint",
@@ -4751,9 +4813,13 @@
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [
+          "getrandom",
+          "rand_core",
           "std"
         ],
         "prns-app-ios": [
+          "getrandom",
+          "rand_core",
           "std"
         ],
         "sdk-native-linux": [
@@ -4889,7 +4955,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "ctr",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -5006,6 +5074,16 @@
           "zeroize"
         ],
         "group-secure-storage": [
+          "alloc",
+          "digest",
+          "zeroize"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "digest",
+          "zeroize"
+        ],
+        "prns-app-ios": [
           "alloc",
           "digest",
           "zeroize"
@@ -5533,6 +5611,14 @@
         "group-secure-storage": [
           "default",
           "suggestions"
+        ],
+        "prns-app-android": [
+          "default",
+          "suggestions"
+        ],
+        "prns-app-ios": [
+          "default",
+          "suggestions"
         ]
       },
       "name": "darling",
@@ -5737,6 +5823,14 @@
         "group-secure-storage": [
           "strsim",
           "suggestions"
+        ],
+        "prns-app-android": [
+          "strsim",
+          "suggestions"
+        ],
+        "prns-app-ios": [
+          "strsim",
+          "suggestions"
         ]
       },
       "name": "darling_core",
@@ -5836,7 +5930,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "darling_macro",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -6148,6 +6244,18 @@
           "zeroize"
         ],
         "group-secure-storage": [
+          "alloc",
+          "oid",
+          "pem",
+          "zeroize"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "oid",
+          "pem",
+          "zeroize"
+        ],
+        "prns-app-ios": [
           "alloc",
           "oid",
           "pem",
@@ -6542,16 +6650,24 @@
         "prns-app-android": [
           "alloc",
           "block-buffer",
+          "const-oid",
           "core-api",
           "default",
-          "std"
+          "mac",
+          "oid",
+          "std",
+          "subtle"
         ],
         "prns-app-ios": [
           "alloc",
           "block-buffer",
+          "const-oid",
           "core-api",
           "default",
-          "std"
+          "mac",
+          "oid",
+          "std",
+          "subtle"
         ],
         "sdk-native-linux": [
           "alloc",
@@ -7300,6 +7416,32 @@
           "signing",
           "spki",
           "verifying"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "arithmetic",
+          "der",
+          "digest",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "rfc6979",
+          "signing",
+          "spki",
+          "verifying"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "arithmetic",
+          "der",
+          "digest",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "rfc6979",
+          "signing",
+          "spki",
+          "verifying"
         ]
       },
       "name": "ecdsa",
@@ -7325,6 +7467,12 @@
           "alloc"
         ],
         "group-secure-storage": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ]
       },
@@ -7469,6 +7617,16 @@
           "zeroize"
         ],
         "group-secure-storage": [
+          "alloc",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-ios": [
           "alloc",
           "rand_core",
           "zeroize"
@@ -7958,6 +8116,30 @@
           "sec1"
         ],
         "group-secure-storage": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ff",
+          "group",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "sec1"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ff",
+          "group",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "sec1"
+        ],
+        "prns-app-ios": [
           "alloc",
           "arithmetic",
           "digest",
@@ -11624,6 +11806,12 @@
         ],
         "group-secure-storage": [
           "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
+          "alloc"
         ]
       },
       "name": "ff",
@@ -14237,10 +14425,12 @@
           "more_lengths"
         ],
         "prns-app-android": [
-          "more_lengths"
+          "more_lengths",
+          "zeroize"
         ],
         "prns-app-ios": [
-          "more_lengths"
+          "more_lengths",
+          "zeroize"
         ],
         "sdk-native-linux": [
           "more_lengths"
@@ -14325,8 +14515,18 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
-        "prns-app-android": [],
-        "prns-app-ios": [],
+        "prns-app-android": [
+          "custom",
+          "js",
+          "js-sys",
+          "wasm-bindgen"
+        ],
+        "prns-app-ios": [
+          "custom",
+          "js",
+          "js-sys",
+          "wasm-bindgen"
+        ],
         "sdk-native-linux": []
       },
       "name": "getrandom",
@@ -14480,7 +14680,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "ghash",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -14505,6 +14707,12 @@
           "alloc"
         ],
         "group-secure-storage": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ]
       },
@@ -14929,7 +15137,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "hkdf",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -15002,6 +15212,12 @@
           "reset"
         ],
         "group-secure-storage": [
+          "reset"
+        ],
+        "prns-app-android": [
+          "reset"
+        ],
+        "prns-app-ios": [
           "reset"
         ]
       },
@@ -15805,6 +16021,8 @@
         "group-secure-storage": [],
         "host-c-linux": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "ident_case",
@@ -16443,6 +16661,16 @@
           "use_std"
         ],
         "host-c-linux": [
+          "default",
+          "use_alloc",
+          "use_std"
+        ],
+        "prns-app-android": [
+          "default",
+          "use_alloc",
+          "use_std"
+        ],
+        "prns-app-ios": [
           "default",
           "use_alloc",
           "use_std"
@@ -18171,6 +18399,12 @@
         ],
         "group-secure-storage": [
           "default"
+        ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
         ]
       },
       "name": "maybe-async",
@@ -18824,6 +19058,20 @@
           "out_of_order",
           "prior_epoch",
           "private_message"
+        ],
+        "prns-app-android": [
+          "by_ref_proposal",
+          "fast_serialize",
+          "out_of_order",
+          "prior_epoch",
+          "private_message"
+        ],
+        "prns-app-ios": [
+          "by_ref_proposal",
+          "fast_serialize",
+          "out_of_order",
+          "prior_epoch",
+          "private_message"
         ]
       },
       "name": "mls-rs",
@@ -18850,6 +19098,12 @@
         ],
         "group-secure-storage": [
           "preallocate"
+        ],
+        "prns-app-android": [
+          "preallocate"
+        ],
+        "prns-app-ios": [
+          "preallocate"
         ]
       },
       "name": "mls-rs-codec",
@@ -18868,7 +19122,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "mls-rs-codec-derive",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -18894,6 +19150,12 @@
         ],
         "group-secure-storage": [
           "fast_serialize"
+        ],
+        "prns-app-android": [
+          "fast_serialize"
+        ],
+        "prns-app-ios": [
+          "fast_serialize"
         ]
       },
       "name": "mls-rs-core",
@@ -18912,7 +19174,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "mls-rs-crypto-hpke",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -18930,7 +19194,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "mls-rs-crypto-rustcrypto",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -18948,7 +19214,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "mls-rs-crypto-traits",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -22619,7 +22887,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "opaque-debug",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -22771,6 +23041,30 @@
           "pkcs8",
           "sha2",
           "sha256"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha256"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha256"
         ]
       },
       "name": "p256",
@@ -22823,6 +23117,30 @@
           "sha384"
         ],
         "group-secure-storage": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha384"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha384"
+        ],
+        "prns-app-ios": [
           "alloc",
           "arithmetic",
           "digest",
@@ -22967,6 +23285,12 @@
           "alloc"
         ],
         "group-secure-storage": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ]
       },
@@ -24079,6 +24403,14 @@
         "group-secure-storage": [
           "alloc",
           "pem"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "pem"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "pem"
         ]
       },
       "name": "pkcs8",
@@ -24289,7 +24621,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "poly1305",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -24307,7 +24641,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "polyval",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -24551,12 +24887,14 @@
           "critical-section",
           "default",
           "fallback",
+          "require-cas",
           "std"
         ],
         "prns-app-ios": [
           "critical-section",
           "default",
           "fallback",
+          "require-cas",
           "std"
         ]
       },
@@ -24767,7 +25105,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "primeorder",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -24796,11 +25136,11 @@
       "name": "prns-app-native",
       "source": "applications/prns/native-composition",
       "unsafe": {
-        "blocks": 0,
-        "externs": 0,
+        "blocks": 2,
+        "externs": 2,
         "functions": 0,
         "impls": 0,
-        "tokens": 0
+        "tokens": 4
       },
       "version": "0.1.0"
     },
@@ -25287,6 +25627,7 @@
           "movable-frame-forwarding",
           "parallel-persistence",
           "parallel-resource-hash",
+          "path-diagnostics",
           "resource-work-offload",
           "rns-management-wire",
           "std",
@@ -25303,6 +25644,7 @@
           "movable-frame-forwarding",
           "parallel-persistence",
           "parallel-resource-hash",
+          "path-diagnostics",
           "resource-work-offload",
           "rns-management-wire",
           "std",
@@ -25399,7 +25741,9 @@
           "default"
         ],
         "prns-app-android": [],
-        "prns-app-ios": [],
+        "prns-app-ios": [
+          "log"
+        ],
         "sdk-native-linux": []
       },
       "name": "prns-ffi",
@@ -25432,7 +25776,9 @@
       "graphs": {
         "group-headless-peer": [],
         "group-libraries": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-group-text",
       "source": "prns-groups/profiles/text",
@@ -25450,7 +25796,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-groups",
       "source": "prns-groups/core",
@@ -25468,7 +25816,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-groups-mls",
       "source": "prns-groups/security/mls-rs",
@@ -25485,7 +25835,9 @@
       "graphs": {
         "group-headless-peer": [],
         "group-libraries": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-groups-reticulum",
       "source": "prns-groups/transport/reticulum",
@@ -25504,7 +25856,9 @@
           "headless"
         ],
         "group-libraries": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-groups-runner-native",
       "source": "prns-groups/runner/native",
@@ -25521,7 +25875,9 @@
       "graphs": {
         "group-headless-peer": [],
         "group-libraries": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-groups-service",
       "source": "prns-groups/service",
@@ -25549,6 +25905,12 @@
         "group-secure-storage": [
           "default",
           "secure"
+        ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
         ]
       },
       "name": "prns-groups-store",
@@ -25566,7 +25928,9 @@
       "graphs": {
         "group-headless-peer": [],
         "group-libraries": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-groups-store-native",
       "source": "prns-groups/store/native",
@@ -26511,6 +26875,7 @@
           "i2p",
           "interface-discovery",
           "kiss",
+          "log",
           "network-device-selection",
           "pipe",
           "rnode",
@@ -28199,7 +28564,15 @@
           "alloc",
           "getrandom"
         ],
-        "nrf52840": []
+        "nrf52840": [],
+        "prns-app-android": [
+          "alloc",
+          "getrandom"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "getrandom"
+        ]
       },
       "name": "rand_core",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -28622,7 +28995,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "rfc6979",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -29854,6 +30229,26 @@
           "point",
           "subtle",
           "zeroize"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "der",
+          "pem",
+          "pkcs8",
+          "point",
+          "subtle",
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "der",
+          "pem",
+          "pkcs8",
+          "point",
+          "subtle",
+          "zeroize"
         ]
       },
       "name": "sec1",
@@ -29879,6 +30274,12 @@
           "alloc"
         ],
         "group-secure-storage": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ]
       },
@@ -31163,7 +31564,9 @@
         "halow-appliance-manager": [
           "default",
           "std"
-        ]
+        ],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "sha2",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -31527,6 +31930,16 @@
           "rand_core"
         ],
         "group-secure-storage": [
+          "alloc",
+          "digest",
+          "rand_core"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "digest",
+          "rand_core"
+        ],
+        "prns-app-ios": [
           "alloc",
           "digest",
           "rand_core"
@@ -32583,6 +32996,18 @@
           "portable-atomic",
           "portable_atomic",
           "spin_mutex"
+        ],
+        "prns-app-android": [
+          "mutex",
+          "portable-atomic",
+          "portable_atomic",
+          "spin_mutex"
+        ],
+        "prns-app-ios": [
+          "mutex",
+          "portable-atomic",
+          "portable_atomic",
+          "spin_mutex"
         ]
       },
       "name": "spin",
@@ -32646,6 +33071,14 @@
         "group-secure-storage": [
           "mutex",
           "spin_mutex"
+        ],
+        "prns-app-android": [
+          "mutex",
+          "spin_mutex"
+        ],
+        "prns-app-ios": [
+          "mutex",
+          "spin_mutex"
         ]
       },
       "name": "spin",
@@ -32674,6 +33107,14 @@
           "pem"
         ],
         "group-secure-storage": [
+          "alloc",
+          "pem"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "pem"
+        ],
+        "prns-app-ios": [
           "alloc",
           "pem"
         ]
@@ -33161,6 +33602,8 @@
         "halow-headless": [],
         "host-c-linux": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "strsim",
@@ -33425,10 +33868,12 @@
           "const-generics"
         ],
         "prns-app-android": [
-          "const-generics"
+          "const-generics",
+          "i128"
         ],
         "prns-app-ios": [
-          "const-generics"
+          "const-generics",
+          "i128"
         ],
         "sdk-native-linux": [
           "const-generics"
@@ -37670,7 +38115,9 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "universal-hash",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -39351,6 +39798,14 @@
         "group-secure-storage": [
           "alloc",
           "static_secrets"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "static_secrets"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "static_secrets"
         ]
       },
       "name": "x25519-dalek",
@@ -40496,6 +40951,7 @@
     "personal-hopspot-android",
     "personal-hopspot-esp32",
     "personal-hopspot-ios",
+    "prns-app-native",
     "prns-core",
     "prns-expo-android",
     "prns-ffi",
