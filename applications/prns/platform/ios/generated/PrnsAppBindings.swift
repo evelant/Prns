@@ -602,6 +602,832 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
 }
 
 
+
+
+public protocol NamedIdentityClientProtocol: AnyObject, Sendable {
+
+    func markIdentityActivitySeen(input: MarkIdentityActivitySeenInput) async  -> IdentityActivitySeenOutcome
+
+    func readIdentityActivity() async  -> IdentityActivityOutcome
+
+    func announceGroups() async  -> GroupAnnounceOutcome
+
+    func announceLxmf() async  -> AnnounceLxmfOutcome
+
+    func getGroupAnnounceSettings() async  -> GroupAnnounceSettingsOutcome
+
+    func setGroupAnnounceSettings(settings: GroupAnnounceSettings) async  -> GroupAnnounceSettingsOutcome
+
+    func acknowledgeGroupAction(input: GroupActionReference) async  -> GroupActionAcknowledgeOutcome
+
+    func cancelLxmfMessage(input: CancelLxmfMessageInput) async  -> CancelLxmfMessageOutcome
+
+    func clearLxmfDiscovery() async  -> LxmfDiscoveryClearOutcome
+
+    func createGroup(input: CreateGroupInput) async  -> CreateGroupOutcome
+
+    func createManualContact(input: CreateManualContactInput) async  -> ContactMutationOutcome
+
+    func deleteContact(input: ContactDestinationInput) async  -> ContactMutationOutcome
+
+    func discardExpiredGroupAction(input: GroupActionReference) async  -> GroupActionAcknowledgeOutcome
+
+    func executeGroupAction(input: GroupActionReference) async  -> GroupActionOutcome
+
+    func getContact(input: ContactDestinationInput) async  -> ContactLookupOutcome
+
+    func inviteToGroup(input: InviteToGroupInput) async  -> InviteToGroupOutcome
+
+    func listContacts() async  -> ContactListOutcome
+
+    func listGroupActions() async  -> GroupActionListOutcome
+
+    func listGroupConversations() async  -> GroupConversationListOutcome
+
+    func listGroupInvitations() async  -> GroupInvitationListOutcome
+
+    func listGroupMessages(input: ListGroupMessagesInput) async  -> GroupMessageListOutcome
+
+    func listLxmfConversations(input: ListLxmfConversationsInput) async  -> LxmfMessageListOutcome
+
+    func listLxmfMessages(input: ListLxmfMessagesInput) async  -> LxmfMessageListOutcome
+
+    func listLxmfPeers() async  -> LxmfPeerListOutcome
+
+    func measureLxmfText(input: MeasureLxmfTextInput) async  -> MeasureLxmfTextOutcome
+
+    func prepareGroupAction(input: PrepareGroupActionInput) async  -> GroupActionOutcome
+
+    func readMessagingProfile() async  -> LocalMessagingProfileOutcome
+
+    func respondGroupInvitation(input: RespondGroupInvitationInput) async  -> RespondGroupInvitationOutcome
+
+    func retryLxmfMessage(input: RetryLxmfMessageInput) async  -> RetryLxmfMessageOutcome
+
+    func saveDiscoveredContact(input: ContactDestinationInput) async  -> ContactMutationOutcome
+
+    func saveObservedDestination(input: ContactDestinationInput) async  -> ContactMutationOutcome
+
+    func sendDirectText(input: SendDirectTextInput) async  -> SendDirectTextOutcome
+
+    func sendGroupText(input: SendGroupTextInput) async  -> GroupTextSendOutcome
+
+    func setContactAlias(input: SetContactAliasInput) async  -> ContactMutationOutcome
+
+    func setContactPinned(input: SetContactPinnedInput) async  -> ContactMutationOutcome
+
+    func setMessagingName(name: String) async  -> LocalMessagingProfileOutcome
+
+}
+open class NamedIdentityClient: NamedIdentityClientProtocol, @unchecked Sendable {
+    fileprivate let handle: UInt64
+
+    /// Used to instantiate a [FFIObject] without an actual handle, for fakes in tests, mostly.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public struct NoHandle {
+        public init() {}
+    }
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    required public init(unsafeFromHandle handle: UInt64) {
+        self.handle = handle
+    }
+
+    // This constructor can be used to instantiate a fake object.
+    // - Parameter noHandle: Placeholder value so we can have a constructor separate from the default empty one that may be implemented for classes extending [FFIObject].
+    //
+    // - Warning:
+    //     Any object instantiated with this constructor cannot be passed to an actual Rust-backed object. Since there isn't a backing handle the FFI lower functions will crash.
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public init(noHandle: NoHandle) {
+        self.handle = 0
+    }
+
+#if swift(>=5.8)
+    @_documentation(visibility: private)
+#endif
+    public func uniffiCloneHandle() -> UInt64 {
+        return try! rustCall { uniffi_prns_app_fn_clone_namedidentityclient(self.handle, $0) }
+    }
+    // No primary constructor declared for this class.
+
+    deinit {
+        if handle == 0 {
+            // Mock objects have handle=0 don't try to free them
+            return
+        }
+
+        try! rustCall { uniffi_prns_app_fn_free_namedidentityclient(handle, $0) }
+    }
+
+
+
+
+open func markIdentityActivitySeen(input: MarkIdentityActivitySeenInput)async  -> IdentityActivitySeenOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_mark_identity_activity_seen(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeMarkIdentityActivitySeenInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeIdentityActivitySeenOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func readIdentityActivity()async  -> IdentityActivityOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_read_identity_activity(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeIdentityActivityOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func announceGroups()async  -> GroupAnnounceOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_announce_groups(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupAnnounceOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func announceLxmf()async  -> AnnounceLxmfOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_announce_lxmf(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeAnnounceLxmfOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func getGroupAnnounceSettings()async  -> GroupAnnounceSettingsOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupAnnounceSettingsOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func setGroupAnnounceSettings(settings: GroupAnnounceSettings)async  -> GroupAnnounceSettingsOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_set_group_announce_settings(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeGroupAnnounceSettings_lower(settings)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupAnnounceSettingsOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func acknowledgeGroupAction(input: GroupActionReference)async  -> GroupActionAcknowledgeOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_acknowledge_group_action(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeGroupActionReference_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupActionAcknowledgeOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func cancelLxmfMessage(input: CancelLxmfMessageInput)async  -> CancelLxmfMessageOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_cancel_lxmf_message(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeCancelLxmfMessageInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeCancelLxmfMessageOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func clearLxmfDiscovery()async  -> LxmfDiscoveryClearOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_clear_lxmf_discovery(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLxmfDiscoveryClearOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func createGroup(input: CreateGroupInput)async  -> CreateGroupOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_create_group(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeCreateGroupInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeCreateGroupOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func createManualContact(input: CreateManualContactInput)async  -> ContactMutationOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_create_manual_contact(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeCreateManualContactInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactMutationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func deleteContact(input: ContactDestinationInput)async  -> ContactMutationOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_delete_contact(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeContactDestinationInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactMutationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func discardExpiredGroupAction(input: GroupActionReference)async  -> GroupActionAcknowledgeOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group_action(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeGroupActionReference_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupActionAcknowledgeOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func executeGroupAction(input: GroupActionReference)async  -> GroupActionOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_execute_group_action(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeGroupActionReference_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupActionOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func getContact(input: ContactDestinationInput)async  -> ContactLookupOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_get_contact(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeContactDestinationInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactLookupOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func inviteToGroup(input: InviteToGroupInput)async  -> InviteToGroupOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_invite_to_group(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeInviteToGroupInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeInviteToGroupOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listContacts()async  -> ContactListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_contacts(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listGroupActions()async  -> GroupActionListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_group_actions(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupActionListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listGroupConversations()async  -> GroupConversationListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_group_conversations(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupConversationListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listGroupInvitations()async  -> GroupInvitationListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_group_invitations(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupInvitationListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listGroupMessages(input: ListGroupMessagesInput)async  -> GroupMessageListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_group_messages(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeListGroupMessagesInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupMessageListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listLxmfConversations(input: ListLxmfConversationsInput)async  -> LxmfMessageListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_conversations(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeListLxmfConversationsInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLxmfMessageListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listLxmfMessages(input: ListLxmfMessagesInput)async  -> LxmfMessageListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_messages(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeListLxmfMessagesInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLxmfMessageListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func listLxmfPeers()async  -> LxmfPeerListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_peers(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLxmfPeerListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func measureLxmfText(input: MeasureLxmfTextInput)async  -> MeasureLxmfTextOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_measure_lxmf_text(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeMeasureLxmfTextInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeMeasureLxmfTextOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func prepareGroupAction(input: PrepareGroupActionInput)async  -> GroupActionOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_prepare_group_action(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypePrepareGroupActionInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupActionOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func readMessagingProfile()async  -> LocalMessagingProfileOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_read_messaging_profile(
+                    self.uniffiCloneHandle()
+
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLocalMessagingProfileOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func respondGroupInvitation(input: RespondGroupInvitationInput)async  -> RespondGroupInvitationOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_respond_group_invitation(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeRespondGroupInvitationInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeRespondGroupInvitationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func retryLxmfMessage(input: RetryLxmfMessageInput)async  -> RetryLxmfMessageOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_retry_lxmf_message(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeRetryLxmfMessageInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeRetryLxmfMessageOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func saveDiscoveredContact(input: ContactDestinationInput)async  -> ContactMutationOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_save_discovered_contact(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeContactDestinationInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactMutationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func saveObservedDestination(input: ContactDestinationInput)async  -> ContactMutationOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_save_observed_destination(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeContactDestinationInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactMutationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func sendDirectText(input: SendDirectTextInput)async  -> SendDirectTextOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_send_direct_text(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeSendDirectTextInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeSendDirectTextOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func sendGroupText(input: SendGroupTextInput)async  -> GroupTextSendOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_send_group_text(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeSendGroupTextInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeGroupTextSendOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func setContactAlias(input: SetContactAliasInput)async  -> ContactMutationOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_set_contact_alias(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeSetContactAliasInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactMutationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func setContactPinned(input: SetContactPinnedInput)async  -> ContactMutationOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeSetContactPinnedInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactMutationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func setMessagingName(name: String)async  -> LocalMessagingProfileOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(
+                    self.uniffiCloneHandle(),
+                    FfiConverterString.lower(name)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLocalMessagingProfileOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+
+
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityClient: FfiConverter {
+    typealias FfiType = UInt64
+    typealias SwiftType = NamedIdentityClient
+
+    public static func lift(_ handle: UInt64) throws -> NamedIdentityClient {
+        return NamedIdentityClient(unsafeFromHandle: handle)
+    }
+
+    public static func lower(_ value: NamedIdentityClient) -> UInt64 {
+        return value.uniffiCloneHandle()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityClient {
+        let handle: UInt64 = try readInt(&buf)
+        return try lift(handle)
+    }
+
+    public static func write(_ value: NamedIdentityClient, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityClient_lift(_ handle: UInt64) throws -> NamedIdentityClient {
+    return try FfiConverterTypeNamedIdentityClient.lift(handle)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityClient_lower(_ value: NamedIdentityClient) -> UInt64 {
+    return FfiConverterTypeNamedIdentityClient.lower(value)
+}
+
+
+
+
 public struct AnnounceRemoteControlTargetInput: Equatable, Hashable {
     public var targetIdentityFingerprint: Data
 
@@ -756,6 +1582,60 @@ public func FfiConverterTypeCancelLxmfMessageInput_lift(_ buf: RustBuffer) throw
 #endif
 public func FfiConverterTypeCancelLxmfMessageInput_lower(_ value: CancelLxmfMessageInput) -> RustBuffer {
     return FfiConverterTypeCancelLxmfMessageInput.lower(value)
+}
+
+
+public struct ChangeNamedIdentityInput: Equatable, Hashable {
+    public var identity: NamedIdentityReference
+    public var change: NamedIdentityChange
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(identity: NamedIdentityReference, change: NamedIdentityChange) {
+        self.identity = identity
+        self.change = change
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ChangeNamedIdentityInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeChangeNamedIdentityInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ChangeNamedIdentityInput {
+        return
+            try ChangeNamedIdentityInput(
+                identity: FfiConverterTypeNamedIdentityReference.read(from: &buf),
+                change: FfiConverterTypeNamedIdentityChange.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ChangeNamedIdentityInput, into buf: inout [UInt8]) {
+        FfiConverterTypeNamedIdentityReference.write(value.identity, into: &buf)
+        FfiConverterTypeNamedIdentityChange.write(value.change, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeChangeNamedIdentityInput_lift(_ buf: RustBuffer) throws -> ChangeNamedIdentityInput {
+    return try FfiConverterTypeChangeNamedIdentityInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeChangeNamedIdentityInput_lower(_ value: ChangeNamedIdentityInput) -> RustBuffer {
+    return FfiConverterTypeChangeNamedIdentityInput.lower(value)
 }
 
 
@@ -1092,6 +1972,64 @@ public func FfiConverterTypeCreateManualContactInput_lift(_ buf: RustBuffer) thr
 #endif
 public func FfiConverterTypeCreateManualContactInput_lower(_ value: CreateManualContactInput) -> RustBuffer {
     return FfiConverterTypeCreateManualContactInput.lower(value)
+}
+
+
+public struct CreateNamedIdentityInput: Equatable, Hashable {
+    public var requestId: Bytes32
+    public var label: String
+    public var publishedName: String?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(requestId: Bytes32, label: String, publishedName: String?) {
+        self.requestId = requestId
+        self.label = label
+        self.publishedName = publishedName
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension CreateNamedIdentityInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeCreateNamedIdentityInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CreateNamedIdentityInput {
+        return
+            try CreateNamedIdentityInput(
+                requestId: FfiConverterTypeBytes32.read(from: &buf),
+                label: FfiConverterString.read(from: &buf),
+                publishedName: FfiConverterOptionString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: CreateNamedIdentityInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes32.write(value.requestId, into: &buf)
+        FfiConverterString.write(value.label, into: &buf)
+        FfiConverterOptionString.write(value.publishedName, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCreateNamedIdentityInput_lift(_ buf: RustBuffer) throws -> CreateNamedIdentityInput {
+    return try FfiConverterTypeCreateNamedIdentityInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCreateNamedIdentityInput_lower(_ value: CreateNamedIdentityInput) -> RustBuffer {
+    return FfiConverterTypeCreateNamedIdentityInput.lower(value)
 }
 
 
@@ -2139,6 +3077,144 @@ public func FfiConverterTypeGroupTextMessage_lower(_ value: GroupTextMessage) ->
 }
 
 
+public struct IdentityActivitySummary: Equatable, Hashable {
+    public var actionableInvitations: UInt32
+    public var unreadGroups: UInt32
+    public var unreadDirect: UInt32
+    public var conversations: [IdentityConversationActivity]
+    /**
+     * The bounded retained-record scan omitted older content or conversations.
+     * Counts are lower bounds when true, never evidence of an empty inbox.
+     */
+    public var partial: Bool
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(actionableInvitations: UInt32, unreadGroups: UInt32, unreadDirect: UInt32, conversations: [IdentityConversationActivity],
+        /**
+         * The bounded retained-record scan omitted older content or conversations.
+         * Counts are lower bounds when true, never evidence of an empty inbox.
+         */partial: Bool) {
+        self.actionableInvitations = actionableInvitations
+        self.unreadGroups = unreadGroups
+        self.unreadDirect = unreadDirect
+        self.conversations = conversations
+        self.partial = partial
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension IdentityActivitySummary: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeIdentityActivitySummary: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IdentityActivitySummary {
+        return
+            try IdentityActivitySummary(
+                actionableInvitations: FfiConverterUInt32.read(from: &buf),
+                unreadGroups: FfiConverterUInt32.read(from: &buf),
+                unreadDirect: FfiConverterUInt32.read(from: &buf),
+                conversations: FfiConverterSequenceTypeIdentityConversationActivity.read(from: &buf),
+                partial: FfiConverterBool.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: IdentityActivitySummary, into buf: inout [UInt8]) {
+        FfiConverterUInt32.write(value.actionableInvitations, into: &buf)
+        FfiConverterUInt32.write(value.unreadGroups, into: &buf)
+        FfiConverterUInt32.write(value.unreadDirect, into: &buf)
+        FfiConverterSequenceTypeIdentityConversationActivity.write(value.conversations, into: &buf)
+        FfiConverterBool.write(value.partial, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivitySummary_lift(_ buf: RustBuffer) throws -> IdentityActivitySummary {
+    return try FfiConverterTypeIdentityActivitySummary.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivitySummary_lower(_ value: IdentityActivitySummary) -> RustBuffer {
+    return FfiConverterTypeIdentityActivitySummary.lower(value)
+}
+
+
+public struct IdentityConversationActivity: Equatable, Hashable {
+    public var scope: IdentityActivityScope
+    public var unreadCount: UInt32
+    /**
+     * Durable local record position. A screen acknowledges only positions it displayed.
+     */
+    public var throughSequence: UInt64
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(scope: IdentityActivityScope, unreadCount: UInt32,
+        /**
+         * Durable local record position. A screen acknowledges only positions it displayed.
+         */throughSequence: UInt64) {
+        self.scope = scope
+        self.unreadCount = unreadCount
+        self.throughSequence = throughSequence
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension IdentityConversationActivity: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeIdentityConversationActivity: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IdentityConversationActivity {
+        return
+            try IdentityConversationActivity(
+                scope: FfiConverterTypeIdentityActivityScope.read(from: &buf),
+                unreadCount: FfiConverterUInt32.read(from: &buf),
+                throughSequence: FfiConverterUInt64.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: IdentityConversationActivity, into buf: inout [UInt8]) {
+        FfiConverterTypeIdentityActivityScope.write(value.scope, into: &buf)
+        FfiConverterUInt32.write(value.unreadCount, into: &buf)
+        FfiConverterUInt64.write(value.throughSequence, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityConversationActivity_lift(_ buf: RustBuffer) throws -> IdentityConversationActivity {
+    return try FfiConverterTypeIdentityConversationActivity.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityConversationActivity_lower(_ value: IdentityConversationActivity) -> RustBuffer {
+    return FfiConverterTypeIdentityConversationActivity.lower(value)
+}
+
+
 public struct InitiateRemoteControlPairingInput: Equatable, Hashable {
     public var candidateId: String
     public var invitationCode: String
@@ -3165,6 +4241,60 @@ public func FfiConverterTypeLxmfPeerSummary_lower(_ value: LxmfPeerSummary) -> R
 }
 
 
+public struct MarkIdentityActivitySeenInput: Equatable, Hashable {
+    public var scope: IdentityActivityScope
+    public var throughSequence: UInt64
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(scope: IdentityActivityScope, throughSequence: UInt64) {
+        self.scope = scope
+        self.throughSequence = throughSequence
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension MarkIdentityActivitySeenInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeMarkIdentityActivitySeenInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> MarkIdentityActivitySeenInput {
+        return
+            try MarkIdentityActivitySeenInput(
+                scope: FfiConverterTypeIdentityActivityScope.read(from: &buf),
+                throughSequence: FfiConverterUInt64.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: MarkIdentityActivitySeenInput, into buf: inout [UInt8]) {
+        FfiConverterTypeIdentityActivityScope.write(value.scope, into: &buf)
+        FfiConverterUInt64.write(value.throughSequence, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeMarkIdentityActivitySeenInput_lift(_ buf: RustBuffer) throws -> MarkIdentityActivitySeenInput {
+    return try FfiConverterTypeMarkIdentityActivitySeenInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeMarkIdentityActivitySeenInput_lower(_ value: MarkIdentityActivitySeenInput) -> RustBuffer {
+    return FfiConverterTypeMarkIdentityActivitySeenInput.lower(value)
+}
+
+
 public struct MeasureLxmfTextInput: Equatable, Hashable {
     public var title: String
     public var content: String
@@ -3216,6 +4346,248 @@ public func FfiConverterTypeMeasureLxmfTextInput_lift(_ buf: RustBuffer) throws 
 #endif
 public func FfiConverterTypeMeasureLxmfTextInput_lower(_ value: MeasureLxmfTextInput) -> RustBuffer {
     return FfiConverterTypeMeasureLxmfTextInput.lower(value)
+}
+
+
+public struct NamedIdentityActivity: Equatable, Hashable {
+    public var identity: NamedIdentityReference
+    public var activity: IdentityActivityOutcome
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(identity: NamedIdentityReference, activity: IdentityActivityOutcome) {
+        self.identity = identity
+        self.activity = activity
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentityActivity: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityActivity: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityActivity {
+        return
+            try NamedIdentityActivity(
+                identity: FfiConverterTypeNamedIdentityReference.read(from: &buf),
+                activity: FfiConverterTypeIdentityActivityOutcome.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: NamedIdentityActivity, into buf: inout [UInt8]) {
+        FfiConverterTypeNamedIdentityReference.write(value.identity, into: &buf)
+        FfiConverterTypeIdentityActivityOutcome.write(value.activity, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityActivity_lift(_ buf: RustBuffer) throws -> NamedIdentityActivity {
+    return try FfiConverterTypeNamedIdentityActivity.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityActivity_lower(_ value: NamedIdentityActivity) -> RustBuffer {
+    return FfiConverterTypeNamedIdentityActivity.lower(value)
+}
+
+
+public struct NamedIdentityCatalog: Equatable, Hashable {
+    public var identities: [NamedIdentitySummary]
+    public var selected: NamedIdentityReference?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(identities: [NamedIdentitySummary], selected: NamedIdentityReference?) {
+        self.identities = identities
+        self.selected = selected
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentityCatalog: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityCatalog: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityCatalog {
+        return
+            try NamedIdentityCatalog(
+                identities: FfiConverterSequenceTypeNamedIdentitySummary.read(from: &buf),
+                selected: FfiConverterOptionTypeNamedIdentityReference.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: NamedIdentityCatalog, into buf: inout [UInt8]) {
+        FfiConverterSequenceTypeNamedIdentitySummary.write(value.identities, into: &buf)
+        FfiConverterOptionTypeNamedIdentityReference.write(value.selected, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityCatalog_lift(_ buf: RustBuffer) throws -> NamedIdentityCatalog {
+    return try FfiConverterTypeNamedIdentityCatalog.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityCatalog_lower(_ value: NamedIdentityCatalog) -> RustBuffer {
+    return FfiConverterTypeNamedIdentityCatalog.lower(value)
+}
+
+
+public struct NamedIdentityReference: Equatable, Hashable {
+    public var incarnation: Bytes16
+    public var sequence: UInt64
+    public var publicHash: Bytes16
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(incarnation: Bytes16, sequence: UInt64, publicHash: Bytes16) {
+        self.incarnation = incarnation
+        self.sequence = sequence
+        self.publicHash = publicHash
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentityReference: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityReference: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityReference {
+        return
+            try NamedIdentityReference(
+                incarnation: FfiConverterTypeBytes16.read(from: &buf),
+                sequence: FfiConverterUInt64.read(from: &buf),
+                publicHash: FfiConverterTypeBytes16.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: NamedIdentityReference, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes16.write(value.incarnation, into: &buf)
+        FfiConverterUInt64.write(value.sequence, into: &buf)
+        FfiConverterTypeBytes16.write(value.publicHash, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityReference_lift(_ buf: RustBuffer) throws -> NamedIdentityReference {
+    return try FfiConverterTypeNamedIdentityReference.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityReference_lower(_ value: NamedIdentityReference) -> RustBuffer {
+    return FfiConverterTypeNamedIdentityReference.lower(value)
+}
+
+
+public struct NamedIdentitySummary: Equatable, Hashable {
+    public var reference: NamedIdentityReference
+    public var label: String
+    public var publishedName: String?
+    public var state: NamedIdentityState
+    /**
+     * Desired state is durable, but service activation or drainage remains.
+     */
+    public var transitioning: Bool
+    public var ready: Bool
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(reference: NamedIdentityReference, label: String, publishedName: String?, state: NamedIdentityState,
+        /**
+         * Desired state is durable, but service activation or drainage remains.
+         */transitioning: Bool, ready: Bool) {
+        self.reference = reference
+        self.label = label
+        self.publishedName = publishedName
+        self.state = state
+        self.transitioning = transitioning
+        self.ready = ready
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentitySummary: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentitySummary: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentitySummary {
+        return
+            try NamedIdentitySummary(
+                reference: FfiConverterTypeNamedIdentityReference.read(from: &buf),
+                label: FfiConverterString.read(from: &buf),
+                publishedName: FfiConverterOptionString.read(from: &buf),
+                state: FfiConverterTypeNamedIdentityState.read(from: &buf),
+                transitioning: FfiConverterBool.read(from: &buf),
+                ready: FfiConverterBool.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: NamedIdentitySummary, into buf: inout [UInt8]) {
+        FfiConverterTypeNamedIdentityReference.write(value.reference, into: &buf)
+        FfiConverterString.write(value.label, into: &buf)
+        FfiConverterOptionString.write(value.publishedName, into: &buf)
+        FfiConverterTypeNamedIdentityState.write(value.state, into: &buf)
+        FfiConverterBool.write(value.transitioning, into: &buf)
+        FfiConverterBool.write(value.ready, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentitySummary_lift(_ buf: RustBuffer) throws -> NamedIdentitySummary {
+    return try FfiConverterTypeNamedIdentitySummary.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentitySummary_lower(_ value: NamedIdentitySummary) -> RustBuffer {
+    return FfiConverterTypeNamedIdentitySummary.lower(value)
 }
 
 
@@ -8016,6 +9388,242 @@ public func FfiConverterTypeGroupTextSendOutcome_lower(_ value: GroupTextSendOut
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 
+public enum IdentityActivityOutcome: Equatable, Hashable {
+
+    case ready(summary: IdentityActivitySummary
+    )
+    case unavailable(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension IdentityActivityOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeIdentityActivityOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = IdentityActivityOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IdentityActivityOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(summary: try FfiConverterTypeIdentityActivitySummary.read(from: &buf)
+        )
+
+        case 2: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: IdentityActivityOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(summary):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeIdentityActivitySummary.write(summary, into: &buf)
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivityOutcome_lift(_ buf: RustBuffer) throws -> IdentityActivityOutcome {
+    return try FfiConverterTypeIdentityActivityOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivityOutcome_lower(_ value: IdentityActivityOutcome) -> RustBuffer {
+    return FfiConverterTypeIdentityActivityOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+/**
+ * Local conversation ownership; never a combined history or network receipt.
+ */
+
+public enum IdentityActivityScope: Equatable, Hashable {
+
+    case group(groupId: Bytes32
+    )
+    case direct(destination: Bytes16
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension IdentityActivityScope: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeIdentityActivityScope: FfiConverterRustBuffer {
+    typealias SwiftType = IdentityActivityScope
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IdentityActivityScope {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .group(groupId: try FfiConverterTypeBytes32.read(from: &buf)
+        )
+
+        case 2: return .direct(destination: try FfiConverterTypeBytes16.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: IdentityActivityScope, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .group(groupId):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeBytes32.write(groupId, into: &buf)
+
+
+        case let .direct(destination):
+            writeInt(&buf, Int32(2))
+            FfiConverterTypeBytes16.write(destination, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivityScope_lift(_ buf: RustBuffer) throws -> IdentityActivityScope {
+    return try FfiConverterTypeIdentityActivityScope.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivityScope_lower(_ value: IdentityActivityScope) -> RustBuffer {
+    return FfiConverterTypeIdentityActivityScope.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum IdentityActivitySeenOutcome: Equatable, Hashable {
+
+    case saved
+    case capacity
+    case invalidInput(detail: String
+    )
+    case unavailable(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension IdentityActivitySeenOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeIdentityActivitySeenOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = IdentityActivitySeenOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> IdentityActivitySeenOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .saved
+
+        case 2: return .capacity
+
+        case 3: return .invalidInput(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 4: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: IdentityActivitySeenOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case .saved:
+            writeInt(&buf, Int32(1))
+
+
+        case .capacity:
+            writeInt(&buf, Int32(2))
+
+
+        case let .invalidInput(detail):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(4))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivitySeenOutcome_lift(_ buf: RustBuffer) throws -> IdentityActivitySeenOutcome {
+    return try FfiConverterTypeIdentityActivitySeenOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeIdentityActivitySeenOutcome_lower(_ value: IdentityActivitySeenOutcome) -> RustBuffer {
+    return FfiConverterTypeIdentityActivitySeenOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
 public enum IdentityCreationOutcome: Equatable, Hashable {
 
     case created(identityHash: Data
@@ -9598,6 +11206,334 @@ public func FfiConverterTypeMeasureLxmfTextOutcome_lift(_ buf: RustBuffer) throw
 #endif
 public func FfiConverterTypeMeasureLxmfTextOutcome_lower(_ value: MeasureLxmfTextOutcome) -> RustBuffer {
     return FfiConverterTypeMeasureLxmfTextOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum NamedIdentityActivityListOutcome: Equatable, Hashable {
+
+    case ready(activities: [NamedIdentityActivity]
+    )
+    case busy
+    case unavailable(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentityActivityListOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityActivityListOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = NamedIdentityActivityListOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityActivityListOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(activities: try FfiConverterSequenceTypeNamedIdentityActivity.read(from: &buf)
+        )
+
+        case 2: return .busy
+
+        case 3: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: NamedIdentityActivityListOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(activities):
+            writeInt(&buf, Int32(1))
+            FfiConverterSequenceTypeNamedIdentityActivity.write(activities, into: &buf)
+
+
+        case .busy:
+            writeInt(&buf, Int32(2))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityActivityListOutcome_lift(_ buf: RustBuffer) throws -> NamedIdentityActivityListOutcome {
+    return try FfiConverterTypeNamedIdentityActivityListOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityActivityListOutcome_lower(_ value: NamedIdentityActivityListOutcome) -> RustBuffer {
+    return FfiConverterTypeNamedIdentityActivityListOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum NamedIdentityCatalogOutcome: Equatable, Hashable {
+
+    case ready(catalog: NamedIdentityCatalog
+    )
+    case busy
+    case unavailable(detail: String
+    )
+    case rejected(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentityCatalogOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityCatalogOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = NamedIdentityCatalogOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityCatalogOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(catalog: try FfiConverterTypeNamedIdentityCatalog.read(from: &buf)
+        )
+
+        case 2: return .busy
+
+        case 3: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 4: return .rejected(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: NamedIdentityCatalogOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(catalog):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeNamedIdentityCatalog.write(catalog, into: &buf)
+
+
+        case .busy:
+            writeInt(&buf, Int32(2))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case let .rejected(detail):
+            writeInt(&buf, Int32(4))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityCatalogOutcome_lift(_ buf: RustBuffer) throws -> NamedIdentityCatalogOutcome {
+    return try FfiConverterTypeNamedIdentityCatalogOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityCatalogOutcome_lower(_ value: NamedIdentityCatalogOutcome) -> RustBuffer {
+    return FfiConverterTypeNamedIdentityCatalogOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum NamedIdentityChange: Equatable, Hashable {
+
+    case select
+    case rename(label: String
+    )
+    case pause
+    case resume
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentityChange: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityChange: FfiConverterRustBuffer {
+    typealias SwiftType = NamedIdentityChange
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityChange {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .select
+
+        case 2: return .rename(label: try FfiConverterString.read(from: &buf)
+        )
+
+        case 3: return .pause
+
+        case 4: return .resume
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: NamedIdentityChange, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case .select:
+            writeInt(&buf, Int32(1))
+
+
+        case let .rename(label):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(label, into: &buf)
+
+
+        case .pause:
+            writeInt(&buf, Int32(3))
+
+
+        case .resume:
+            writeInt(&buf, Int32(4))
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityChange_lift(_ buf: RustBuffer) throws -> NamedIdentityChange {
+    return try FfiConverterTypeNamedIdentityChange.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityChange_lower(_ value: NamedIdentityChange) -> RustBuffer {
+    return FfiConverterTypeNamedIdentityChange.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum NamedIdentityState: Equatable, Hashable {
+
+    case enabled
+    case paused
+    case retired
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension NamedIdentityState: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeNamedIdentityState: FfiConverterRustBuffer {
+    typealias SwiftType = NamedIdentityState
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> NamedIdentityState {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .enabled
+
+        case 2: return .paused
+
+        case 3: return .retired
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: NamedIdentityState, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case .enabled:
+            writeInt(&buf, Int32(1))
+
+
+        case .paused:
+            writeInt(&buf, Int32(2))
+
+
+        case .retired:
+            writeInt(&buf, Int32(3))
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityState_lift(_ buf: RustBuffer) throws -> NamedIdentityState {
+    return try FfiConverterTypeNamedIdentityState.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeNamedIdentityState_lower(_ value: NamedIdentityState) -> RustBuffer {
+    return FfiConverterTypeNamedIdentityState.lower(value)
 }
 
 
@@ -13717,6 +15653,30 @@ fileprivate struct FfiConverterOptionTypeDevelopmentNodeOperation: FfiConverterR
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeNamedIdentityReference: FfiConverterRustBuffer {
+    typealias SwiftType = NamedIdentityReference?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeNamedIdentityReference.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeNamedIdentityReference.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeRemoteChangeOperation: FfiConverterRustBuffer {
     typealias SwiftType = RemoteChangeOperation?
 
@@ -14158,6 +16118,31 @@ fileprivate struct FfiConverterSequenceTypeGroupTextMessage: FfiConverterRustBuf
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterSequenceTypeIdentityConversationActivity: FfiConverterRustBuffer {
+    typealias SwiftType = [IdentityConversationActivity]
+
+    public static func write(_ value: [IdentityConversationActivity], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeIdentityConversationActivity.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [IdentityConversationActivity] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [IdentityConversationActivity]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeIdentityConversationActivity.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterSequenceTypeLocalAnnounceActivity: FfiConverterRustBuffer {
     typealias SwiftType = [LocalAnnounceActivity]
 
@@ -14275,6 +16260,56 @@ fileprivate struct FfiConverterSequenceTypeLxmfPeerSummary: FfiConverterRustBuff
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             seq.append(try FfiConverterTypeLxmfPeerSummary.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeNamedIdentityActivity: FfiConverterRustBuffer {
+    typealias SwiftType = [NamedIdentityActivity]
+
+    public static func write(_ value: [NamedIdentityActivity], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeNamedIdentityActivity.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [NamedIdentityActivity] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [NamedIdentityActivity]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeNamedIdentityActivity.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeNamedIdentitySummary: FfiConverterRustBuffer {
+    typealias SwiftType = [NamedIdentitySummary]
+
+    public static func write(_ value: [NamedIdentitySummary], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeNamedIdentitySummary.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [NamedIdentitySummary] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [NamedIdentitySummary]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeNamedIdentitySummary.read(from: &buf))
         }
         return seq
     }
@@ -15561,6 +17596,73 @@ public func startRemoteWifiTrial(input: StartRemoteWifiTrialInput)async  -> Remo
 
         )
 }
+public func changeNamedIdentity(input: ChangeNamedIdentityInput)async  -> NamedIdentityCatalogOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_change_named_identity(FfiConverterTypeChangeNamedIdentityInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeNamedIdentityCatalogOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+public func createNamedIdentity(input: CreateNamedIdentityInput)async  -> NamedIdentityCatalogOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_create_named_identity(FfiConverterTypeCreateNamedIdentityInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeNamedIdentityCatalogOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+public func listNamedIdentities()async  -> NamedIdentityCatalogOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_list_named_identities(
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeNamedIdentityCatalogOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+public func openNamedIdentity(identity: NamedIdentityReference) -> NamedIdentityClient  {
+    return try!  FfiConverterTypeNamedIdentityClient_lift(try! rustCall() {
+    uniffi_prns_app_fn_func_open_named_identity(
+        FfiConverterTypeNamedIdentityReference_lower(identity),$0
+    )
+})
+}
+public func listNamedIdentityActivity()async  -> NamedIdentityActivityListOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_list_named_identity_activity(
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeNamedIdentityActivityListOutcome_lift,
+            errorHandler: nil
+
+        )
+}
 
 private enum InitializationResult {
     case ok
@@ -15758,6 +17860,129 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_start_remote_wifi_trial() != 55182) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_change_named_identity() != 19035) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_create_named_identity() != 29474) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_list_named_identities() != 64877) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_open_named_identity() != 2583) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_list_named_identity_activity() != 22492) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_mark_identity_activity_seen() != 4206) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_read_identity_activity() != 1356) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_announce_groups() != 37425) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_announce_lxmf() != 64764) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings() != 61059) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings() != 61970) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_acknowledge_group_action() != 61619) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_cancel_lxmf_message() != 53942) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_clear_lxmf_discovery() != 33714) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_create_group() != 19023) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_create_manual_contact() != 53628) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_delete_contact() != 624) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action() != 35173) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action() != 10060) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_get_contact() != 53127) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group() != 53768) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_contacts() != 2658) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions() != 40375) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_group_conversations() != 58580) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_group_invitations() != 11856) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_group_messages() != 17077) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_conversations() != 23246) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_messages() != 29606) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_peers() != 51104) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_measure_lxmf_text() != 51426) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_prepare_group_action() != 59105) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_read_messaging_profile() != 54562) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_respond_group_invitation() != 59463) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_retry_lxmf_message() != 18792) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_save_discovered_contact() != 62772) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_save_observed_destination() != 109) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_send_direct_text() != 17720) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_send_group_text() != 10757) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_set_contact_alias() != 11267) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned() != 47671) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name() != 31566) {
         return InitializationResult.apiChecksumMismatch
     }
 

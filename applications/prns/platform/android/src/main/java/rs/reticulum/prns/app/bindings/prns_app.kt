@@ -30,6 +30,7 @@ import java.nio.CharBuffer
 import java.nio.charset.CodingErrorAction
 import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.coroutines.resume
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -770,6 +771,88 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_start_remote_wifi_trial(
     ): Int
+    external fun uniffi_prns_app_checksum_func_change_named_identity(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_create_named_identity(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_list_named_identities(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_open_named_identity(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_list_named_identity_activity(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_mark_identity_activity_seen(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_read_identity_activity(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_announce_groups(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_announce_lxmf(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_acknowledge_group_action(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_cancel_lxmf_message(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_clear_lxmf_discovery(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_create_group(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_create_manual_contact(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_delete_contact(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_get_contact(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_contacts(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_group_conversations(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_group_invitations(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_group_messages(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_conversations(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_messages(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_peers(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_measure_lxmf_text(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_prepare_group_action(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_read_messaging_profile(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_respond_group_invitation(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_retry_lxmf_message(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_save_discovered_contact(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_save_observed_destination(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_send_direct_text(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_send_group_text(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_set_contact_alias(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name(
+    ): Int
     external fun ffi_prns_app_uniffi_contract_version(
     ): Int
 
@@ -778,13 +861,94 @@ internal object IntegrityCheckingUniffiLib {
 
 internal object UniffiLib {
 
+    // The Cleaner for the whole library
+    internal val CLEANER: UniffiCleaner by lazy {
+        UniffiCleaner.create()
+    }
+
 
     init {
         Native.register(UniffiLib::class.java, findLibraryName(componentName = "prns_app"))
         rs.reticulum.prns.host.bindings.uniffiEnsureInitialized()
 
     }
-    external fun uniffi_prns_app_fn_func_acknowledge_group_action(`reference`: RustBuffer.ByValue,
+    external fun uniffi_prns_app_fn_clone_namedidentityclient(`handle`: Long,uniffi_out_err: UniffiRustCallStatus,
+): Long
+external fun uniffi_prns_app_fn_free_namedidentityclient(`handle`: Long,uniffi_out_err: UniffiRustCallStatus,
+): Unit
+external fun uniffi_prns_app_fn_method_namedidentityclient_mark_identity_activity_seen(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_read_identity_activity(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_announce_groups(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_announce_lxmf(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_set_group_announce_settings(`ptr`: Long,`settings`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_acknowledge_group_action(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_cancel_lxmf_message(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_clear_lxmf_discovery(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_create_group(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_create_manual_contact(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_delete_contact(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group_action(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_execute_group_action(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_get_contact(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_invite_to_group(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_contacts(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_group_actions(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_group_conversations(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_group_invitations(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_group_messages(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_conversations(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_messages(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_peers(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_measure_lxmf_text(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_prepare_group_action(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_read_messaging_profile(`ptr`: Long,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_respond_group_invitation(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_retry_lxmf_message(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_save_discovered_contact(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_save_observed_destination(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_send_direct_text(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_send_group_text(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_set_contact_alias(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(`ptr`: Long,`name`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_acknowledge_group_action(`reference`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_announce_groups(
 ): Long
@@ -905,6 +1069,16 @@ external fun uniffi_prns_app_fn_func_set_messaging_name(`name`: RustBuffer.ByVal
 external fun uniffi_prns_app_fn_func_shared_host(uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_start_remote_wifi_trial(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_change_named_identity(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_create_named_identity(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_list_named_identities(
+): Long
+external fun uniffi_prns_app_fn_func_open_named_identity(`identity`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
+): Long
+external fun uniffi_prns_app_fn_func_list_named_identity_activity(
 ): Long
 external fun ffi_prns_app_rustbuffer_alloc(`size`: Long,uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
@@ -1208,6 +1382,129 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_start_remote_wifi_trial() != 55182) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_change_named_identity() != 19035) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_create_named_identity() != 29474) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_list_named_identities() != 64877) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_open_named_identity() != 2583) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_list_named_identity_activity() != 22492) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_mark_identity_activity_seen() != 4206) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_read_identity_activity() != 1356) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_announce_groups() != 37425) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_announce_lxmf() != 64764) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings() != 61059) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings() != 61970) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_acknowledge_group_action() != 61619) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_cancel_lxmf_message() != 53942) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_clear_lxmf_discovery() != 33714) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_create_group() != 19023) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_create_manual_contact() != 53628) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_delete_contact() != 624) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action() != 35173) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action() != 10060) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_get_contact() != 53127) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group() != 53768) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_contacts() != 2658) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions() != 40375) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_group_conversations() != 58580) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_group_invitations() != 11856) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_group_messages() != 17077) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_conversations() != 23246) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_messages() != 29606) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_peers() != 51104) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_measure_lxmf_text() != 51426) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_prepare_group_action() != 59105) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_read_messaging_profile() != 54562) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_respond_group_invitation() != 59463) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_retry_lxmf_message() != 18792) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_save_discovered_contact() != 62772) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_save_observed_destination() != 109) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_send_direct_text() != 17720) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_send_group_text() != 10757) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_set_contact_alias() != 11267) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned() != 47671) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name() != 31566) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
 }
 
 /**
@@ -1340,6 +1637,70 @@ object UniffiWithHandle
  * @suppress
  * */
 object NoHandle
+/**
+ * The cleaner interface for Object finalization code to run.
+ * This is the entry point to any implementation that we're using.
+ *
+ * The cleaner registers objects and returns cleanables, so now we are
+ * defining a `UniffiCleaner` with a `UniffiClenaer.Cleanable` to abstract the
+ * different implmentations available at compile time.
+ *
+ * @suppress
+ */
+interface UniffiCleaner {
+    interface Cleanable {
+        fun clean()
+    }
+
+    fun register(value: Any, cleanUpTask: Runnable): UniffiCleaner.Cleanable
+
+    companion object
+}
+
+// The fallback Jna cleaner, which is available for both Android, and the JVM.
+private class UniffiJnaCleaner : UniffiCleaner {
+    private val cleaner = com.sun.jna.internal.Cleaner.getCleaner()
+
+    override fun register(value: Any, cleanUpTask: Runnable): UniffiCleaner.Cleanable =
+        UniffiJnaCleanable(cleaner.register(value, cleanUpTask))
+}
+
+private class UniffiJnaCleanable(
+    private val cleanable: com.sun.jna.internal.Cleaner.Cleanable,
+) : UniffiCleaner.Cleanable {
+    override fun clean() = cleanable.clean()
+}
+
+
+// We decide at uniffi binding generation time whether we were
+// using Android or not.
+// There are further runtime checks to chose the correct implementation
+// of the cleaner.
+private fun UniffiCleaner.Companion.create(): UniffiCleaner =
+    try {
+        // For safety's sake: if the library hasn't been run in android_cleaner = true
+        // mode, but is being run on Android, then we still need to think about
+        // Android API versions.
+        // So we check if java.lang.ref.Cleaner is there, and use that…
+        java.lang.Class.forName("java.lang.ref.Cleaner")
+        JavaLangRefCleaner()
+    } catch (e: ClassNotFoundException) {
+        // … otherwise, fallback to the JNA cleaner.
+        UniffiJnaCleaner()
+    }
+
+private class JavaLangRefCleaner : UniffiCleaner {
+    val cleaner = java.lang.ref.Cleaner.create()
+
+    override fun register(value: Any, cleanUpTask: Runnable): UniffiCleaner.Cleanable =
+        JavaLangRefCleanable(cleaner.register(value, cleanUpTask))
+}
+
+private class JavaLangRefCleanable(
+    val cleanable: java.lang.ref.Cleaner.Cleanable
+) : UniffiCleaner.Cleanable {
+    override fun clean() = cleanable.clean()
+}
 
 /**
  * @suppress
@@ -1587,6 +1948,1033 @@ public object FfiConverterByteArray: FfiConverterRustBuffer<ByteArray> {
 }
 
 
+// This template implements a class for working with a Rust struct via a handle
+// to the live Rust struct on the other side of the FFI.
+//
+// There's some subtlety here, because we have to be careful not to operate on a Rust
+// struct after it has been dropped, and because we must expose a public API for freeing
+// theq Kotlin wrapper object in lieu of reliable finalizers. The core requirements are:
+//
+//   * Each instance holds an opaque handle to the underlying Rust struct.
+//     Method calls need to read this handle from the object's state and pass it in to
+//     the Rust FFI.
+//
+//   * When an instance is no longer needed, its handle should be passed to a
+//     special destructor function provided by the Rust FFI, which will drop the
+//     underlying Rust struct.
+//
+//   * Given an instance, calling code is expected to call the special
+//     `destroy` method in order to free it after use, either by calling it explicitly
+//     or by using a higher-level helper like the `use` method. Failing to do so risks
+//     leaking the underlying Rust struct.
+//
+//   * We can't assume that calling code will do the right thing, and must be prepared
+//     to handle Kotlin method calls executing concurrently with or even after a call to
+//     `destroy`, and to handle multiple (possibly concurrent!) calls to `destroy`.
+//
+//   * We must never allow Rust code to operate on the underlying Rust struct after
+//     the destructor has been called, and must never call the destructor more than once.
+//     Doing so may trigger memory unsafety.
+//
+//   * To mitigate many of the risks of leaking memory and use-after-free unsafety, a `Cleaner`
+//     is implemented to call the destructor when the Kotlin object becomes unreachable.
+//     This is done in a background thread. This is not a panacea, and client code should be aware that
+//      1. the thread may starve if some there are objects that have poorly performing
+//     `drop` methods or do significant work in their `drop` methods.
+//      2. the thread is shared across the whole library. This can be tuned by using `android_cleaner = true`,
+//         or `android = true` in the [`kotlin` section of the `uniffi.toml` file](https://mozilla.github.io/uniffi-rs/kotlin/configuration.html).
+//
+// If we try to implement this with mutual exclusion on access to the handle, there is the
+// possibility of a race between a method call and a concurrent call to `destroy`:
+//
+//    * Thread A starts a method call, reads the value of the handle, but is interrupted
+//      before it can pass the handle over the FFI to Rust.
+//    * Thread B calls `destroy` and frees the underlying Rust struct.
+//    * Thread A resumes, passing the already-read handle value to Rust and triggering
+//      a use-after-free.
+//
+// One possible solution would be to use a `ReadWriteLock`, with each method call taking
+// a read lock (and thus allowed to run concurrently) and the special `destroy` method
+// taking a write lock (and thus blocking on live method calls). However, we aim not to
+// generate methods with any hidden blocking semantics, and a `destroy` method that might
+// block if called incorrectly seems to meet that bar.
+//
+// So, we achieve our goals by giving each instance an associated `AtomicLong` counter to track
+// the number of in-flight method calls, and an `AtomicBoolean` flag to indicate whether `destroy`
+// has been called. These are updated according to the following rules:
+//
+//    * The initial value of the counter is 1, indicating a live object with no in-flight calls.
+//      The initial value for the flag is false.
+//
+//    * At the start of each method call, we atomically check the counter.
+//      If it is 0 then the underlying Rust struct has already been destroyed and the call is aborted.
+//      If it is nonzero them we atomically increment it by 1 and proceed with the method call.
+//
+//    * At the end of each method call, we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+//    * When `destroy` is called, we atomically flip the flag from false to true.
+//      If the flag was already true we silently fail.
+//      Otherwise we atomically decrement and check the counter.
+//      If it has reached zero then we destroy the underlying Rust struct.
+//
+// Astute readers may observe that this all sounds very similar to the way that Rust's `Arc<T>` works,
+// and indeed it is, with the addition of a flag to guard against multiple calls to `destroy`.
+//
+// The overall effect is that the underlying Rust struct is destroyed only when `destroy` has been
+// called *and* all in-flight method calls have completed, avoiding violating any of the expectations
+// of the underlying Rust code.
+//
+// This makes a cleaner a better alternative to _not_ calling `destroy()` as
+// and when the object is finished with, but the abstraction is not perfect: if the Rust object's `drop`
+// method is slow, and/or there are many objects to cleanup, and it's on a low end Android device, then the cleaner
+// thread may be starved, and the app will leak memory.
+//
+// In this case, `destroy`ing manually may be a better solution.
+//
+// The cleaner can live side by side with the manual calling of `destroy`. In the order of responsiveness, uniffi objects
+// with Rust peers are reclaimed:
+//
+// 1. By calling the `destroy` method of the object, which calls `rustObject.free()`. If that doesn't happen:
+// 2. When the object becomes unreachable, AND the Cleaner thread gets to call `rustObject.free()`. If the thread is starved then:
+// 3. The memory is reclaimed when the process terminates.
+//
+// [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
+//
+
+
+public interface NamedIdentityClientInterface {
+
+    suspend fun `markIdentityActivitySeen`(`input`: MarkIdentityActivitySeenInput): IdentityActivitySeenOutcome
+
+    suspend fun `readIdentityActivity`(): IdentityActivityOutcome
+
+    suspend fun `announceGroups`(): GroupAnnounceOutcome
+
+    suspend fun `announceLxmf`(): AnnounceLxmfOutcome
+
+    suspend fun `getGroupAnnounceSettings`(): GroupAnnounceSettingsOutcome
+
+    suspend fun `setGroupAnnounceSettings`(`settings`: GroupAnnounceSettings): GroupAnnounceSettingsOutcome
+
+    suspend fun `acknowledgeGroupAction`(`input`: GroupActionReference): GroupActionAcknowledgeOutcome
+
+    suspend fun `cancelLxmfMessage`(`input`: CancelLxmfMessageInput): CancelLxmfMessageOutcome
+
+    suspend fun `clearLxmfDiscovery`(): LxmfDiscoveryClearOutcome
+
+    suspend fun `createGroup`(`input`: CreateGroupInput): CreateGroupOutcome
+
+    suspend fun `createManualContact`(`input`: CreateManualContactInput): ContactMutationOutcome
+
+    suspend fun `deleteContact`(`input`: ContactDestinationInput): ContactMutationOutcome
+
+    suspend fun `discardExpiredGroupAction`(`input`: GroupActionReference): GroupActionAcknowledgeOutcome
+
+    suspend fun `executeGroupAction`(`input`: GroupActionReference): GroupActionOutcome
+
+    suspend fun `getContact`(`input`: ContactDestinationInput): ContactLookupOutcome
+
+    suspend fun `inviteToGroup`(`input`: InviteToGroupInput): InviteToGroupOutcome
+
+    suspend fun `listContacts`(): ContactListOutcome
+
+    suspend fun `listGroupActions`(): GroupActionListOutcome
+
+    suspend fun `listGroupConversations`(): GroupConversationListOutcome
+
+    suspend fun `listGroupInvitations`(): GroupInvitationListOutcome
+
+    suspend fun `listGroupMessages`(`input`: ListGroupMessagesInput): GroupMessageListOutcome
+
+    suspend fun `listLxmfConversations`(`input`: ListLxmfConversationsInput): LxmfMessageListOutcome
+
+    suspend fun `listLxmfMessages`(`input`: ListLxmfMessagesInput): LxmfMessageListOutcome
+
+    suspend fun `listLxmfPeers`(): LxmfPeerListOutcome
+
+    suspend fun `measureLxmfText`(`input`: MeasureLxmfTextInput): MeasureLxmfTextOutcome
+
+    suspend fun `prepareGroupAction`(`input`: PrepareGroupActionInput): GroupActionOutcome
+
+    suspend fun `readMessagingProfile`(): LocalMessagingProfileOutcome
+
+    suspend fun `respondGroupInvitation`(`input`: RespondGroupInvitationInput): RespondGroupInvitationOutcome
+
+    suspend fun `retryLxmfMessage`(`input`: RetryLxmfMessageInput): RetryLxmfMessageOutcome
+
+    suspend fun `saveDiscoveredContact`(`input`: ContactDestinationInput): ContactMutationOutcome
+
+    suspend fun `saveObservedDestination`(`input`: ContactDestinationInput): ContactMutationOutcome
+
+    suspend fun `sendDirectText`(`input`: SendDirectTextInput): SendDirectTextOutcome
+
+    suspend fun `sendGroupText`(`input`: SendGroupTextInput): GroupTextSendOutcome
+
+    suspend fun `setContactAlias`(`input`: SetContactAliasInput): ContactMutationOutcome
+
+    suspend fun `setContactPinned`(`input`: SetContactPinnedInput): ContactMutationOutcome
+
+    suspend fun `setMessagingName`(`name`: kotlin.String): LocalMessagingProfileOutcome
+
+    companion object
+}
+
+open class NamedIdentityClient: Disposable, AutoCloseable, NamedIdentityClientInterface
+{
+
+    @Suppress("UNUSED_PARAMETER")
+    /**
+     * @suppress
+     */
+    constructor(withHandle: UniffiWithHandle, handle: Long) {
+        this.handle = handle
+        this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(handle))
+    }
+
+    /**
+     * @suppress
+     *
+     * This constructor can be used to instantiate a fake object. Only used for tests. Any
+     * attempt to actually use an object constructed this way will fail as there is no
+     * connected Rust object.
+     */
+    @Suppress("UNUSED_PARAMETER")
+    constructor(noHandle: NoHandle) {
+        this.handle = 0
+        this.cleanable = null
+    }
+
+    protected val handle: Long
+    protected val cleanable: UniffiCleaner.Cleanable?
+
+    private val wasDestroyed = AtomicBoolean(false)
+    private val callCounter = AtomicLong(1)
+
+    override fun destroy() {
+        // Only allow a single call to this method.
+        // TODO: maybe we should log a warning if called more than once?
+        if (this.wasDestroyed.compareAndSet(false, true)) {
+            // This decrement always matches the initial count of 1 given at creation time.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable?.clean()
+            }
+        }
+    }
+
+    @Synchronized
+    override fun close() {
+        this.destroy()
+    }
+
+    internal inline fun <R> callWithHandle(block: (handle: Long) -> R): R {
+        // Check and increment the call counter, to keep the object alive.
+        // This needs a compare-and-set retry loop in case of concurrent updates.
+        do {
+            val c = this.callCounter.get()
+            if (c == 0L) {
+                throw IllegalStateException("${this.javaClass.simpleName} object has already been destroyed")
+            }
+            if (c == Long.MAX_VALUE) {
+                throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
+            }
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
+        // Now we can safely do the method call without the handle being freed concurrently.
+        try {
+            return block(this.uniffiCloneHandle())
+        } finally {
+            // This decrement always matches the increment we performed above.
+            if (this.callCounter.decrementAndGet() == 0L) {
+                cleanable?.clean()
+            }
+        }
+    }
+
+    // Use a static inner class instead of a closure so as not to accidentally
+    // capture `this` as part of the cleanable's action.
+    private class UniffiCleanAction(private val handle: Long) : Runnable {
+        override fun run() {
+            if (handle == 0.toLong()) {
+                // Fake object created with `NoHandle`, don't try to free.
+                return;
+            }
+            uniffiRustCall { status ->
+                UniffiLib.uniffi_prns_app_fn_free_namedidentityclient(handle, status)
+            }
+        }
+    }
+
+    /**
+     * @suppress
+     */
+    fun uniffiCloneHandle(): Long {
+        if (handle == 0.toLong()) {
+            throw InternalException("uniffiCloneHandle() called on NoHandle object");
+        }
+        return uniffiRustCall() { status ->
+            UniffiLib.uniffi_prns_app_fn_clone_namedidentityclient(handle, status)
+        }
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `markIdentityActivitySeen`(`input`: MarkIdentityActivitySeenInput) : IdentityActivitySeenOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_mark_identity_activity_seen(
+                uniffiHandle,
+                FfiConverterTypeMarkIdentityActivitySeenInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeIdentityActivitySeenOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `readIdentityActivity`() : IdentityActivityOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_read_identity_activity(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeIdentityActivityOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `announceGroups`() : GroupAnnounceOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_announce_groups(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupAnnounceOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `announceLxmf`() : AnnounceLxmfOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_announce_lxmf(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeAnnounceLxmfOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `getGroupAnnounceSettings`() : GroupAnnounceSettingsOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupAnnounceSettingsOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `setGroupAnnounceSettings`(`settings`: GroupAnnounceSettings) : GroupAnnounceSettingsOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_set_group_announce_settings(
+                uniffiHandle,
+                FfiConverterTypeGroupAnnounceSettings.lower(`settings`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupAnnounceSettingsOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `acknowledgeGroupAction`(`input`: GroupActionReference) : GroupActionAcknowledgeOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_acknowledge_group_action(
+                uniffiHandle,
+                FfiConverterTypeGroupActionReference.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionAcknowledgeOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `cancelLxmfMessage`(`input`: CancelLxmfMessageInput) : CancelLxmfMessageOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_cancel_lxmf_message(
+                uniffiHandle,
+                FfiConverterTypeCancelLxmfMessageInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeCancelLxmfMessageOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `clearLxmfDiscovery`() : LxmfDiscoveryClearOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_clear_lxmf_discovery(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLxmfDiscoveryClearOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `createGroup`(`input`: CreateGroupInput) : CreateGroupOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_create_group(
+                uniffiHandle,
+                FfiConverterTypeCreateGroupInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeCreateGroupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `createManualContact`(`input`: CreateManualContactInput) : ContactMutationOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_create_manual_contact(
+                uniffiHandle,
+                FfiConverterTypeCreateManualContactInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactMutationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `deleteContact`(`input`: ContactDestinationInput) : ContactMutationOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_delete_contact(
+                uniffiHandle,
+                FfiConverterTypeContactDestinationInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactMutationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `discardExpiredGroupAction`(`input`: GroupActionReference) : GroupActionAcknowledgeOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group_action(
+                uniffiHandle,
+                FfiConverterTypeGroupActionReference.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionAcknowledgeOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `executeGroupAction`(`input`: GroupActionReference) : GroupActionOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_execute_group_action(
+                uniffiHandle,
+                FfiConverterTypeGroupActionReference.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `getContact`(`input`: ContactDestinationInput) : ContactLookupOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_get_contact(
+                uniffiHandle,
+                FfiConverterTypeContactDestinationInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactLookupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `inviteToGroup`(`input`: InviteToGroupInput) : InviteToGroupOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_invite_to_group(
+                uniffiHandle,
+                FfiConverterTypeInviteToGroupInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeInviteToGroupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listContacts`() : ContactListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_contacts(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listGroupActions`() : GroupActionListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_group_actions(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listGroupConversations`() : GroupConversationListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_group_conversations(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupConversationListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listGroupInvitations`() : GroupInvitationListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_group_invitations(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupInvitationListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listGroupMessages`(`input`: ListGroupMessagesInput) : GroupMessageListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_group_messages(
+                uniffiHandle,
+                FfiConverterTypeListGroupMessagesInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupMessageListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listLxmfConversations`(`input`: ListLxmfConversationsInput) : LxmfMessageListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_conversations(
+                uniffiHandle,
+                FfiConverterTypeListLxmfConversationsInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLxmfMessageListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listLxmfMessages`(`input`: ListLxmfMessagesInput) : LxmfMessageListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_messages(
+                uniffiHandle,
+                FfiConverterTypeListLxmfMessagesInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLxmfMessageListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `listLxmfPeers`() : LxmfPeerListOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_peers(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLxmfPeerListOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `measureLxmfText`(`input`: MeasureLxmfTextInput) : MeasureLxmfTextOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_measure_lxmf_text(
+                uniffiHandle,
+                FfiConverterTypeMeasureLxmfTextInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeMeasureLxmfTextOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `prepareGroupAction`(`input`: PrepareGroupActionInput) : GroupActionOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_prepare_group_action(
+                uniffiHandle,
+                FfiConverterTypePrepareGroupActionInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupActionOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `readMessagingProfile`() : LocalMessagingProfileOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_read_messaging_profile(
+                uniffiHandle,
+
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLocalMessagingProfileOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `respondGroupInvitation`(`input`: RespondGroupInvitationInput) : RespondGroupInvitationOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_respond_group_invitation(
+                uniffiHandle,
+                FfiConverterTypeRespondGroupInvitationInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeRespondGroupInvitationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `retryLxmfMessage`(`input`: RetryLxmfMessageInput) : RetryLxmfMessageOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_retry_lxmf_message(
+                uniffiHandle,
+                FfiConverterTypeRetryLxmfMessageInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeRetryLxmfMessageOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `saveDiscoveredContact`(`input`: ContactDestinationInput) : ContactMutationOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_save_discovered_contact(
+                uniffiHandle,
+                FfiConverterTypeContactDestinationInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactMutationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `saveObservedDestination`(`input`: ContactDestinationInput) : ContactMutationOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_save_observed_destination(
+                uniffiHandle,
+                FfiConverterTypeContactDestinationInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactMutationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `sendDirectText`(`input`: SendDirectTextInput) : SendDirectTextOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_send_direct_text(
+                uniffiHandle,
+                FfiConverterTypeSendDirectTextInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeSendDirectTextOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `sendGroupText`(`input`: SendGroupTextInput) : GroupTextSendOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_send_group_text(
+                uniffiHandle,
+                FfiConverterTypeSendGroupTextInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeGroupTextSendOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `setContactAlias`(`input`: SetContactAliasInput) : ContactMutationOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_set_contact_alias(
+                uniffiHandle,
+                FfiConverterTypeSetContactAliasInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactMutationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `setContactPinned`(`input`: SetContactPinnedInput) : ContactMutationOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(
+                uniffiHandle,
+                FfiConverterTypeSetContactPinnedInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactMutationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `setMessagingName`(`name`: kotlin.String) : LocalMessagingProfileOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(
+                uniffiHandle,
+                FfiConverterString.lower(`name`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLocalMessagingProfileOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+
+
+
+
+
+
+    /**
+     * @suppress
+     */
+    companion object
+
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityClient: FfiConverter<NamedIdentityClient, Long> {
+    override fun lower(value: NamedIdentityClient): Long {
+        return value.uniffiCloneHandle()
+    }
+
+    override fun lift(value: Long): NamedIdentityClient {
+        return NamedIdentityClient(UniffiWithHandle, value)
+    }
+
+    override fun read(buf: ByteBuffer): NamedIdentityClient {
+        return lift(buf.getLong())
+    }
+
+    override fun allocationSize(value: NamedIdentityClient) = 8UL
+
+    override fun write(value: NamedIdentityClient, buf: ByteBuffer) {
+        buf.putLong(lower(value))
+    }
+}
+
+
 
 data class AnnounceRemoteControlTargetInput (
     var `targetIdentityFingerprint`: kotlin.ByteArray
@@ -1690,6 +3078,44 @@ public object FfiConverterTypeCancelLxmfMessageInput: FfiConverterRustBuffer<Can
 
     override fun write(value: CancelLxmfMessageInput, buf: ByteBuffer) {
             FfiConverterULong.write(value.`localRecordId`, buf)
+    }
+}
+
+
+
+data class ChangeNamedIdentityInput (
+    var `identity`: NamedIdentityReference
+    ,
+    var `change`: NamedIdentityChange
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeChangeNamedIdentityInput: FfiConverterRustBuffer<ChangeNamedIdentityInput> {
+    override fun read(buf: ByteBuffer): ChangeNamedIdentityInput {
+        return ChangeNamedIdentityInput(
+            FfiConverterTypeNamedIdentityReference.read(buf),
+            FfiConverterTypeNamedIdentityChange.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ChangeNamedIdentityInput) = (
+            FfiConverterTypeNamedIdentityReference.allocationSize(value.`identity`) +
+            FfiConverterTypeNamedIdentityChange.allocationSize(value.`change`)
+    )
+
+    override fun write(value: ChangeNamedIdentityInput, buf: ByteBuffer) {
+            FfiConverterTypeNamedIdentityReference.write(value.`identity`, buf)
+            FfiConverterTypeNamedIdentityChange.write(value.`change`, buf)
     }
 }
 
@@ -1933,6 +3359,49 @@ public object FfiConverterTypeCreateManualContactInput: FfiConverterRustBuffer<C
             FfiConverterTypeBytes16.write(value.`destination`, buf)
             FfiConverterOptionalTypeBytes16.write(value.`identity`, buf)
             FfiConverterOptionalString.write(value.`alias`, buf)
+    }
+}
+
+
+
+data class CreateNamedIdentityInput (
+    var `requestId`: Bytes32
+    ,
+    var `label`: kotlin.String
+    ,
+    var `publishedName`: kotlin.String?
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeCreateNamedIdentityInput: FfiConverterRustBuffer<CreateNamedIdentityInput> {
+    override fun read(buf: ByteBuffer): CreateNamedIdentityInput {
+        return CreateNamedIdentityInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterOptionalString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: CreateNamedIdentityInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`requestId`) +
+            FfiConverterString.allocationSize(value.`label`) +
+            FfiConverterOptionalString.allocationSize(value.`publishedName`)
+    )
+
+    override fun write(value: CreateNamedIdentityInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`requestId`, buf)
+            FfiConverterString.write(value.`label`, buf)
+            FfiConverterOptionalString.write(value.`publishedName`, buf)
     }
 }
 
@@ -2772,6 +4241,109 @@ public object FfiConverterTypeGroupTextMessage: FfiConverterRustBuffer<GroupText
 
 
 
+data class IdentityActivitySummary (
+    var `actionableInvitations`: kotlin.UInt
+    ,
+    var `unreadGroups`: kotlin.UInt
+    ,
+    var `unreadDirect`: kotlin.UInt
+    ,
+    var `conversations`: List<IdentityConversationActivity>
+    ,
+    /**
+     * The bounded retained-record scan omitted older content or conversations.
+     * Counts are lower bounds when true, never evidence of an empty inbox.
+     */
+    var `partial`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeIdentityActivitySummary: FfiConverterRustBuffer<IdentityActivitySummary> {
+    override fun read(buf: ByteBuffer): IdentityActivitySummary {
+        return IdentityActivitySummary(
+            FfiConverterUInt.read(buf),
+            FfiConverterUInt.read(buf),
+            FfiConverterUInt.read(buf),
+            FfiConverterSequenceTypeIdentityConversationActivity.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: IdentityActivitySummary) = (
+            FfiConverterUInt.allocationSize(value.`actionableInvitations`) +
+            FfiConverterUInt.allocationSize(value.`unreadGroups`) +
+            FfiConverterUInt.allocationSize(value.`unreadDirect`) +
+            FfiConverterSequenceTypeIdentityConversationActivity.allocationSize(value.`conversations`) +
+            FfiConverterBoolean.allocationSize(value.`partial`)
+    )
+
+    override fun write(value: IdentityActivitySummary, buf: ByteBuffer) {
+            FfiConverterUInt.write(value.`actionableInvitations`, buf)
+            FfiConverterUInt.write(value.`unreadGroups`, buf)
+            FfiConverterUInt.write(value.`unreadDirect`, buf)
+            FfiConverterSequenceTypeIdentityConversationActivity.write(value.`conversations`, buf)
+            FfiConverterBoolean.write(value.`partial`, buf)
+    }
+}
+
+
+
+data class IdentityConversationActivity (
+    var `scope`: IdentityActivityScope
+    ,
+    var `unreadCount`: kotlin.UInt
+    ,
+    /**
+     * Durable local record position. A screen acknowledges only positions it displayed.
+     */
+    var `throughSequence`: kotlin.ULong
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeIdentityConversationActivity: FfiConverterRustBuffer<IdentityConversationActivity> {
+    override fun read(buf: ByteBuffer): IdentityConversationActivity {
+        return IdentityConversationActivity(
+            FfiConverterTypeIdentityActivityScope.read(buf),
+            FfiConverterUInt.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: IdentityConversationActivity) = (
+            FfiConverterTypeIdentityActivityScope.allocationSize(value.`scope`) +
+            FfiConverterUInt.allocationSize(value.`unreadCount`) +
+            FfiConverterULong.allocationSize(value.`throughSequence`)
+    )
+
+    override fun write(value: IdentityConversationActivity, buf: ByteBuffer) {
+            FfiConverterTypeIdentityActivityScope.write(value.`scope`, buf)
+            FfiConverterUInt.write(value.`unreadCount`, buf)
+            FfiConverterULong.write(value.`throughSequence`, buf)
+    }
+}
+
+
+
 data class InitiateRemoteControlPairingInput (
     var `candidateId`: kotlin.String
     ,
@@ -3566,6 +5138,44 @@ public object FfiConverterTypeLxmfPeerSummary: FfiConverterRustBuffer<LxmfPeerSu
 
 
 
+data class MarkIdentityActivitySeenInput (
+    var `scope`: IdentityActivityScope
+    ,
+    var `throughSequence`: kotlin.ULong
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeMarkIdentityActivitySeenInput: FfiConverterRustBuffer<MarkIdentityActivitySeenInput> {
+    override fun read(buf: ByteBuffer): MarkIdentityActivitySeenInput {
+        return MarkIdentityActivitySeenInput(
+            FfiConverterTypeIdentityActivityScope.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: MarkIdentityActivitySeenInput) = (
+            FfiConverterTypeIdentityActivityScope.allocationSize(value.`scope`) +
+            FfiConverterULong.allocationSize(value.`throughSequence`)
+    )
+
+    override fun write(value: MarkIdentityActivitySeenInput, buf: ByteBuffer) {
+            FfiConverterTypeIdentityActivityScope.write(value.`scope`, buf)
+            FfiConverterULong.write(value.`throughSequence`, buf)
+    }
+}
+
+
+
 data class MeasureLxmfTextInput (
     var `title`: kotlin.String
     ,
@@ -3599,6 +5209,186 @@ public object FfiConverterTypeMeasureLxmfTextInput: FfiConverterRustBuffer<Measu
     override fun write(value: MeasureLxmfTextInput, buf: ByteBuffer) {
             FfiConverterString.write(value.`title`, buf)
             FfiConverterString.write(value.`content`, buf)
+    }
+}
+
+
+
+data class NamedIdentityActivity (
+    var `identity`: NamedIdentityReference
+    ,
+    var `activity`: IdentityActivityOutcome
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityActivity: FfiConverterRustBuffer<NamedIdentityActivity> {
+    override fun read(buf: ByteBuffer): NamedIdentityActivity {
+        return NamedIdentityActivity(
+            FfiConverterTypeNamedIdentityReference.read(buf),
+            FfiConverterTypeIdentityActivityOutcome.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: NamedIdentityActivity) = (
+            FfiConverterTypeNamedIdentityReference.allocationSize(value.`identity`) +
+            FfiConverterTypeIdentityActivityOutcome.allocationSize(value.`activity`)
+    )
+
+    override fun write(value: NamedIdentityActivity, buf: ByteBuffer) {
+            FfiConverterTypeNamedIdentityReference.write(value.`identity`, buf)
+            FfiConverterTypeIdentityActivityOutcome.write(value.`activity`, buf)
+    }
+}
+
+
+
+data class NamedIdentityCatalog (
+    var `identities`: List<NamedIdentitySummary>
+    ,
+    var `selected`: NamedIdentityReference?
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityCatalog: FfiConverterRustBuffer<NamedIdentityCatalog> {
+    override fun read(buf: ByteBuffer): NamedIdentityCatalog {
+        return NamedIdentityCatalog(
+            FfiConverterSequenceTypeNamedIdentitySummary.read(buf),
+            FfiConverterOptionalTypeNamedIdentityReference.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: NamedIdentityCatalog) = (
+            FfiConverterSequenceTypeNamedIdentitySummary.allocationSize(value.`identities`) +
+            FfiConverterOptionalTypeNamedIdentityReference.allocationSize(value.`selected`)
+    )
+
+    override fun write(value: NamedIdentityCatalog, buf: ByteBuffer) {
+            FfiConverterSequenceTypeNamedIdentitySummary.write(value.`identities`, buf)
+            FfiConverterOptionalTypeNamedIdentityReference.write(value.`selected`, buf)
+    }
+}
+
+
+
+data class NamedIdentityReference (
+    var `incarnation`: Bytes16
+    ,
+    var `sequence`: kotlin.ULong
+    ,
+    var `publicHash`: Bytes16
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityReference: FfiConverterRustBuffer<NamedIdentityReference> {
+    override fun read(buf: ByteBuffer): NamedIdentityReference {
+        return NamedIdentityReference(
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: NamedIdentityReference) = (
+            FfiConverterTypeBytes16.allocationSize(value.`incarnation`) +
+            FfiConverterULong.allocationSize(value.`sequence`) +
+            FfiConverterTypeBytes16.allocationSize(value.`publicHash`)
+    )
+
+    override fun write(value: NamedIdentityReference, buf: ByteBuffer) {
+            FfiConverterTypeBytes16.write(value.`incarnation`, buf)
+            FfiConverterULong.write(value.`sequence`, buf)
+            FfiConverterTypeBytes16.write(value.`publicHash`, buf)
+    }
+}
+
+
+
+data class NamedIdentitySummary (
+    var `reference`: NamedIdentityReference
+    ,
+    var `label`: kotlin.String
+    ,
+    var `publishedName`: kotlin.String?
+    ,
+    var `state`: NamedIdentityState
+    ,
+    /**
+     * Desired state is durable, but service activation or drainage remains.
+     */
+    var `transitioning`: kotlin.Boolean
+    ,
+    var `ready`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentitySummary: FfiConverterRustBuffer<NamedIdentitySummary> {
+    override fun read(buf: ByteBuffer): NamedIdentitySummary {
+        return NamedIdentitySummary(
+            FfiConverterTypeNamedIdentityReference.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterTypeNamedIdentityState.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: NamedIdentitySummary) = (
+            FfiConverterTypeNamedIdentityReference.allocationSize(value.`reference`) +
+            FfiConverterString.allocationSize(value.`label`) +
+            FfiConverterOptionalString.allocationSize(value.`publishedName`) +
+            FfiConverterTypeNamedIdentityState.allocationSize(value.`state`) +
+            FfiConverterBoolean.allocationSize(value.`transitioning`) +
+            FfiConverterBoolean.allocationSize(value.`ready`)
+    )
+
+    override fun write(value: NamedIdentitySummary, buf: ByteBuffer) {
+            FfiConverterTypeNamedIdentityReference.write(value.`reference`, buf)
+            FfiConverterString.write(value.`label`, buf)
+            FfiConverterOptionalString.write(value.`publishedName`, buf)
+            FfiConverterTypeNamedIdentityState.write(value.`state`, buf)
+            FfiConverterBoolean.write(value.`transitioning`, buf)
+            FfiConverterBoolean.write(value.`ready`, buf)
     }
 }
 
@@ -8190,6 +9980,286 @@ public object FfiConverterTypeGroupTextSendOutcome : FfiConverterRustBuffer<Grou
 
 
 
+sealed class IdentityActivityOutcome {
+
+    data class Ready(
+        val `summary`: rs.reticulum.prns.app.bindings.IdentityActivitySummary) : IdentityActivityOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : IdentityActivityOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeIdentityActivityOutcome : FfiConverterRustBuffer<IdentityActivityOutcome>{
+    override fun read(buf: ByteBuffer): IdentityActivityOutcome {
+        return when(buf.getInt()) {
+            1 -> IdentityActivityOutcome.Ready(
+                FfiConverterTypeIdentityActivitySummary.read(buf),
+                )
+            2 -> IdentityActivityOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: IdentityActivityOutcome) = when(value) {
+        is IdentityActivityOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeIdentityActivitySummary.allocationSize(value.`summary`)
+            )
+        }
+        is IdentityActivityOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: IdentityActivityOutcome, buf: ByteBuffer) {
+        when(value) {
+            is IdentityActivityOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeIdentityActivitySummary.write(value.`summary`, buf)
+                Unit
+            }
+            is IdentityActivityOutcome.Unavailable -> {
+                buf.putInt(2)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+/**
+ * Local conversation ownership; never a combined history or network receipt.
+ */
+sealed class IdentityActivityScope {
+
+    data class Group(
+        val `groupId`: rs.reticulum.prns.app.bindings.Bytes32) : IdentityActivityScope()
+
+    {
+
+
+        companion object
+    }
+
+    data class Direct(
+        val `destination`: rs.reticulum.prns.app.bindings.Bytes16) : IdentityActivityScope()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeIdentityActivityScope : FfiConverterRustBuffer<IdentityActivityScope>{
+    override fun read(buf: ByteBuffer): IdentityActivityScope {
+        return when(buf.getInt()) {
+            1 -> IdentityActivityScope.Group(
+                FfiConverterTypeBytes32.read(buf),
+                )
+            2 -> IdentityActivityScope.Direct(
+                FfiConverterTypeBytes16.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: IdentityActivityScope) = when(value) {
+        is IdentityActivityScope.Group -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes32.allocationSize(value.`groupId`)
+            )
+        }
+        is IdentityActivityScope.Direct -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes16.allocationSize(value.`destination`)
+            )
+        }
+    }
+
+    override fun write(value: IdentityActivityScope, buf: ByteBuffer) {
+        when(value) {
+            is IdentityActivityScope.Group -> {
+                buf.putInt(1)
+                FfiConverterTypeBytes32.write(value.`groupId`, buf)
+                Unit
+            }
+            is IdentityActivityScope.Direct -> {
+                buf.putInt(2)
+                FfiConverterTypeBytes16.write(value.`destination`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class IdentityActivitySeenOutcome {
+
+    object Saved : IdentityActivitySeenOutcome()
+
+
+    object Capacity : IdentityActivitySeenOutcome()
+
+
+    data class InvalidInput(
+        val `detail`: kotlin.String) : IdentityActivitySeenOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : IdentityActivitySeenOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeIdentityActivitySeenOutcome : FfiConverterRustBuffer<IdentityActivitySeenOutcome>{
+    override fun read(buf: ByteBuffer): IdentityActivitySeenOutcome {
+        return when(buf.getInt()) {
+            1 -> IdentityActivitySeenOutcome.Saved
+            2 -> IdentityActivitySeenOutcome.Capacity
+            3 -> IdentityActivitySeenOutcome.InvalidInput(
+                FfiConverterString.read(buf),
+                )
+            4 -> IdentityActivitySeenOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: IdentityActivitySeenOutcome) = when(value) {
+        is IdentityActivitySeenOutcome.Saved -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is IdentityActivitySeenOutcome.Capacity -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is IdentityActivitySeenOutcome.InvalidInput -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is IdentityActivitySeenOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: IdentityActivitySeenOutcome, buf: ByteBuffer) {
+        when(value) {
+            is IdentityActivitySeenOutcome.Saved -> {
+                buf.putInt(1)
+                Unit
+            }
+            is IdentityActivitySeenOutcome.Capacity -> {
+                buf.putInt(2)
+                Unit
+            }
+            is IdentityActivitySeenOutcome.InvalidInput -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is IdentityActivitySeenOutcome.Unavailable -> {
+                buf.putInt(4)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
 sealed class IdentityCreationOutcome {
 
     data class Created(
@@ -10008,6 +12078,360 @@ public object FfiConverterTypeMeasureLxmfTextOutcome : FfiConverterRustBuffer<Me
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class NamedIdentityActivityListOutcome {
+
+    data class Ready(
+        val `activities`: List<rs.reticulum.prns.app.bindings.NamedIdentityActivity>) : NamedIdentityActivityListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : NamedIdentityActivityListOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : NamedIdentityActivityListOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityActivityListOutcome : FfiConverterRustBuffer<NamedIdentityActivityListOutcome>{
+    override fun read(buf: ByteBuffer): NamedIdentityActivityListOutcome {
+        return when(buf.getInt()) {
+            1 -> NamedIdentityActivityListOutcome.Ready(
+                FfiConverterSequenceTypeNamedIdentityActivity.read(buf),
+                )
+            2 -> NamedIdentityActivityListOutcome.Busy
+            3 -> NamedIdentityActivityListOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: NamedIdentityActivityListOutcome) = when(value) {
+        is NamedIdentityActivityListOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterSequenceTypeNamedIdentityActivity.allocationSize(value.`activities`)
+            )
+        }
+        is NamedIdentityActivityListOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is NamedIdentityActivityListOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: NamedIdentityActivityListOutcome, buf: ByteBuffer) {
+        when(value) {
+            is NamedIdentityActivityListOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterSequenceTypeNamedIdentityActivity.write(value.`activities`, buf)
+                Unit
+            }
+            is NamedIdentityActivityListOutcome.Busy -> {
+                buf.putInt(2)
+                Unit
+            }
+            is NamedIdentityActivityListOutcome.Unavailable -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class NamedIdentityCatalogOutcome {
+
+    data class Ready(
+        val `catalog`: rs.reticulum.prns.app.bindings.NamedIdentityCatalog) : NamedIdentityCatalogOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : NamedIdentityCatalogOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : NamedIdentityCatalogOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Rejected(
+        val `detail`: kotlin.String) : NamedIdentityCatalogOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityCatalogOutcome : FfiConverterRustBuffer<NamedIdentityCatalogOutcome>{
+    override fun read(buf: ByteBuffer): NamedIdentityCatalogOutcome {
+        return when(buf.getInt()) {
+            1 -> NamedIdentityCatalogOutcome.Ready(
+                FfiConverterTypeNamedIdentityCatalog.read(buf),
+                )
+            2 -> NamedIdentityCatalogOutcome.Busy
+            3 -> NamedIdentityCatalogOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            4 -> NamedIdentityCatalogOutcome.Rejected(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: NamedIdentityCatalogOutcome) = when(value) {
+        is NamedIdentityCatalogOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeNamedIdentityCatalog.allocationSize(value.`catalog`)
+            )
+        }
+        is NamedIdentityCatalogOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is NamedIdentityCatalogOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is NamedIdentityCatalogOutcome.Rejected -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: NamedIdentityCatalogOutcome, buf: ByteBuffer) {
+        when(value) {
+            is NamedIdentityCatalogOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeNamedIdentityCatalog.write(value.`catalog`, buf)
+                Unit
+            }
+            is NamedIdentityCatalogOutcome.Busy -> {
+                buf.putInt(2)
+                Unit
+            }
+            is NamedIdentityCatalogOutcome.Unavailable -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is NamedIdentityCatalogOutcome.Rejected -> {
+                buf.putInt(4)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class NamedIdentityChange {
+
+    object Select : NamedIdentityChange()
+
+
+    data class Rename(
+        val `label`: kotlin.String) : NamedIdentityChange()
+
+    {
+
+
+        companion object
+    }
+
+    object Pause : NamedIdentityChange()
+
+
+    object Resume : NamedIdentityChange()
+
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityChange : FfiConverterRustBuffer<NamedIdentityChange>{
+    override fun read(buf: ByteBuffer): NamedIdentityChange {
+        return when(buf.getInt()) {
+            1 -> NamedIdentityChange.Select
+            2 -> NamedIdentityChange.Rename(
+                FfiConverterString.read(buf),
+                )
+            3 -> NamedIdentityChange.Pause
+            4 -> NamedIdentityChange.Resume
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: NamedIdentityChange) = when(value) {
+        is NamedIdentityChange.Select -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is NamedIdentityChange.Rename -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`label`)
+            )
+        }
+        is NamedIdentityChange.Pause -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is NamedIdentityChange.Resume -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+    }
+
+    override fun write(value: NamedIdentityChange, buf: ByteBuffer) {
+        when(value) {
+            is NamedIdentityChange.Select -> {
+                buf.putInt(1)
+                Unit
+            }
+            is NamedIdentityChange.Rename -> {
+                buf.putInt(2)
+                FfiConverterString.write(value.`label`, buf)
+                Unit
+            }
+            is NamedIdentityChange.Pause -> {
+                buf.putInt(3)
+                Unit
+            }
+            is NamedIdentityChange.Resume -> {
+                buf.putInt(4)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+
+enum class NamedIdentityState {
+
+    ENABLED,
+    PAUSED,
+    RETIRED;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeNamedIdentityState: FfiConverterRustBuffer<NamedIdentityState> {
+    override fun read(buf: ByteBuffer) = try {
+        NamedIdentityState.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: NamedIdentityState) = 4UL
+
+    override fun write(value: NamedIdentityState, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
     }
 }
 
@@ -14105,6 +16529,38 @@ public object FfiConverterOptionalTypeDevelopmentNodeOperation: FfiConverterRust
 /**
  * @suppress
  */
+public object FfiConverterOptionalTypeNamedIdentityReference: FfiConverterRustBuffer<NamedIdentityReference?> {
+    override fun read(buf: ByteBuffer): NamedIdentityReference? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeNamedIdentityReference.read(buf)
+    }
+
+    override fun allocationSize(value: NamedIdentityReference?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeNamedIdentityReference.allocationSize(value)
+        }
+    }
+
+    override fun write(value: NamedIdentityReference?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeNamedIdentityReference.write(value, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterOptionalTypeRemoteChangeOperation: FfiConverterRustBuffer<RemoteChangeOperation?> {
     override fun read(buf: ByteBuffer): RemoteChangeOperation? {
         if (buf.get().toInt() == 0) {
@@ -14645,6 +17101,34 @@ public object FfiConverterSequenceTypeGroupTextMessage: FfiConverterRustBuffer<L
 /**
  * @suppress
  */
+public object FfiConverterSequenceTypeIdentityConversationActivity: FfiConverterRustBuffer<List<IdentityConversationActivity>> {
+    override fun read(buf: ByteBuffer): List<IdentityConversationActivity> {
+        val len = buf.getInt()
+        return List<IdentityConversationActivity>(len) {
+            FfiConverterTypeIdentityConversationActivity.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<IdentityConversationActivity>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeIdentityConversationActivity.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<IdentityConversationActivity>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeIdentityConversationActivity.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterSequenceTypeLocalAnnounceActivity: FfiConverterRustBuffer<List<LocalAnnounceActivity>> {
     override fun read(buf: ByteBuffer): List<LocalAnnounceActivity> {
         val len = buf.getInt()
@@ -14775,6 +17259,62 @@ public object FfiConverterSequenceTypeLxmfPeerSummary: FfiConverterRustBuffer<Li
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeLxmfPeerSummary.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeNamedIdentityActivity: FfiConverterRustBuffer<List<NamedIdentityActivity>> {
+    override fun read(buf: ByteBuffer): List<NamedIdentityActivity> {
+        val len = buf.getInt()
+        return List<NamedIdentityActivity>(len) {
+            FfiConverterTypeNamedIdentityActivity.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<NamedIdentityActivity>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeNamedIdentityActivity.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<NamedIdentityActivity>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeNamedIdentityActivity.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeNamedIdentitySummary: FfiConverterRustBuffer<List<NamedIdentitySummary>> {
+    override fun read(buf: ByteBuffer): List<NamedIdentitySummary> {
+        val len = buf.getInt()
+        return List<NamedIdentitySummary>(len) {
+            FfiConverterTypeNamedIdentitySummary.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<NamedIdentitySummary>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeNamedIdentitySummary.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<NamedIdentitySummary>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeNamedIdentitySummary.write(it, buf)
         }
     }
 }
@@ -15839,6 +18379,72 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeRemoteWifiCommandOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `changeNamedIdentity`(`input`: ChangeNamedIdentityInput) : NamedIdentityCatalogOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_change_named_identity(FfiConverterTypeChangeNamedIdentityInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeNamedIdentityCatalogOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `createNamedIdentity`(`input`: CreateNamedIdentityInput) : NamedIdentityCatalogOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_create_named_identity(FfiConverterTypeCreateNamedIdentityInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeNamedIdentityCatalogOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `listNamedIdentities`() : NamedIdentityCatalogOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_list_named_identities(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeNamedIdentityCatalogOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+ fun `openNamedIdentity`(`identity`: NamedIdentityReference): NamedIdentityClient {
+            return FfiConverterTypeNamedIdentityClient.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.uniffi_prns_app_fn_func_open_named_identity(
+
+        FfiConverterTypeNamedIdentityReference.lower(`identity`),_status)
+}
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `listNamedIdentityActivity`() : NamedIdentityActivityListOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_list_named_identity_activity(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeNamedIdentityActivityListOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )

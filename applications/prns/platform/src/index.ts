@@ -44,6 +44,11 @@ export const androidRuntime = createAndroidRuntime(nativeAndroidRuntime);
 
 export const {
   attachHost,
+  listNamedIdentities,
+  listNamedIdentityActivity,
+  createNamedIdentity,
+  changeNamedIdentity,
+  forIdentity,
   announceLxmf,
   approveRemoteControlPairing,
   cancelLxmfMessage,

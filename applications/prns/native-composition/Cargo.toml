@@ -45,6 +45,9 @@ android = [
 ios-restoration-probe = ["apple", "prns-interfaces-tokio/log"]
 
 [dependencies]
+prns-identities-runtime = { path = "../../../prns-identities/runtime" }
+prns-identities-native = { path = "../../../prns-identities/native", features = ["redb-store"] }
+prns-identities-core = { path = "../../../prns-identities/core" }
 futures-timer = "=3.0.3"
 getrandom = "0.2"
 uniffi = { version = "=0.31.2", optional = true, default-features = false }

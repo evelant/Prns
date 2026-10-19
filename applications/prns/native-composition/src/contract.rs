@@ -1,3 +1,5 @@
+mod named_identities;
+pub use named_identities::*;
 mod remote_management;
 pub use remote_management::*;
 mod remote_wifi;

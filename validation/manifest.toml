@@ -262,6 +262,30 @@ inputs = ["prns-identities", "prns-core", "prns-macros"]
 artifacts = "validation-artifacts/results/identity-native-tests-linux"
 
 [[suite]]
+id = "identity-live-services-macos"
+domain = "native"
+group = "named-identities"
+tiers = ["pr"]
+platform = "macos"
+toolchain = "stable"
+timeout_seconds = 1200
+command = ["cargo", "test", "--locked", "--manifest-path", "applications/Cargo.toml", "-p", "prns-app-native", "--lib", "--features", "host-test", "identity_services::tests"]
+inputs = ["applications", "prns-identities", "prns-groups", "prns-host", "personal-rns", "prns-core", "prns-runtime"]
+artifacts = "validation-artifacts/results/identity-live-services-macos"
+
+[[suite]]
+id = "identity-scoped-storage-macos"
+domain = "native"
+group = "named-identities"
+tiers = ["pr"]
+platform = "macos"
+toolchain = "stable"
+timeout_seconds = 1200
+command = ["cargo", "test", "--locked", "--manifest-path", "applications/Cargo.toml", "-p", "prns-app-native", "--lib", "--features", "host-test", "development_store::"]
+inputs = ["applications", "prns-identities", "prns-groups", "prns-host", "prns-core"]
+artifacts = "validation-artifacts/results/identity-scoped-storage-macos"
+
+[[suite]]
 id = "group-communication-tests"
 domain = "native"
 group = "group-communication"
