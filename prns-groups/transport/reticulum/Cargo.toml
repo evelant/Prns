@@ -1,0 +1,29 @@
+[package]
+name = "prns-groups-reticulum"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Bounded group inventory and exact-envelope synchronization over borrowed Reticulum Links"
+
+[dependencies]
+prns-groups = { path = "../../core" }
+prns-groups-service = { path = "../../service" }
+prns-groups-store = { path = "../../store" }
+prns-host = { path = "../../../prns-host/core" }
+prns-host-native = { path = "../../../prns-host/impls/native" }
+personal-rns = { path = "../../../personal-rns", default-features = false, features = ["tokio-host"] }
+tokio = { version = "1", default-features = false, features = ["sync", "time"] }
+
+[dev-dependencies]
+prns-groups-mls = { path = "../../security/mls-rs" }
+prns-groups-store-native = { path = "../../store/native" }
+redb = "=4.2.0"
+tempfile = "3"
+tokio = { version = "1", default-features = false, features = ["macros", "rt-multi-thread", "sync", "time", "test-util"] }
+
+[lints]
+workspace = true

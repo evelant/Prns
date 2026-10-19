@@ -726,6 +726,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "prns-app-android": [],
         "prns-app-ios": []
       },
@@ -761,6 +763,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -940,6 +944,16 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "alloc",
           "default",
           "std"
@@ -1264,6 +1278,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -1561,6 +1577,12 @@
         "expo-ios": [
           "zeroize"
         ],
+        "group-libraries": [
+          "zeroize"
+        ],
+        "group-secure-storage": [
+          "zeroize"
+        ],
         "halow-appliance-manager": [
           "zeroize"
         ],
@@ -1627,6 +1649,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -1766,6 +1790,32 @@
           "pin-project",
           "tokio-stream"
         ],
+        "group-libraries": [
+          "bluetoothd",
+          "custom_debug",
+          "dbus",
+          "dbus-crossroads",
+          "dbus-tokio",
+          "default",
+          "displaydoc",
+          "l2cap",
+          "lazy_static",
+          "pin-project",
+          "tokio-stream"
+        ],
+        "group-secure-storage": [
+          "bluetoothd",
+          "custom_debug",
+          "dbus",
+          "dbus-crossroads",
+          "dbus-tokio",
+          "default",
+          "displaydoc",
+          "l2cap",
+          "lazy_static",
+          "pin-project",
+          "tokio-stream"
+        ],
         "host-c-linux": [
           "bluetoothd",
           "custom_debug",
@@ -1808,6 +1858,8 @@
       "graphs": {
         "daemon-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -1826,6 +1878,8 @@
       "graphs": {
         "daemon-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -1921,6 +1975,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -2113,6 +2169,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -2276,6 +2334,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "default",
           "std"
@@ -2373,6 +2439,12 @@
           "default"
         ],
         "expo-ios": [
+          "default"
+        ],
+        "group-libraries": [
+          "default"
+        ],
+        "group-secure-storage": [
           "default"
         ],
         "halow-headless": [
@@ -2493,6 +2565,12 @@
           "block-padding"
         ],
         "expo-ios": [
+          "block-padding"
+        ],
+        "group-libraries": [
+          "block-padding"
+        ],
+        "group-secure-storage": [
           "block-padding"
         ],
         "halow-appliance-manager": [
@@ -2619,6 +2697,22 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
+      "name": "cc",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 13,
+        "externs": 0,
+        "functions": 2,
+        "impls": 2,
+        "tokens": 17
+      },
+      "version": "1.7.0"
+    },
+    {
+      "graphs": {
         "android": [],
         "expo-android": [],
         "prns-app-android": []
@@ -2718,6 +2812,8 @@
     {
       "graphs": {
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "sdk-native-linux": []
@@ -2808,6 +2904,14 @@
           "zeroize"
         ],
         "expo-ios": [
+          "rng",
+          "zeroize"
+        ],
+        "group-libraries": [
+          "rng",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "rng",
           "zeroize"
         ],
@@ -2979,12 +3083,14 @@
           "block-padding"
         ],
         "group-libraries": [
+          "block-padding",
           "zeroize"
         ],
         "group-mls-adapter": [
           "zeroize"
         ],
         "group-secure-storage": [
+          "block-padding",
           "zeroize"
         ],
         "halow-appliance-manager": [
@@ -3278,6 +3384,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -3772,6 +3880,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "prns-app-android": [],
         "prns-app-ios": []
       },
@@ -3932,6 +4042,14 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "default",
           "std"
@@ -4142,6 +4260,28 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ]
+      },
+      "name": "crossbeam-deque",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 29,
+        "externs": 0,
+        "functions": 6,
+        "impls": 6,
+        "tokens": 41
+      },
+      "version": "0.8.8"
+    },
+    {
+      "graphs": {
         "android": [
           "alloc",
           "std"
@@ -4221,6 +4361,28 @@
         "tokens": 138
       },
       "version": "0.9.20"
+    },
+    {
+      "graphs": {
+        "group-libraries": [
+          "alloc",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "std"
+        ]
+      },
+      "name": "crossbeam-epoch",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 87,
+        "externs": 0,
+        "functions": 40,
+        "impls": 11,
+        "tokens": 138
+      },
+      "version": "0.9.21"
     },
     {
       "graphs": {
@@ -4321,6 +4483,28 @@
     {
       "graphs": {
         "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ]
+      },
+      "name": "crossbeam-utils",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 53,
+        "externs": 0,
+        "functions": 8,
+        "impls": 16,
+        "tokens": 77
+      },
+      "version": "0.8.23"
+    },
+    {
+      "graphs": {
+        "group-libraries": [
           "generic-array",
           "rand_core",
           "zeroize"
@@ -4386,7 +4570,8 @@
         ],
         "group-libraries": [
           "getrandom",
-          "rand_core"
+          "rand_core",
+          "std"
         ],
         "group-mls-adapter": [
           "getrandom",
@@ -4394,7 +4579,8 @@
         ],
         "group-secure-storage": [
           "getrandom",
-          "rand_core"
+          "rand_core",
+          "std"
         ],
         "halow-appliance-manager": [
           "std"
@@ -4492,6 +4678,12 @@
           "rand_core"
         ],
         "expo-ios": [
+          "rand_core"
+        ],
+        "group-libraries": [
+          "rand_core"
+        ],
+        "group-secure-storage": [
           "rand_core"
         ],
         "halow-appliance-manager": [
@@ -4597,6 +4789,22 @@
         "tokens": 0
       },
       "version": "0.4.2"
+    },
+    {
+      "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
+      "name": "ctutils",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.4.3"
     },
     {
       "graphs": {
@@ -4786,6 +4994,20 @@
           "rand_core",
           "zeroize"
         ],
+        "group-libraries": [
+          "alloc",
+          "digest",
+          "precomputed-tables",
+          "rand_core",
+          "zeroize"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "digest",
+          "precomputed-tables",
+          "rand_core",
+          "zeroize"
+        ],
         "halow-appliance-manager": [
           "alloc",
           "digest",
@@ -4904,6 +5126,8 @@
         "daemon-linux": [],
         "desktop-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -4923,6 +5147,8 @@
         "daemon-linux": [],
         "desktop-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -5018,6 +5244,14 @@
           "suggestions"
         ],
         "expo-host-linux": [
+          "default",
+          "suggestions"
+        ],
+        "group-libraries": [
+          "default",
+          "suggestions"
+        ],
+        "group-secure-storage": [
           "default",
           "suggestions"
         ],
@@ -5206,6 +5440,14 @@
           "suggestions"
         ],
         "expo-host-linux": [
+          "strsim",
+          "suggestions"
+        ],
+        "group-libraries": [
+          "strsim",
+          "suggestions"
+        ],
+        "group-secure-storage": [
           "strsim",
           "suggestions"
         ],
@@ -5346,6 +5588,8 @@
         "esp32-s3-tbeam": [],
         "esp32-s3-xiao-esp32s3-wio-sx1262": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "nrf52840": [],
         "sdk-native-linux": []
@@ -5416,6 +5660,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -5500,6 +5746,16 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "alloc",
           "default",
@@ -5560,6 +5816,18 @@
           "futures-util",
           "vendored"
         ],
+        "group-libraries": [
+          "futures",
+          "futures-channel",
+          "futures-util",
+          "vendored"
+        ],
+        "group-secure-storage": [
+          "futures",
+          "futures-channel",
+          "futures-util",
+          "vendored"
+        ],
         "host-c-linux": [
           "futures",
           "futures-channel",
@@ -5589,6 +5857,8 @@
         "daemon-linux": [],
         "desktop-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -5608,6 +5878,8 @@
         "daemon-linux": [],
         "desktop-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -5834,7 +6106,8 @@
         ],
         "group-libraries": [
           "alloc",
-          "oid"
+          "oid",
+          "zeroize"
         ],
         "group-mls-adapter": [
           "alloc",
@@ -5842,7 +6115,8 @@
         ],
         "group-secure-storage": [
           "alloc",
-          "oid"
+          "oid",
+          "zeroize"
         ],
         "halow-headless": [
           "alloc",
@@ -5967,12 +6241,14 @@
           "std"
         ],
         "group-libraries": [
+          "alloc",
           "block-buffer",
           "const-oid",
           "core-api",
           "default",
           "mac",
           "oid",
+          "std",
           "subtle"
         ],
         "group-mls-adapter": [
@@ -5985,12 +6261,14 @@
           "subtle"
         ],
         "group-secure-storage": [
+          "alloc",
           "block-buffer",
           "const-oid",
           "core-api",
           "default",
           "mac",
           "oid",
+          "std",
           "subtle"
         ],
         "halow-appliance-manager": [
@@ -6192,6 +6470,20 @@
           "zeroize"
         ],
         "expo-ios": [
+          "block-api",
+          "default",
+          "mac",
+          "rand_core",
+          "zeroize"
+        ],
+        "group-libraries": [
+          "block-api",
+          "default",
+          "mac",
+          "rand_core",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "block-api",
           "default",
           "mac",
@@ -6486,6 +6778,14 @@
         "expo-host-linux": [
           "default",
           "std"
+        ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
         ]
       },
       "name": "displaydoc",
@@ -6617,6 +6917,12 @@
           "default"
         ],
         "expo-ios": [
+          "default"
+        ],
+        "group-libraries": [
+          "default"
+        ],
+        "group-secure-storage": [
           "default"
         ],
         "halow-headless": [
@@ -6821,6 +7127,12 @@
           "alloc"
         ],
         "expo-ios": [
+          "alloc"
+        ],
+        "group-libraries": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ],
         "halow-appliance-manager": [
@@ -7068,6 +7380,24 @@
           "strobe-rs",
           "zeroize"
         ],
+        "group-libraries": [
+          "alloc",
+          "batch",
+          "fast",
+          "rand_core",
+          "signature",
+          "strobe-rs",
+          "zeroize"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "batch",
+          "fast",
+          "rand_core",
+          "signature",
+          "strobe-rs",
+          "zeroize"
+        ],
         "halow-appliance-manager": [
           "alloc",
           "batch",
@@ -7273,9 +7603,15 @@
     },
     {
       "graphs": {
-        "group-libraries": [],
+        "group-libraries": [
+          "std",
+          "use_std"
+        ],
         "group-mls-adapter": [],
-        "group-secure-storage": []
+        "group-secure-storage": [
+          "std",
+          "use_std"
+        ]
       },
       "name": "either",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -7478,6 +7814,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -7710,6 +8048,22 @@
           "tcp",
           "udp"
         ],
+        "group-libraries": [
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "tcp",
+          "udp"
+        ],
+        "group-secure-storage": [
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "tcp",
+          "udp"
+        ],
         "halow-headless": [
           "medium-ethernet",
           "multicast",
@@ -7806,6 +8160,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -7847,6 +8203,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -7964,6 +8322,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8009,6 +8369,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8069,6 +8431,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8139,6 +8503,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -8181,6 +8547,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -8447,6 +8815,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8491,6 +8861,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8533,6 +8905,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8612,6 +8986,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -8652,6 +9028,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8693,6 +9071,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -8733,6 +9113,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8775,6 +9157,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8816,6 +9200,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -8942,6 +9328,8 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": []
       },
       "name": "embedded-storage-async",
@@ -9179,9 +9567,11 @@
           "std"
         ],
         "group-libraries": [
+          "default",
           "std"
         ],
         "group-secure-storage": [
+          "default",
           "std"
         ],
         "halow-appliance-manager": [
@@ -10922,6 +11312,22 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
+      "name": "find-msvc-tools",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 40,
+        "externs": 7,
+        "functions": 6,
+        "impls": 2,
+        "tokens": 55
+      },
+      "version": "0.1.14"
+    },
+    {
+      "graphs": {
         "daemon-linux": [],
         "daemon-macos": [],
         "daemon-windows": [],
@@ -11188,6 +11594,14 @@
           "std"
         ],
         "expo-host-linux": [
+          "default",
+          "std"
+        ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "default",
           "std"
         ],
@@ -11570,6 +11984,22 @@
           "futures-executor",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "async-await",
+          "default",
+          "executor",
+          "futures-executor",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "async-await",
+          "default",
+          "executor",
+          "futures-executor",
+          "std"
+        ],
         "prns-app-android": [
           "alloc",
           "async-await",
@@ -11796,6 +12226,20 @@
           "sink",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "futures-sink",
+          "sink",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "default",
+          "futures-sink",
+          "sink",
+          "std"
+        ],
         "prns-app-android": [
           "alloc",
           "default",
@@ -11981,6 +12425,16 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "alloc",
           "std"
@@ -12108,6 +12562,12 @@
           "std"
         ],
         "expo-ios": [
+          "std"
+        ],
+        "group-libraries": [
+          "std"
+        ],
+        "group-secure-storage": [
           "std"
         ],
         "prns-app-android": [
@@ -12269,6 +12729,12 @@
         "expo-ios": [
           "std"
         ],
+        "group-libraries": [
+          "std"
+        ],
+        "group-secure-storage": [
+          "std"
+        ],
         "prns-app-android": [
           "std"
         ],
@@ -12370,6 +12836,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "prns-app-android": [],
         "prns-app-ios": []
       },
@@ -12518,6 +12986,16 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "alloc",
           "default",
           "std"
@@ -12676,6 +13154,14 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "std"
+        ],
+        "group-libraries": [
+          "alloc",
+          "std"
+        ],
+        "group-secure-storage": [
           "alloc",
           "std"
         ],
@@ -13148,6 +13634,36 @@
           "slab",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "async-await",
+          "async-await-macro",
+          "channel",
+          "futures-channel",
+          "futures-io",
+          "futures-macro",
+          "futures-sink",
+          "io",
+          "memchr",
+          "sink",
+          "slab",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "async-await",
+          "async-await-macro",
+          "channel",
+          "futures-channel",
+          "futures-io",
+          "futures-macro",
+          "futures-sink",
+          "io",
+          "memchr",
+          "sink",
+          "slab",
+          "std"
+        ],
         "halow-headless": [
           "alloc",
           "futures-sink",
@@ -13432,6 +13948,12 @@
         "expo-ios": [
           "std"
         ],
+        "group-libraries": [
+          "std"
+        ],
+        "group-secure-storage": [
+          "std"
+        ],
         "halow-appliance-manager": [
           "std"
         ],
@@ -13609,6 +14131,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -13669,6 +14193,12 @@
           "raw"
         ],
         "expo-ios": [
+          "raw"
+        ],
+        "group-libraries": [
+          "raw"
+        ],
+        "group-secure-storage": [
           "raw"
         ],
         "host-c-linux": [
@@ -13755,6 +14285,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -13799,6 +14331,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -13860,6 +14394,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -13896,13 +14432,17 @@
           "std"
         ],
         "group-libraries": [
-          "alloc"
+          "alloc",
+          "default",
+          "std"
         ],
         "group-mls-adapter": [
           "alloc"
         ],
         "group-secure-storage": [
-          "alloc"
+          "alloc",
+          "default",
+          "std"
         ],
         "halow-appliance-manager": [
           "alloc",
@@ -13984,6 +14524,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -14089,6 +14631,12 @@
         "expo-ios": [
           "zeroize"
         ],
+        "group-libraries": [
+          "zeroize"
+        ],
+        "group-secure-storage": [
+          "zeroize"
+        ],
         "halow-appliance-manager": [
           "zeroize"
         ],
@@ -14142,6 +14690,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -14334,6 +14884,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "default",
           "std"
@@ -14397,6 +14955,14 @@
           "std"
         ],
         "expo-ios": [
+          "default",
+          "std"
+        ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "default",
           "std"
         ],
@@ -14571,6 +15137,12 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "zeroize"
+        ],
+        "group-secure-storage": [
+          "zeroize"
+        ],
         "halow-headless": [
           "zeroize"
         ]
@@ -14860,6 +15432,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -15110,9 +15684,13 @@
         "expo-ios": [
           "block-padding"
         ],
-        "group-libraries": [],
+        "group-libraries": [
+          "block-padding"
+        ],
         "group-mls-adapter": [],
-        "group-secure-storage": [],
+        "group-secure-storage": [
+          "block-padding"
+        ],
         "halow-appliance-manager": [
           "block-padding"
         ],
@@ -15267,6 +15845,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "host-c-linux": [
           "default",
           "std"
@@ -15362,13 +15948,17 @@
           "use_std"
         ],
         "group-libraries": [
-          "use_alloc"
+          "default",
+          "use_alloc",
+          "use_std"
         ],
         "group-mls-adapter": [
           "use_alloc"
         ],
         "group-secure-storage": [
-          "use_alloc"
+          "default",
+          "use_alloc",
+          "use_std"
         ],
         "host-c-linux": [
           "default",
@@ -15410,6 +16000,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -15633,6 +16225,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -15723,6 +16317,8 @@
         "desktop-macos": [],
         "desktop-windows": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -15794,6 +16390,12 @@
           "rust-allocator"
         ],
         "expo-ios": [
+          "rust-allocator"
+        ],
+        "group-libraries": [
+          "rust-allocator"
+        ],
+        "group-secure-storage": [
           "rust-allocator"
         ],
         "halow-headless": [
@@ -16000,11 +16602,13 @@
       "graphs": {
         "group-libraries": [
           "default",
+          "extra_traits",
           "std"
         ],
         "group-mls-adapter": [],
         "group-secure-storage": [
           "default",
+          "extra_traits",
           "std"
         ]
       },
@@ -16032,6 +16636,18 @@
           "pkg-config"
         ],
         "expo-host-linux": [
+          "cc",
+          "default",
+          "pkg-config",
+          "vendored"
+        ],
+        "group-libraries": [
+          "cc",
+          "default",
+          "pkg-config",
+          "vendored"
+        ],
+        "group-secure-storage": [
           "cc",
           "default",
           "pkg-config",
@@ -16190,19 +16806,31 @@
         ],
         "group-libraries": [
           "auxvec",
+          "default",
           "elf",
           "errno",
           "general",
+          "if_ether",
           "ioctl",
-          "no_std"
+          "net",
+          "netlink",
+          "no_std",
+          "std",
+          "xdp"
         ],
         "group-secure-storage": [
           "auxvec",
+          "default",
           "elf",
           "errno",
           "general",
+          "if_ether",
           "ioctl",
-          "no_std"
+          "net",
+          "netlink",
+          "no_std",
+          "std",
+          "xdp"
         ],
         "halow-appliance-manager": [
           "auxvec",
@@ -16319,6 +16947,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -16411,6 +17041,14 @@
           "default"
         ],
         "expo-ios": [
+          "atomic_usize",
+          "default"
+        ],
+        "group-libraries": [
+          "atomic_usize",
+          "default"
+        ],
+        "group-secure-storage": [
           "atomic_usize",
           "default"
         ],
@@ -16574,6 +17212,14 @@
           "alloc",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "std"
+        ],
         "halow-headless": [],
         "prns-app-android": [
           "alloc",
@@ -16665,6 +17311,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "host-c-linux": [
           "default",
           "std"
@@ -16708,6 +17362,14 @@
           "std"
         ],
         "expo-host-linux": [
+          "default",
+          "std"
+        ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "default",
           "std"
         ],
@@ -16811,6 +17473,12 @@
           "map"
         ],
         "expo-ios": [
+          "map"
+        ],
+        "group-libraries": [
+          "map"
+        ],
+        "group-secure-storage": [
           "map"
         ],
         "halow-headless": [
@@ -17232,6 +17900,16 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "alloc",
           "std"
@@ -17530,6 +18208,16 @@
           "os-ext",
           "os-poll"
         ],
+        "group-libraries": [
+          "net",
+          "os-ext",
+          "os-poll"
+        ],
+        "group-secure-storage": [
+          "net",
+          "os-ext",
+          "os-poll"
+        ],
         "halow-headless": [
           "net",
           "os-ext",
@@ -17823,6 +18511,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -17867,6 +18557,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -18009,6 +18701,18 @@
           "default",
           "gateway"
         ],
+        "group-libraries": [
+          "android-extra",
+          "apple-system-configuration-extra",
+          "default",
+          "gateway"
+        ],
+        "group-secure-storage": [
+          "android-extra",
+          "apple-system-configuration-extra",
+          "default",
+          "gateway"
+        ],
         "host-c-linux": [
           "android-extra",
           "apple-system-configuration-extra",
@@ -18058,6 +18762,8 @@
         "desktop-linux": [],
         "expo-android": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "prns-app-android": [],
         "sdk-native-linux": []
@@ -18080,6 +18786,8 @@
         "desktop-linux": [],
         "expo-android": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "prns-app-android": [],
         "sdk-native-linux": []
@@ -18112,6 +18820,12 @@
         "expo-host-linux": [
           "default"
         ],
+        "group-libraries": [
+          "default"
+        ],
+        "group-secure-storage": [
+          "default"
+        ],
         "host-c-linux": [
           "default"
         ],
@@ -18142,6 +18856,12 @@
           "ioctl"
         ],
         "expo-host-linux": [
+          "ioctl"
+        ],
+        "group-libraries": [
+          "ioctl"
+        ],
+        "group-secure-storage": [
           "ioctl"
         ],
         "host-c-linux": [
@@ -18186,6 +18906,14 @@
           "time"
         ],
         "expo-host-linux": [
+          "process",
+          "sched"
+        ],
+        "group-libraries": [
+          "process",
+          "sched"
+        ],
+        "group-secure-storage": [
           "process",
           "sched"
         ],
@@ -18405,6 +19133,8 @@
         "esp32-s3-tbeam": [],
         "esp32-s3-xiao-esp32s3-wio-sx1262": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -18546,6 +19276,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "halow-appliance-manager": [
           "default",
           "std"
@@ -18675,6 +19413,12 @@
           "tokio"
         ],
         "expo-host-linux": [
+          "tokio"
+        ],
+        "group-libraries": [
+          "tokio"
+        ],
+        "group-secure-storage": [
           "tokio"
         ],
         "host-c-linux": [
@@ -21170,11 +21914,13 @@
         ],
         "group-libraries": [
           "alloc",
+          "default",
           "race",
           "std"
         ],
         "group-secure-storage": [
           "alloc",
+          "default",
           "race",
           "std"
         ],
@@ -21290,6 +22036,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "prns-app-android": [],
         "prns-app-ios": [],
@@ -21510,6 +22258,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -21543,6 +22293,8 @@
         "esp32-s3-xiao-esp32s3-wio-sx1262": [],
         "expo-android": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "prns-app-android": [],
         "sdk-native-linux": []
@@ -22326,6 +23078,54 @@
           "websocket-server",
           "wifi-auto"
         ],
+        "group-libraries": [
+          "alloc",
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "pipe",
+          "rnode",
+          "serial",
+          "std",
+          "tcp",
+          "tokio-host",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "pipe",
+          "rnode",
+          "serial",
+          "std",
+          "tcp",
+          "tokio-host",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
         "halow-headless": [
           "alloc",
           "flash",
@@ -22520,6 +23320,8 @@
         "desktop-linux": [],
         "engine": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -22540,6 +23342,8 @@
         "desktop-linux": [],
         "engine": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -22575,6 +23379,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -22682,6 +23488,12 @@
         "expo-ios": [
           "alloc"
         ],
+        "group-libraries": [
+          "alloc"
+        ],
+        "group-secure-storage": [
+          "alloc"
+        ],
         "halow-appliance-manager": [
           "alloc"
         ],
@@ -22746,7 +23558,9 @@
     },
     {
       "graphs": {
-        "expo-host-linux": []
+        "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": []
       },
       "name": "pkg-config",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -23035,7 +23849,10 @@
         ],
         "group-libraries": [
           "critical-section",
-          "require-cas"
+          "default",
+          "fallback",
+          "require-cas",
+          "std"
         ],
         "group-mls-adapter": [
           "critical-section",
@@ -23043,7 +23860,10 @@
         ],
         "group-secure-storage": [
           "critical-section",
-          "require-cas"
+          "default",
+          "fallback",
+          "require-cas",
+          "std"
         ],
         "halow-headless": [
           "critical-section",
@@ -23210,6 +24030,14 @@
           "simd",
           "std"
         ],
+        "group-libraries": [
+          "simd",
+          "std"
+        ],
+        "group-secure-storage": [
+          "simd",
+          "std"
+        ],
         "halow-appliance-manager": [
           "simd",
           "std"
@@ -23303,6 +24131,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -23611,6 +24441,38 @@
           "std",
           "tokio-host"
         ],
+        "group-libraries": [
+          "alloc",
+          "crypto-precomputed",
+          "ed25519-batch",
+          "embassy-host",
+          "flash",
+          "i2p",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "resource-work-offload",
+          "rns-management-wire",
+          "std",
+          "tokio-host"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "crypto-precomputed",
+          "ed25519-batch",
+          "embassy-host",
+          "flash",
+          "i2p",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "resource-work-offload",
+          "rns-management-wire",
+          "std",
+          "tokio-host"
+        ],
         "halow-appliance-manager": [
           "alloc",
           "crypto-precomputed",
@@ -23826,6 +24688,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -23917,6 +24781,22 @@
         "group-libraries": [],
         "group-secure-storage": []
       },
+      "name": "prns-groups-reticulum",
+      "source": "prns-groups/transport/reticulum",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
       "name": "prns-groups-service",
       "source": "prns-groups/service",
       "unsafe": {
@@ -23974,6 +24854,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -24039,6 +24921,12 @@
           "android-platform",
           "default"
         ],
+        "group-libraries": [
+          "default"
+        ],
+        "group-secure-storage": [
+          "default"
+        ],
         "host-c-linux": [
           "default"
         ],
@@ -24075,6 +24963,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -24285,6 +25175,18 @@
           "wifi-auto"
         ],
         "expo-ios": [
+          "bluetooth-auto",
+          "tcp",
+          "usb",
+          "wifi-auto"
+        ],
+        "group-libraries": [
+          "bluetooth-auto",
+          "tcp",
+          "usb",
+          "wifi-auto"
+        ],
+        "group-secure-storage": [
           "bluetooth-auto",
           "tcp",
           "usb",
@@ -24631,6 +25533,48 @@
           "websocket-server",
           "wifi-auto"
         ],
+        "group-libraries": [
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "bluetooth-auto-runtime",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "network-device-selection",
+          "pipe",
+          "rnode",
+          "serial",
+          "tcp",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
+        "group-secure-storage": [
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "bluetooth-auto-runtime",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "network-device-selection",
+          "pipe",
+          "rnode",
+          "serial",
+          "tcp",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
         "halow-headless": [
           "tcp"
         ],
@@ -24852,6 +25796,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -25067,6 +26013,22 @@
           "resource-bzip2",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "remote-control-wifi-host",
+          "resource-bzip2",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "remote-control-wifi-host",
+          "resource-bzip2",
+          "std"
+        ],
         "halow-headless": [
           "alloc",
           "movable-frame-forwarding",
@@ -25218,6 +26180,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -25308,6 +26272,16 @@
           "parallel-resource-hash"
         ],
         "expo-ios": [
+          "interface-discovery",
+          "parallel-persistence",
+          "parallel-resource-hash"
+        ],
+        "group-libraries": [
+          "interface-discovery",
+          "parallel-persistence",
+          "parallel-resource-hash"
+        ],
+        "group-secure-storage": [
           "interface-discovery",
           "parallel-persistence",
           "parallel-resource-hash"
@@ -26113,6 +27087,24 @@
           "std_rng",
           "thread_rng"
         ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "os_rng",
+          "small_rng",
+          "std",
+          "std_rng",
+          "thread_rng"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "default",
+          "os_rng",
+          "small_rng",
+          "std",
+          "std_rng",
+          "thread_rng"
+        ],
         "halow-headless": [
           "alloc",
           "default",
@@ -26211,6 +27203,12 @@
         "expo-ios": [
           "std"
         ],
+        "group-libraries": [
+          "std"
+        ],
+        "group-secure-storage": [
+          "std"
+        ],
         "halow-appliance-manager": [
           "std"
         ],
@@ -26268,6 +27266,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -26375,6 +27375,14 @@
           "os_rng",
           "std"
         ],
+        "group-libraries": [
+          "os_rng",
+          "std"
+        ],
+        "group-secure-storage": [
+          "os_rng",
+          "std"
+        ],
         "halow-appliance-manager": [
           "os_rng",
           "std"
@@ -26448,6 +27456,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -26479,6 +27489,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -26765,6 +27777,16 @@
           "default",
           "dev_urandom_fallback"
         ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "dev_urandom_fallback"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "default",
+          "dev_urandom_fallback"
+        ],
         "host-c-linux": [
           "alloc",
           "default",
@@ -26964,6 +27986,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [
           "default",
           "std"
@@ -27023,6 +28047,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -27067,6 +28093,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -27310,14 +28338,22 @@
         "group-libraries": [
           "alloc",
           "default",
+          "event",
           "fs",
-          "std"
+          "mm",
+          "net",
+          "std",
+          "time"
         ],
         "group-secure-storage": [
           "alloc",
           "default",
+          "event",
           "fs",
-          "std"
+          "mm",
+          "net",
+          "std",
+          "time"
         ],
         "halow-headless": [
           "alloc",
@@ -27360,6 +28396,14 @@
           "std"
         ],
         "expo-ios": [
+          "ring",
+          "std"
+        ],
+        "group-libraries": [
+          "ring",
+          "std"
+        ],
+        "group-secure-storage": [
           "ring",
           "std"
         ],
@@ -27407,6 +28451,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -27467,6 +28513,16 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-libraries": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "alloc",
           "default",
           "std"
@@ -27545,6 +28601,16 @@
           "ring",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "ring",
+          "std"
+        ],
+        "group-secure-storage": [
+          "alloc",
+          "ring",
+          "std"
+        ],
         "host-c-linux": [
           "alloc",
           "ring",
@@ -27618,7 +28684,9 @@
     },
     {
       "graphs": {
-        "expo-host-linux": []
+        "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": []
       },
       "name": "rustversion",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -27728,6 +28796,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -28313,8 +29383,10 @@
         ],
         "group-libraries": [
           "alloc",
+          "default",
           "derive",
-          "serde_derive"
+          "serde_derive",
+          "std"
         ],
         "group-mls-adapter": [
           "alloc",
@@ -28323,8 +29395,10 @@
         ],
         "group-secure-storage": [
           "alloc",
+          "default",
           "derive",
-          "serde_derive"
+          "serde_derive",
+          "std"
         ],
         "halow-headless": [
           "alloc"
@@ -28408,6 +29482,8 @@
       "graphs": {
         "daemon-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -28552,7 +29628,8 @@
         ],
         "group-libraries": [
           "alloc",
-          "result"
+          "result",
+          "std"
         ],
         "group-mls-adapter": [
           "alloc",
@@ -28560,7 +29637,8 @@
         ],
         "group-secure-storage": [
           "alloc",
-          "result"
+          "result",
+          "std"
         ],
         "halow-headless": [
           "alloc",
@@ -28774,6 +29852,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "default",
           "std"
@@ -28937,6 +30023,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "prns-app-android": [],
         "prns-app-ios": []
       },
@@ -28990,6 +30078,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "prns-app-android": [],
         "prns-app-ios": []
       },
@@ -29027,6 +30117,14 @@
           "std"
         ],
         "expo-ios": [
+          "default",
+          "std"
+        ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "default",
           "std"
         ],
@@ -29165,6 +30263,12 @@
         "expo-ios": [
           "zeroize"
         ],
+        "group-libraries": [
+          "zeroize"
+        ],
+        "group-secure-storage": [
+          "zeroize"
+        ],
         "halow-appliance-manager": [
           "alloc",
           "default",
@@ -29259,6 +30363,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "host-c-linux": [
           "default",
           "std"
@@ -29333,6 +30445,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "host-c-linux": [
           "default",
           "std"
@@ -29379,6 +30499,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -29501,6 +30623,14 @@
           "rand_core"
         ],
         "expo-ios": [
+          "alloc",
+          "rand_core"
+        ],
+        "group-libraries": [
+          "alloc",
+          "rand_core"
+        ],
+        "group-secure-storage": [
           "alloc",
           "rand_core"
         ],
@@ -29718,6 +30848,14 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "halow-headless": [
           "std"
         ],
@@ -29850,6 +30988,22 @@
         "tokens": 72
       },
       "version": "1.16.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
+      "name": "smallvec",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 56,
+        "externs": 0,
+        "functions": 15,
+        "impls": 8,
+        "tokens": 80
+      },
+      "version": "1.16.3"
     },
     {
       "graphs": {
@@ -30096,6 +31250,26 @@
           "socket-tcp",
           "socket-udp"
         ],
+        "group-libraries": [
+          "async",
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "socket",
+          "socket-tcp",
+          "socket-udp"
+        ],
+        "group-secure-storage": [
+          "async",
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "socket",
+          "socket-tcp",
+          "socket-udp"
+        ],
         "halow-headless": [
           "async",
           "medium-ethernet",
@@ -30281,6 +31455,12 @@
           "all"
         ],
         "expo-ios": [
+          "all"
+        ],
+        "group-libraries": [
+          "all"
+        ],
+        "group-secure-storage": [
           "all"
         ],
         "halow-headless": [
@@ -30580,6 +31760,26 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc"
+        ],
+        "group-secure-storage": [
+          "alloc"
+        ]
+      },
+      "name": "spki",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.8.1"
+    },
+    {
+      "graphs": {
         "esp32-s3-heltec": [
           "default",
           "embedded-graphics-core",
@@ -30666,6 +31866,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [
           "alloc",
           "std"
@@ -30704,6 +31906,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -30744,6 +31948,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -30822,6 +32028,12 @@
           "default"
         ],
         "expo-ios": [
+          "default"
+        ],
+        "group-libraries": [
+          "default"
+        ],
+        "group-secure-storage": [
           "default"
         ],
         "halow-appliance-manager": [
@@ -30939,6 +32151,18 @@
           "std",
           "strum_macros"
         ],
+        "group-libraries": [
+          "default",
+          "derive",
+          "std",
+          "strum_macros"
+        ],
+        "group-secure-storage": [
+          "default",
+          "derive",
+          "std",
+          "strum_macros"
+        ],
         "host-c-linux": [
           "default",
           "derive",
@@ -31014,6 +32238,8 @@
         "daemon-linux": [],
         "desktop-linux": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "sdk-native-linux": []
       },
@@ -31110,12 +32336,14 @@
           "const-generics"
         ],
         "group-libraries": [
+          "const-generics",
           "i128"
         ],
         "group-mls-adapter": [
           "i128"
         ],
         "group-secure-storage": [
+          "const-generics",
           "i128"
         ],
         "halow-appliance-manager": [
@@ -31968,6 +33196,7 @@
       "graphs": {
         "group-libraries": [
           "clone-impls",
+          "default",
           "derive",
           "full",
           "parsing",
@@ -31986,6 +33215,7 @@
         ],
         "group-secure-storage": [
           "clone-impls",
+          "default",
           "derive",
           "full",
           "parsing",
@@ -32024,6 +33254,14 @@
           "proc-macro"
         ],
         "expo-host-linux": [
+          "default",
+          "proc-macro"
+        ],
+        "group-libraries": [
+          "default",
+          "proc-macro"
+        ],
+        "group-secure-storage": [
           "default",
           "proc-macro"
         ],
@@ -32307,6 +33545,28 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ]
+      },
+      "name": "thiserror",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "2.0.21"
+    },
+    {
+      "graphs": {
         "android": [],
         "expo-android": [],
         "prns-app-android": []
@@ -32380,6 +33640,22 @@
         "tokens": 0
       },
       "version": "2.0.20"
+    },
+    {
+      "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
+      "name": "thiserror-impl",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "2.0.21"
     },
     {
       "graphs": {
@@ -32985,6 +34261,46 @@
           "tokio-macros",
           "windows-sys"
         ],
+        "group-libraries": [
+          "bytes",
+          "default",
+          "fs",
+          "io-util",
+          "libc",
+          "macros",
+          "mio",
+          "net",
+          "process",
+          "rt",
+          "rt-multi-thread",
+          "signal-hook-registry",
+          "socket2",
+          "sync",
+          "test-util",
+          "time",
+          "tokio-macros",
+          "windows-sys"
+        ],
+        "group-secure-storage": [
+          "bytes",
+          "default",
+          "fs",
+          "io-util",
+          "libc",
+          "macros",
+          "mio",
+          "net",
+          "process",
+          "rt",
+          "rt-multi-thread",
+          "signal-hook-registry",
+          "socket2",
+          "sync",
+          "test-util",
+          "time",
+          "tokio-macros",
+          "windows-sys"
+        ],
         "halow-headless": [
           "bytes",
           "default",
@@ -33187,6 +34503,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "prns-app-android": [],
         "prns-app-ios": []
@@ -33210,6 +34528,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -33279,6 +34599,18 @@
           "tokio-util"
         ],
         "expo-ios": [
+          "default",
+          "sync",
+          "time",
+          "tokio-util"
+        ],
+        "group-libraries": [
+          "default",
+          "sync",
+          "time",
+          "tokio-util"
+        ],
+        "group-secure-storage": [
           "default",
           "sync",
           "time",
@@ -33390,6 +34722,28 @@
           "tokio-rustls"
         ],
         "expo-ios": [
+          "__rustls-tls",
+          "connect",
+          "handshake",
+          "rustls",
+          "rustls-native-certs",
+          "rustls-pki-types",
+          "rustls-tls-native-roots",
+          "stream",
+          "tokio-rustls"
+        ],
+        "group-libraries": [
+          "__rustls-tls",
+          "connect",
+          "handshake",
+          "rustls",
+          "rustls-native-certs",
+          "rustls-pki-types",
+          "rustls-tls-native-roots",
+          "stream",
+          "tokio-rustls"
+        ],
+        "group-secure-storage": [
           "__rustls-tls",
           "connect",
           "handshake",
@@ -33530,6 +34884,12 @@
           "default"
         ],
         "expo-ios": [
+          "default"
+        ],
+        "group-libraries": [
+          "default"
+        ],
+        "group-secure-storage": [
           "default"
         ],
         "host-c-linux": [
@@ -34563,6 +35923,26 @@
           "rustls-pki-types",
           "sha1"
         ],
+        "group-libraries": [
+          "__rustls-tls",
+          "data-encoding",
+          "handshake",
+          "http",
+          "httparse",
+          "rustls",
+          "rustls-pki-types",
+          "sha1"
+        ],
+        "group-secure-storage": [
+          "__rustls-tls",
+          "data-encoding",
+          "handshake",
+          "http",
+          "httparse",
+          "rustls",
+          "rustls-pki-types",
+          "sha1"
+        ],
         "halow-headless": [
           "data-encoding",
           "handshake",
@@ -34718,9 +36098,13 @@
         "expo-ios": [
           "const-generics"
         ],
-        "group-libraries": [],
+        "group-libraries": [
+          "const-generics"
+        ],
         "group-mls-adapter": [],
-        "group-secure-storage": [],
+        "group-secure-storage": [
+          "const-generics"
+        ],
         "halow-headless": [
           "const-generics"
         ],
@@ -35165,6 +36549,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -35289,6 +36675,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -35557,6 +36945,18 @@
           "std",
           "v4"
         ],
+        "group-libraries": [
+          "default",
+          "rng",
+          "std",
+          "v4"
+        ],
+        "group-secure-storage": [
+          "default",
+          "rng",
+          "std",
+          "v4"
+        ],
         "prns-app-android": [
           "default",
           "rng",
@@ -35689,6 +37089,8 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -36861,6 +38263,14 @@
           "precomputed-tables",
           "static_secrets"
         ],
+        "group-libraries": [
+          "precomputed-tables",
+          "static_secrets"
+        ],
+        "group-secure-storage": [
+          "precomputed-tables",
+          "static_secrets"
+        ],
         "halow-appliance-manager": [
           "precomputed-tables",
           "static_secrets"
@@ -36936,7 +38346,9 @@
     },
     {
       "graphs": {
-        "expo-host-linux": []
+        "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": []
       },
       "name": "xml",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -37314,6 +38726,26 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "simd"
+        ],
+        "group-secure-storage": [
+          "simd"
+        ]
+      },
+      "name": "zerocopy",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 301,
+        "externs": 1,
+        "functions": 59,
+        "impls": 108,
+        "tokens": 601
+      },
+      "version": "0.8.62"
+    },
+    {
+      "graphs": {
         "nrf52840": []
       },
       "name": "zerocopy-derive",
@@ -37582,6 +39014,8 @@
       "graphs": {
         "group-libraries": [
           "alloc",
+          "default",
+          "derive",
           "zeroize_derive"
         ],
         "group-mls-adapter": [
@@ -37590,6 +39024,8 @@
         ],
         "group-secure-storage": [
           "alloc",
+          "default",
+          "derive",
           "zeroize_derive"
         ]
       },
@@ -37766,6 +39202,8 @@
         "daemon-macos": [],
         "daemon-windows": [],
         "expo-host-linux": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "prns-app-android": [],

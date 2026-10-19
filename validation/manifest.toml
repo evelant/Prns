@@ -133,6 +133,7 @@ cargo_manifests = [
     "prns-groups/service/Cargo.toml",
     "prns-groups/store/Cargo.toml",
     "prns-groups/store/native/Cargo.toml",
+    "prns-groups/transport/reticulum/Cargo.toml",
     "prns-host/abi/c/Cargo.toml",
     "prns-host/bindings/uniffi/Cargo.toml",
     "prns-host/bindings/uniffi/image/Cargo.toml",
@@ -223,7 +224,7 @@ platform = "any"
 toolchain = "stable"
 timeout_seconds = 1200
 command = ["cargo", "test", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--features", "prns-groups-store/secure"]
-inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store", "prns-groups/service", "prns-groups/profiles/text", "prns-groups/security/mls-rs"]
+inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store", "prns-groups/service", "prns-groups/transport/reticulum", "prns-groups/profiles/text", "prns-groups/security/mls-rs"]
 artifacts = "validation-artifacts/results/group-communication-tests"
 
 [[suite]]
@@ -235,7 +236,7 @@ platform = "any"
 toolchain = "stable"
 timeout_seconds = 1200
 command = ["cargo", "clippy", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--all-targets", "--features", "prns-groups-store/secure", "--", "-D", "warnings"]
-inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store", "prns-groups/service", "prns-groups/profiles/text", "prns-groups/security/mls-rs"]
+inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store", "prns-groups/service", "prns-groups/transport/reticulum", "prns-groups/profiles/text", "prns-groups/security/mls-rs"]
 artifacts = "validation-artifacts/results/group-communication-clippy"
 
 [[suite]]
