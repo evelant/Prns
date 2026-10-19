@@ -36,8 +36,12 @@ impl Esp32S3Board for HeltecE290Board {
     const NODE_ANNOUNCE_APP_DATA: &'static [u8] = NODE_ANNOUNCE_APP_DATA;
     const BOOT_BANNER: &'static str = "HOPSPOT_HELTEC_E290";
     const USB_INTERFACE_ID: InterfaceId = USB_INTERFACE_ID;
+    #[cfg(not(feature = "group-mls-qualification"))]
     const MEMORY_PROFILE: &'static personal_hopspot_memory::MemoryProfile =
         &personal_hopspot_memory::HELTEC_E290;
+    #[cfg(feature = "group-mls-qualification")]
+    const MEMORY_PROFILE: &'static personal_hopspot_memory::MemoryProfile =
+        &personal_hopspot_memory::HELTEC_E290_MLS_QUALIFICATION;
     #[cfg(feature = "remote-control-pairing")]
     const REMOTE_CONTROL_PAIRING: bool = true;
     type Display = RetainedBoardDisplay<E290Display>;

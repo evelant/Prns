@@ -91,3 +91,15 @@ pub(crate) fn reseed_after_radio_start() {
         Err(error) => log::warn!("runtime entropy radio reseed deferred: {error:?}"),
     }
 }
+
+#[cfg(feature = "group-mls-qualification")]
+pub(crate) fn mls_random(output: &mut [u8]) -> Result<(), getrandom::Error> {
+    let service = ENTROPY_SERVICE
+        .try_get()
+        .ok_or(getrandom::Error::UNSUPPORTED)?;
+    service.handle().fill_random(output);
+    Ok(())
+}
+
+#[cfg(feature = "group-mls-qualification")]
+getrandom::register_custom_getrandom!(mls_random);

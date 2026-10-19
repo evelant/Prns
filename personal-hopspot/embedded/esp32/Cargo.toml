@@ -58,6 +58,16 @@ jtag-logging = ["esp-println/jtag-serial"]
 silent-logging = ["esp-println/no-op"]
 # Developer-only interoperability fixture. Shipping board packages do not enable it.
 wifi-security-probe = []
+# Developer-only bounded path trace; normal board packages leave it disabled.
+path-diagnostics = ["prns-core/path-diagnostics"]
+# Developer-only bounded volatile LoRa queue trace; no packet contents or IDs.
+queue-diagnostics = ["lora"]
+# Developer-only bounded Link/core and LoRa queue/TX/RX correlation, E290 PSRAM sink.
+link-diagnostics = ["lora", "esp-println/critical-section"]
+# E290-only, opt-in hardware qualification; requires the matching MLS partition table.
+group-mls-qualification = ["dep:prns-groups-mls", "dep:prns-groups-store", "dep:getrandom", "dep:zeroize", "dep:sha2", "dep:ed25519-dalek"]
+# Experimental secure-storage campaign; still uses an explicitly insecure fixture wrapping key.
+group-mls-secure-qualification = ["group-mls-qualification", "prns-groups-store/secure"]
 # Select the fixed, internal-SRAM storage profile for an ESP32-S3 board that
 # has no PSRAM. Board packages opt in explicitly.
 sram-storage = []
@@ -83,6 +93,12 @@ personal-rns = { path = "../../../personal-rns", default-features = false }
 jiff = { version = "0.2", default-features = false, features = ["std"] }
 
 [target.'cfg(target_arch = "xtensa")'.dependencies]
+prns-groups-mls = { path = "../../../prns-groups/security/mls-rs", optional = true }
+prns-groups-store = { path = "../../../prns-groups/store", optional = true }
+ed25519-dalek = { version = "=2.2.0", default-features = false, features = ["alloc"], optional = true }
+getrandom = { version = "=0.2.17", default-features = false, features = ["custom"], optional = true }
+zeroize = { version = "1", default-features = false, features = ["alloc"], optional = true }
+sha2 = { version = "0.10", default-features = false, optional = true }
 personal-rns = { path = "../../../personal-rns", default-features = false, features = ["embassy-host", "external-alloc", "flash", "log"] }
 prns-core = { path = "../../../prns-core", default-features = false, features = ["crypto-precomputed"] }
 prns-interfaces-embassy = { path = "../../../prns-interfaces/impls/embassy", optional = true, default-features = false, features = ["bluetooth-auto-trouble", "log"] }

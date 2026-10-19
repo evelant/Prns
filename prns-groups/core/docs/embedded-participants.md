@@ -23,7 +23,7 @@ Phones may initiate a board's invite approval through authenticated device
 management, but the board must generate and retain its own secrets and decision.
 BLE pairing or proximity alone must not enroll it.
 
-The planned inventory filter serves only
+The current inventory filter (separate integration) serves only
 the original author or selected delivery targets. Initially enroll the board as
 an ordinary visible device and include it in the intended delivery targets.
 Its receipt means **the board accepted the record**, never that a phone received
@@ -34,7 +34,7 @@ the encryption audience or user-facing delivery evidence to approximate it.
 
 This first member retains and forwards within the existing record deadline and
 authorization era. It does not promise an extra replica count or a custody lease.
-The selected Add policy ends old-era forwarding, so it can interrupt delayed delivery;
+An Add currently ends old-era forwarding, so it can interrupt delayed delivery;
 it must not re-encrypt old content for an expanded audience. Removal/rejoin,
 ownership transfer and delayed-content repair retain their existing open design
 and implementation gates.
@@ -45,14 +45,14 @@ The reusable service (separate integration),
 [MLS adapter](../../security/mls-rs/README.md) and
 [coordinator/secure store](../../store/docs/secure-flash.md) are designed around
 `no_std` with bounded allocation; the service is a separate integration. The [core](../README.md) is allocation-free; the text codec is a separate
-integration. A complete firmware member must compose the service, authenticated enrollment
-and network reconciliation; the separate local storage fixture is insufficient.
+integration. The firmware fixture has not yet composed the service,
+authenticated enrollment or network reconciliation.
 
 | Boundary | Next implementation |
 | --- | --- |
 | Portable policy | Keep capacity accounting, retry/retirement fences, clock admission and interface-aware scheduling decisions in the allocation-free core. Inputs are scalar bounds/observations; outputs are bounded work and deadlines, with caller-owned state/time. |
-| Enrollment | Implement bounded owner/member transitions and signed control validation. Stage control state, exact Welcome/Commit replay and MLS changes through `ApplicationTransaction`; use bounded codecs and explicit caller-provided entropy/time. Keep native catalog persistence in a separate adapter. |
-| Synchronization | Implement bounded framing, cursor transitions and inventory validation. Separate storage calls from network waits, and portable commands/events from native `HostClient`, Tokio timeouts and channels. Native carrier integration is separate from the embedded adapter. |
+| Enrollment | Extract owner/member transitions and signed control validation from the native runner's redb/JSON catalog. Stage control state, exact Welcome/Commit replay and MLS changes through `ApplicationTransaction`; use bounded codecs and explicit caller-provided entropy/time. Keep native catalog persistence as an adapter. |
+| Synchronization | Extract bounded framing, cursor transitions and inventory validation from `transport/reticulum`. Separate commands/events from native `HostClient`, Tokio timeouts and channels. The existing `SyncStorage` storage/network phase separation is useful, but its concrete transport and `std` dependency are not an embedded adapter. |
 | Embedded execution | Add a board runner using the existing Embassy Reticulum node/Links/requests/Resources and one serialized crypto/storage worker. Supply finite work queues and caller-owned buffers. Do not bring Tokio, redb, a second node or the native text projection into firmware. |
 | Platform services | Supply owned flash geometry, protected key access, hardware-seeded entropy, qualified time and recovery status. Reuse the secure backend; replace the two-peer qualification scenario with one real endpoint. |
 | Application effects | Expose committed generic records/change cursors. An actuator needs its own durable execution/result protocol; a group receipt cannot mean a command ran. Text decoding remains an optional profile. |
@@ -69,9 +69,9 @@ alone do not reduce repeated Link setup or control-message airtime.
 
 The allocation-free [`core::sync` policy](../src/sync.rs) now provides
 `PathCapabilities`, `SyncPolicy`, `SyncTuning`, `PeerSchedule` and `SyncActivity`.
-Native runners are a following integration. They must bound concurrent
-outgoing attempts and preserve durable cursors separately from disposable
-scheduling state. This is shared policy, not yet a portable
+Native single- and multi-group runners consume these decisions; they bound
+concurrent outgoing attempts and preserve durable cursors separately from
+disposable scheduling state. This is shared policy, not yet a portable
 enrollment or network execution state machine.
 
 The first embedded carrier can reuse bounded whole envelopes; there is no need
@@ -85,9 +85,10 @@ MLS/service APIs stream automatically.
 
 Publish a versioned board/profile contract before promising membership. It must
 cover per-device and per-group limits, required security features, supported
-control operations and content retention. This stage does not provide enrollment
-capability negotiation; initially select a common explicit test profile at
-provisioning, then bind capability negotiation to authenticated enrollment. A low-capacity node must reject an incompatible invite or record
+control operations and content retention. The current native enrollment format
+does not negotiate these capabilities; initially select a common explicit test
+profile at provisioning, then bind capability negotiation to authenticated
+enrollment. A low-capacity node must reject an incompatible invite or record
 before committing acceptance; it must not silently truncate targets or lower
 security to fit.
 
@@ -101,13 +102,13 @@ security to fit.
 | Time | Trusted time source with uncertainty plus a persisted monotonic expiry floor. An unauthenticated peer clock cannot expire keys/history. Reboot without a usable clock returns time uncertainty; it cannot invent elapsed offline time. |
 
 Admission must atomically reserve the work needed to finish an accepted record's
-receipt and recovery path. Logical service quotas and spare MLS output slots do
-not reserve every physical flash object or byte. The board adapter must account
-for the backend too. Enrollment must likewise
+receipt and recovery path. The service's existing logical quotas and two spare
+MLS outputs are useful, but do not reserve every physical flash object or byte.
+The board adapter must account for the backend too. Enrollment must likewise
 reserve unresolved Add/Welcome work; an expired invitation cannot discard an
 already-committed Add. Restore uncertain commits before any new work, return
 exact output after recovery, and retain permanent retry floors when old results
-are removed. Every native or embedded consumer must preserve these guarantees.
+are removed. These are the same semantics as the native runner.
 
 Under pressure, retire definitely expired application content in bounded batches;
 reject new promises if capacity still cannot be guaranteed. Never evict live
@@ -159,6 +160,6 @@ headroom alongside loaded radios.
    custodian issues evidence. Keep custody evidence separate from member receipt
    and application execution. This is a new protocol slice, not a firmware flag.
 
-The separate E290 secure fixture can supply useful building blocks; full embedded
-participation remains a further integration
+The E290 secure fixture supplies
+useful building blocks; full embedded participation remains the next integration
 after the portable seams and combined resource contract are implemented.

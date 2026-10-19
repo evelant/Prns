@@ -14,3 +14,8 @@ esp-rtos = { version = "0.3.0", features = ["esp32s3", "embassy", "esp-radio"] }
 
 [features]
 default = []
+path-diagnostics = ["personal-hopspot-esp32/path-diagnostics"]
+queue-diagnostics = ["personal-hopspot-esp32/queue-diagnostics"]
+link-diagnostics = ["personal-hopspot-esp32/link-diagnostics"]
+group-mls-qualification = ["personal-hopspot-esp32/group-mls-qualification"]
+group-mls-secure-qualification = ["personal-hopspot-esp32/group-mls-secure-qualification"]
