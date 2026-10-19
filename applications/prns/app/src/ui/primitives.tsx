@@ -2,18 +2,17 @@ import { Children, type PropsWithChildren, type ReactNode, useState } from "reac
 import {
   Platform,
   Pressable,
+  type PressableProps,
   ScrollView,
+  type StyleProp,
   StyleSheet,
   Text,
   useWindowDimensions,
   View,
-  type PressableProps,
-  type StyleProp,
   type ViewStyle,
 } from "react-native";
-
-import { radius, space, useAppPalette } from "./theme";
 import { AndroidKeyboardScreen } from "./android-keyboard-screen";
+import { radius, space, useAppPalette } from "./theme";
 
 export function Screen({ children }: PropsWithChildren) {
   const palette = useAppPalette();
@@ -40,12 +39,26 @@ export function Screen({ children }: PropsWithChildren) {
   );
 }
 
-export function ScreenHeading({ children }: PropsWithChildren) {
+export function ScreenHeading({
+  children,
+  trailing,
+}: PropsWithChildren<{ readonly trailing?: ReactNode }>) {
   const palette = useAppPalette();
-  return (
-    <Text accessibilityRole="header" style={[styles.heading, { color: palette.text }]}>
+  const heading = (
+    <Text
+      accessibilityRole="header"
+      style={[styles.heading, { color: palette.text }, trailing == null ? null : { flex: 1 }]}
+    >
       {children}
     </Text>
+  );
+  return trailing == null ? (
+    heading
+  ) : (
+    <View style={styles.headingRow}>
+      {heading}
+      {trailing}
+    </View>
   );
 }
 
@@ -65,10 +78,14 @@ export function Subheading({ children }: PropsWithChildren) {
 export function BodyText({
   children,
   muted = false,
-}: PropsWithChildren<{ readonly muted?: boolean }>) {
+  testID,
+}: PropsWithChildren<{ readonly muted?: boolean; readonly testID?: string }>) {
   const palette = useAppPalette();
   return (
-    <Text style={[styles.body, { color: muted ? palette.textMuted : palette.text }]}>
+    <Text
+      testID={testID}
+      style={[styles.body, { color: muted ? palette.textMuted : palette.text }]}
+    >
       {children}
     </Text>
   );
@@ -77,7 +94,8 @@ export function BodyText({
 export function Badge({
   children,
   tone = "neutral",
-}: PropsWithChildren<{ readonly tone?: "neutral" | "warning" }>) {
+  testID,
+}: PropsWithChildren<{ readonly tone?: "neutral" | "warning"; readonly testID?: string }>) {
   const palette = useAppPalette();
   const warning = tone === "warning";
   return (
@@ -87,7 +105,10 @@ export function Badge({
         { backgroundColor: warning ? palette.warningSurface : palette.surfaceRaised },
       ]}
     >
-      <Text style={[styles.badgeText, { color: warning ? palette.warning : palette.textMuted }]}>
+      <Text
+        testID={testID}
+        style={[styles.badgeText, { color: warning ? palette.warning : palette.textMuted }]}
+      >
         {children}
       </Text>
     </View>
@@ -256,7 +277,8 @@ const styles = StyleSheet.create({
     paddingBottom: space.xl,
     width: "100%",
   },
-  heading: { fontSize: 26, fontWeight: "700", lineHeight: 32 },
+  heading: { fontSize: 28, fontWeight: "700", lineHeight: 34, letterSpacing: -0.5 },
+  headingRow: { flexDirection: "row", alignItems: "center", gap: space.sm },
   subheading: { fontSize: 18, fontWeight: "600", lineHeight: 24 },
   body: { fontSize: 16, lineHeight: 22 },
   badge: {
@@ -269,7 +291,7 @@ const styles = StyleSheet.create({
   badgeText: { fontSize: 13, fontWeight: "700", lineHeight: 18 },
   card: {
     borderRadius: radius.md,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     gap: space.sm,
     padding: 12,
     minWidth: 0,
@@ -302,7 +324,7 @@ const styles = StyleSheet.create({
   button: {
     alignItems: "center",
     borderRadius: radius.sm,
-    borderWidth: 2,
+    borderWidth: 1,
     justifyContent: "center",
     minHeight: 48,
     paddingHorizontal: 12,

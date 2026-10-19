@@ -1,35 +1,30 @@
-import { screenCatalog } from "@/navigation/catalog";
-import { useScaffoldState } from "@/state/scaffold-state-context";
+import { screenById } from "@/navigation/catalog";
 import { NavigationLink } from "@/ui/navigation-link";
-import { BodyText, CardStack, Screen, ScreenHeading } from "@/ui/primitives";
+import { CardStack, Screen, ScreenHeading, Subheading } from "@/ui/primitives";
 
-const moreEntries = [
-  "identities.index",
-  "interfaces.index",
-  "notifications.settings",
-  "activity.index",
-  "settings.index",
-  "help.index",
+const sections = [
+  { title: "Messaging", entries: ["identities.index"] },
+  { title: "Network", entries: ["interfaces.index", "activity.index"] },
+  { title: "App", entries: ["settings.index", "help.index", "settings.about"] },
 ] as const;
 
 export function MoreScreen() {
-  const { state } = useScaffoldState();
-  const entries = screenCatalog.filter(
-    (entry) =>
-      moreEntries.some((id) => id === entry.id) &&
-      (state.showUnavailableFeatures || entry.availability === "implementedScaffold"),
-  );
   return (
     <Screen>
       <ScreenHeading>More</ScreenHeading>
-      <BodyText>App settings, connections, and help.</BodyText>
-      <CardStack>
-        {entries.map((entry) => (
-          <NavigationLink key={entry.id} href={entry.path}>
-            {entry.label}
-          </NavigationLink>
-        ))}
-      </CardStack>
+      {sections.map((section) => (
+        <CardStack key={section.title}>
+          <Subheading>{section.title}</Subheading>
+          {section.entries.map((id) => {
+            const entry = screenById(id);
+            return (
+              <NavigationLink key={entry.id} href={entry.path}>
+                {entry.label}
+              </NavigationLink>
+            );
+          })}
+        </CardStack>
+      ))}
     </Screen>
   );
 }

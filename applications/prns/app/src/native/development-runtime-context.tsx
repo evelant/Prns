@@ -1,5 +1,18 @@
 import * as Bindings from "@prns-internal/expo";
 import type {
+  CreateGroupInput,
+  CreateGroupOutcome,
+  InviteToGroupInput,
+  InviteToGroupOutcome,
+  GroupInvitationListOutcome,
+  RespondGroupInvitationInput,
+  RespondGroupInvitationOutcome,
+  GroupConversationListOutcome,
+  GroupMessageListOutcome,
+  GroupRequestIdOutcome,
+  GroupTextSendOutcome,
+  ListGroupMessagesInput,
+  SendGroupTextInput,
   ClearNetworkActivityInput,
   ClearNetworkActivityOutcome,
   StartRemoteWifiTrialInput,
@@ -65,6 +78,48 @@ export type RuntimeCommandResult<Outcome> =
     };
 
 export type DevelopmentRuntimeView = {
+  readonly ownerKey?: string;
+  readonly canPublish?: boolean;
+  readonly listGroupActions: () => Promise<RuntimeCommandResult<Bindings.GroupActionListOutcome>>;
+  readonly prepareGroupAction: (
+    input: Bindings.PrepareGroupActionInput,
+  ) => Promise<RuntimeCommandResult<Bindings.GroupActionOutcome>>;
+  readonly executeGroupAction: (
+    reference: Bindings.GroupActionReference,
+  ) => Promise<RuntimeCommandResult<Bindings.GroupActionOutcome>>;
+  readonly acknowledgeGroupAction: (
+    reference: Bindings.GroupActionReference,
+  ) => Promise<RuntimeCommandResult<Bindings.GroupActionAcknowledgeOutcome>>;
+  readonly discardExpiredGroupAction: (
+    reference: Bindings.GroupActionReference,
+  ) => Promise<RuntimeCommandResult<Bindings.GroupActionAcknowledgeOutcome>>;
+  readonly getGroupAnnounceSettings: () => Promise<
+    RuntimeCommandResult<Bindings.GroupAnnounceSettingsOutcome>
+  >;
+  readonly setGroupAnnounceSettings: (
+    input: Bindings.GroupAnnounceSettings,
+  ) => Promise<RuntimeCommandResult<Bindings.GroupAnnounceSettingsOutcome>>;
+  readonly announceGroups: () => Promise<RuntimeCommandResult<Bindings.GroupAnnounceOutcome>>;
+  readonly createGroup: (
+    input: CreateGroupInput,
+  ) => Promise<RuntimeCommandResult<CreateGroupOutcome>>;
+  readonly inviteToGroup: (
+    input: InviteToGroupInput,
+  ) => Promise<RuntimeCommandResult<InviteToGroupOutcome>>;
+  readonly listGroupInvitations: () => Promise<RuntimeCommandResult<GroupInvitationListOutcome>>;
+  readonly respondGroupInvitation: (
+    input: RespondGroupInvitationInput,
+  ) => Promise<RuntimeCommandResult<RespondGroupInvitationOutcome>>;
+  readonly listGroupConversations: () => Promise<
+    RuntimeCommandResult<GroupConversationListOutcome>
+  >;
+  readonly listGroupMessages: (
+    input: ListGroupMessagesInput,
+  ) => Promise<RuntimeCommandResult<GroupMessageListOutcome>>;
+  readonly createGroupRequestId: () => Promise<RuntimeCommandResult<GroupRequestIdOutcome>>;
+  readonly sendGroupText: (
+    input: SendGroupTextInput,
+  ) => Promise<RuntimeCommandResult<GroupTextSendOutcome>>;
   readonly startRemoteWifiTrial: (
     input: StartRemoteWifiTrialInput,
   ) => Promise<RuntimeCommandResult<RemoteWifiCommandOutcome>>;
@@ -109,6 +164,12 @@ export type DevelopmentRuntimeView = {
   readonly setBluetoothEnabled: (
     enabled: boolean,
   ) => Promise<RuntimeCommandResult<LocalBluetoothSettingsOutcome>>;
+  readonly readBluetoothDiscoveryGroups: () => Promise<
+    RuntimeCommandResult<Bindings.LocalBluetoothDiscoveryGroupsOutcome>
+  >;
+  readonly setBluetoothDiscoveryGroups: (
+    input: Bindings.SetBluetoothDiscoveryGroupsInput,
+  ) => Promise<RuntimeCommandResult<Bindings.LocalBluetoothDiscoveryGroupsOutcome>>;
   readonly readMessagingProfile: () => Promise<RuntimeCommandResult<LocalMessagingProfileOutcome>>;
   readonly setMessagingName: (
     name: string,
@@ -725,6 +786,16 @@ export function DevelopmentRuntimeProvider({
     [runAvailable],
   );
 
+  const readBluetoothDiscoveryGroups = useCallback(
+    () => runAvailable((runtime) => runtime.readBluetoothDiscoveryGroups()),
+    [runAvailable],
+  );
+  const setBluetoothDiscoveryGroups = useCallback(
+    (input: Bindings.SetBluetoothDiscoveryGroupsInput) =>
+      runAvailable((runtime) => runtime.setBluetoothDiscoveryGroups(input)),
+    [runAvailable],
+  );
+
   const setMessagingName = useCallback(
     (name: string) => runAvailable((runtime) => runtime.setMessagingName(name)),
     [runAvailable],
@@ -778,6 +849,78 @@ export function DevelopmentRuntimeProvider({
     [runGenerationBound],
   );
 
+  const listGroupActions = useCallback(
+    () => runAvailable((runtime) => runtime.listGroupActions()),
+    [runAvailable],
+  );
+  const prepareGroupAction = useCallback(
+    (input: Bindings.PrepareGroupActionInput) =>
+      runAvailable((runtime) => runtime.prepareGroupAction(input)),
+    [runAvailable],
+  );
+  const executeGroupAction = useCallback(
+    (reference: Bindings.GroupActionReference) =>
+      runAvailable((runtime) => runtime.executeGroupAction(reference)),
+    [runAvailable],
+  );
+  const acknowledgeGroupAction = useCallback(
+    (reference: Bindings.GroupActionReference) =>
+      runAvailable((runtime) => runtime.acknowledgeGroupAction(reference)),
+    [runAvailable],
+  );
+  const discardExpiredGroupAction = useCallback(
+    (reference: Bindings.GroupActionReference) =>
+      runAvailable((runtime) => runtime.discardExpiredGroupAction(reference)),
+    [runAvailable],
+  );
+  const getGroupAnnounceSettings = useCallback(
+    () => runAvailable((runtime) => runtime.getGroupAnnounceSettings()),
+    [runAvailable],
+  );
+  const setGroupAnnounceSettings = useCallback(
+    (input: Bindings.GroupAnnounceSettings) =>
+      runAvailable((runtime) => runtime.setGroupAnnounceSettings(input)),
+    [runAvailable],
+  );
+  const announceGroups = useCallback(
+    () => runAvailable((runtime) => runtime.announceGroups()),
+    [runAvailable],
+  );
+
+  const listGroupConversations = useCallback(
+    () => runAvailable((runtime) => runtime.listGroupConversations()),
+    [runAvailable],
+  );
+  const listGroupMessages = useCallback(
+    (input: ListGroupMessagesInput) => runAvailable((runtime) => runtime.listGroupMessages(input)),
+    [runAvailable],
+  );
+  const createGroupRequestId = useCallback(
+    () => runAvailable((runtime) => runtime.createGroupRequestId()),
+    [runAvailable],
+  );
+  const createGroup = useCallback(
+    (input: CreateGroupInput) => runAvailable((runtime) => runtime.createGroup(input)),
+    [runAvailable],
+  );
+  const inviteToGroup = useCallback(
+    (input: InviteToGroupInput) => runAvailable((runtime) => runtime.inviteToGroup(input)),
+    [runAvailable],
+  );
+  const listGroupInvitations = useCallback(
+    () => runAvailable((runtime) => runtime.listGroupInvitations()),
+    [runAvailable],
+  );
+  const respondGroupInvitation = useCallback(
+    (input: RespondGroupInvitationInput) =>
+      runAvailable((runtime) => runtime.respondGroupInvitation(input)),
+    [runAvailable],
+  );
+  const sendGroupText = useCallback(
+    (input: SendGroupTextInput) => runGenerationBound((runtime) => runtime.sendGroupText(input)),
+    [runGenerationBound],
+  );
+
   const value = useMemo<DevelopmentRuntimeView>(
     () => ({
       availability: selectedProvider.availability,
@@ -798,6 +941,8 @@ export function DevelopmentRuntimeProvider({
       refreshSnapshot,
       clearNetworkActivity,
       setBluetoothEnabled,
+      readBluetoothDiscoveryGroups,
+      setBluetoothDiscoveryGroups,
       readMessagingProfile,
       setMessagingName,
       saveDiscoveredContact,
@@ -821,6 +966,22 @@ export function DevelopmentRuntimeProvider({
       announceLxmf,
       measureLxmfText,
       sendDirectText,
+      listGroupConversations,
+      listGroupMessages,
+      listGroupActions,
+      prepareGroupAction,
+      executeGroupAction,
+      acknowledgeGroupAction,
+      discardExpiredGroupAction,
+      getGroupAnnounceSettings,
+      setGroupAnnounceSettings,
+      announceGroups,
+      createGroupRequestId,
+      createGroup,
+      inviteToGroup,
+      listGroupInvitations,
+      respondGroupInvitation,
+      sendGroupText,
     }),
     [
       approvePairing,
@@ -848,6 +1009,8 @@ export function DevelopmentRuntimeProvider({
       refreshSnapshot,
       clearNetworkActivity,
       setBluetoothEnabled,
+      readBluetoothDiscoveryGroups,
+      setBluetoothDiscoveryGroups,
       readMessagingProfile,
       setMessagingName,
       saveDiscoveredContact,
@@ -862,6 +1025,22 @@ export function DevelopmentRuntimeProvider({
       announceLxmf,
       measureLxmfText,
       sendDirectText,
+      listGroupConversations,
+      listGroupMessages,
+      listGroupActions,
+      prepareGroupAction,
+      executeGroupAction,
+      acknowledgeGroupAction,
+      discardExpiredGroupAction,
+      getGroupAnnounceSettings,
+      setGroupAnnounceSettings,
+      announceGroups,
+      createGroupRequestId,
+      createGroup,
+      inviteToGroup,
+      listGroupInvitations,
+      respondGroupInvitation,
+      sendGroupText,
       selectedProvider.availability,
       snapshot,
       networkActivityClear,
@@ -875,8 +1054,126 @@ export function DevelopmentRuntimeProvider({
   );
 }
 
+/** Shared node controls stay installation-scoped; all messaging calls capture this client. */
+export function DevelopmentMessagingScope({
+  children,
+  runtime,
+  identityHash,
+  ownerKey,
+  canPublish,
+  projectIdentity = true,
+}: PropsWithChildren<{
+  readonly runtime: DevelopmentRuntime | null;
+  readonly identityHash: Uint8Array | undefined;
+  readonly projectIdentity?: boolean;
+  readonly ownerKey: string;
+  readonly canPublish: boolean;
+}>) {
+  const parent = useDevelopmentRuntime();
+  const methods = useMemo(() => {
+    const run = async <T,>(
+      operation: (client: DevelopmentRuntime) => Promise<T>,
+    ): Promise<RuntimeCommandResult<T>> => {
+      if (runtime === null)
+        return { type: "operationFailure", detail: "Choose an available identity first." };
+      try {
+        return { type: "outcome", outcome: await operation(runtime) };
+      } catch (failure) {
+        return commandFailure(failure);
+      }
+    };
+    const scoped: Pick<
+      DevelopmentRuntimeView,
+      | "readMessagingProfile"
+      | "setMessagingName"
+      | "saveDiscoveredContact"
+      | "clearLxmfDiscovery"
+      | "saveObservedDestination"
+      | "listLxmfPeers"
+      | "listLxmfMessages"
+      | "listLxmfConversations"
+      | "retryLxmfMessage"
+      | "cancelLxmfMessage"
+      | "announceLxmf"
+      | "measureLxmfText"
+      | "sendDirectText"
+      | "listGroupConversations"
+      | "listGroupMessages"
+      | "listGroupActions"
+      | "prepareGroupAction"
+      | "executeGroupAction"
+      | "acknowledgeGroupAction"
+      | "discardExpiredGroupAction"
+      | "getGroupAnnounceSettings"
+      | "setGroupAnnounceSettings"
+      | "announceGroups"
+      | "createGroupRequestId"
+      | "createGroup"
+      | "inviteToGroup"
+      | "listGroupInvitations"
+      | "respondGroupInvitation"
+      | "sendGroupText"
+    > = {
+      readMessagingProfile: () => run((client) => client.readMessagingProfile()),
+      setMessagingName: (input) => run((client) => client.setMessagingName(input)),
+      saveDiscoveredContact: (input) => run((client) => client.saveDiscoveredContact(input)),
+      clearLxmfDiscovery: () => run((client) => client.clearLxmfDiscovery()),
+      saveObservedDestination: (input) => run((client) => client.saveObservedDestination(input)),
+      listLxmfPeers: () => run((client) => client.listLxmfPeers()),
+      listLxmfMessages: (input) => run((client) => client.listLxmfMessages(input)),
+      listLxmfConversations: (input) => run((client) => client.listLxmfConversations(input)),
+      retryLxmfMessage: (input) => run((client) => client.retryLxmfMessage(input)),
+      cancelLxmfMessage: (input) => run((client) => client.cancelLxmfMessage(input)),
+      announceLxmf: () => run((client) => client.announceLxmf()),
+      measureLxmfText: (input) => run((client) => client.measureLxmfText(input)),
+      sendDirectText: (input) => run((client) => client.sendDirectText(input)),
+      listGroupConversations: () => run((client) => client.listGroupConversations()),
+      listGroupMessages: (input) => run((client) => client.listGroupMessages(input)),
+      listGroupActions: () => run((client) => client.listGroupActions()),
+      prepareGroupAction: (input) => run((client) => client.prepareGroupAction(input)),
+      executeGroupAction: (input) => run((client) => client.executeGroupAction(input)),
+      acknowledgeGroupAction: (input) => run((client) => client.acknowledgeGroupAction(input)),
+      discardExpiredGroupAction: (input) =>
+        run((client) => client.discardExpiredGroupAction(input)),
+      getGroupAnnounceSettings: () => run((client) => client.getGroupAnnounceSettings()),
+      setGroupAnnounceSettings: (input) => run((client) => client.setGroupAnnounceSettings(input)),
+      announceGroups: () => run((client) => client.announceGroups()),
+      createGroupRequestId: () => run((client) => client.createGroupRequestId()),
+      createGroup: (input) => run((client) => client.createGroup(input)),
+      inviteToGroup: (input) => run((client) => client.inviteToGroup(input)),
+      listGroupInvitations: () => run((client) => client.listGroupInvitations()),
+      respondGroupInvitation: (input) => run((client) => client.respondGroupInvitation(input)),
+      sendGroupText: (input) => run((client) => client.sendGroupText(input)),
+    };
+    return scoped;
+  }, [runtime]);
+  const snapshot = useMemo(
+    () =>
+      !projectIdentity || parent.snapshot === null
+        ? parent.snapshot
+        : {
+            ...parent.snapshot,
+            primaryIdentity:
+              identityHash === undefined
+                ? Bindings.PrimaryIdentityState.Missing.new()
+                : Bindings.PrimaryIdentityState.Present.new({ identityHash }),
+          },
+    [parent.snapshot, identityHash, projectIdentity],
+  );
+  const value = useMemo(
+    () => ({ ...parent, ...methods, snapshot, ownerKey, canPublish }),
+    [parent, methods, snapshot, ownerKey, canPublish],
+  );
+  return (
+    <DevelopmentRuntimeContext.Provider value={value}>
+      {children}
+    </DevelopmentRuntimeContext.Provider>
+  );
+}
+
 export function routeConsumesDevelopmentSnapshot(pathname: string): boolean {
   return (
+    pathname === "/setup" ||
     pathname === "/nodes" ||
     pathname.startsWith("/nodes/") ||
     pathname === "/more/interfaces" ||

@@ -2,7 +2,6 @@ import { fireEvent, render } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import { Alert } from "react-native";
 
-import { ExploreScreen } from "@/features/explore/explore-screen";
 import { MoreScreen } from "@/features/more/more-screen";
 import { AboutScreen } from "./about-screen";
 import { HelpScreen } from "./help-screen";
@@ -41,7 +40,7 @@ describe("preview capability copy", () => {
   it("describes available features without implementation or board jargon", () => {
     const about = render(<AboutScreen />);
     expect(
-      about.getByText(/pair and check nearby nodes, save contacts, exchange direct messages/u),
+      about.getByText(/group messaging, node management and network inspection/u),
     ).toBeTruthy();
     expect(JSON.stringify(about.toJSON())).not.toMatch(
       /E290|signed availability|upstream RemoteControl/iu,
@@ -49,18 +48,12 @@ describe("preview capability copy", () => {
     about.unmount();
 
     const help = render(<HelpScreen />);
-    expect(
-      help.getByText(/pair and check nearby nodes, save contacts, exchange direct messages/u),
-    ).toBeTruthy();
-    expect(help.getByText(/Contact merging, identity management/u)).toBeTruthy();
-    expect(
-      help.getByText(/change a paired node's supported settings, set up its Wi-Fi/u),
-    ).toBeTruthy();
-    expect(help.getByText(/review and remove other devices' access/u)).toBeTruthy();
-    expect(
-      help.getByText(/Bluetooth connections, turn them on or off without stopping its node/u),
-    ).toBeTruthy();
-    expect(help.queryByText(/remote-access controls/u)).toBeNull();
+    expect(help.getByRole("link", { name: "Start a group" })).toBeTruthy();
+    expect(help.getByRole("link", { name: "Manage identities" })).toBeTruthy();
+    expect(help.queryByText(/NomadNet|Coming later|identity management,/iu)).toBeNull();
+    expect(help.queryByText(/Keep prns open on both phones/u)).toBeNull();
+    fireEvent.press(help.getByRole("button", { name: "A message is waiting" }));
+    expect(help.getByText(/Keep the original message/u)).toBeTruthy();
     expect(JSON.stringify(help.toJSON())).not.toMatch(
       /E290|signed availability|upstream RemoteControl/iu,
     );
@@ -69,43 +62,42 @@ describe("preview capability copy", () => {
   it("introduces More without narrating scaffold state", () => {
     const view = render(<MoreScreen />);
 
-    expect(view.getByText("App settings, connections, and help.")).toBeTruthy();
+    expect(view.getByText("Messaging")).toBeTruthy();
+    expect(view.getByRole("header", { name: "Network" })).toBeTruthy();
+    expect(view.getByText("App")).toBeTruthy();
+    expect(view.queryByText("Notifications")).toBeNull();
   });
 
   it("keeps the preview marker out of routine screens", () => {
-    for (const RoutineScreen of [ExploreScreen, MoreScreen, SettingsScreen, HelpScreen]) {
+    for (const RoutineScreen of [MoreScreen, SettingsScreen, HelpScreen]) {
       const view = render(<RoutineScreen />);
       expect(view.queryByText("Development preview")).toBeNull();
       view.unmount();
     }
 
     const about = render(<AboutScreen />);
-    expect(about.getByText("Development preview")).toBeTruthy();
-  });
-
-  it("gives Explore links distinct accessible names", () => {
-    const view = render(<ExploreScreen />);
-
-    expect(view.getByRole("link", { name: "About NomadNet" })).toBeTruthy();
-    expect(view.getByRole("link", { name: "About location sharing" })).toBeTruthy();
-    expect(view.queryByText("View details")).toBeNull();
+    expect(about.getByText("Maintainer alpha")).toBeTruthy();
   });
 
   it("discloses every durable data category removed by development reset", () => {
     const alert = jest.spyOn(Alert, "alert").mockImplementation();
     const view = render(<SettingsScreen />);
 
-    expect(view.getByText("App data")).toBeTruthy();
+    expect(view.queryByRole("button", { name: "Reset app data" })).toBeNull();
+    expect(view.queryByText("Show upcoming features")).toBeNull();
+    fireEvent.press(view.getByRole("button", { name: "App data" }));
     fireEvent.press(view.getByRole("button", { name: "Reset app data" }));
 
     expect(alert).toHaveBeenCalledWith(
       "Reset app data?",
-      "This permanently removes your primary identity, paired-node access, saved contacts, messages, and app preferences from this device.",
+      "This permanently removes all identities, contacts, groups, messages, pending actions, paired-node access and app preferences from this device. This cannot be undone.",
       expect.any(Array),
     );
     expect(JSON.stringify(view.toJSON())).not.toMatch(
       /E290|signed availability|upstream RemoteControl/iu,
     );
+    expect(mockResetNativeData).not.toHaveBeenCalled();
+    expect(mockResetScaffoldData).not.toHaveBeenCalled();
     alert.mockRestore();
   });
 });

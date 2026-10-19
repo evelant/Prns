@@ -30,6 +30,12 @@ function selectedVariant(value: string | undefined): AppVariant {
 export default ({ config }: ConfigContext): ExpoConfig => {
   const variant = selectedVariant(process.env.PRNS_APP_VARIANT);
   const selection = variants[variant];
+  const buildLabel = process.env.PRNS_BUILD_ID?.trim();
+  if (buildLabel && !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(buildLabel)) {
+    throw new Error(
+      "PRNS_BUILD_ID must be a public build label of 1–64 letters, numbers, dots, underscores or hyphens",
+    );
+  }
   const developmentTcpTarget =
     variant === "development" ? process.env.EXPO_PUBLIC_PRNS_LXMF_TCP_TARGET?.trim() : undefined;
   const bluetoothRestorationPrefix = `${selection.identifier}.bluetooth-auto`;
@@ -38,13 +44,26 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ...config,
     name: selection.name,
     slug: selection.slug,
-    scheme: selection.identifier,
+    scheme: [selection.identifier, "rns-contact"],
     version: "0.0.0",
     runtimeVersion: { policy: "fingerprint" },
+    extra: {
+      ...config.extra,
+      prnsBuild: { variant, ...(buildLabel ? { label: buildLabel } : {}) },
+    },
     orientation: "default",
     userInterfaceStyle: "automatic",
     plugins: [
       "expo-router",
+      [
+        "expo-camera",
+        {
+          cameraPermission: "prns uses the camera to scan contact QR codes.",
+          microphonePermission: false,
+          recordAudioAndroid: false,
+          barcodeScannerEnabled: true,
+        },
+      ],
       ["expo-build-properties", { ios: { enableSceneSupport: true } }],
       "./tools/with-ios-18",
       "./tools/with-android-runtime",

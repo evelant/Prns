@@ -1,7 +1,5 @@
 // route-id: identities.index
-
-import { CatalogPlaceholderRoute } from "@/features/placeholder-screen";
-
+import { IdentitiesScreen } from "@/features/identities/identities-screen";
 export default function IdentitiesRoute() {
-  return <CatalogPlaceholderRoute screenId="identities.index" />;
+  return <IdentitiesScreen />;
 }

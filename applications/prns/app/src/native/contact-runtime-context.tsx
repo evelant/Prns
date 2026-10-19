@@ -2,6 +2,7 @@ import type { DevelopmentRuntime } from "@prns-internal/expo";
 import { createContext, type PropsWithChildren, useContext, useMemo } from "react";
 
 import { runtimeProvider } from "@/native/runtime-provider";
+import { useNamedIdentity } from "./named-identity-context";
 import type { RuntimeProvider } from "./runtime-provider.types";
 
 export type ContactRuntimeView = {
@@ -31,12 +32,19 @@ export function ContactRuntimeProvider({
   provider,
 }: PropsWithChildren<{ readonly provider?: ContactRuntimeProviderSource }>) {
   const selectedProvider = provider ?? runtimeProvider;
+  const identity = useNamedIdentity();
+  const runtime =
+    identity === null
+      ? "runtime" in selectedProvider
+        ? selectedProvider.runtime
+        : null
+      : identity.runtime;
   const value = useMemo<ContactRuntimeView>(
     () => ({
       availability: selectedProvider.availability,
-      runtime: "runtime" in selectedProvider ? selectedProvider.runtime : null,
+      runtime,
     }),
-    [selectedProvider],
+    [selectedProvider, runtime],
   );
   return <ContactRuntimeContext.Provider value={value}>{children}</ContactRuntimeContext.Provider>;
 }

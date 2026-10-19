@@ -45,11 +45,16 @@ function assertVariant(
   const infoPlist = readRecord(ios.infoPlist, `${variant}.ios.infoPlist`);
   const android = readRecord(config.android, `${variant}.android`);
   const web = readRecord(config.web, `${variant}.web`);
+  const build = readRecord(
+    readRecord(config.extra, `${variant}.extra`).prnsBuild,
+    `${variant}.extra.prnsBuild`,
+  );
+  if (build.variant !== variant) fail(`${variant} must record its build variant`);
 
   const checks: ReadonlyArray<readonly [string, unknown, string]> = [
     ["name", config.name, expected.name],
     ["slug", config.slug, expected.slug],
-    ["scheme", config.scheme, expected.identifier],
+
     ["ios.bundleIdentifier", ios.bundleIdentifier, expected.identifier],
     ["android.package", android.package, expected.identifier],
     ["web.bundler", web.bundler, "metro"],
@@ -58,6 +63,29 @@ function assertVariant(
     if (actual !== wanted) {
       fail(`${variant}.${field} must be ${wanted}, received ${String(actual)}`);
     }
+  }
+  if (
+    !Array.isArray(config.scheme) ||
+    config.scheme.length !== 2 ||
+    config.scheme[0] !== expected.identifier ||
+    config.scheme[1] !== "rns-contact"
+  ) {
+    fail(`${variant} must support its app scheme and the portable contact-card scheme`);
+  }
+  const cameraPlugins = Array.isArray(config.plugins)
+    ? config.plugins.filter((plugin) => Array.isArray(plugin) && plugin[0] === "expo-camera")
+    : [];
+  const camera = cameraPlugins[0];
+  if (
+    cameraPlugins.length !== 1 ||
+    !Array.isArray(camera) ||
+    !isRecord(camera[1]) ||
+    camera[1].cameraPermission !== "prns uses the camera to scan contact QR codes." ||
+    camera[1].microphonePermission !== false ||
+    camera[1].recordAudioAndroid !== false ||
+    camera[1].barcodeScannerEnabled !== true
+  ) {
+    fail(`${variant} must enable QR scanning with camera permission and no microphone permission`);
   }
   if (infoPlist.NSBluetoothAlwaysUsageDescription !== bluetoothUsageDescription) {
     fail(
@@ -136,6 +164,31 @@ for (const variant of ["development", "production"] as const) {
     fail(`${variant} must include the native TCP fixture only in the development variant`);
   }
 }
+
+const taggedBuild = render("production", { PRNS_BUILD_ID: "alpha.20261018-1" });
+if (
+  readRecord(
+    readRecord(taggedBuild.extra, "production.extra").prnsBuild,
+    "production.extra.prnsBuild",
+  ).label !== "alpha.20261018-1"
+) {
+  fail("the public build label must survive into the embedded config");
+}
+const untaggedBuild = render("production", { PRNS_BUILD_ID: "" });
+if (
+  readRecord(
+    readRecord(untaggedBuild.extra, "production.extra").prnsBuild,
+    "production.extra.prnsBuild",
+  ).label !== undefined
+) {
+  fail("an unrecorded build label must remain explicitly absent");
+}
+const invalidLabel = spawnSync("expo", ["config", "--type", "public", "--json"], {
+  cwd: appRoot,
+  encoding: "utf8",
+  env: { ...process.env, PRNS_APP_VARIANT: "production", PRNS_BUILD_ID: "private/path\nlabel" },
+});
+if (invalidLabel.status === 0) fail("build labels with paths or newlines must be rejected");
 
 const noFixture = render("development", { EXPO_PUBLIC_PRNS_LXMF_TCP_TARGET: "" });
 if (

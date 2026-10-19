@@ -1,16 +1,17 @@
-import * as Bindings from "@prns-internal/expo";
 import type { DevelopmentNodeSnapshot, DevelopmentRuntime } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import { act, fireEvent, fireEventAsync, render, waitFor } from "@testing-library/react-native";
 import { destinationHash, identityHash, interfaceId } from "personal-rns/contract";
 import type { ReactNode } from "react";
 import { Share } from "react-native";
-import type { RuntimeCommandResult } from "@/native/development-runtime-context";
 import {
   AddContactScreen,
   ContactDetailScreen,
   ContactsScreen,
 } from "@/features/contacts/contacts-screen";
 import { ContactRuntimeProvider } from "@/native/contact-runtime-context";
+import type { RuntimeCommandResult } from "@/native/development-runtime-context";
+
 const mockReplace = jest.fn();
 jest.mock("expo-router", () => ({
   Link: ({ children }: { readonly children: ReactNode }) => children,
@@ -161,7 +162,52 @@ function snapshot(): DevelopmentNodeSnapshot {
 }
 function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRuntime {
   return {
+    listNamedIdentityActivity: async () =>
+      Bindings.NamedIdentityActivityListOutcome.Ready.new({ activities: [] }),
+    readIdentityActivity: async () =>
+      Bindings.IdentityActivityOutcome.Ready.new({
+        summary: {
+          actionableInvitations: 0,
+          unreadGroups: 0,
+          unreadDirect: 0,
+          conversations: [],
+          partial: false,
+        },
+      }),
+    markIdentityActivitySeen: async () => Bindings.IdentityActivitySeenOutcome.Saved.new(),
+    listNamedIdentities: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    createNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    changeNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    forIdentity: () => {
+      throw new Error("No named identity fixture");
+    },
+    exportContactCard: async () => Bindings.ContactCardExportOutcome.Busy.new(),
+    previewContactCard: async () => Bindings.ContactCardPreviewOutcome.UnsupportedService.new(),
+    importContactCard: async () => Bindings.ContactCardImportOutcome.Busy.new(),
+    listGroupActions: async () => Bindings.GroupActionListOutcome.Ready.new({ actions: [] }),
+    prepareGroupAction: async () => Bindings.GroupActionOutcome.Busy.new(),
+    executeGroupAction: async () => Bindings.GroupActionOutcome.Busy.new(),
+    acknowledgeGroupAction: async () => Bindings.GroupActionAcknowledgeOutcome.Busy.new(),
+    discardExpiredGroupAction: async () => Bindings.GroupActionAcknowledgeOutcome.Busy.new(),
+    getGroupAnnounceSettings: async () =>
+      Bindings.GroupAnnounceSettingsOutcome.Ready.new({ settings: { intervalMinutes: 60 } }),
+    setGroupAnnounceSettings: async () => Bindings.GroupAnnounceSettingsOutcome.Busy.new(),
+    announceGroups: async () => Bindings.GroupAnnounceOutcome.Busy.new(),
+    createGroup: async () => Bindings.CreateGroupOutcome.Busy.new(),
+    inviteToGroup: async () => Bindings.InviteToGroupOutcome.Busy.new(),
+    listGroupInvitations: async () =>
+      Bindings.GroupInvitationListOutcome.Ready.new({ invitations: [] }),
+    respondGroupInvitation: async () => Bindings.RespondGroupInvitationOutcome.Busy.new(),
+    listGroupConversations: async () => Bindings.GroupConversationListOutcome.NotProvisioned.new(),
+    listGroupMessages: async () => Bindings.GroupMessageListOutcome.NotProvisioned.new(),
+    createGroupRequestId: async () =>
+      Bindings.GroupRequestIdOutcome.Ready.new({ clientRequestId: new Uint8Array(32) }),
+    sendGroupText: async () => Bindings.GroupTextSendOutcome.NotProvisioned.new(),
     attachHost: async () => undefined,
+    readBluetoothDiscoveryGroups: async () =>
+      Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
+    setBluetoothDiscoveryGroups: async () =>
+      Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
     readMessagingProfile: async () =>
       Bindings.LocalMessagingProfileOutcome.Ready.new({ profile: mockProfile }),
     setMessagingName: async (displayName) =>
@@ -238,6 +284,150 @@ function withRuntime(runtime: DevelopmentRuntime, screen: ReactNode) {
     </ContactRuntimeProvider>,
   );
 }
+
+test("a manual contact save may finish for its old owner without navigating the replacement journey", async () => {
+  let finish!: (result: Bindings.ContactMutationOutcome) => void;
+  const createManualContact = jest.fn(
+    () =>
+      new Promise<Bindings.ContactMutationOutcome>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const personal = fakeRuntime({ createManualContact });
+  const workCreate = jest.fn(async () => Bindings.ContactMutationOutcome.NotFound.new());
+  const work = fakeRuntime({ createManualContact: workCreate });
+  const journey = (runtime: DevelopmentRuntime, owner: string) => (
+    <ContactRuntimeProvider
+      provider={{ availability: { type: "available", platform: "ios" }, runtime }}
+    >
+      <AddContactScreen key={owner} />
+    </ContactRuntimeProvider>
+  );
+  const view = render(journey(personal, "personal"));
+  fireEvent.changeText(view.getByLabelText("Destination"), "000102030405060708090a0b0c0d0e0f");
+  fireEvent.press(view.getByRole("button", { name: "Save contact" }));
+  expect(createManualContact).toHaveBeenCalledTimes(1);
+  view.rerender(journey(work, "work"));
+  await act(async () =>
+    finish(
+      Bindings.ContactMutationOutcome.Saved.new({
+        contact: {
+          destination,
+          identity,
+          alias: "Personal Alice",
+          announcedName: undefined,
+          isMessaging: true,
+          pinned: false,
+        },
+      }),
+    ),
+  );
+  expect(mockReplace).not.toHaveBeenCalled();
+  expect(workCreate).not.toHaveBeenCalled();
+  expect(view.getByLabelText("Destination").props.value).toBe("");
+  expect(view.getByRole("button", { name: "Save contact" })).toBeEnabled();
+});
+
+test("a deleted old-owner contact cannot navigate away from the new owner's detail", async () => {
+  let finish!: (result: Bindings.ContactMutationOutcome) => void;
+  const contact = {
+    destination,
+    identity,
+    alias: "Personal Alice",
+    announcedName: undefined,
+    isMessaging: true,
+    pinned: false,
+  };
+  const deleteContact = jest.fn(
+    () =>
+      new Promise<Bindings.ContactMutationOutcome>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const personal = fakeRuntime({
+    getContact: async () => Bindings.ContactLookupOutcome.Found.new({ contact }),
+    deleteContact,
+  });
+  const work = fakeRuntime({
+    getContact: async () =>
+      Bindings.ContactLookupOutcome.Found.new({ contact: { ...contact, alias: "Work Alice" } }),
+  });
+  const journey = (runtime: DevelopmentRuntime, owner: string) => (
+    <ContactRuntimeProvider
+      provider={{ availability: { type: "available", platform: "ios" }, runtime }}
+    >
+      <ContactDetailScreen key={owner} destination={destination} />
+    </ContactRuntimeProvider>
+  );
+  const view = render(journey(personal, "personal"));
+  await view.findByText("Personal Alice");
+  expect(view.queryByText("000102030405060708090a0b0c0d0e0f")).toBeNull();
+  expect(view.queryByText("101112131415161718191a1b1c1d1e1f")).toBeNull();
+  fireEvent.press(view.getByRole("button", { name: "Contact details" }));
+  expect(view.getByText("000102030405060708090a0b0c0d0e0f")).toBeTruthy();
+  expect(view.getByText("101112131415161718191a1b1c1d1e1f")).toBeTruthy();
+  expect(deleteContact).not.toHaveBeenCalled();
+  fireEvent.press(view.getByRole("button", { name: "Delete contact" }));
+  expect(deleteContact).toHaveBeenCalledWith(destination);
+  view.rerender(journey(work, "work"));
+  await view.findByText("Work Alice");
+  expect(view.queryByText("000102030405060708090a0b0c0d0e0f")).toBeNull();
+  expect(view.getByRole("button", { name: "Contact details" })).toBeTruthy();
+  await act(async () => finish(Bindings.ContactMutationOutcome.Deleted.new()));
+  expect(mockReplace).not.toHaveBeenCalled();
+  expect(view.getByText("Work Alice")).toBeTruthy();
+});
+
+test("a late alias update cannot replace a different captured contact runtime's local view", async () => {
+  let finish!: (result: Bindings.ContactMutationOutcome) => void;
+  const contact = {
+    destination,
+    identity,
+    alias: "Personal Alice",
+    announcedName: undefined,
+    isMessaging: true,
+    pinned: false,
+  };
+  const setContactAlias = jest.fn(
+    () =>
+      new Promise<Bindings.ContactMutationOutcome>((resolve) => {
+        finish = resolve;
+      }),
+  );
+  const personal = fakeRuntime({
+    getContact: async () => Bindings.ContactLookupOutcome.Found.new({ contact }),
+    setContactAlias,
+  });
+  const work = fakeRuntime({
+    getContact: async () =>
+      Bindings.ContactLookupOutcome.Found.new({ contact: { ...contact, alias: "Work Alice" } }),
+  });
+  const journey = (runtime: DevelopmentRuntime) => (
+    <ContactRuntimeProvider
+      provider={{ availability: { type: "available", platform: "ios" }, runtime }}
+    >
+      <ContactDetailScreen destination={destination} />
+    </ContactRuntimeProvider>
+  );
+  const view = render(journey(personal));
+  await view.findByText("Personal Alice");
+  fireEvent.changeText(view.getByLabelText("Name (optional)"), "Personal updated");
+  fireEvent.press(view.getByRole("button", { name: "Save name" }));
+  view.rerender(journey(work));
+  await view.findByText("Work Alice");
+  await act(async () =>
+    finish(
+      Bindings.ContactMutationOutcome.Updated.new({
+        contact: { ...contact, alias: "Personal updated" },
+      }),
+    ),
+  );
+  expect(view.getByText("Work Alice")).toBeTruthy();
+  expect(view.getByLabelText("Name (optional)").props.value).toBe("Work Alice");
+  expect(view.queryByText("Personal updated")).toBeNull();
+  expect(mockReplace).not.toHaveBeenCalled();
+});
+
 describe("contact screens", () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -259,15 +449,16 @@ describe("contact screens", () => {
     );
     const view = withRuntime(fakeRuntime({ listContacts }), <ContactsScreen />);
     await waitFor(() => expect(view.getByText("Alice")).toBeTruthy());
-    expect(view.getByText("000102030405060708090a0b0c0d0e0f")).toBeTruthy();
+    expect(view.queryByText("000102030405060708090a0b0c0d0e0f")).toBeNull();
     expect(view.getByText("Pinned")).toBeTruthy();
+    expect(view.getByRole("link", { name: "Open contact Alice" })).toBeTruthy();
     expect(view.queryByText("Identity")).toBeNull();
     expect(view.queryByText("101112131415161718191a1b1c1d1e1f")).toBeNull();
     const labels = JSON.stringify(view.toJSON());
     expect(labels.indexOf("Add contact")).toBeLessThan(labels.indexOf("Alice"));
     expect(listContacts).toHaveBeenCalledTimes(1);
   });
-  it("shows an unnamed contact's destination once without redundant saved labels", async () => {
+  it("shows an unnamed contact's shortened destination once", async () => {
     const listContacts = jest.fn(async () =>
       Bindings.ContactListOutcome.Listed.new({
         contacts: [
@@ -283,12 +474,44 @@ describe("contact screens", () => {
       }),
     );
     const view = withRuntime(fakeRuntime({ listContacts }), <ContactsScreen />);
-    expect(await view.findByText("000102030405060708090a0b0c0d0e0f")).toBeTruthy();
-    expect(view.getAllByText("000102030405060708090a0b0c0d0e0f")).toHaveLength(1);
+    expect(await view.findByText("00010203…0d0e0f")).toBeTruthy();
+    expect(view.getAllByText("00010203…0d0e0f")).toHaveLength(1);
+    expect(view.queryByText("000102030405060708090a0b0c0d0e0f")).toBeNull();
     expect(view.getByRole("button", { name: "Saved" }).props.accessibilityState.selected).toBe(
       true,
     );
-    expect(view.getByRole("link", { name: "Open contact" })).toBeTruthy();
+    expect(view.getByRole("link", { name: "Open contact 00010203…0d0e0f" })).toBeTruthy();
+  });
+  it("distinguishes contacts with matching private or announced names", async () => {
+    const otherDestination = destinationHash(new Uint8Array(16).fill(0xab));
+    const listContacts = jest.fn(async () =>
+      Bindings.ContactListOutcome.Listed.new({
+        contacts: [
+          {
+            destination,
+            identity,
+            alias: "Alice",
+            announcedName: undefined,
+            isMessaging: true,
+            pinned: false,
+          },
+          {
+            destination: otherDestination,
+            identity: undefined,
+            alias: undefined,
+            announcedName: "alice",
+            isMessaging: true,
+            pinned: false,
+          },
+        ],
+      }),
+    );
+    const view = withRuntime(fakeRuntime({ listContacts }), <ContactsScreen />);
+    await view.findByText("Alice");
+    expect(view.getByText("00010203…0d0e0f")).toBeTruthy();
+    expect(view.getByText("abababab…ababab")).toBeTruthy();
+    expect(view.getByRole("link", { name: "Open contact Alice, 00010203…0d0e0f" })).toBeTruthy();
+    expect(view.getByRole("link", { name: "Open contact alice, abababab…ababab" })).toBeTruthy();
   });
   it("does not expose native contact-list failure details", async () => {
     const listContacts = jest.fn(async () =>

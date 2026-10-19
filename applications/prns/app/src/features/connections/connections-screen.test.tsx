@@ -38,6 +38,8 @@ type ConnectionsRuntime = Pick<
   | "stoppingNode"
   | "refreshSnapshot"
   | "setBluetoothEnabled"
+  | "readBluetoothDiscoveryGroups"
+  | "setBluetoothDiscoveryGroups"
 >;
 type BluetoothSnapshot = DevelopmentNodeSnapshot["bluetooth"];
 type AndroidRuntime = NonNullable<ConnectionsRuntime["androidRuntime"]>;
@@ -155,6 +157,21 @@ beforeEach(() => {
     stoppingNode: false,
     refreshSnapshot: mockRefresh,
     setBluetoothEnabled: mockSetBluetooth,
+    readBluetoothDiscoveryGroups: jest.fn(async () => ({
+      type: "outcome" as const,
+      outcome: Bindings.LocalBluetoothDiscoveryGroupsOutcome.Ready.new({
+        settings: {
+          ownerId: 1n,
+          generationId: 1n,
+          groups: ["reticulum"],
+          appliedGroups: ["reticulum"],
+        },
+      }),
+    })),
+    setBluetoothDiscoveryGroups: jest.fn(async () => ({
+      type: "outcome" as const,
+      outcome: Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
+    })),
   };
 });
 
@@ -234,7 +251,10 @@ describe("Bluetooth status", () => {
     const view = render(<ConnectionsScreen />);
     expect(view.getByText("Running")).toBeTruthy();
     expect(view.getByText("Off")).toBeTruthy();
+    expect(view.queryByText(/Your node keeps running\./)).toBeNull();
+    fireEvent.press(view.getByRole("button", { name: "About connections" }));
     expect(view.getByText(/Your node keeps running\./)).toBeTruthy();
+    fireEvent.press(view.getByRole("button", { name: "Close About connections" }));
     expect(view.getByRole("button", { name: "Enable Bluetooth connections" })).toBeEnabled();
     expect(view.queryByText("Node stopped")).toBeNull();
   });
@@ -264,7 +284,12 @@ describe("Bluetooth status", () => {
     });
     const view = render(<ConnectionsScreen />);
     expect(view.getByText("Connected to 2 devices")).toBeTruthy();
+    expect(view.queryByText("Connection ID")).toBeNull();
+    fireEvent.press(view.getByRole("button", { name: "Connection details for Nearby phone 1" }));
+    fireEvent.press(view.getByRole("button", { name: "Connection details for nearby device 2" }));
     expect(view.getAllByText("Connection ID")).toHaveLength(2);
+    expect(mockSetBluetooth).not.toHaveBeenCalled();
+    expect(mockRefresh).not.toHaveBeenCalled();
     expect(view.getByRole("header", { name: "Nearby device" })).toBeTruthy();
     expect(view.queryByText("Disconnected peer")).toBeNull();
     expect(view.queryByText("2222222222222222")).toBeNull();
@@ -348,6 +373,17 @@ describe("Bluetooth status", () => {
 });
 
 describe("connection controls and recovery", () => {
+  test("exposes persistent discovery controls under the advanced Connections section", async () => {
+    const view = render(<ConnectionsScreen />);
+    expect(mockRuntime.readBluetoothDiscoveryGroups).not.toHaveBeenCalled();
+    await act(async () =>
+      fireEvent.press(view.getByRole("button", { name: "Change discovery groups" })),
+    );
+    expect(view.getByDisplayValue("reticulum")).toBeTruthy();
+    expect(view.getByRole("button", { name: "Restore default discovery group" })).toBeEnabled();
+    expect(mockRuntime.readBluetoothDiscoveryGroups).toHaveBeenCalledTimes(1);
+  });
+
   test.each([
     "missing snapshot",
     "unread setting",
@@ -576,6 +612,11 @@ describe("connection controls and recovery", () => {
       mockRuntime.androidRuntime = androidRuntime();
       view.rerender(<ConnectionsScreen />);
       expect(view.getByText("Connected to 1 device")).toBeTruthy();
+      fireEvent.press(
+        view.getByRole("button", {
+          name: "Connection details for Nearby phone with a long descriptive name 1",
+        }),
+      );
       for (const text of [
         "Nearby phone with a long descriptive name",
         "Bluetooth connection details that wrap across several lines on a narrow display.",
@@ -596,7 +637,7 @@ describe("connection controls and recovery", () => {
           .filter((node) => StyleSheet.flatten(node.props.style)?.flexBasis === "100%"),
       ).toHaveLength(2);
       for (const button of view.getAllByRole("button")) {
-        expect(StyleSheet.flatten(button.props.style).minHeight).toBeGreaterThanOrEqual(48);
+        expect(StyleSheet.flatten(button.props.style).minHeight).toBeGreaterThanOrEqual(44);
       }
     },
   );

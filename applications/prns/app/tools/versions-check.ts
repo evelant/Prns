@@ -11,19 +11,20 @@ const workspaceRoot = fileURLToPath(new URL("../../..", import.meta.url));
 const localPersonalRnsSelection = "file:../../../prns-js";
 
 const expectedDependencies = {
-  "@expo/metro-runtime": "~57.0.16",
+  "@expo/metro-runtime": "~57.0.17",
   "@prns-internal/expo": "*",
   "@prns-internal/native-bindings": "*",
   "@ubjs/core": "file:../../../vendor/ubrn/packages/ubjs-core-0.31.0-5.tgz",
   "@ubjs/react-native": "file:../../../vendor/ubrn/packages/ubjs-react-native-0.31.0-5.tgz",
   "@react-native-async-storage/async-storage": "2.2.0",
-  expo: "~57.0.26",
+  expo: "~57.0.30",
   "expo-build-properties": "~57.0.22",
-  "expo-constants": "~57.0.20",
+  "expo-camera": "~57.0.6",
+  "expo-constants": "~57.0.22",
   "expo-document-picker": "~57.0.3",
   "expo-file-system": "~57.0.7",
-  "expo-linking": "~57.0.11",
-  "expo-router": "~57.0.24",
+  "expo-linking": "~57.0.13",
+  "expo-router": "~57.0.28",
   "expo-status-bar": "~57.0.1",
   effect: "4.0.0-rc.112",
   "personal-rns": localPersonalRnsSelection,
@@ -31,8 +32,10 @@ const expectedDependencies = {
   react: "19.2.3",
   "react-dom": "19.2.3",
   "react-native": "0.86.3",
+  "react-native-qrcode-svg": "6.3.26",
   "react-native-safe-area-context": "~5.7.0",
   "react-native-screens": "~4.26.0",
+  "react-native-svg": "15.15.4",
   "react-native-web": "~0.21.0",
 } as const;
 
@@ -46,7 +49,7 @@ const expectedDevelopmentDependencies = {
   "@types/react-test-renderer": "19.1.0",
   "expo-doctor": "1.20.4",
   jest: "29.7.0",
-  "jest-expo": "57.0.5",
+  "jest-expo": "57.0.6",
   "react-test-renderer": "19.2.3",
   typescript: "7.0.2",
 } as const;
