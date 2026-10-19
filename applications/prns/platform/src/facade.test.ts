@@ -585,6 +585,26 @@ test("Bluetooth preferences use prepared offline storage without starting or adm
   expect(native.prepareOutbound).not.toHaveBeenCalled();
 });
 
+test("discovery group settings preserve generation fences and prepare only offline storage", async () => {
+  const native = nativeModule();
+  const input = { ownerId: 11n, generationId: 7n, groups: ["camp-a", " trail "] };
+  const outcome = Bindings.LocalBluetoothDiscoveryGroupsOutcome.Ready.new({
+    settings: { ...input, appliedGroups: undefined },
+  });
+  const readBluetoothDiscoveryGroups = jest.fn(async () => outcome);
+  const setBluetoothDiscoveryGroups = jest.fn(async () => {
+    expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+    return outcome;
+  });
+  const { runtime } = setup({ readBluetoothDiscoveryGroups, setBluetoothDiscoveryGroups }, native);
+  expect(await runtime.readBluetoothDiscoveryGroups()).toBe(outcome);
+  expect(await runtime.setBluetoothDiscoveryGroups(input)).toBe(outcome);
+  expect(setBluetoothDiscoveryGroups).toHaveBeenCalledWith(input);
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.start).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
 test("messaging profile reads and writes prepare storage without starting or broadcasting", async () => {
   const native = nativeModule();
   const outcome = Bindings.LocalMessagingProfileOutcome.Ready.new({

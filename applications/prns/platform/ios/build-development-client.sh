@@ -67,10 +67,11 @@ CONFIGURATION="Debug"
 case "${1:-}" in
   "") MODE="simulator" ;;
   --device) MODE="device" ;;
+  --device-standalone) MODE="device"; CONFIGURATION="Release" ;;
   --build-only) MODE="simulator-build"; CONFIGURATION="Release" ;;
-  *) fail "usage: build-development-client.sh [--device|--build-only]" ;;
+  *) fail "usage: build-development-client.sh [--device|--device-standalone|--build-only]" ;;
 esac
-(( $# <= 1 )) || fail "usage: build-development-client.sh [--device|--build-only]"
+(( $# <= 1 )) || fail "usage: build-development-client.sh [--device|--device-standalone|--build-only]"
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
   [[ "${MODE}" != "simulator-build" ]] || fail "the iOS build requires macOS and Xcode"
@@ -91,6 +92,9 @@ if [[ "${MODE}" == "device" ]]; then
       fail "PRNS_IOS_EXPECTED_PROVISIONING_PROFILE_UUID must not be empty"
   fi
   DEFAULT_DERIVED_DATA="${APPLICATIONS_DIRECTORY}/target/ios-development-device"
+  if [[ "${CONFIGURATION}" == "Release" ]]; then
+    DEFAULT_DERIVED_DATA="${APPLICATIONS_DIRECTORY}/target/ios-standalone-device"
+  fi
   [[ -n "${DEVICE_ID}" ]] || fail "PRNS_IOS_DEVICE_UDID is required with --device"
   [[ "${DEVICE_ID}" =~ ^[[:alnum:]-]+$ ]] ||
     fail "PRNS_IOS_DEVICE_UDID must contain only letters, numbers, and hyphens"
@@ -107,7 +111,7 @@ if [[ "${MODE}" == "device" ]]; then
 fi
 DERIVED_DATA="${PRNS_IOS_DERIVED_DATA:-${DEFAULT_DERIVED_DATA}}"
 
-for executable in curl node xcodebuild xcrun plutil security; do
+for executable in curl node xcodebuild xcrun plutil security codesign; do
   command -v "${executable}" >/dev/null || fail "${executable} is required"
 done
 [[ -x "${EXPO_EXECUTABLE}" ]] || fail "run npm ci in ${APPLICATIONS_DIRECTORY} first"
@@ -137,7 +141,11 @@ fi
 
 echo "build-development-client.sh: generating typed bindings and the shared Rust framework"
 if [[ "${MODE}" == "device" ]]; then
-  python3 "${APPLICATIONS_DIRECTORY}/tools/generated-bindings/generate.py" ios --targets aarch64-apple-ios
+  DEVICE_RUST_ARGUMENTS=(ios --targets aarch64-apple-ios)
+  if [[ "${CONFIGURATION}" == "Release" ]]; then
+    DEVICE_RUST_ARGUMENTS+=(--release)
+  fi
+  python3 "${APPLICATIONS_DIRECTORY}/tools/generated-bindings/generate.py" "${DEVICE_RUST_ARGUMENTS[@]}"
 elif [[ "${MODE}" == "simulator-build" ]]; then
   python3 "${APPLICATIONS_DIRECTORY}/tools/generated-bindings/generate.py" ios --sim-only --targets aarch64-apple-ios-sim --release
 else
@@ -201,6 +209,19 @@ assert_development_client_metadata() {
     fail "the app must not embed a second standalone PRNS framework"
 }
 
+assert_device_javascript() {
+  local app_bundle="$1"
+  if [[ "${CONFIGURATION}" == "Release" ]]; then
+    [[ -s "${app_bundle}/main.jsbundle" ]] || fail "standalone app must contain nonempty bundled JavaScript"
+    return
+  fi
+  local PACKAGER_IP_FILE="${app_bundle}/ip.txt"
+  [[ -f "${PACKAGER_IP_FILE}" ]] || fail "development client does not contain ip.txt"
+  local PACKAGER_HOST
+  PACKAGER_HOST="$(<"${PACKAGER_IP_FILE}")"
+  [[ -n "${PACKAGER_HOST//[[:space:]]/}" ]] || fail "development client contains an empty ip.txt"
+}
+
 if [[ "${MODE}" == "device" ]]; then
   DESTINATION="platform=iOS,id=${DEVICE_ID}"
   if [[ -n "${EXPECTED_PROVISIONING_PROFILE_UUID}" ]]; then
@@ -221,7 +242,7 @@ if [[ "${MODE}" == "device" ]]; then
   env -u LIBRARY_PATH xcodebuild -quiet \
     -workspace "${WORKSPACE}" \
     -scheme "${SCHEME}" \
-    -configuration Debug \
+    -configuration "${CONFIGURATION}" \
     -destination "${DESTINATION}" \
     -destination-timeout 60 \
     -derivedDataPath "${DERIVED_DATA}" \
@@ -229,7 +250,7 @@ if [[ "${MODE}" == "device" ]]; then
     "RCT_METRO_PORT=${METRO_PORT}" \
     build
 
-  APP_BUNDLE="${DERIVED_DATA}/Build/Products/Debug-iphoneos/prnsdev.app"
+  APP_BUNDLE="${DERIVED_DATA}/Build/Products/${CONFIGURATION}-iphoneos/prnsdev.app"
   assert_development_client_metadata "${APP_BUNDLE}"
   if [[ -n "${EXPECTED_PROVISIONING_PROFILE_UUID}" ]]; then
     EMBEDDED_PROFILE="${APP_BUNDLE}/embedded.mobileprovision"
@@ -243,14 +264,15 @@ if [[ "${MODE}" == "device" ]]; then
     [[ "${ACTUAL_PROVISIONING_PROFILE_UUID}" == "${EXPECTED_PROVISIONING_PROFILE_UUID}" ]] ||
       fail "development client used provisioning profile ${ACTUAL_PROVISIONING_PROFILE_UUID}, expected ${EXPECTED_PROVISIONING_PROFILE_UUID}"
   fi
-  PACKAGER_IP_FILE="${APP_BUNDLE}/ip.txt"
-  [[ -f "${PACKAGER_IP_FILE}" ]] || fail "development client does not contain ip.txt"
-  PACKAGER_HOST="$(<"${PACKAGER_IP_FILE}")"
-  [[ -n "${PACKAGER_HOST//[[:space:]]/}" ]] || fail "development client contains an empty ip.txt"
+  assert_device_javascript "${APP_BUNDLE}"
+  codesign --verify --deep --strict "${APP_BUNDLE}"
 
   echo "build-development-client.sh: installing on explicitly selected device ${DEVICE_ID}"
   xcrun devicectl device install app --device "${DEVICE_ID}" "${APP_BUNDLE}"
-  echo "IOS_DEVELOPMENT_DEVICE_OK app=${APP_BUNDLE} device=${DEVICE_ID} metro_port=${METRO_PORT}"
+  echo "IOS_DEVELOPMENT_DEVICE_OK app=${APP_BUNDLE} device=${DEVICE_ID} configuration=${CONFIGURATION} metro_port=${METRO_PORT}"
+  if [[ "${CONFIGURATION}" == "Release" ]]; then
+    echo 'Standalone development build: bundled JavaScript and development identifier/signing. Not a production release.'
+  fi
   exit 0
 fi
 

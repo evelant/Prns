@@ -1,5 +1,12 @@
 //! Application preference and presentation over the existing public Bluetooth supervisor.
 
+use prns_core::interfaces::DiscoveryGroupSet;
+use std::sync::{Arc, Mutex};
+use std::{future::Future, pin::Pin};
+
+type ReplaceGroups =
+    Box<dyn Fn(DiscoveryGroupSet) -> Pin<Box<dyn Future<Output = bool> + Send>> + Send + Sync>;
+
 use personal_rns::interfaces::{
     BluetoothIndication, ConnectionState, InterfaceKind, Membership, PeerDetails, RadioIndication,
 };
@@ -8,6 +15,10 @@ use personal_rns::node_introspection::InterfaceInventoryEntry;
 use crate::contract::{LocalBluetoothPeerSnapshot, LocalBluetoothSnapshot, LocalBluetoothState};
 
 pub(crate) struct BluetoothControl {
+    replace_groups: ReplaceGroups,
+    is_enabled: Box<dyn Fn() -> bool + Send + Sync>,
+    is_available: Box<dyn Fn() -> bool + Send + Sync>,
+    applied_groups: Arc<Mutex<Option<DiscoveryGroupSet>>>,
     set_enabled: Box<dyn Fn(bool) + Send + Sync>,
     radio_state: Box<dyn Fn() -> Option<LocalBluetoothState> + Send + Sync>,
     is_disabled: Box<dyn Fn() -> bool + Send + Sync>,
@@ -18,10 +29,41 @@ impl BluetoothControl {
         all(feature = "apple", any(target_os = "ios", target_os = "macos")),
         all(feature = "android", target_os = "android")
     ))]
-    pub(crate) fn new(status: personal_rns::bluetooth_auto::BluetoothAutoStatus) -> Self {
+    pub(crate) fn new(
+        status: personal_rns::bluetooth_auto::BluetoothAutoStatus,
+        initial_groups: DiscoveryGroupSet,
+    ) -> Self {
         let read_status = status.clone();
         let disabled_status = status.clone();
+        let enabled_status = status.clone();
+        let replacement_status = status.clone();
+        let availability_status = status.clone();
         Self {
+            applied_groups: Arc::new(Mutex::new(Some(initial_groups))),
+            is_enabled: Box::new(move || enabled_status.is_enabled()),
+            is_available: Box::new(move || {
+                use personal_rns::interfaces::{
+                    bluetooth_auto::BluetoothRadioState, InterfaceStatus,
+                };
+                matches!(
+                    availability_status.connection(),
+                    ConnectionState::Connected
+                        | ConnectionState::Disconnected
+                        | ConnectionState::Degraded
+                        | ConnectionState::Reconnecting
+                ) && (availability_status.radio_state() == BluetoothRadioState::PoweredOn
+                    || (cfg!(target_os = "android")
+                        && availability_status.radio_state() == BluetoothRadioState::Unknown))
+            }),
+            replace_groups: Box::new(move |groups| {
+                let status = replacement_status.clone();
+                Box::pin(async move {
+                    !matches!(
+                        status.replace_discovery_groups(groups).await,
+                        prns_core::interfaces::DiscoveryGroupApplyOutcome::Failed
+                    )
+                })
+            }),
             set_enabled: Box::new(move |enabled| {
                 if enabled {
                     status.enable();
@@ -56,6 +98,43 @@ impl BluetoothControl {
         (self.set_enabled)(enabled);
     }
 
+    pub(crate) fn can_replace_groups(&self) -> bool {
+        // A requested disable is not yet proof that old peers were torn down.
+        (self.is_enabled)() || (self.is_disabled)()
+    }
+
+    pub(crate) fn applied_groups(&self) -> Option<DiscoveryGroupSet> {
+        if !(self.is_enabled)() || !(self.is_available)() {
+            return None;
+        }
+        *self
+            .applied_groups
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner)
+    }
+
+    /// The lifecycle retains this future on the generation runtime, independently of its caller.
+    pub(crate) fn replace_groups(
+        &self,
+        groups: DiscoveryGroupSet,
+    ) -> Pin<Box<dyn Future<Output = bool> + Send>> {
+        *self
+            .applied_groups
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = None;
+        let applied = Arc::clone(&self.applied_groups);
+        let replacement = (self.replace_groups)(groups);
+        Box::pin(async move {
+            let settled = replacement.await;
+            if settled {
+                *applied
+                    .lock()
+                    .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(groups);
+            }
+            settled
+        })
+    }
+
     pub(crate) fn project(
         &self,
         interfaces: &[InterfaceInventoryEntry],
@@ -72,9 +151,36 @@ impl BluetoothControl {
     #[cfg(test)]
     pub(crate) fn for_test(set_enabled: impl Fn(bool) + Send + Sync + 'static) -> Self {
         Self {
+            applied_groups: Arc::new(Mutex::new(Some(DiscoveryGroupSet::reticulum()))),
+            is_enabled: Box::new(|| true),
+            is_available: Box::new(|| true),
+            replace_groups: Box::new(|_| Box::pin(async { true })),
             set_enabled: Box::new(set_enabled),
             radio_state: Box::new(|| None),
             is_disabled: Box::new(|| false),
+        }
+    }
+    #[cfg(test)]
+    pub(crate) fn for_unavailable_test() -> Self {
+        Self {
+            is_available: Box::new(|| false),
+            ..Self::for_test(|_| {})
+        }
+    }
+
+    #[cfg(test)]
+    pub(crate) fn for_disabling_test() -> Self {
+        Self {
+            is_enabled: Box::new(|| false),
+            ..Self::for_test(|_| {})
+        }
+    }
+
+    #[cfg(test)]
+    pub(crate) fn for_discovery_test(replace: ReplaceGroups) -> Self {
+        Self {
+            replace_groups: replace,
+            ..Self::for_test(|_| {})
         }
     }
 }

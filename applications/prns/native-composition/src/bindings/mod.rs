@@ -70,6 +70,20 @@ pub async fn set_bluetooth_enabled(enabled: bool) -> LocalBluetoothSettingsOutco
     crate::lifecycle::bluetooth_settings(Some(enabled)).await
 }
 
+/// Read saved names and separately confirmed current supervisor configuration.
+#[uniffi::export]
+pub async fn read_bluetooth_discovery_groups() -> LocalBluetoothDiscoveryGroupsOutcome {
+    crate::lifecycle::bluetooth_discovery::settings(None).await
+}
+
+/// Persist first, then await old-peer teardown and replacement. Cancellation only drops the waiter.
+#[uniffi::export]
+pub async fn set_bluetooth_discovery_groups(
+    input: SetBluetoothDiscoveryGroupsInput,
+) -> LocalBluetoothDiscoveryGroupsOutcome {
+    crate::lifecycle::bluetooth_discovery::settings(Some(input)).await
+}
+
 #[uniffi::export]
 pub async fn read_messaging_profile() -> LocalMessagingProfileOutcome {
     crate::lifecycle::profile::messaging_profile(None).await

@@ -76,6 +76,17 @@ enum StoreJob {
         request: crate::contact_cards::Request,
         response: oneshot::Sender<crate::contact_cards::Reply>,
     },
+    BluetoothDiscovery {
+        groups: Option<prns_core::interfaces::DiscoveryGroupSet>,
+        completion: Box<
+            dyn FnOnce(
+                    Result<
+                        prns_core::interfaces::DiscoveryGroupSet,
+                        crate::bluetooth_discovery::SettingsError,
+                    >,
+                ) + Send,
+        >,
+    },
     Drain(SyncSender<()>),
     InitializeGroups {
         identity: prns_host::IdentityHash,
@@ -117,6 +128,8 @@ enum StoreJob {
 }
 
 struct StoreLane {
+    owner_id: u64,
+    bluetooth_changing: std::sync::atomic::AtomicBool,
     jobs: StdMutex<Option<SyncSender<StoreJob>>>,
     group_action_executing: std::sync::atomic::AtomicBool,
     group_identity: StdMutex<Option<[u8; 16]>>,
@@ -162,6 +175,7 @@ impl StoreLane {
             | StoreJob::MessagingName { name: None, .. }
             | StoreJob::GroupAnnounces { settings: None, .. }
             | StoreJob::Bluetooth { enabled: None, .. }
+            | StoreJob::BluetoothDiscovery { groups: None, .. }
             | StoreJob::Drain(_)
             | StoreJob::DrainAsync(_)
             // This private owner method is used by the scoped teardown driver,
@@ -186,6 +200,17 @@ impl StoreLane {
             .unwrap_or_else(std::sync::PoisonError::into_inner);
         self.admission
             .fetch_max(phase, std::sync::atomic::Ordering::Relaxed);
+    }
+}
+
+static NEXT_OWNER_ID: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+
+pub(crate) struct BluetoothChange(Arc<StoreLane>);
+impl Drop for BluetoothChange {
+    fn drop(&mut self) {
+        self.0
+            .bluetooth_changing
+            .store(false, std::sync::atomic::Ordering::Release);
     }
 }
 
@@ -455,6 +480,62 @@ impl DevelopmentStoreOwner {
                 )
             })?;
         Ok(receiver)
+    }
+
+    pub(crate) fn owner_id(&self) -> u64 {
+        self.lane.owner_id
+    }
+
+    pub(crate) fn start_bluetooth_change(&self) -> Option<BluetoothChange> {
+        self.lane
+            .bluetooth_changing
+            .compare_exchange(
+                false,
+                true,
+                std::sync::atomic::Ordering::Acquire,
+                std::sync::atomic::Ordering::Relaxed,
+            )
+            .ok()?;
+        Some(BluetoothChange(Arc::clone(&self.lane)))
+    }
+
+    pub(crate) fn admit_bluetooth_discovery(
+        &self,
+        groups: Option<prns_core::interfaces::DiscoveryGroupSet>,
+        completion: impl FnOnce(
+                Result<
+                    prns_core::interfaces::DiscoveryGroupSet,
+                    crate::bluetooth_discovery::SettingsError,
+                >,
+            ) + Send
+            + 'static,
+    ) -> Result<(), DevelopmentStoreFailure> {
+        self.require_installation_owner()?;
+        self.lane
+            .admit_default(StoreJob::BluetoothDiscovery {
+                groups,
+                completion: Box::new(completion),
+            })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable(
+                    "The Bluetooth settings lane is full or closed.",
+                )
+            })
+    }
+
+    pub(crate) fn read_bluetooth_discovery_blocking(
+        &self,
+    ) -> Result<prns_core::interfaces::DiscoveryGroupSet, DevelopmentStoreFailure> {
+        let (reply, receive) = mpsc::sync_channel(1);
+        self.admit_bluetooth_discovery(None, move |result| {
+            let _ = reply.send(result);
+        })?;
+        receive
+            .recv()
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable("Bluetooth discovery settings owner stopped.")
+            })?
+            .map_err(crate::bluetooth_discovery::SettingsError::into_store_failure)
     }
 
     pub(crate) fn drain_blocking(&self) -> Result<(), DevelopmentStoreFailure> {
@@ -745,6 +826,8 @@ impl DevelopmentStoreOwner {
                 let group_health = crate::groups::GroupHealth::new();
                 group_health.announces().update(announce_settings);
                 let lane = Arc::new(StoreLane {
+                    owner_id: NEXT_OWNER_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed),
+                    bluetooth_changing: std::sync::atomic::AtomicBool::new(false),
                     jobs: StdMutex::new(Some(jobs_tx)),
                     group_action_executing: std::sync::atomic::AtomicBool::new(false),
                     group_identity: StdMutex::new(None),
@@ -978,6 +1061,9 @@ fn run_owner(
                     group_identity,
                     request,
                 ));
+            }
+            StoreJob::BluetoothDiscovery { groups, completion } => {
+                completion(crate::bluetooth_discovery::settings(database, groups));
             }
             StoreJob::GroupAnnounces {
                 settings,

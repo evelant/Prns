@@ -741,6 +741,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_preview_identity_import(
     ): Int
+    external fun uniffi_prns_app_checksum_func_read_bluetooth_discovery_groups(
+    ): Int
     external fun uniffi_prns_app_checksum_func_read_bluetooth_settings(
     ): Int
     external fun uniffi_prns_app_checksum_func_read_messaging_profile(
@@ -762,6 +764,8 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_prns_app_checksum_func_send_direct_text(
     ): Int
     external fun uniffi_prns_app_checksum_func_send_group_text(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_set_bluetooth_discovery_groups(
     ): Int
     external fun uniffi_prns_app_checksum_func_set_bluetooth_enabled(
     ): Int
@@ -1054,6 +1058,8 @@ external fun uniffi_prns_app_fn_func_preview_contact_card(`uri`: RustBuffer.ByVa
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_preview_identity_import(`identity`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
+external fun uniffi_prns_app_fn_func_read_bluetooth_discovery_groups(
+): Long
 external fun uniffi_prns_app_fn_func_read_bluetooth_settings(
 ): Long
 external fun uniffi_prns_app_fn_func_read_messaging_profile(
@@ -1075,6 +1081,8 @@ external fun uniffi_prns_app_fn_func_save_observed_destination(`input`: RustBuff
 external fun uniffi_prns_app_fn_func_send_direct_text(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_send_group_text(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_set_bluetooth_discovery_groups(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_set_bluetooth_enabled(`enabled`: Byte,
 ): Long
@@ -1357,6 +1365,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_preview_identity_import() != 31445) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_read_bluetooth_discovery_groups() != 55143) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_read_bluetooth_settings() != 48522) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1388,6 +1399,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_send_group_text() != 51044) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_set_bluetooth_discovery_groups() != 15446) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_set_bluetooth_enabled() != 13413) {
@@ -4862,6 +4876,64 @@ public object FfiConverterTypeLocalAnnounceActivity: FfiConverterRustBuffer<Loca
 
 
 
+data class LocalBluetoothDiscoveryGroupsSettings (
+    /**
+     * Opaque process-local storage owner fence; reread after reconnecting to native.
+     */
+    var `ownerId`: kotlin.ULong
+    ,
+    var `generationId`: kotlin.ULong
+    ,
+    /**
+     * Durably saved, canonical names used on subsequent starts.
+     */
+    var `groups`: List<kotlin.String>
+    ,
+    /**
+     * Last settled enabled supervisor configuration. None means unconfirmed or inactive.
+     * This does not establish a peer connection or prove a traffic route.
+     */
+    var `appliedGroups`: List<kotlin.String>?
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings: FfiConverterRustBuffer<LocalBluetoothDiscoveryGroupsSettings> {
+    override fun read(buf: ByteBuffer): LocalBluetoothDiscoveryGroupsSettings {
+        return LocalBluetoothDiscoveryGroupsSettings(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterSequenceString.read(buf),
+            FfiConverterOptionalSequenceString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: LocalBluetoothDiscoveryGroupsSettings) = (
+            FfiConverterULong.allocationSize(value.`ownerId`) +
+            FfiConverterULong.allocationSize(value.`generationId`) +
+            FfiConverterSequenceString.allocationSize(value.`groups`) +
+            FfiConverterOptionalSequenceString.allocationSize(value.`appliedGroups`)
+    )
+
+    override fun write(value: LocalBluetoothDiscoveryGroupsSettings, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`ownerId`, buf)
+            FfiConverterULong.write(value.`generationId`, buf)
+            FfiConverterSequenceString.write(value.`groups`, buf)
+            FfiConverterOptionalSequenceString.write(value.`appliedGroups`, buf)
+    }
+}
+
+
+
 data class LocalBluetoothPeerSnapshot (
     /**
      * Opaque physical interface identifier; this is not an authenticated RNS identity.
@@ -6659,6 +6731,49 @@ public object FfiConverterTypeSendGroupTextInput: FfiConverterRustBuffer<SendGro
             FfiConverterTypeBytes32.write(value.`groupId`, buf)
             FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
             FfiConverterString.write(value.`text`, buf)
+    }
+}
+
+
+
+data class SetBluetoothDiscoveryGroupsInput (
+    var `ownerId`: kotlin.ULong
+    ,
+    var `generationId`: kotlin.ULong
+    ,
+    var `groups`: List<kotlin.String>
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeSetBluetoothDiscoveryGroupsInput: FfiConverterRustBuffer<SetBluetoothDiscoveryGroupsInput> {
+    override fun read(buf: ByteBuffer): SetBluetoothDiscoveryGroupsInput {
+        return SetBluetoothDiscoveryGroupsInput(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterSequenceString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: SetBluetoothDiscoveryGroupsInput) = (
+            FfiConverterULong.allocationSize(value.`ownerId`) +
+            FfiConverterULong.allocationSize(value.`generationId`) +
+            FfiConverterSequenceString.allocationSize(value.`groups`)
+    )
+
+    override fun write(value: SetBluetoothDiscoveryGroupsInput, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`ownerId`, buf)
+            FfiConverterULong.write(value.`generationId`, buf)
+            FfiConverterSequenceString.write(value.`groups`, buf)
     }
 }
 
@@ -11335,6 +11450,179 @@ public object FfiConverterTypeInviteToGroupOutcome : FfiConverterRustBuffer<Invi
                 Unit
             }
             is InviteToGroupOutcome.Unavailable -> {
+                buf.putInt(6)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class LocalBluetoothDiscoveryGroupsOutcome {
+
+    data class Ready(
+        val `settings`: rs.reticulum.prns.app.bindings.LocalBluetoothDiscoveryGroupsSettings) : LocalBluetoothDiscoveryGroupsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    /**
+     * Stored names are malformed; these fresh fences permit an explicit repair.
+     */
+    data class InvalidSaved(
+        val `ownerId`: kotlin.ULong,
+        val `generationId`: kotlin.ULong,
+        val `detail`: kotlin.String) : LocalBluetoothDiscoveryGroupsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : LocalBluetoothDiscoveryGroupsOutcome()
+
+
+    object GenerationChanged : LocalBluetoothDiscoveryGroupsOutcome()
+
+
+    data class Invalid(
+        val `detail`: kotlin.String) : LocalBluetoothDiscoveryGroupsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    /**
+     * A mutation may already be saved. Reread before proposing another change.
+     */
+    data class Unavailable(
+        val `detail`: kotlin.String) : LocalBluetoothDiscoveryGroupsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome : FfiConverterRustBuffer<LocalBluetoothDiscoveryGroupsOutcome>{
+    override fun read(buf: ByteBuffer): LocalBluetoothDiscoveryGroupsOutcome {
+        return when(buf.getInt()) {
+            1 -> LocalBluetoothDiscoveryGroupsOutcome.Ready(
+                FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings.read(buf),
+                )
+            2 -> LocalBluetoothDiscoveryGroupsOutcome.InvalidSaved(
+                FfiConverterULong.read(buf),
+                FfiConverterULong.read(buf),
+                FfiConverterString.read(buf),
+                )
+            3 -> LocalBluetoothDiscoveryGroupsOutcome.Busy
+            4 -> LocalBluetoothDiscoveryGroupsOutcome.GenerationChanged
+            5 -> LocalBluetoothDiscoveryGroupsOutcome.Invalid(
+                FfiConverterString.read(buf),
+                )
+            6 -> LocalBluetoothDiscoveryGroupsOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: LocalBluetoothDiscoveryGroupsOutcome) = when(value) {
+        is LocalBluetoothDiscoveryGroupsOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings.allocationSize(value.`settings`)
+            )
+        }
+        is LocalBluetoothDiscoveryGroupsOutcome.InvalidSaved -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterULong.allocationSize(value.`ownerId`)
+                + FfiConverterULong.allocationSize(value.`generationId`)
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is LocalBluetoothDiscoveryGroupsOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is LocalBluetoothDiscoveryGroupsOutcome.GenerationChanged -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is LocalBluetoothDiscoveryGroupsOutcome.Invalid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is LocalBluetoothDiscoveryGroupsOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: LocalBluetoothDiscoveryGroupsOutcome, buf: ByteBuffer) {
+        when(value) {
+            is LocalBluetoothDiscoveryGroupsOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings.write(value.`settings`, buf)
+                Unit
+            }
+            is LocalBluetoothDiscoveryGroupsOutcome.InvalidSaved -> {
+                buf.putInt(2)
+                FfiConverterULong.write(value.`ownerId`, buf)
+                FfiConverterULong.write(value.`generationId`, buf)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is LocalBluetoothDiscoveryGroupsOutcome.Busy -> {
+                buf.putInt(3)
+                Unit
+            }
+            is LocalBluetoothDiscoveryGroupsOutcome.GenerationChanged -> {
+                buf.putInt(4)
+                Unit
+            }
+            is LocalBluetoothDiscoveryGroupsOutcome.Invalid -> {
+                buf.putInt(5)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is LocalBluetoothDiscoveryGroupsOutcome.Unavailable -> {
                 buf.putInt(6)
                 FfiConverterString.write(value.`detail`, buf)
                 Unit
@@ -17505,6 +17793,38 @@ public object FfiConverterOptionalTypeGroupSynchronizationIssue: FfiConverterRus
 /**
  * @suppress
  */
+public object FfiConverterOptionalSequenceString: FfiConverterRustBuffer<List<kotlin.String>?> {
+    override fun read(buf: ByteBuffer): List<kotlin.String>? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterSequenceString.read(buf)
+    }
+
+    override fun allocationSize(value: List<kotlin.String>?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterSequenceString.allocationSize(value)
+        }
+    }
+
+    override fun write(value: List<kotlin.String>?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterSequenceString.write(value, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterOptionalTypeBytes16: FfiConverterRustBuffer<Bytes16?> {
     override fun read(buf: ByteBuffer): Bytes16? {
         if (buf.get().toInt() == 0) {
@@ -18891,6 +19211,23 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     }
 
 
+        /**
+         * Read saved names and separately confirmed current supervisor configuration.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `readBluetoothDiscoveryGroups`() : LocalBluetoothDiscoveryGroupsOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_read_bluetooth_discovery_groups(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `readBluetoothSettings`() : LocalBluetoothSettingsOutcome {
         return uniffiRustCallAsync(
@@ -19046,6 +19383,23 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeGroupTextSendOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+        /**
+         * Persist first, then await old-peer teardown and replacement. Cancellation only drops the waiter.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `setBluetoothDiscoveryGroups`(`input`: SetBluetoothDiscoveryGroupsInput) : LocalBluetoothDiscoveryGroupsOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_set_bluetooth_discovery_groups(FfiConverterTypeSetBluetoothDiscoveryGroupsInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
