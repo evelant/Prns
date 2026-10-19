@@ -7,6 +7,14 @@
       "target": "x86_64-unknown-linux-gnu"
     },
     {
+      "features": [
+        "prns-groups-store/secure"
+      ],
+      "manifest": "prns-groups/Cargo.toml",
+      "name": "group-secure-storage",
+      "target": "x86_64-unknown-linux-gnu"
+    },
+    {
       "manifest": "Cargo.toml",
       "name": "engine",
       "target": "x86_64-unknown-linux-gnu"
@@ -202,6 +210,23 @@
         "tokens": 0
       },
       "version": "2.0.1"
+    },
+    {
+      "graphs": {
+        "group-secure-storage": [
+          "alloc"
+        ]
+      },
+      "name": "aead",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.5.2"
     },
     {
       "graphs": {
@@ -1330,6 +1355,9 @@
         "group-libraries": [
           "std"
         ],
+        "group-secure-storage": [
+          "std"
+        ],
         "halow-headless": [
           "std"
         ]
@@ -1361,6 +1389,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -2560,6 +2589,7 @@
     {
       "graphs": {
         "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": []
       },
       "name": "cfg-if",
@@ -2746,6 +2776,40 @@
     },
     {
       "graphs": {
+        "group-secure-storage": [
+          "zeroize"
+        ]
+      },
+      "name": "chacha20",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 10,
+        "externs": 0,
+        "functions": 13,
+        "impls": 0,
+        "tokens": 23
+      },
+      "version": "0.9.1"
+    },
+    {
+      "graphs": {
+        "group-secure-storage": [
+          "alloc"
+        ]
+      },
+      "name": "chacha20poly1305",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.10.1"
+    },
+    {
+      "graphs": {
         "android": [
           "block-padding"
         ],
@@ -2802,6 +2866,9 @@
         ],
         "expo-ios": [
           "block-padding"
+        ],
+        "group-secure-storage": [
+          "zeroize"
         ],
         "halow-appliance-manager": [
           "block-padding"
@@ -3514,6 +3581,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
@@ -4145,6 +4213,7 @@
         "expo-ios": [
           "std"
         ],
+        "group-secure-storage": [],
         "halow-appliance-manager": [
           "std"
         ],
@@ -5594,6 +5663,11 @@
           "core-api",
           "default",
           "std"
+        ],
+        "group-secure-storage": [
+          "block-buffer",
+          "core-api",
+          "default"
         ],
         "halow-appliance-manager": [
           "alloc",
@@ -8311,6 +8385,8 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": []
       },
       "name": "embedded-storage",
@@ -8606,6 +8682,9 @@
           "std"
         ],
         "group-libraries": [
+          "std"
+        ],
+        "group-secure-storage": [
           "std"
         ],
         "halow-appliance-manager": [
@@ -10223,6 +10302,11 @@
           "std"
         ],
         "group-libraries": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "alloc",
           "default",
           "std"
@@ -12674,6 +12758,9 @@
         "expo-ios": [
           "more_lengths"
         ],
+        "group-secure-storage": [
+          "more_lengths"
+        ],
         "halow-appliance-manager": [
           "more_lengths"
         ],
@@ -12877,6 +12964,7 @@
         "expo-host-linux": [],
         "expo-ios": [],
         "group-libraries": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -14383,6 +14471,7 @@
         "expo-ios": [
           "block-padding"
         ],
+        "group-secure-storage": [],
         "halow-appliance-manager": [
           "block-padding"
         ],
@@ -15262,6 +15351,10 @@
         "group-libraries": [
           "default",
           "std"
+        ],
+        "group-secure-storage": [
+          "default",
+          "std"
         ]
       },
       "name": "libc",
@@ -15445,6 +15538,14 @@
           "xdp"
         ],
         "group-libraries": [
+          "auxvec",
+          "elf",
+          "errno",
+          "general",
+          "ioctl",
+          "no_std"
+        ],
+        "group-secure-storage": [
           "auxvec",
           "elf",
           "errno",
@@ -20249,6 +20350,11 @@
           "race",
           "std"
         ],
+        "group-secure-storage": [
+          "alloc",
+          "race",
+          "std"
+        ],
         "halow-appliance-manager": [
           "alloc",
           "default",
@@ -20337,6 +20443,21 @@
         "tokens": 0
       },
       "version": "1.70.2"
+    },
+    {
+      "graphs": {
+        "group-secure-storage": []
+      },
+      "name": "opaque-debug",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.3.1"
     },
     {
       "graphs": {
@@ -21710,6 +21831,21 @@
     },
     {
       "graphs": {
+        "group-secure-storage": []
+      },
+      "name": "poly1305",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 33,
+        "externs": 0,
+        "functions": 17,
+        "impls": 0,
+        "tokens": 50
+      },
+      "version": "0.8.0"
+    },
+    {
+      "graphs": {
         "android": [
           "critical-section",
           "default",
@@ -22725,7 +22861,8 @@
     },
     {
       "graphs": {
-        "group-libraries": []
+        "group-libraries": [],
+        "group-secure-storage": []
       },
       "name": "prns-groups",
       "source": "prns-groups/core",
@@ -22742,6 +22879,10 @@
       "graphs": {
         "group-libraries": [
           "default"
+        ],
+        "group-secure-storage": [
+          "default",
+          "secure"
         ]
       },
       "name": "prns-groups-store",
@@ -22757,7 +22898,8 @@
     },
     {
       "graphs": {
-        "group-libraries": []
+        "group-libraries": [],
+        "group-secure-storage": []
       },
       "name": "prns-groups-store-native",
       "source": "prns-groups/store/native",
@@ -25269,6 +25411,10 @@
           "default",
           "std"
         ],
+        "group-secure-storage": [
+          "default",
+          "std"
+        ],
         "prns-app-android": [
           "default",
           "std"
@@ -26049,6 +26195,12 @@
     {
       "graphs": {
         "group-libraries": [
+          "alloc",
+          "default",
+          "fs",
+          "std"
+        ],
+        "group-secure-storage": [
           "alloc",
           "default",
           "fs",
@@ -27704,6 +27856,7 @@
           "default",
           "std"
         ],
+        "group-secure-storage": [],
         "halow-appliance-manager": [
           "default",
           "std"
@@ -28986,6 +29139,10 @@
         "group-libraries": [
           "mutex",
           "spin_mutex"
+        ],
+        "group-secure-storage": [
+          "mutex",
+          "spin_mutex"
         ]
       },
       "name": "spin",
@@ -29628,6 +29785,7 @@
         "expo-ios": [
           "const-generics"
         ],
+        "group-secure-storage": [],
         "halow-appliance-manager": [
           "const-generics"
         ],
@@ -30534,6 +30692,10 @@
           "getrandom"
         ],
         "group-libraries": [
+          "default",
+          "getrandom"
+        ],
+        "group-secure-storage": [
           "default",
           "getrandom"
         ],
@@ -33133,6 +33295,7 @@
         "expo-ios": [
           "const-generics"
         ],
+        "group-secure-storage": [],
         "halow-headless": [
           "const-generics"
         ],
@@ -33526,6 +33689,21 @@
         "tokens": 0
       },
       "version": "0.31.2"
+    },
+    {
+      "graphs": {
+        "group-secure-storage": []
+      },
+      "name": "universal-hash",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 1,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 1
+      },
+      "version": "0.5.1"
     },
     {
       "graphs": {
@@ -34034,6 +34212,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -35944,6 +36123,9 @@
     {
       "graphs": {
         "group-libraries": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ]
       },

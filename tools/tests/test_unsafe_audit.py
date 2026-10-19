@@ -22,13 +22,15 @@ class UnsafeAuditTests(unittest.TestCase):
         graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
         self.assertEqual(graphs["group-libraries"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertNotIn("group-libraries", audit.GRAPH_FEATURES)
+        self.assertEqual(graphs["group-secure-storage"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertEqual(audit.GRAPH_FEATURES["group-secure-storage"], ("prns-groups-store/secure",))
 
     def test_app_graphs_audit_the_shipped_platform_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
         self.assertEqual(len(graphs), len(audit.GRAPHS))
         self.assertEqual(
             audit.GRAPH_FEATURES,
-            {"prns-app-android": ("android",), "prns-app-ios": ("apple",)},
+            {"prns-app-android": ("android",), "prns-app-ios": ("apple",), "group-secure-storage": ("prns-groups-store/secure",)},
         )
         manifest = "applications/prns/native-composition/Cargo.toml"
         self.assertEqual(graphs["prns-app-android"], (manifest, "aarch64-linux-android"))

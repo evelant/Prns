@@ -69,7 +69,7 @@ The existing transport journal already owns its flash region and batching policy
 Reuse its recovery principles, not its record format or deferred write schedule.
 Group crypto, application facts and exact output must commit together before
 publication. See the [transaction coordinator](../../store/README.md) and
-secure flash contract (separate integration). Flash geometry, erase
+[secure flash contract](../../store/docs/secure-flash.md). Flash geometry, erase
 latency, lifetime wear and uncertain commits belong to the board adapter. Logical
 deletion is not physical erasure or rollback protection.
 

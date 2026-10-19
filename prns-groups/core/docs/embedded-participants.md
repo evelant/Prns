@@ -43,7 +43,7 @@ and implementation gates.
 
 The reusable service (separate integration),
 MLS adapter (separate integration) and
-coordinator/secure store (separate integration) are designed around
+[coordinator/secure store](../../store/docs/secure-flash.md) are designed around
 `no_std` with bounded allocation; the service is a separate integration. The [core](../README.md) is allocation-free; the text codec is a separate
 integration. A complete firmware member must compose the service, authenticated enrollment
 and network reconciliation; the separate local storage fixture is insufficient.
