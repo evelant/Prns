@@ -2,7 +2,12 @@ use crate::{
     ChangeToken, Conversation, Error, MessagePage, NetworkConfig, PublishRecord, RecordChanges,
     RecordDeliveryProgress, RecordPage, SendText, StoreSession, StoredRecord,
 };
-use prns_groups_service::{ClockReading, GroupId, RecordId};
+use prns_groups_reticulum::{SyncCursor, SyncOptions};
+use prns_groups_service::{
+    ClockReading, Endpoint, EnvelopeId, EnvelopeInfo, GroupId, Incoming, InventoryCursor,
+    InventoryKind, InventoryPage, InventorySnapshot, RecordId,
+};
+use prns_groups_store::StoreIncarnation;
 use std::sync::Arc;
 use tokio::sync::{oneshot, Notify};
 
@@ -67,6 +72,7 @@ pub struct Client {
     pub(crate) wake: Arc<Notify>,
     group: Option<GroupId>,
     control: Option<prns_groups::ControlReference>,
+    pub(crate) progress: Arc<crate::progress::ProgressTracker>,
 }
 impl Client {
     pub fn new(submitter: Arc<dyn Submit>) -> Self {
@@ -75,6 +81,7 @@ impl Client {
             wake: Arc::new(Notify::new()),
             group: None,
             control: None,
+            progress: Arc::default(),
         }
     }
     pub fn for_group(&self, group: GroupId) -> Self {
@@ -90,6 +97,9 @@ impl Client {
             control: Some(control),
             ..self.clone()
         }
+    }
+    pub fn synchronization_progress(&self, group: GroupId) -> crate::GroupSyncProgress {
+        self.progress.snapshot(group)
     }
     pub fn wake(&self) {
         self.wake.notify_one();
@@ -191,7 +201,10 @@ impl Client {
         })?;
         Ok(async move {
             match receiver.await.map_err(|_| Error::Unavailable)?? {
-                Reply::Sent(value) => Ok(value),
+                Reply::Sent(value) => {
+                    crate::diagnostics::local_send_result(&group.0, &value.0);
+                    Ok(value)
+                }
                 _ => Err(Error::Corrupt),
             }
         })
@@ -370,9 +383,45 @@ impl Client {
             _ => Err(Error::Corrupt),
         }
     }
+    pub(crate) async fn pending_delivery(
+        &self,
+        peer: Endpoint,
+        after: InventoryCursor,
+        clock: ClockReading,
+    ) -> Result<Option<EnvelopeInfo>, Error> {
+        match self
+            .call(Command::PendingDelivery { peer, after, clock })
+            .await?
+        {
+            Reply::PendingDelivery(value) => Ok(value),
+            _ => Err(Error::Corrupt),
+        }
+    }
+    pub(crate) async fn load_cursor(&self, peer: Endpoint) -> Result<Option<SyncCursor>, Error> {
+        match self.call(Command::LoadCursor(peer)).await? {
+            Reply::Cursor(value) => Ok(value),
+            _ => Err(Error::Corrupt),
+        }
+    }
+    pub(crate) async fn save_cursor(
+        &self,
+        peer: Endpoint,
+        cursor: Option<SyncCursor>,
+    ) -> Result<(), Error> {
+        match self.call(Command::SaveCursor(peer, cursor)).await? {
+            Reply::Done => Ok(()),
+            _ => Err(Error::Corrupt),
+        }
+    }
     /// Run one bounded maintenance pass on the owned storage lane.
     pub async fn maintain(&self, clock: ClockReading) -> Result<(), Error> {
         match self.call(Command::Maintain(clock)).await? {
+            Reply::Done => Ok(()),
+            _ => Err(Error::Corrupt),
+        }
+    }
+    pub(crate) async fn repair_receipts(&self) -> Result<(), Error> {
+        match self.call(Command::RepairReceipts).await? {
             Reply::Done => Ok(()),
             _ => Err(Error::Corrupt),
         }
@@ -426,7 +475,33 @@ pub(crate) enum Command {
         after: Option<ChangeToken>,
         limit: usize,
     },
+    LoadCursor(Endpoint),
+    SaveCursor(Endpoint, Option<SyncCursor>),
     Maintain(ClockReading),
+    RepairReceipts,
+    Snapshot,
+    PendingDelivery {
+        peer: Endpoint,
+        after: InventoryCursor,
+        clock: ClockReading,
+    },
+    Receipt(RecordId),
+    Inventory {
+        snapshot: InventorySnapshot,
+        after: InventoryCursor,
+        kind: InventoryKind,
+        recipient: Endpoint,
+        scan_limit: usize,
+    },
+    Envelope(EnvelopeId),
+    Known {
+        info: EnvelopeInfo,
+        incarnation: StoreIncarnation,
+    },
+    Receive {
+        wire: Vec<u8>,
+        options: SyncOptions,
+    },
 }
 pub(crate) enum Reply {
     Identity(prns_host::IdentityHash),
@@ -444,7 +519,14 @@ pub(crate) enum Reply {
     Record(Option<StoredRecord>),
     Progress(Option<RecordDeliveryProgress>),
     Changes(RecordChanges),
+    Cursor(Option<SyncCursor>),
     Done,
+    Snapshot(Option<InventorySnapshot>),
+    PendingDelivery(Option<EnvelopeInfo>),
+    Inventory(InventoryPage),
+    Envelope(Option<Vec<u8>>),
+    Known(bool),
+    Incoming(Incoming),
 }
 
 #[cfg(test)]

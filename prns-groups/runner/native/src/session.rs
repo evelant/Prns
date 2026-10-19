@@ -4,21 +4,29 @@ use crate::{
     SendText,
 };
 use prns_groups_mls::Adapter;
+use prns_groups_reticulum::{ProtocolError, SyncCursor};
 use prns_groups_service::{
-    ChangeCursor, ChangeKind, ClockReading, Descriptor, Endpoint, GroupService, Publication,
-    PublicationValidity, RecordId, Timestamp,
+    ChangeCursor, ChangeKind, ClockReading, Descriptor, Endpoint, GroupService, Incoming,
+    InventoryKind, Publication, PublicationValidity, RecordId, Timestamp,
 };
 use prns_groups_store::{Coordinator, OperationTicket};
 use prns_groups_store_native::{NativeBackend, NativeRequest, NativeStoreOwner};
-use redb::Database;
+use redb::{Database, Durability, ReadableDatabase, TableDefinition};
 
 mod records;
 
+const CURSORS: TableDefinition<&[u8], &[u8]> =
+    TableDefinition::new("prns_groups_runner_cursors_v1");
+// Keep one row per namespace/peer while binding progress to the exact local
+// enrollment. This is a local persistence format, never a protocol frame.
+const CURSOR_CONTEXT_BYTES: usize = 92;
+const CURSOR_CONTEXT_MAGIC: &[u8; 4] = b"PGN\x01";
 type Service<'a> = GroupService<'a, NativeBackend<'a>>;
 
 /// Runs only on the caller's existing exclusive database lane. It creates no
 /// worker, database or runtime. Every job ends before any network await begins.
 pub struct StoreSession<'db> {
+    database: &'db Database,
     owner: NativeStoreOwner<'db>,
     provisioned: Provisioned,
 }
@@ -42,6 +50,7 @@ impl<'db> StoreSession<'db> {
             return Err(Error::Configuration);
         }
         let mut session = Self {
+            database,
             owner: NativeStoreOwner::new(database),
             provisioned,
         };
@@ -56,28 +65,40 @@ impl<'db> StoreSession<'db> {
         self.provisioned.control
     }
     pub(crate) fn execute(&mut self, command: Command) -> Result<Reply, Error> {
-        execute_with_owner(&mut self.owner, &self.provisioned, command)
+        execute_with_owner(self.database, &mut self.owner, &self.provisioned, command)
     }
     fn with_service<T>(
         &mut self,
         action: impl FnOnce(&mut Service<'_>, &Provisioned) -> Result<T, Error>,
     ) -> Result<T, Error> {
         SessionView {
+            database: self.database,
             owner: &mut self.owner,
             provisioned: &self.provisioned,
         }
         .with_service(action)
     }
+    #[cfg(test)]
+    fn config(&self) -> Result<NetworkConfig, Error> {
+        configuration(&self.provisioned)
+    }
 }
 
 pub(crate) fn execute_with_owner(
+    database: &Database,
     owner: &mut NativeStoreOwner<'_>,
     provisioned: &Provisioned,
     command: Command,
 ) -> Result<Reply, Error> {
-    SessionView { owner, provisioned }.execute(command)
+    SessionView {
+        database,
+        owner,
+        provisioned,
+    }
+    .execute(command)
 }
 struct SessionView<'a, 'db> {
+    database: &'a Database,
     owner: &'a mut NativeStoreOwner<'db>,
     provisioned: &'a Provisioned,
 }
@@ -145,6 +166,65 @@ impl SessionView<'_, '_> {
             | Command::EnrollmentHandle { .. }
             | Command::EnrollmentComplete { .. } => Err(Error::NotProvisioned),
             Command::Config => Ok(Reply::Config(self.config()?)),
+            Command::LoadCursor(peer) => {
+                let key = self.cursor_key(peer)?;
+                let read = self.database.begin_read().map_err(db_error)?;
+                let table = match read.open_table(CURSORS) {
+                    Ok(table) => table,
+                    Err(redb::TableError::TableDoesNotExist(_)) => return Ok(Reply::Cursor(None)),
+                    Err(error) => return Err(db_error(error)),
+                };
+                let value = table.get(key.as_slice()).map_err(db_error)?;
+                let cursor = value
+                    .map(|bytes| decode_cursor(self.provisioned, bytes.value()))
+                    .transpose()?
+                    .flatten();
+                Ok(Reply::Cursor(cursor))
+            }
+            Command::SaveCursor(peer, cursor) => {
+                let key = self.cursor_key(peer)?;
+                let encoded = cursor.map(|cursor| encode_cursor(self.provisioned, cursor));
+                {
+                    let read = self.database.begin_read().map_err(db_error)?;
+                    let table = match read.open_table(CURSORS) {
+                        Ok(table) => Some(table),
+                        Err(redb::TableError::TableDoesNotExist(_)) => None,
+                        Err(error) => return Err(db_error(error)),
+                    };
+                    let existing = table
+                        .as_ref()
+                        .map(|table| table.get(key.as_slice()).map_err(db_error))
+                        .transpose()?
+                        .flatten();
+                    if existing.as_ref().map(|value| value.value())
+                        == encoded.as_ref().map(|value| value.as_slice())
+                    {
+                        // This lane is the sole writer. Unchanged snapshot polls
+                        // need no commit or flash write merely to persist the
+                        // same completed coverage again.
+                        return Ok(Reply::Done);
+                    }
+                }
+                let mut write = self.database.begin_write().map_err(db_error)?;
+                write
+                    .set_durability(Durability::Immediate)
+                    .map_err(db_error)?;
+                {
+                    let mut table = write.open_table(CURSORS).map_err(db_error)?;
+                    match encoded {
+                        Some(encoded) => {
+                            table
+                                .insert(key.as_slice(), encoded.as_slice())
+                                .map_err(db_error)?;
+                        }
+                        None => {
+                            table.remove(key.as_slice()).map_err(db_error)?;
+                        }
+                    }
+                }
+                write.commit().map_err(db_error)?;
+                Ok(Reply::Done)
+            }
             Command::Conversations => self.with_service(|service, cfg| {
                 let revision = service.changes(ChangeCursor(0), 1)?.head.0;
                 let members = conversation_members(cfg)?;
@@ -214,9 +294,130 @@ impl SessionView<'_, '_> {
             Command::SendText(request) => self.with_service(|service, cfg| {
                 records::publish_text(service, cfg, request).map(Reply::Sent)
             }),
+            Command::RepairReceipts => self.with_service(|service, cfg| {
+                let changes = service.changes(ChangeCursor(0), cfg.service_limits.max_changes)?;
+                for change in changes.changes {
+                    if let ChangeKind::Received(record) = change.kind {
+                        repair_receipt(service, cfg, record)?;
+                    }
+                }
+                Ok(Reply::Done)
+            }),
+            Command::PendingDelivery { peer, after, clock } => self.with_service(|service, _| {
+                Ok(Reply::PendingDelivery(
+                    service.pending_delivery(peer, after, clock)?,
+                ))
+            }),
+            Command::Receipt(record) => self.with_service(|service, cfg| {
+                repair_receipt(service, cfg, record)?;
+                Ok(Reply::Envelope(
+                    service.local_receipt(record)?.map(|wire| wire.to_vec()),
+                ))
+            }),
+            Command::Snapshot => {
+                self.with_service(|service, _| Ok(Reply::Snapshot(service.snapshot()?)))
+            }
+            Command::Inventory {
+                snapshot,
+                after,
+                kind,
+                recipient,
+                scan_limit,
+            } => self.with_service(|service, _| {
+                Ok(Reply::Inventory(
+                    service.inventory(snapshot, after, kind, recipient, scan_limit)?,
+                ))
+            }),
+            Command::Envelope(id) => self.with_service(|service, _| {
+                Ok(Reply::Envelope(
+                    service.envelope(id)?.map(|bytes| bytes.to_vec()),
+                ))
+            }),
+            Command::Known { info, incarnation } => self.with_service(|service, cfg| {
+                if incarnation != cfg.incarnation {
+                    return Err(Error::Configuration);
+                }
+                let Some(local) = service.envelope_info(info.id)? else {
+                    return Ok(Reply::Known(false));
+                };
+                if local.kind != info.kind
+                    || local.record != info.record
+                    || local.bytes != info.bytes
+                {
+                    return Err(Error::Transport(ProtocolError::WrongEnvelope.into()));
+                }
+                if local.kind == InventoryKind::Record {
+                    repair_receipt(service, cfg, local.record)?;
+                }
+                Ok(Reply::Known(true))
+            }),
+            Command::Receive { wire, options } => self.with_service(|service, cfg| {
+                if options.incarnation != cfg.incarnation {
+                    return Err(Error::Configuration);
+                }
+                maintain(service, cfg, options.clock)?;
+                let incoming = service.receive(next(service, cfg)?, &wire, options.clock)?;
+                if let Incoming::Record(record) = incoming {
+                    repair_receipt(service, cfg, record)?;
+                }
+                Ok(Reply::Incoming(incoming))
+            }),
         }
     }
+    fn cursor_key(&self, peer: Endpoint) -> Result<Vec<u8>, Error> {
+        if !self
+            .provisioned
+            .peers
+            .iter()
+            .any(|known| known.endpoint == peer)
+        {
+            return Err(Error::InvalidInput);
+        }
+        let mut key = self.provisioned.namespace.0.to_vec();
+        key.extend_from_slice(&peer.id.0);
+        key.extend_from_slice(&peer.incarnation.get().to_be_bytes());
+        Ok(key)
+    }
 }
+fn cursor_context(provisioned: &Provisioned) -> [u8; CURSOR_CONTEXT_BYTES] {
+    let mut bytes = [0; CURSOR_CONTEXT_BYTES];
+    bytes[..4].copy_from_slice(CURSOR_CONTEXT_MAGIC);
+    bytes[4..36].copy_from_slice(&provisioned.control.head.0);
+    bytes[36..68].copy_from_slice(&provisioned.control.era.0 .0);
+    bytes[68..].copy_from_slice(provisioned.incarnation.as_bytes());
+    bytes
+}
+
+fn encode_cursor(
+    provisioned: &Provisioned,
+    cursor: SyncCursor,
+) -> [u8; CURSOR_CONTEXT_BYTES + prns_groups_reticulum::SYNC_CURSOR_BYTES] {
+    let mut bytes = [0; CURSOR_CONTEXT_BYTES + prns_groups_reticulum::SYNC_CURSOR_BYTES];
+    bytes[..CURSOR_CONTEXT_BYTES].copy_from_slice(&cursor_context(provisioned));
+    bytes[CURSOR_CONTEXT_BYTES..].copy_from_slice(&cursor.to_bytes());
+    bytes
+}
+
+fn decode_cursor(provisioned: &Provisioned, bytes: &[u8]) -> Result<Option<SyncCursor>, Error> {
+    if bytes.starts_with(b"PGC") {
+        // Earlier native rows had no enrollment binding. Validate the old
+        // checkpoint, then perform one fresh scan instead of guessing its era.
+        SyncCursor::from_bytes(bytes).map_err(|_| Error::Corrupt)?;
+        return Ok(None);
+    }
+    if bytes.len() < CURSOR_CONTEXT_BYTES || &bytes[..4] != CURSOR_CONTEXT_MAGIC {
+        return Err(Error::Corrupt);
+    }
+    let cursor =
+        SyncCursor::from_bytes(&bytes[CURSOR_CONTEXT_BYTES..]).map_err(|_| Error::Corrupt)?;
+    if bytes[..CURSOR_CONTEXT_BYTES] != cursor_context(provisioned) {
+        return Ok(None);
+    }
+    Ok(Some(cursor))
+}
+
+#[cfg(test)]
+mod checkpoint_tests;
 
 fn conversation_members(cfg: &Provisioned) -> Result<Vec<ConversationMember>, Error> {
     let binding = cfg.identity.binding();
@@ -437,6 +638,16 @@ fn finalize_prefix(service: &Service<'_>, cfg: &Provisioned) -> Result<u64, Erro
     Ok(head - through)
 }
 
+fn repair_receipt(
+    service: &mut Service<'_>,
+    cfg: &Provisioned,
+    record: RecordId,
+) -> Result<(), Error> {
+    if service.has_pending_receipt(record)? {
+        service.emit_receipt(next(service, cfg)?, record)?;
+    }
+    Ok(())
+}
 fn publish(
     service: &mut Service<'_>,
     cfg: &Provisioned,
@@ -512,12 +723,18 @@ fn publish(
     )?;
     Ok(published.record)
 }
+fn db_error(error: impl Into<redb::Error>) -> Error {
+    Error::Storage(prns_groups_store_native::NativeError::Database(
+        error.into(),
+    ))
+}
+
 #[cfg(test)]
 mod tests {
     #![allow(clippy::unwrap_used, clippy::panic)]
     use super::*;
     use crate::fixture;
-    use prns_groups_service::ClockInterval;
+    use prns_groups_service::{ClockInterval, InventoryCursor};
     use prns_host::IdentityHash;
 
     #[test]
@@ -584,6 +801,79 @@ mod tests {
         assert_eq!(conversations[0].control_head, cfg.control.head);
     }
 
+    #[test]
+    fn receipt_repair_recovers_receive_commit_before_receipt_emission() {
+        let now = Timestamp(1_792_000_000);
+        let clock = ClockReading::Trusted(ClockInterval::new(now, now).unwrap());
+        let identities = [IdentityHash::new([1; 16]), IdentityHash::new([2; 16])];
+        let fixtures = fixture::generate("Pending receipt", &identities, now).unwrap();
+        let directory = tempfile::tempdir().unwrap();
+        let alice_db = Database::create(directory.path().join("alice.redb")).unwrap();
+        let bob_db = Database::create(directory.path().join("bob.redb")).unwrap();
+        let alice_config =
+            fixture::load_and_install(&alice_db, &fixtures[0], identities[0]).unwrap();
+        let bob_config = fixture::load_and_install(&bob_db, &fixtures[1], identities[1]).unwrap();
+        let group = alice_config.group;
+        let mut alice = StoreSession::open(&alice_db, alice_config).unwrap();
+        let mut bob = StoreSession::open(&bob_db, bob_config).unwrap();
+        let recipient = bob.config().unwrap().local;
+        let Reply::Sent(record) = alice
+            .execute(Command::SendText(SendText {
+                group,
+                client_request_id: crate::RequestToken::new(now.0, [9; 20])
+                    .unwrap()
+                    .into_bytes(),
+                text: "receipt recovery".into(),
+                clock,
+            }))
+            .unwrap()
+        else {
+            panic!("send reply");
+        };
+        let wire = alice
+            .with_service(|service, _| {
+                let snapshot = service.snapshot()?.ok_or(Error::Corrupt)?;
+                let page = service.inventory(
+                    snapshot,
+                    InventoryCursor(0),
+                    InventoryKind::Record,
+                    recipient,
+                    32,
+                )?;
+                Ok(service
+                    .envelope(page.items[0].id)?
+                    .ok_or(Error::Corrupt)?
+                    .to_vec())
+            })
+            .unwrap();
+        bob.with_service(|service, cfg| {
+            assert_eq!(
+                service.receive(next(service, cfg)?, &wire, clock)?,
+                Incoming::Record(record)
+            );
+            assert!(service.has_pending_receipt(record)?);
+            Ok(())
+        })
+        .unwrap();
+        drop(bob);
+        drop(bob_db);
+        let bob_db = Database::open(directory.path().join("bob.redb")).unwrap();
+        let config = fixture::load_and_install(&bob_db, &fixtures[1], identities[1]).unwrap();
+        let mut bob = StoreSession::open(&bob_db, config).unwrap();
+        bob.execute(Command::RepairReceipts).unwrap();
+        let revision = bob
+            .with_service(|service, _| {
+                assert!(!service.has_pending_receipt(record)?);
+                Ok(service.changes(ChangeCursor(0), 32)?.head)
+            })
+            .unwrap();
+        bob.execute(Command::RepairReceipts).unwrap();
+        bob.with_service(|service, _| {
+            assert_eq!(service.changes(ChangeCursor(0), 32)?.head, revision);
+            Ok(())
+        })
+        .unwrap();
+    }
     #[test]
     fn bounded_maintenance_reuses_capacity_and_fences_old_retries_after_reopen() {
         let now = 1_792_000_000;

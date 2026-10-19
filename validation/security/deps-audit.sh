@@ -16,6 +16,7 @@ python3 "$root/validation/security/license-policy-parity.py"
 python3 "$root/validation/security/mls-source-policy.py"
 
 graphs=(
+    "group-headless-peer|prns-groups/runner/native/Cargo.toml|x86_64-unknown-linux-gnu|headless"
     "group-libraries|prns-groups/Cargo.toml|x86_64-unknown-linux-gnu"
     "group-secure-storage|prns-groups/Cargo.toml|x86_64-unknown-linux-gnu|prns-groups-store/secure"
     "group-mls-adapter|prns-groups/security/mls-rs/Cargo.toml|x86_64-unknown-linux-gnu"

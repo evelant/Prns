@@ -1,10 +1,13 @@
 # Group addressing and synchronization
 
-This source boundary contains the allocation-free core, bounded transaction
-store and MLS adapter. Native record, transport, runner and app consumers are
-separate integrations. This document describes the wider design, including
-capabilities that remain planned; it does not establish an interoperable protocol
-or qualified guarantees. Earlier experiments are not shipping dependencies.
+Status: implementation in progress. The [group core](../README.md)
+contains an allocation-free core, bounded transaction and record services,
+a bounded MLS adapter, and native transport and runner implementations. Earlier
+host models and crypto experiments are retained separately from this publication.
+This document describes the wider design, including capabilities that remain
+planned; it does not establish an interoperable protocol or qualified guarantees.
+Messaging is one consumer; the
+[messaging product scope](../../../applications/docs/product-scope.md) remains separate.
 
 Provide reusable group addressing, authenticated record distribution and optional
 state synchronization above Reticulum. Applications supply data meaning and

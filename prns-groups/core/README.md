@@ -51,8 +51,8 @@ network record IDs and group replay policy.
 `sync` supplies allocation-free interface/path policy: configured first-hop
 bitrate, hop count and observed Link RTT select bounded work, deadlines, idle
 spacing and failure backoff. A fast first hop cannot establish fast downstream
-capacity. Native carriers and embedded executors can consume this policy with
-caller-owned timers and buffers; their network integrations are separate work. Policy decisions
+capacity. The native carrier and runners consume this policy; an embedded
+executor can reuse it with caller-owned timers and buffers. Policy decisions
 are estimates, not airtime reservations or delivery evidence.
 
 Read the [architecture](docs/design.md), [behavioral contract](docs/v0.md),

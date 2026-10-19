@@ -4,7 +4,9 @@ mod support;
 #[path = "../examples/support/telemetry_projection.rs"]
 mod telemetry_projection;
 use prns_groups::{NamespaceId, SchemaId};
-use prns_groups_runner_native::{fixture, Client, Error, Job, PublishRecord, StoreSession, Submit};
+use prns_groups_runner_native::{
+    fixture, Client, Error, Job, PublishRecord, SendText, StoreSession, Submit,
+};
 use prns_groups_service::{ChangeKind, ClockReading, Timestamp};
 use prns_host::IdentityHash;
 use std::sync::{Arc, Mutex};
@@ -521,6 +523,163 @@ async fn lost_generic_reply_reopens_exact_record_and_scoped_change_cursor() {
             .history_pruned
     );
     worker.stop();
+}
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn pending_telemetry_reopens_then_syncs_with_text_and_one_application_change() {
+    use prns_groups_reticulum::{Network, SyncBudget};
+    use prns_groups_runner_native::{run, RunnerControl, RunnerOptions};
+    use std::time::Duration;
+    let mut nodes = support::wire::Nodes::open().await;
+    let identities: Vec<_> = nodes.owners[..2]
+        .iter()
+        .map(|n| n.client().identity_hash().unwrap())
+        .collect();
+    let fixtures = fixture::generate("Telemetry and text", &identities, Timestamp(NOW)).unwrap();
+    let directory = tempfile::tempdir().unwrap();
+    let open = |i: usize| {
+        Worker::open(
+            directory.path().join(format!("{i}.redb")),
+            fixtures[i].clone(),
+            identities[i],
+        )
+    };
+    let first = open(0);
+    let cfg = first.client.network_config().await.unwrap();
+    let group = cfg.group;
+    let request = request(group, cfg.peers.iter().map(|p| p.endpoint).collect());
+    let id = first.client.publish(request.clone()).await.unwrap();
+    let saved = first.client.changes(group, None, 10).await.unwrap().next;
+    first.stop(); // Exact output is pending; no network runner has started.
+    let workers = [open(0), open(1)];
+    let text = workers[1]
+        .client
+        .send_text(SendText {
+            group,
+            client_request_id: prns_groups::retry::RequestToken::new(NOW, [20; 20])
+                .unwrap()
+                .into_bytes(),
+            text: "same group, other profile".into(),
+            clock: clock(),
+        })
+        .await
+        .unwrap();
+    let mut runners = Vec::new();
+    let mut controls = Vec::new();
+    for (i, worker) in workers.iter().enumerate() {
+        let cfg = worker.client.network_config().await.unwrap();
+        let network = Arc::new(
+            Network::new(
+                nodes.owners[i].client(),
+                nodes.owners[i].client().destination_hashes().unwrap()[0],
+                cfg.peers,
+                support::wire::limits(),
+            )
+            .unwrap(),
+        );
+        let (control, stop) = tokio::sync::watch::channel(RunnerControl::Running);
+        controls.push(control);
+        runners.push(tokio::spawn(run(
+            worker.client.clone(),
+            network,
+            nodes.jobs[i].take().unwrap(),
+            RunnerOptions {
+                poll_interval: Duration::from_millis(100),
+                retry_initial: Duration::from_millis(100),
+                retry_max: Duration::from_millis(500),
+                budget: SyncBudget {
+                    max_requests: 4,
+                    max_envelopes: 1,
+                    max_bytes: 16384,
+                },
+            },
+            Arc::new(support::TestClock),
+            stop,
+        )));
+    }
+    tokio::time::timeout(Duration::from_secs(45), async {
+        loop {
+            let a = workers[0]
+                .client
+                .delivery_progress(group, id, clock())
+                .await
+                .unwrap();
+            let b = workers[1]
+                .client
+                .delivery_progress(group, text, clock())
+                .await
+                .unwrap();
+            if a.is_some_and(|p| p.summary.all_received())
+                && b.is_some_and(|p| p.summary.all_received())
+            {
+                break;
+            }
+            tokio::time::sleep(Duration::from_millis(50)).await;
+        }
+    })
+    .await
+    .unwrap();
+    assert_eq!(workers[0].client.publish(request).await.unwrap(), id);
+    for worker in &workers {
+        let all = worker
+            .client
+            .records(group, None, 10, clock())
+            .await
+            .unwrap();
+        assert_eq!(all.records.len(), 2);
+        let one = worker
+            .client
+            .records(group, None, 1, clock())
+            .await
+            .unwrap();
+        let two = worker
+            .client
+            .records(group, one.next_before_sequence, 1, clock())
+            .await
+            .unwrap();
+        assert_ne!(
+            one.records[0].record.metadata.record,
+            two.records[0].record.metadata.record
+        );
+        assert_eq!(
+            worker
+                .client
+                .messages(group, None, 10, clock())
+                .await
+                .unwrap()
+                .messages
+                .len(),
+            1
+        );
+        let feed = worker.client.changes(group, None, 100).await.unwrap();
+        assert_eq!(
+            feed.changes
+                .iter()
+                .filter(
+                    |c| matches!(c.kind,ChangeKind::Published(r)|ChangeKind::Received(r) if r==id)
+                )
+                .count(),
+            1
+        );
+    }
+    assert!(
+        !workers[0]
+            .client
+            .changes(group, Some(saved), 100)
+            .await
+            .unwrap()
+            .history_pruned
+    );
+    for control in controls {
+        control.send(RunnerControl::Stop).unwrap();
+    }
+    for runner in runners {
+        runner.await.unwrap().unwrap();
+    }
+    for worker in workers {
+        worker.stop();
+    }
+    nodes.stop().await;
 }
 
 #[tokio::test]

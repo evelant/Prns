@@ -13,14 +13,22 @@ that identity's groups, with empty announce application data. Observers can
 associate the two services with the same public identity, but learn no group list,
 membership or inventory head from their announce payloads.
 
-Application owners supply periodic and manual announcement scheduling. The
-carrier itself does not start a timer or store preferences. The following native
-runner integration supplies a startup/six-hour default, positive jitter and a
-bounded manual lane; app-wide identity coordination is separate work.
+The standalone native runner defaults to startup and six hours plus 0–25%
+positive jitter. A caller-owned `AnnounceControl` supplies optional intervals
+and manual requests; its 60-second cooldown is local to the runner lifetime.
+Manual only disables startup and periodic work, while explicit manual requests
+and requested path responses remain available. Changing a preference does not
+itself announce. `Requested`, `Throttled`, `Busy` and `Unavailable` describe local
+admission, not transmission or recipient reachability.
 
-Do not announce per message, receipt, membership change or failed synchronization.
-All groups under one identity use the same service destinations. Adding groups
-does not add destinations; adding identities increases the potential service load.
+Applications own preference persistence and any shared budget across local
+identities. Pausing an identity must fence its future work. A durable restart
+fence and shared identity scheduler are a separate integration; do not infer
+those properties from the process-local runner cooldown.
+
+All groups for one identity share the same pair of destinations. Adding identities
+increases potential service traffic; adding groups does not add destinations.
+A fast BLE first hop does not justify unrestricted announces over a LoRa path.
 
 Sparse refresh helps maintain discoverable cached routes across intermittent
 transport contacts. Unknown-destination path requests are not recursively
@@ -58,15 +66,17 @@ is separate from unsolicited service refresh. Stock
 [Reticulum path requests](https://github.com/markqvist/Reticulum/blob/1.5.5/RNS/Transport.py)
 also distinguish path responses from unsolicited announcements.
 
-Destination registration does not start a second timer. Requested path
-responses remain outside application scheduling and pass through ordinary
+The [native runner](../../../runner/native/src/announces.rs) supplies standalone
+controls. Destination registration itself starts no timer. Requested path
+responses remain outside the application scheduler and pass through ordinary
 interface pacing.
 
 ## Qualification
 
-Carrier tests exercise requested discovery and identified Links without
-unsolicited announces. Timer, fairness and restart behavior belong to the
-consumer integration; neither establishes physical airtime or battery use.
+Host tests cover disabled startup, interval changes, positive jitter and bounded
+manual admission. Cold group/enrollment tests exercise requested discovery without
+unsolicited announces. These are scheduling and protocol checks, not physical
+airtime or battery measurements.
 
 For an [isolated LoRa trial](lora-qualification.md), count unsolicited announces
 separately from requested path responses and measure bytes at startup, idle,

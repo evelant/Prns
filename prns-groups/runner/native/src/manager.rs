@@ -10,6 +10,7 @@ use prns_host::IdentityHash;
 use redb::Database;
 
 pub struct GroupManager<'db> {
+    database: &'db Database,
     owner: NativeStoreOwner<'db>,
     enrollment: Enrollment<'db>,
     identity: IdentityHash,
@@ -56,6 +57,7 @@ impl<'db> GroupManager<'db> {
             let mut visited = 0;
             loop {
                 let Reply::Messages(page) = crate::session::execute_with_owner(
+                    self.database,
                     &mut self.owner,
                     &cfg,
                     Command::Messages {
@@ -105,6 +107,7 @@ impl<'db> GroupManager<'db> {
             return Err(Error::Configuration);
         }
         Ok(Self {
+            database,
             owner: NativeStoreOwner::new(database),
             enrollment: Enrollment::open(database, identity).map_err(enrollment_error)?,
             identity,
@@ -159,6 +162,7 @@ impl<'db> GroupManager<'db> {
                 }
                 for cfg in self.configurations()? {
                     crate::session::execute_with_owner(
+                        self.database,
                         &mut self.owner,
                         &cfg,
                         Command::Maintain(clock),
@@ -240,6 +244,7 @@ impl<'db> GroupManager<'db> {
                 let mut conversations = Vec::new();
                 for cfg in self.configurations()? {
                     let Reply::Conversations(mut items) = crate::session::execute_with_owner(
+                        self.database,
                         &mut self.owner,
                         &cfg,
                         Command::Conversations,
@@ -277,7 +282,7 @@ impl<'db> GroupManager<'db> {
                 if control.is_some_and(|head| head != cfg.control) {
                     return Err(Error::Configuration);
                 }
-                crate::session::execute_with_owner(&mut self.owner, &cfg, command)
+                crate::session::execute_with_owner(self.database, &mut self.owner, &cfg, command)
             }
         }
     }

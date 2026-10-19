@@ -7,7 +7,15 @@ repository.workspace = true
 homepage.workspace = true
 rust-version.workspace = true
 publish = false
-description = "Caller-owned durable group records and authenticated enrollment over a borrowed database"
+description = "Caller-owned native group text runner over a borrowed database and Reticulum node"
+
+[features]
+headless = ["dep:personal-rns", "tokio/rt-multi-thread"]
+
+[[bin]]
+name = "dev-group-peer"
+path = "src/bin/dev-group-peer/main.rs"
+required-features = ["headless"]
 
 [dependencies]
 prns-group-text = { path = "../../profiles/text" }
@@ -18,6 +26,10 @@ prns-groups-store-native = { path = "../../store/native" }
 prns-groups-mls = { path = "../../security/mls-rs" }
 prns-groups-reticulum = { path = "../../transport/reticulum" }
 prns-host = { path = "../../../prns-host/core" }
+prns-host-native = { path = "../../../prns-host/impls/native" }
+prns-runtime = { path = "../../../prns-runtime/core", default-features = false }
+log = { version = "0.4", default-features = false }
+personal-rns = { path = "../../../personal-rns", default-features = false, features = ["tokio-host", "tcp"], optional = true }
 redb = "=4.2.0"
 sha2 = { version = "0.10", default-features = false }
 tokio = { version = "1", default-features = false, features = ["sync", "time", "macros"] }
@@ -29,6 +41,8 @@ zeroize = "1"
 futures-util = { version = "0.3", default-features = false, features = ["alloc", "std"] }
 
 [dev-dependencies]
+prns-host-native = { path = "../../../prns-host/impls/native" }
+personal-rns = { path = "../../../personal-rns", default-features = false, features = ["tokio-host"] }
 tempfile = "3"
 tokio = { version = "1", default-features = false, features = ["macros", "rt-multi-thread", "sync", "time", "test-util"] }
 
