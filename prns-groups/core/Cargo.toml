@@ -1,0 +1,13 @@
+[package]
+name = "prns-groups"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "Allocation-free identifiers and capacity contracts for group synchronization"
+publish = false
+
+[lints]
+workspace = true

@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "THIRD_PARTY_NOTICES.md"
 ABOUT = ROOT / "about.toml"
 GRAPHS = (
+    ("Group libraries", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("engine", "Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("daemon Linux", "prnsd/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("daemon macOS", "prnsd/Cargo.toml", "aarch64-apple-darwin"),
