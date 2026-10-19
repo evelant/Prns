@@ -2,7 +2,7 @@
 
 This checked bundle covers the shipped and qualification Rust, JavaScript, and Android product graphs.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:a76c1baacd77374e75b0901ba9a6be1f18caf378dff3c333365097f9e60255a4`.
+Notice input fingerprint: `sha256:25e6f3f6f9738e134f232b3e9511e3ecb219c98d9a2b3724c6f81eaf95da7419`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by SPDX identifier and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
@@ -4855,7 +4855,7 @@ SOFTWARE.
 
 License: MIT License
 
-Used by: `ruzstd 0.8.3`
+Used by: `ruzstd 0.9.1`
 
 Release graphs: engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64
 
@@ -7835,7 +7835,7 @@ THE SOFTWARE.
 
 License: MIT License
 
-Used by: `rustls 0.23.45`, `rustls-native-certs 0.8.4`
+Used by: `rustls 0.23.46`, `rustls-native-certs 0.8.4`
 
 Release graphs: Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, daemon Linux, daemon Windows, daemon macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64
 
