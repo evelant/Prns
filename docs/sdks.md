@@ -18,7 +18,7 @@ The implementations are at two different stages of their user journey:
 
 Here, **paved** means the API, examples, and package structure form the route we expect application developers to take. **SDK preview** does not mean a mock or an unfinished protocol port. These adapters already call the same native Rust host, project the same schema-1 contract, and exercise the same persistent two-node journey in the repository. What remains young is their ecosystem fit and public delivery: idiomatic package structure, registry publication, native artifact installation, and more feedback from experienced developers in each language.
 
-Prns 0.3.4 was the first publicly announced prerelease. The current 0.3.7 immutable GitHub release artifacts and exact source commit are authoritative for its candidate bytes. Registry packages become authoritative only after their independent publication qualification completes.
+For a published release, its immutable GitHub artifacts and exact source commit identify the qualified bytes. Registry packages require their own publication qualification. A source preview follows the checked-out revision; it does not inherit an earlier release's qualification.
 
 ## Rust
 
@@ -28,7 +28,7 @@ For an application using a published registry release:
 cargo add personal-rns --features tokio-host,tcp
 ```
 
-To use the exact source behind the public 0.3.7 prerelease before registry qualification completes:
+To use repository source before registry qualification completes:
 
 ```console
 cargo add personal-rns --git https://github.com/KenAKAFrosty/Prns --features tokio-host,tcp
@@ -58,7 +58,7 @@ npm install personal-rns
 - `personal-rns/browser` fixes the cooperative WebAssembly backend, using a
   DedicatedWorker by default with an explicit main-thread diagnostic mode.
 
-The exact public prerelease can also be exercised from a source checkout:
+To exercise the checked-out source:
 
 ```console
 npm --prefix prns-napi ci
