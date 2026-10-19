@@ -259,6 +259,16 @@ const DEFINITIONS = {
       ret: FfiType.Void,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_acknowledge_group_action": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_announce_groups": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_announce_lxmf": {
       args: [],
       ret: FfiType.Handle,
@@ -299,6 +309,16 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_create_group": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_create_group_request_id": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_create_manual_contact": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -314,6 +334,16 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_discard_expired_group_action": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_execute_group_action": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_finish_remote_wifi_trial": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -321,6 +351,11 @@ const DEFINITIONS = {
     },
     "uniffi_prns_app_fn_func_get_contact": {
       args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_get_group_announce_settings": {
+      args: [],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
@@ -334,8 +369,33 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_invite_to_group": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_list_contacts": {
       args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_list_group_actions": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_list_group_conversations": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_list_group_invitations": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_list_group_messages": {
+      args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
@@ -404,6 +464,11 @@ const DEFINITIONS = {
       ret: FfiType.RustBuffer,
       hasRustCallStatus: true,
     },
+    "uniffi_prns_app_fn_func_prepare_group_action": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_preview_identity_import": {
       args: [FfiType.RustBuffer],
       ret: FfiType.RustBuffer,
@@ -434,6 +499,11 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_respond_group_invitation": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_retry_lxmf_message": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -454,6 +524,11 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_send_group_text": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_set_bluetooth_enabled": {
       args: [FfiType.Int8],
       ret: FfiType.Handle,
@@ -465,6 +540,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_fn_func_set_contact_pinned": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_set_group_announce_settings": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
@@ -487,6 +567,16 @@ const DEFINITIONS = {
     "ffi_prns_app_uniffi_contract_version": {
       args: [],
       ret: FfiType.UInt32,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_acknowledge_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_announce_groups": {
+      args: [],
+      ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_announce_lxmf": {
@@ -529,6 +619,16 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_create_group": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_create_group_request_id": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_create_manual_contact": {
       args: [],
       ret: FfiType.UInt16,
@@ -544,12 +644,27 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_discard_expired_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_execute_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_finish_remote_wifi_trial": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_get_contact": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_get_group_announce_settings": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -564,7 +679,32 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_invite_to_group": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_list_contacts": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_list_group_actions": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_list_group_conversations": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_list_group_invitations": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_list_group_messages": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -634,6 +774,11 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_prepare_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_preview_identity_import": {
       args: [],
       ret: FfiType.UInt16,
@@ -664,6 +809,11 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_respond_group_invitation": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_retry_lxmf_message": {
       args: [],
       ret: FfiType.UInt16,
@@ -684,6 +834,11 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_send_group_text": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_set_bluetooth_enabled": {
       args: [],
       ret: FfiType.UInt16,
@@ -695,6 +850,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_set_contact_pinned": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_set_group_announce_settings": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -788,6 +948,8 @@ interface NativeModuleInterface {
     ffi_prns_app_rust_future_cancel_void(handle: bigint): void;
     ffi_prns_app_rust_future_complete_void(handle: bigint, uniffi_out_err: UniffiRustCallStatus): void;
     ffi_prns_app_rust_future_free_void(handle: bigint): void;
+    uniffi_prns_app_fn_func_acknowledge_group_action(reference: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_announce_groups(): bigint;
     uniffi_prns_app_fn_func_announce_lxmf(): bigint;
     uniffi_prns_app_fn_func_announce_target(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_approve_pairing(input: Uint8Array): bigint;
@@ -796,14 +958,24 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_change_remote_node(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_clear_lxmf_discovery(): bigint;
     uniffi_prns_app_fn_func_clear_network_activity(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_create_group(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_create_group_request_id(): bigint;
     uniffi_prns_app_fn_func_create_manual_contact(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_delete_contact(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_describe_target(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_discard_expired_group_action(reference: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_execute_group_action(reference: Uint8Array): bigint;
     uniffi_prns_app_fn_func_finish_remote_wifi_trial(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_get_contact(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_get_group_announce_settings(): bigint;
     uniffi_prns_app_fn_func_initiate_pairing(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_inspect_remote_wifi_trial(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_invite_to_group(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_list_contacts(): bigint;
+    uniffi_prns_app_fn_func_list_group_actions(): bigint;
+    uniffi_prns_app_fn_func_list_group_conversations(): bigint;
+    uniffi_prns_app_fn_func_list_group_invitations(): bigint;
+    uniffi_prns_app_fn_func_list_group_messages(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_list_lxmf_conversations(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_list_lxmf_messages(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_list_lxmf_peers(): bigint;
@@ -817,23 +989,29 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_native_start(storageRoot: Uint8Array, input: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_native_start_with_apple_bluetooth_restoration(storageRoot: Uint8Array, input: Uint8Array, centralIdentifier: Uint8Array, peripheralIdentifier: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallStatus): Uint8Array;
+    uniffi_prns_app_fn_func_prepare_group_action(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_preview_identity_import(identity: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_read_bluetooth_settings(): bigint;
     uniffi_prns_app_fn_func_read_messaging_profile(): bigint;
     uniffi_prns_app_fn_func_read_remote_node(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_read_snapshot(): bigint;
     uniffi_prns_app_fn_func_reject_pairing(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_respond_group_invitation(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_retry_lxmf_message(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_save_discovered_contact(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_save_observed_destination(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_send_direct_text(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_send_group_text(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_set_bluetooth_enabled(enabled: number): bigint;
     uniffi_prns_app_fn_func_set_contact_alias(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_set_contact_pinned(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_set_group_announce_settings(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_set_messaging_name(name: Uint8Array): bigint;
     uniffi_prns_app_fn_func_shared_host(uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_start_remote_wifi_trial(input: Uint8Array): bigint;
     ffi_prns_app_uniffi_contract_version(): number;
+    uniffi_prns_app_checksum_func_acknowledge_group_action(): number;
+    uniffi_prns_app_checksum_func_announce_groups(): number;
     uniffi_prns_app_checksum_func_announce_lxmf(): number;
     uniffi_prns_app_checksum_func_announce_target(): number;
     uniffi_prns_app_checksum_func_approve_pairing(): number;
@@ -842,14 +1020,24 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_change_remote_node(): number;
     uniffi_prns_app_checksum_func_clear_lxmf_discovery(): number;
     uniffi_prns_app_checksum_func_clear_network_activity(): number;
+    uniffi_prns_app_checksum_func_create_group(): number;
+    uniffi_prns_app_checksum_func_create_group_request_id(): number;
     uniffi_prns_app_checksum_func_create_manual_contact(): number;
     uniffi_prns_app_checksum_func_delete_contact(): number;
     uniffi_prns_app_checksum_func_describe_target(): number;
+    uniffi_prns_app_checksum_func_discard_expired_group_action(): number;
+    uniffi_prns_app_checksum_func_execute_group_action(): number;
     uniffi_prns_app_checksum_func_finish_remote_wifi_trial(): number;
     uniffi_prns_app_checksum_func_get_contact(): number;
+    uniffi_prns_app_checksum_func_get_group_announce_settings(): number;
     uniffi_prns_app_checksum_func_initiate_pairing(): number;
     uniffi_prns_app_checksum_func_inspect_remote_wifi_trial(): number;
+    uniffi_prns_app_checksum_func_invite_to_group(): number;
     uniffi_prns_app_checksum_func_list_contacts(): number;
+    uniffi_prns_app_checksum_func_list_group_actions(): number;
+    uniffi_prns_app_checksum_func_list_group_conversations(): number;
+    uniffi_prns_app_checksum_func_list_group_invitations(): number;
+    uniffi_prns_app_checksum_func_list_group_messages(): number;
     uniffi_prns_app_checksum_func_list_lxmf_conversations(): number;
     uniffi_prns_app_checksum_func_list_lxmf_messages(): number;
     uniffi_prns_app_checksum_func_list_lxmf_peers(): number;
@@ -863,19 +1051,23 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_native_start(): number;
     uniffi_prns_app_checksum_func_native_start_with_apple_bluetooth_restoration(): number;
     uniffi_prns_app_checksum_func_native_stop(): number;
+    uniffi_prns_app_checksum_func_prepare_group_action(): number;
     uniffi_prns_app_checksum_func_preview_identity_import(): number;
     uniffi_prns_app_checksum_func_read_bluetooth_settings(): number;
     uniffi_prns_app_checksum_func_read_messaging_profile(): number;
     uniffi_prns_app_checksum_func_read_remote_node(): number;
     uniffi_prns_app_checksum_func_read_snapshot(): number;
     uniffi_prns_app_checksum_func_reject_pairing(): number;
+    uniffi_prns_app_checksum_func_respond_group_invitation(): number;
     uniffi_prns_app_checksum_func_retry_lxmf_message(): number;
     uniffi_prns_app_checksum_func_save_discovered_contact(): number;
     uniffi_prns_app_checksum_func_save_observed_destination(): number;
     uniffi_prns_app_checksum_func_send_direct_text(): number;
+    uniffi_prns_app_checksum_func_send_group_text(): number;
     uniffi_prns_app_checksum_func_set_bluetooth_enabled(): number;
     uniffi_prns_app_checksum_func_set_contact_alias(): number;
     uniffi_prns_app_checksum_func_set_contact_pinned(): number;
+    uniffi_prns_app_checksum_func_set_group_announce_settings(): number;
     uniffi_prns_app_checksum_func_set_messaging_name(): number;
     uniffi_prns_app_checksum_func_shared_host(): number;
     uniffi_prns_app_checksum_func_start_remote_wifi_trial(): number;

@@ -24,6 +24,89 @@ const uniffiIsDebug =
 
 // Public interface members begin here.
 
+/**
+ * Remove a confirmed result after the UI has displayed or reconciled it.
+ */
+export async function acknowledgeGroupAction(reference: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_acknowledge_group_action(FfiConverterTypeGroupActionReference.lower(reference, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionAcknowledgeOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function announceGroups(asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_announce_groups(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupAnnounceOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function announceLxmf(asyncOpts_?: { signal: AbortSignal }): Promise<AnnounceLxmfOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -322,6 +405,86 @@ export async function clearNetworkActivity(input: ClearNetworkActivityInput, asy
     }
     }
 
+export async function createGroup(input: CreateGroupInput, asyncOpts_?: { signal: AbortSignal }): Promise<CreateGroupOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_create_group(FfiConverterTypeCreateGroupInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeCreateGroupOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function createGroupRequestId(asyncOpts_?: { signal: AbortSignal }): Promise<GroupRequestIdOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_create_group_request_id(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupRequestIdOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function createManualContact(input: CreateManualContactInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -442,6 +605,89 @@ export async function describeTarget(input: DescribeRemoteControlTargetInput, as
     }
     }
 
+/**
+ * Explicit user review is required; a discarded operation may have executed.
+ */
+export async function discardExpiredGroupAction(reference: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_discard_expired_group_action(FfiConverterTypeGroupActionReference.lower(reference, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionAcknowledgeOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function executeGroupAction(reference: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_execute_group_action(FfiConverterTypeGroupActionReference.lower(reference, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function finishRemoteWifiTrial(input: FinishRemoteWifiTrialInput, asyncOpts_?: { signal: AbortSignal }): Promise<RemoteWifiCommandOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -506,6 +752,46 @@ export async function getContact(input: ContactDestinationInput, asyncOpts_?: { 
             /*liftFunc:*/ (__rb) => {
                 try {
                     return FfiConverterTypeContactLookupOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function getGroupAnnounceSettings(asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_get_group_announce_settings(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupAnnounceSettingsOutcome.lift(__rb);
                 } finally {
                     nativeModule().rustbuffer_free(__rb);
                 }
@@ -602,6 +888,46 @@ export async function inspectRemoteWifiTrial(input: InspectRemoteWifiTrialInput,
     }
     }
 
+export async function inviteToGroup(input: InviteToGroupInput, asyncOpts_?: { signal: AbortSignal }): Promise<InviteToGroupOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_invite_to_group(FfiConverterTypeInviteToGroupInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeInviteToGroupOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function listContacts(asyncOpts_?: { signal: AbortSignal }): Promise<ContactListOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -626,6 +952,166 @@ export async function listContacts(asyncOpts_?: { signal: AbortSignal }): Promis
             /*liftFunc:*/ (__rb) => {
                 try {
                     return FfiConverterTypeContactListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function listGroupActions(asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_list_group_actions(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function listGroupConversations(asyncOpts_?: { signal: AbortSignal }): Promise<GroupConversationListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_list_group_conversations(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupConversationListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function listGroupInvitations(asyncOpts_?: { signal: AbortSignal }): Promise<GroupInvitationListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_list_group_invitations(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupInvitationListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function listGroupMessages(input: ListGroupMessagesInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupMessageListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_list_group_messages(FfiConverterTypeListGroupMessagesInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupMessageListOutcome.lift(__rb);
                 } finally {
                     nativeModule().rustbuffer_free(__rb);
                 }
@@ -984,6 +1470,49 @@ export function nativeStop(): DevelopmentNodeStopOutcome {
     }
 
 /**
+ * Commit immutable UI recovery input before submitting a group operation.
+ */
+export async function prepareGroupAction(input: PrepareGroupActionInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_prepare_group_action(FfiConverterTypePrepareGroupActionInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+/**
  * Bounded local validation; no storage or native lifecycle admission.
  */
 export function previewIdentityImport(identity: Uint8Array): IdentityImportPreviewOutcome {
@@ -1208,6 +1737,46 @@ export async function rejectPairing(input: RemoteControlPairingDecisionInput, as
     }
     }
 
+export async function respondGroupInvitation(input: RespondGroupInvitationInput, asyncOpts_?: { signal: AbortSignal }): Promise<RespondGroupInvitationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_respond_group_invitation(FfiConverterTypeRespondGroupInvitationInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeRespondGroupInvitationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function retryLxmfMessage(input: RetryLxmfMessageInput, asyncOpts_?: { signal: AbortSignal }): Promise<RetryLxmfMessageOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -1368,6 +1937,46 @@ export async function sendDirectText(input: SendDirectTextInput, asyncOpts_?: { 
     }
     }
 
+export async function sendGroupText(input: SendGroupTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupTextSendOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_send_group_text(FfiConverterTypeSendGroupTextInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupTextSendOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 /**
  * Persist application participation and apply it to the existing native BLE supervisor.
  */
@@ -1475,6 +2084,46 @@ export async function setContactPinned(input: SetContactPinnedInput, asyncOpts_?
             /*liftFunc:*/ (__rb) => {
                 try {
                     return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function setGroupAnnounceSettings(input: GroupAnnounceSettings, asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_set_group_announce_settings(FfiConverterTypeGroupAnnounceSettings.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupAnnounceSettingsOutcome.lift(__rb);
                 } finally {
                     nativeModule().rustbuffer_free(__rb);
                 }
@@ -2818,6 +3467,57 @@ const FfiConverterTypeContactDestinationInput = (() => {
         }
         allocationSize(value: TypeName): number {
             return FfiConverterTypeBytes16.allocationSize(value.destination);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+/**
+ * Typealias from the type name used in the UDL file to the builtin type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
+export type Bytes32 = Uint8Array;
+// FfiConverter for Bytes32, a type alias for Uint8Array.
+const FfiConverterTypeBytes32 = FfiConverterUint8Array;
+
+export type CreateGroupInput = {
+    clientRequestId: Bytes32,
+    title: string
+}
+
+/**
+ * Generated factory for {@link CreateGroupInput} record objects.
+ */
+export const CreateGroupInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<CreateGroupInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<CreateGroupInput>,
+    });
+})();
+
+const FfiConverterTypeCreateGroupInput = (() => {
+    type TypeName = CreateGroupInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c),
+                title: FfiConverterString.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+            FfiConverterString.writeIntoCursor(value.title, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.clientRequestId) +
+             FfiConverterString.allocationSize(value.title);
 
         }
     };
@@ -7068,6 +7768,1698 @@ const FfiConverterTypeFinishRemoteWifiTrialInput = (() => {
     return new FFIConverter();
 })();
 
+export type InviteToGroupInput = {
+    clientRequestId: Bytes32,
+    groupId: Bytes32,
+    recipientIdentity: Bytes16
+}
+
+/**
+ * Generated factory for {@link InviteToGroupInput} record objects.
+ */
+export const InviteToGroupInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<InviteToGroupInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<InviteToGroupInput>,
+    });
+})();
+
+const FfiConverterTypeInviteToGroupInput = (() => {
+    type TypeName = InviteToGroupInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c),
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                recipientIdentity: FfiConverterTypeBytes16.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.recipientIdentity, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.clientRequestId) +
+             FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterTypeBytes16.allocationSize(value.recipientIdentity);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type RespondGroupInvitationInput = {
+    clientRequestId: Bytes32,
+    invitationId: Bytes32,
+    accept: boolean
+}
+
+/**
+ * Generated factory for {@link RespondGroupInvitationInput} record objects.
+ */
+export const RespondGroupInvitationInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<RespondGroupInvitationInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<RespondGroupInvitationInput>,
+    });
+})();
+
+const FfiConverterTypeRespondGroupInvitationInput = (() => {
+    type TypeName = RespondGroupInvitationInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c),
+                invitationId: FfiConverterTypeBytes32.readFromCursor(c),
+                accept: FfiConverterBool.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.invitationId, c);
+            FfiConverterBool.writeIntoCursor(value.accept, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.clientRequestId) +
+             FfiConverterTypeBytes32.allocationSize(value.invitationId) +
+             FfiConverterBool.allocationSize(value.accept);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type SendGroupTextInput = {
+    groupId: Bytes32,
+    clientRequestId: Bytes32,
+    text: string
+}
+
+/**
+ * Generated factory for {@link SendGroupTextInput} record objects.
+ */
+export const SendGroupTextInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<SendGroupTextInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<SendGroupTextInput>,
+    });
+})();
+
+const FfiConverterTypeSendGroupTextInput = (() => {
+    type TypeName = SendGroupTextInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c),
+                text: FfiConverterString.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+            FfiConverterString.writeIntoCursor(value.text, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId) +
+             FfiConverterString.allocationSize(value.text);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupActionInput
+export enum GroupActionInput_Tags {
+    Create = "Create",
+    Invite = "Invite",
+    Respond = "Respond",
+    Send = "Send"
+}
+export const GroupActionInput = (() => {
+
+    type Create__interface = {
+        tag: GroupActionInput_Tags.Create;
+        inner:
+Readonly<{input: CreateGroupInput}>
+    };
+    class Create_ extends UniffiEnum implements Create__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.Create;
+        readonly inner:
+Readonly<{input: CreateGroupInput}>;
+        constructor(
+inner: {input: CreateGroupInput }) {
+            super("GroupActionInput", "Create");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: CreateGroupInput }): Create_ {
+            return new Create_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Create_ {
+            return obj.tag === GroupActionInput_Tags.Create;
+        }
+
+    }
+
+    type Invite__interface = {
+        tag: GroupActionInput_Tags.Invite;
+        inner:
+Readonly<{input: InviteToGroupInput}>
+    };
+    class Invite_ extends UniffiEnum implements Invite__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.Invite;
+        readonly inner:
+Readonly<{input: InviteToGroupInput}>;
+        constructor(
+inner: {input: InviteToGroupInput }) {
+            super("GroupActionInput", "Invite");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: InviteToGroupInput }): Invite_ {
+            return new Invite_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Invite_ {
+            return obj.tag === GroupActionInput_Tags.Invite;
+        }
+
+    }
+
+    type Respond__interface = {
+        tag: GroupActionInput_Tags.Respond;
+        inner:
+Readonly<{input: RespondGroupInvitationInput}>
+    };
+    class Respond_ extends UniffiEnum implements Respond__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.Respond;
+        readonly inner:
+Readonly<{input: RespondGroupInvitationInput}>;
+        constructor(
+inner: {input: RespondGroupInvitationInput }) {
+            super("GroupActionInput", "Respond");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: RespondGroupInvitationInput }): Respond_ {
+            return new Respond_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Respond_ {
+            return obj.tag === GroupActionInput_Tags.Respond;
+        }
+
+    }
+
+    type Send__interface = {
+        tag: GroupActionInput_Tags.Send;
+        inner:
+Readonly<{input: SendGroupTextInput}>
+    };
+    class Send_ extends UniffiEnum implements Send__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.Send;
+        readonly inner:
+Readonly<{input: SendGroupTextInput}>;
+        constructor(
+inner: {input: SendGroupTextInput }) {
+            super("GroupActionInput", "Send");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: SendGroupTextInput }): Send_ {
+            return new Send_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Send_ {
+            return obj.tag === GroupActionInput_Tags.Send;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupActionInput {
+        return obj[uniffiTypeNameSymbol] === "GroupActionInput";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Create: Create_,
+  Invite: Invite_,
+  Respond: Respond_,
+  Send: Send_
+    });
+
+})();
+export type GroupActionInput = InstanceType<
+    typeof GroupActionInput['Create' | 'Invite' | 'Respond' | 'Send']
+>;
+
+// FfiConverter for enum GroupActionInput
+const FfiConverterTypeGroupActionInput = (() => {
+    type TypeName = GroupActionInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupActionInput.Create({input: FfiConverterTypeCreateGroupInput.readFromCursor(c) });
+                case 2: return new GroupActionInput.Invite({input: FfiConverterTypeInviteToGroupInput.readFromCursor(c) });
+                case 3: return new GroupActionInput.Respond({input: FfiConverterTypeRespondGroupInvitationInput.readFromCursor(c) });
+                case 4: return new GroupActionInput.Send({input: FfiConverterTypeSendGroupTextInput.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupActionInput_Tags.Create: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeCreateGroupInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.Invite: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterTypeInviteToGroupInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.Respond: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterTypeRespondGroupInvitationInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.Send: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterTypeSendGroupTextInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupActionInput_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupActionInput_Tags.Create: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeCreateGroupInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.Invite: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeInviteToGroupInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.Respond: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeRespondGroupInvitationInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.Send: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeSendGroupTextInput.allocationSize(inner.input);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+/**
+ * Stable rejection categories; old saved actions have no category and decode
+ * as Unknown. Names and UI advice are separate application projections.
+ */
+export enum GroupRejectionReason {
+    Unknown,
+    InvalidInput,
+    NoRecipients,
+    RequestConflict,
+    InvitationExpired,
+    NotFound,
+    MembershipConflict,
+    NotOwner,
+    NotJoined,
+    AuthenticationFailed
+}
+
+const FfiConverterTypeGroupRejectionReason = (() => {
+    type TypeName = GroupRejectionReason;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return GroupRejectionReason.Unknown;
+                case 2: return GroupRejectionReason.InvalidInput;
+                case 3: return GroupRejectionReason.NoRecipients;
+                case 4: return GroupRejectionReason.RequestConflict;
+                case 5: return GroupRejectionReason.InvitationExpired;
+                case 6: return GroupRejectionReason.NotFound;
+                case 7: return GroupRejectionReason.MembershipConflict;
+                case 8: return GroupRejectionReason.NotOwner;
+                case 9: return GroupRejectionReason.NotJoined;
+                case 10: return GroupRejectionReason.AuthenticationFailed;
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value) {
+                case GroupRejectionReason.Unknown: return c.writeI32(1);
+                case GroupRejectionReason.InvalidInput: return c.writeI32(2);
+                case GroupRejectionReason.NoRecipients: return c.writeI32(3);
+                case GroupRejectionReason.RequestConflict: return c.writeI32(4);
+                case GroupRejectionReason.InvitationExpired: return c.writeI32(5);
+                case GroupRejectionReason.NotFound: return c.writeI32(6);
+                case GroupRejectionReason.MembershipConflict: return c.writeI32(7);
+                case GroupRejectionReason.NotOwner: return c.writeI32(8);
+                case GroupRejectionReason.NotJoined: return c.writeI32(9);
+                case GroupRejectionReason.AuthenticationFailed: return c.writeI32(10);
+            }
+        }
+        allocationSize(value: TypeName): number {
+            return 4;
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupActionResult
+export enum GroupActionResult_Tags {
+    Created = "Created",
+    Invited = "Invited",
+    Responded = "Responded",
+    Sent = "Sent",
+    Rejected = "Rejected"
+}
+export const GroupActionResult = (() => {
+
+    type Created__interface = {
+        tag: GroupActionResult_Tags.Created;
+        inner:
+Readonly<{groupId: Bytes32}>
+    };
+    class Created_ extends UniffiEnum implements Created__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.Created;
+        readonly inner:
+Readonly<{groupId: Bytes32}>;
+        constructor(
+inner: {groupId: Bytes32 }) {
+            super("GroupActionResult", "Created");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {groupId: Bytes32 }): Created_ {
+            return new Created_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Created_ {
+            return obj.tag === GroupActionResult_Tags.Created;
+        }
+
+    }
+
+    type Invited__interface = {
+        tag: GroupActionResult_Tags.Invited;
+        inner:
+Readonly<{invitationId: Bytes32}>
+    };
+    class Invited_ extends UniffiEnum implements Invited__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.Invited;
+        readonly inner:
+Readonly<{invitationId: Bytes32}>;
+        constructor(
+inner: {invitationId: Bytes32 }) {
+            super("GroupActionResult", "Invited");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {invitationId: Bytes32 }): Invited_ {
+            return new Invited_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Invited_ {
+            return obj.tag === GroupActionResult_Tags.Invited;
+        }
+
+    }
+
+    type Responded__interface = {
+        tag: GroupActionResult_Tags.Responded
+    };
+    class Responded_ extends UniffiEnum implements Responded__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.Responded;
+        constructor() {
+            super("GroupActionResult", "Responded");
+        }
+
+        static new(): Responded_ {
+            return new Responded_();
+        }
+
+        static instanceOf(obj: any): obj is Responded_ {
+            return obj.tag === GroupActionResult_Tags.Responded;
+        }
+
+    }
+
+    type Sent__interface = {
+        tag: GroupActionResult_Tags.Sent;
+        inner:
+Readonly<{messageId: Bytes32}>
+    };
+    class Sent_ extends UniffiEnum implements Sent__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.Sent;
+        readonly inner:
+Readonly<{messageId: Bytes32}>;
+        constructor(
+inner: {messageId: Bytes32 }) {
+            super("GroupActionResult", "Sent");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {messageId: Bytes32 }): Sent_ {
+            return new Sent_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Sent_ {
+            return obj.tag === GroupActionResult_Tags.Sent;
+        }
+
+    }
+
+    type Rejected__interface = {
+        tag: GroupActionResult_Tags.Rejected;
+        inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>
+    };
+    class Rejected_ extends UniffiEnum implements Rejected__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.Rejected;
+        readonly inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>;
+        constructor(
+inner: {reason: GroupRejectionReason; detail: string }) {
+            super("GroupActionResult", "Rejected");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {reason: GroupRejectionReason; detail: string }): Rejected_ {
+            return new Rejected_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Rejected_ {
+            return obj.tag === GroupActionResult_Tags.Rejected;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupActionResult {
+        return obj[uniffiTypeNameSymbol] === "GroupActionResult";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Created: Created_,
+  Invited: Invited_,
+  Responded: Responded_,
+  Sent: Sent_,
+  Rejected: Rejected_
+    });
+
+})();
+export type GroupActionResult = InstanceType<
+    typeof GroupActionResult['Created' | 'Invited' | 'Responded' | 'Sent' | 'Rejected']
+>;
+
+// FfiConverter for enum GroupActionResult
+const FfiConverterTypeGroupActionResult = (() => {
+    type TypeName = GroupActionResult;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupActionResult.Created({groupId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 2: return new GroupActionResult.Invited({invitationId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 3: return new GroupActionResult.Responded();
+                case 4: return new GroupActionResult.Sent({messageId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 5: return new GroupActionResult.Rejected({reason: FfiConverterTypeGroupRejectionReason.readFromCursor(c), detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupActionResult_Tags.Created: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.groupId, c);
+                    return;
+                }
+                case GroupActionResult_Tags.Invited: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.invitationId, c);
+                    return;
+                }
+                case GroupActionResult_Tags.Responded: {
+                    c.writeI32(3);
+                    return;
+                }
+                case GroupActionResult_Tags.Sent: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.messageId, c);
+                    return;
+                }
+                case GroupActionResult_Tags.Rejected: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupRejectionReason.writeIntoCursor(inner.reason, c);
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupActionResult_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupActionResult_Tags.Created: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.groupId);
+                    return size;
+                }
+                case GroupActionResult_Tags.Invited: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.invitationId);
+                    return size;
+                }
+                case GroupActionResult_Tags.Responded: {
+                    return 4;
+                }
+                case GroupActionResult_Tags.Sent: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.messageId);
+                    return size;
+                }
+                case GroupActionResult_Tags.Rejected: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupRejectionReason.allocationSize(inner.reason);
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupActionState
+export enum GroupActionState_Tags {
+    Pending = "Pending",
+    Completed = "Completed",
+    RetryExpired = "RetryExpired"
+}
+export const GroupActionState = (() => {
+
+    type Pending__interface = {
+        tag: GroupActionState_Tags.Pending
+    };
+    /**
+     * Input is committed; execution may not have started or its reply was lost.
+     */
+    class Pending_ extends UniffiEnum implements Pending__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionState";
+        readonly tag = GroupActionState_Tags.Pending;
+        constructor() {
+            super("GroupActionState", "Pending");
+        }
+
+        static new(): Pending_ {
+            return new Pending_();
+        }
+
+        static instanceOf(obj: any): obj is Pending_ {
+            return obj.tag === GroupActionState_Tags.Pending;
+        }
+
+    }
+
+    type Completed__interface = {
+        tag: GroupActionState_Tags.Completed;
+        inner:
+Readonly<{result: GroupActionResult}>
+    };
+    /**
+     * Confirmed local result. This does not indicate remote delivery.
+     */
+    class Completed_ extends UniffiEnum implements Completed__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionState";
+        readonly tag = GroupActionState_Tags.Completed;
+        readonly inner:
+Readonly<{result: GroupActionResult}>;
+        constructor(
+inner: {result: GroupActionResult }) {
+            super("GroupActionState", "Completed");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {result: GroupActionResult }): Completed_ {
+            return new Completed_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Completed_ {
+            return obj.tag === GroupActionState_Tags.Completed;
+        }
+
+    }
+
+    type RetryExpired__interface = {
+        tag: GroupActionState_Tags.RetryExpired
+    };
+    /**
+     * Execution evidence expired. Requires explicit review before discarding.
+     */
+    class RetryExpired_ extends UniffiEnum implements RetryExpired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionState";
+        readonly tag = GroupActionState_Tags.RetryExpired;
+        constructor() {
+            super("GroupActionState", "RetryExpired");
+        }
+
+        static new(): RetryExpired_ {
+            return new RetryExpired_();
+        }
+
+        static instanceOf(obj: any): obj is RetryExpired_ {
+            return obj.tag === GroupActionState_Tags.RetryExpired;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupActionState {
+        return obj[uniffiTypeNameSymbol] === "GroupActionState";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Pending: Pending_,
+  Completed: Completed_,
+  RetryExpired: RetryExpired_
+    });
+
+})();
+export type GroupActionState = InstanceType<
+    typeof GroupActionState['Pending' | 'Completed' | 'RetryExpired']
+>;
+
+// FfiConverter for enum GroupActionState
+const FfiConverterTypeGroupActionState = (() => {
+    type TypeName = GroupActionState;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupActionState.Pending();
+                case 2: return new GroupActionState.Completed({result: FfiConverterTypeGroupActionResult.readFromCursor(c) });
+                case 3: return new GroupActionState.RetryExpired();
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupActionState_Tags.Pending: {
+                    c.writeI32(1);
+                    return;
+                }
+                case GroupActionState_Tags.Completed: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupActionResult.writeIntoCursor(inner.result, c);
+                    return;
+                }
+                case GroupActionState_Tags.RetryExpired: {
+                    c.writeI32(3);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupActionState_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupActionState_Tags.Pending: {
+                    return 4;
+                }
+                case GroupActionState_Tags.Completed: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupActionResult.allocationSize(inner.result);
+                    return size;
+                }
+                case GroupActionState_Tags.RetryExpired: {
+                    return 4;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+export type GroupAction = {
+    ownerIdentity: Bytes16,
+    input: GroupActionInput,
+    state: GroupActionState
+}
+
+/**
+ * Generated factory for {@link GroupAction} record objects.
+ */
+export const GroupAction = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupAction, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupAction>,
+    });
+})();
+
+const FfiConverterTypeGroupAction = (() => {
+    type TypeName = GroupAction;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                ownerIdentity: FfiConverterTypeBytes16.readFromCursor(c),
+                input: FfiConverterTypeGroupActionInput.readFromCursor(c),
+                state: FfiConverterTypeGroupActionState.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes16.writeIntoCursor(value.ownerIdentity, c);
+            FfiConverterTypeGroupActionInput.writeIntoCursor(value.input, c);
+            FfiConverterTypeGroupActionState.writeIntoCursor(value.state, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes16.allocationSize(value.ownerIdentity) +
+             FfiConverterTypeGroupActionInput.allocationSize(value.input) +
+             FfiConverterTypeGroupActionState.allocationSize(value.state);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type GroupActionReference = {
+    ownerIdentity: Bytes16,
+    clientRequestId: Bytes32
+}
+
+/**
+ * Generated factory for {@link GroupActionReference} record objects.
+ */
+export const GroupActionReference = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupActionReference, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupActionReference>,
+    });
+})();
+
+const FfiConverterTypeGroupActionReference = (() => {
+    type TypeName = GroupActionReference;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                ownerIdentity: FfiConverterTypeBytes16.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes16.writeIntoCursor(value.ownerIdentity, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes16.allocationSize(value.ownerIdentity) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type GroupAnnounceSettings = {
+    /**
+     * None disables automatic startup and periodic announces; manual still works.
+     */
+    intervalMinutes?: number | undefined
+}
+
+/**
+ * Generated factory for {@link GroupAnnounceSettings} record objects.
+ */
+export const GroupAnnounceSettings = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupAnnounceSettings, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupAnnounceSettings>,
+    });
+})();
+
+const FfiConverterTypeGroupAnnounceSettings = (() => {
+    type TypeName = GroupAnnounceSettings;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                intervalMinutes: FfiConverterOptionalUInt32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterOptionalUInt32.writeIntoCursor(value.intervalMinutes, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterOptionalUInt32.allocationSize(value.intervalMinutes);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type GroupMember = {
+    endpointId: Bytes32,
+    endpointIncarnation: bigint,
+    identity: Bytes16,
+    isLocal: boolean,
+    isOwner: boolean
+}
+
+/**
+ * Generated factory for {@link GroupMember} record objects.
+ */
+export const GroupMember = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupMember, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupMember>,
+    });
+})();
+
+const FfiConverterTypeGroupMember = (() => {
+    type TypeName = GroupMember;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                endpointId: FfiConverterTypeBytes32.readFromCursor(c),
+                endpointIncarnation: FfiConverterUInt64.readFromCursor(c),
+                identity: FfiConverterTypeBytes16.readFromCursor(c),
+                isLocal: FfiConverterBool.readFromCursor(c),
+                isOwner: FfiConverterBool.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.endpointId, c);
+            FfiConverterUInt64.writeIntoCursor(value.endpointIncarnation, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.identity, c);
+            FfiConverterBool.writeIntoCursor(value.isLocal, c);
+            FfiConverterBool.writeIntoCursor(value.isOwner, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.endpointId) +
+             FfiConverterUInt64.allocationSize(value.endpointIncarnation) +
+             FfiConverterTypeBytes16.allocationSize(value.identity) +
+             FfiConverterBool.allocationSize(value.isLocal) +
+             FfiConverterBool.allocationSize(value.isOwner);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupSynchronizationState
+export enum GroupSynchronizationState_Tags {
+    Stopped = "Stopped",
+    Running = "Running",
+    Unavailable = "Unavailable"
+}
+export const GroupSynchronizationState = (() => {
+
+    type Stopped__interface = {
+        tag: GroupSynchronizationState_Tags.Stopped
+    };
+    class Stopped_ extends UniffiEnum implements Stopped__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupSynchronizationState";
+        readonly tag = GroupSynchronizationState_Tags.Stopped;
+        constructor() {
+            super("GroupSynchronizationState", "Stopped");
+        }
+
+        static new(): Stopped_ {
+            return new Stopped_();
+        }
+
+        static instanceOf(obj: any): obj is Stopped_ {
+            return obj.tag === GroupSynchronizationState_Tags.Stopped;
+        }
+
+    }
+
+    type Running__interface = {
+        tag: GroupSynchronizationState_Tags.Running
+    };
+    /**
+     * The native synchronization worker is enabled; this is not delivery evidence.
+     */
+    class Running_ extends UniffiEnum implements Running__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupSynchronizationState";
+        readonly tag = GroupSynchronizationState_Tags.Running;
+        constructor() {
+            super("GroupSynchronizationState", "Running");
+        }
+
+        static new(): Running_ {
+            return new Running_();
+        }
+
+        static instanceOf(obj: any): obj is Running_ {
+            return obj.tag === GroupSynchronizationState_Tags.Running;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupSynchronizationState_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupSynchronizationState";
+        readonly tag = GroupSynchronizationState_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupSynchronizationState", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupSynchronizationState_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupSynchronizationState {
+        return obj[uniffiTypeNameSymbol] === "GroupSynchronizationState";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Stopped: Stopped_,
+  Running: Running_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupSynchronizationState = InstanceType<
+    typeof GroupSynchronizationState['Stopped' | 'Running' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupSynchronizationState
+const FfiConverterTypeGroupSynchronizationState = (() => {
+    type TypeName = GroupSynchronizationState;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupSynchronizationState.Stopped();
+                case 2: return new GroupSynchronizationState.Running();
+                case 3: return new GroupSynchronizationState.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupSynchronizationState_Tags.Stopped: {
+                    c.writeI32(1);
+                    return;
+                }
+                case GroupSynchronizationState_Tags.Running: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupSynchronizationState_Tags.Unavailable: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupSynchronizationState_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupSynchronizationState_Tags.Stopped: {
+                    return 4;
+                }
+                case GroupSynchronizationState_Tags.Running: {
+                    return 4;
+                }
+                case GroupSynchronizationState_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+export enum GroupSynchronizationPhase {
+    Unknown,
+    Waiting,
+    Connecting,
+    Synchronizing,
+    RetryScheduled,
+    StorageBlocked,
+    MembershipCatchUp
+}
+
+const FfiConverterTypeGroupSynchronizationPhase = (() => {
+    type TypeName = GroupSynchronizationPhase;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return GroupSynchronizationPhase.Unknown;
+                case 2: return GroupSynchronizationPhase.Waiting;
+                case 3: return GroupSynchronizationPhase.Connecting;
+                case 4: return GroupSynchronizationPhase.Synchronizing;
+                case 5: return GroupSynchronizationPhase.RetryScheduled;
+                case 6: return GroupSynchronizationPhase.StorageBlocked;
+                case 7: return GroupSynchronizationPhase.MembershipCatchUp;
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value) {
+                case GroupSynchronizationPhase.Unknown: return c.writeI32(1);
+                case GroupSynchronizationPhase.Waiting: return c.writeI32(2);
+                case GroupSynchronizationPhase.Connecting: return c.writeI32(3);
+                case GroupSynchronizationPhase.Synchronizing: return c.writeI32(4);
+                case GroupSynchronizationPhase.RetryScheduled: return c.writeI32(5);
+                case GroupSynchronizationPhase.StorageBlocked: return c.writeI32(6);
+                case GroupSynchronizationPhase.MembershipCatchUp: return c.writeI32(7);
+            }
+        }
+        allocationSize(value: TypeName): number {
+            return 4;
+        }
+    }
+    return new FFIConverter();
+})();
+
+export enum GroupSynchronizationIssue {
+    Transport,
+    StorageBusy,
+    StorageFull,
+    StorageUnavailable,
+    MembershipChanged,
+    TimeUncertain,
+    Rejected,
+    UnsupportedPeer,
+    Configuration
+}
+
+const FfiConverterTypeGroupSynchronizationIssue = (() => {
+    type TypeName = GroupSynchronizationIssue;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return GroupSynchronizationIssue.Transport;
+                case 2: return GroupSynchronizationIssue.StorageBusy;
+                case 3: return GroupSynchronizationIssue.StorageFull;
+                case 4: return GroupSynchronizationIssue.StorageUnavailable;
+                case 5: return GroupSynchronizationIssue.MembershipChanged;
+                case 6: return GroupSynchronizationIssue.TimeUncertain;
+                case 7: return GroupSynchronizationIssue.Rejected;
+                case 8: return GroupSynchronizationIssue.UnsupportedPeer;
+                case 9: return GroupSynchronizationIssue.Configuration;
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value) {
+                case GroupSynchronizationIssue.Transport: return c.writeI32(1);
+                case GroupSynchronizationIssue.StorageBusy: return c.writeI32(2);
+                case GroupSynchronizationIssue.StorageFull: return c.writeI32(3);
+                case GroupSynchronizationIssue.StorageUnavailable: return c.writeI32(4);
+                case GroupSynchronizationIssue.MembershipChanged: return c.writeI32(5);
+                case GroupSynchronizationIssue.TimeUncertain: return c.writeI32(6);
+                case GroupSynchronizationIssue.Rejected: return c.writeI32(7);
+                case GroupSynchronizationIssue.UnsupportedPeer: return c.writeI32(8);
+                case GroupSynchronizationIssue.Configuration: return c.writeI32(9);
+            }
+        }
+        allocationSize(value: TypeName): number {
+            return 4;
+        }
+    }
+    return new FFIConverter();
+})();
+
+export type GroupPeerSynchronizationProgress = {
+    endpointId: Bytes32,
+    endpointIncarnation: bigint,
+    identity: Bytes16,
+    phase: GroupSynchronizationPhase,
+    /**
+     * None means the outgoing queue has not been observed, not that it is empty.
+     */
+    pending?: boolean | undefined,
+    retryAfterMillis?: bigint | undefined,
+    failures: number,
+    updatedAgoMillis: bigint,
+    lastIssue?: GroupSynchronizationIssue | undefined
+}
+
+/**
+ * Generated factory for {@link GroupPeerSynchronizationProgress} record objects.
+ */
+export const GroupPeerSynchronizationProgress = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupPeerSynchronizationProgress, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupPeerSynchronizationProgress>,
+    });
+})();
+
+const FfiConverterTypeGroupPeerSynchronizationProgress = (() => {
+    type TypeName = GroupPeerSynchronizationProgress;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                endpointId: FfiConverterTypeBytes32.readFromCursor(c),
+                endpointIncarnation: FfiConverterUInt64.readFromCursor(c),
+                identity: FfiConverterTypeBytes16.readFromCursor(c),
+                phase: FfiConverterTypeGroupSynchronizationPhase.readFromCursor(c),
+                pending: FfiConverterOptionalBoolean.readFromCursor(c),
+                retryAfterMillis: FfiConverterOptionalUInt64.readFromCursor(c),
+                failures: FfiConverterUInt8.readFromCursor(c),
+                updatedAgoMillis: FfiConverterUInt64.readFromCursor(c),
+                lastIssue: FfiConverterOptionalTypeGroupSynchronizationIssue.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.endpointId, c);
+            FfiConverterUInt64.writeIntoCursor(value.endpointIncarnation, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.identity, c);
+            FfiConverterTypeGroupSynchronizationPhase.writeIntoCursor(value.phase, c);
+            FfiConverterOptionalBoolean.writeIntoCursor(value.pending, c);
+            FfiConverterOptionalUInt64.writeIntoCursor(value.retryAfterMillis, c);
+            FfiConverterUInt8.writeIntoCursor(value.failures, c);
+            FfiConverterUInt64.writeIntoCursor(value.updatedAgoMillis, c);
+            FfiConverterOptionalTypeGroupSynchronizationIssue.writeIntoCursor(value.lastIssue, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.endpointId) +
+             FfiConverterUInt64.allocationSize(value.endpointIncarnation) +
+             FfiConverterTypeBytes16.allocationSize(value.identity) +
+             FfiConverterTypeGroupSynchronizationPhase.allocationSize(value.phase) +
+             FfiConverterOptionalBoolean.allocationSize(value.pending) +
+             FfiConverterOptionalUInt64.allocationSize(value.retryAfterMillis) +
+             FfiConverterUInt8.allocationSize(value.failures) +
+             FfiConverterUInt64.allocationSize(value.updatedAgoMillis) +
+             FfiConverterOptionalTypeGroupSynchronizationIssue.allocationSize(value.lastIssue);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type GroupSynchronizationProgress = {
+    running: boolean,
+    observed: boolean,
+    peers: Array<GroupPeerSynchronizationProgress>
+}
+
+/**
+ * Generated factory for {@link GroupSynchronizationProgress} record objects.
+ */
+export const GroupSynchronizationProgress = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupSynchronizationProgress, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupSynchronizationProgress>,
+    });
+})();
+
+const FfiConverterTypeGroupSynchronizationProgress = (() => {
+    type TypeName = GroupSynchronizationProgress;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                running: FfiConverterBool.readFromCursor(c),
+                observed: FfiConverterBool.readFromCursor(c),
+                peers: FfiConverterSequenceTypeGroupPeerSynchronizationProgress.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterBool.writeIntoCursor(value.running, c);
+            FfiConverterBool.writeIntoCursor(value.observed, c);
+            FfiConverterSequenceTypeGroupPeerSynchronizationProgress.writeIntoCursor(value.peers, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterBool.allocationSize(value.running) +
+             FfiConverterBool.allocationSize(value.observed) +
+             FfiConverterSequenceTypeGroupPeerSynchronizationProgress.allocationSize(value.peers);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type GroupConversation = {
+    groupId: Bytes32,
+    title: string,
+    revision: bigint,
+    /**
+     * Current membership provenance, distinct from the record/change revision.
+     */
+    controlHead: Bytes32,
+    members: Array<GroupMember>,
+    memberCount: number,
+    ownerIdentity?: Bytes16 | undefined,
+    canInvite: boolean,
+    synchronization: GroupSynchronizationState,
+    /**
+     * Bounded, transient peer activity; durable delivery evidence remains on records.
+     */
+    progress: GroupSynchronizationProgress
+}
+
+/**
+ * Generated factory for {@link GroupConversation} record objects.
+ */
+export const GroupConversation = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupConversation, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupConversation>,
+    });
+})();
+
+const FfiConverterTypeGroupConversation = (() => {
+    type TypeName = GroupConversation;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                title: FfiConverterString.readFromCursor(c),
+                revision: FfiConverterUInt64.readFromCursor(c),
+                controlHead: FfiConverterTypeBytes32.readFromCursor(c),
+                members: FfiConverterSequenceTypeGroupMember.readFromCursor(c),
+                memberCount: FfiConverterUInt32.readFromCursor(c),
+                ownerIdentity: FfiConverterOptionalTypeBytes16.readFromCursor(c),
+                canInvite: FfiConverterBool.readFromCursor(c),
+                synchronization: FfiConverterTypeGroupSynchronizationState.readFromCursor(c),
+                progress: FfiConverterTypeGroupSynchronizationProgress.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterString.writeIntoCursor(value.title, c);
+            FfiConverterUInt64.writeIntoCursor(value.revision, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.controlHead, c);
+            FfiConverterSequenceTypeGroupMember.writeIntoCursor(value.members, c);
+            FfiConverterUInt32.writeIntoCursor(value.memberCount, c);
+            FfiConverterOptionalTypeBytes16.writeIntoCursor(value.ownerIdentity, c);
+            FfiConverterBool.writeIntoCursor(value.canInvite, c);
+            FfiConverterTypeGroupSynchronizationState.writeIntoCursor(value.synchronization, c);
+            FfiConverterTypeGroupSynchronizationProgress.writeIntoCursor(value.progress, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterString.allocationSize(value.title) +
+             FfiConverterUInt64.allocationSize(value.revision) +
+             FfiConverterTypeBytes32.allocationSize(value.controlHead) +
+             FfiConverterSequenceTypeGroupMember.allocationSize(value.members) +
+             FfiConverterUInt32.allocationSize(value.memberCount) +
+             FfiConverterOptionalTypeBytes16.allocationSize(value.ownerIdentity) +
+             FfiConverterBool.allocationSize(value.canInvite) +
+             FfiConverterTypeGroupSynchronizationState.allocationSize(value.synchronization) +
+             FfiConverterTypeGroupSynchronizationProgress.allocationSize(value.progress);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export enum GroupInvitationState {
+    Offered,
+    Joining,
+    /**
+     * Incoming: enrollment committed locally. Outgoing: authenticated peer
+     * acknowledgement after its durable enrollment.
+     */
+    Joined,
+    Declined,
+    Expired
+}
+
+const FfiConverterTypeGroupInvitationState = (() => {
+    type TypeName = GroupInvitationState;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return GroupInvitationState.Offered;
+                case 2: return GroupInvitationState.Joining;
+                case 3: return GroupInvitationState.Joined;
+                case 4: return GroupInvitationState.Declined;
+                case 5: return GroupInvitationState.Expired;
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value) {
+                case GroupInvitationState.Offered: return c.writeI32(1);
+                case GroupInvitationState.Joining: return c.writeI32(2);
+                case GroupInvitationState.Joined: return c.writeI32(3);
+                case GroupInvitationState.Declined: return c.writeI32(4);
+                case GroupInvitationState.Expired: return c.writeI32(5);
+            }
+        }
+        allocationSize(value: TypeName): number {
+            return 4;
+        }
+    }
+    return new FFIConverter();
+})();
+
+export type GroupInvitation = {
+    invitationId: Bytes32,
+    groupId: Bytes32,
+    title: string,
+    inviterIdentity: Bytes16,
+    recipientIdentity: Bytes16,
+    expiresAtMillis: bigint,
+    outgoing: boolean,
+    state: GroupInvitationState,
+    /**
+     * The owner has deferred Add for its own unfinished current-era deliveries.
+     * This does not imply that every member's outgoing queue has been checked.
+     */
+    waitingForDelivery: boolean
+}
+
+/**
+ * Generated factory for {@link GroupInvitation} record objects.
+ */
+export const GroupInvitation = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupInvitation, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupInvitation>,
+    });
+})();
+
+const FfiConverterTypeGroupInvitation = (() => {
+    type TypeName = GroupInvitation;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                invitationId: FfiConverterTypeBytes32.readFromCursor(c),
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                title: FfiConverterString.readFromCursor(c),
+                inviterIdentity: FfiConverterTypeBytes16.readFromCursor(c),
+                recipientIdentity: FfiConverterTypeBytes16.readFromCursor(c),
+                expiresAtMillis: FfiConverterUInt64.readFromCursor(c),
+                outgoing: FfiConverterBool.readFromCursor(c),
+                state: FfiConverterTypeGroupInvitationState.readFromCursor(c),
+                waitingForDelivery: FfiConverterBool.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.invitationId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterString.writeIntoCursor(value.title, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.inviterIdentity, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.recipientIdentity, c);
+            FfiConverterUInt64.writeIntoCursor(value.expiresAtMillis, c);
+            FfiConverterBool.writeIntoCursor(value.outgoing, c);
+            FfiConverterTypeGroupInvitationState.writeIntoCursor(value.state, c);
+            FfiConverterBool.writeIntoCursor(value.waitingForDelivery, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.invitationId) +
+             FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterString.allocationSize(value.title) +
+             FfiConverterTypeBytes16.allocationSize(value.inviterIdentity) +
+             FfiConverterTypeBytes16.allocationSize(value.recipientIdentity) +
+             FfiConverterUInt64.allocationSize(value.expiresAtMillis) +
+             FfiConverterBool.allocationSize(value.outgoing) +
+             FfiConverterTypeGroupInvitationState.allocationSize(value.state) +
+             FfiConverterBool.allocationSize(value.waitingForDelivery);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type GroupTextMessage = {
+    messageId: Bytes32,
+    clientRequestId?: Bytes32 | undefined,
+    sequence: bigint,
+    author: Bytes16,
+    text: string,
+    outgoing: boolean,
+    /**
+     * Authenticated device receipts, not human read receipts.
+     */
+    receivedCount: number,
+    recipientCount: number,
+    membershipChanged: boolean,
+    sentAtMillis: bigint
+}
+
+/**
+ * Generated factory for {@link GroupTextMessage} record objects.
+ */
+export const GroupTextMessage = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<GroupTextMessage, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<GroupTextMessage>,
+    });
+})();
+
+const FfiConverterTypeGroupTextMessage = (() => {
+    type TypeName = GroupTextMessage;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                messageId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterOptionalTypeBytes32.readFromCursor(c),
+                sequence: FfiConverterUInt64.readFromCursor(c),
+                author: FfiConverterTypeBytes16.readFromCursor(c),
+                text: FfiConverterString.readFromCursor(c),
+                outgoing: FfiConverterBool.readFromCursor(c),
+                receivedCount: FfiConverterUInt32.readFromCursor(c),
+                recipientCount: FfiConverterUInt32.readFromCursor(c),
+                membershipChanged: FfiConverterBool.readFromCursor(c),
+                sentAtMillis: FfiConverterUInt64.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.messageId, c);
+            FfiConverterOptionalTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+            FfiConverterUInt64.writeIntoCursor(value.sequence, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.author, c);
+            FfiConverterString.writeIntoCursor(value.text, c);
+            FfiConverterBool.writeIntoCursor(value.outgoing, c);
+            FfiConverterUInt32.writeIntoCursor(value.receivedCount, c);
+            FfiConverterUInt32.writeIntoCursor(value.recipientCount, c);
+            FfiConverterBool.writeIntoCursor(value.membershipChanged, c);
+            FfiConverterUInt64.writeIntoCursor(value.sentAtMillis, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.messageId) +
+             FfiConverterOptionalTypeBytes32.allocationSize(value.clientRequestId) +
+             FfiConverterUInt64.allocationSize(value.sequence) +
+             FfiConverterTypeBytes16.allocationSize(value.author) +
+             FfiConverterString.allocationSize(value.text) +
+             FfiConverterBool.allocationSize(value.outgoing) +
+             FfiConverterUInt32.allocationSize(value.receivedCount) +
+             FfiConverterUInt32.allocationSize(value.recipientCount) +
+             FfiConverterBool.allocationSize(value.membershipChanged) +
+             FfiConverterUInt64.allocationSize(value.sentAtMillis);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export type InitiateRemoteControlPairingInput = {
     candidateId: string,
     invitationCode: string
@@ -7144,6 +9536,53 @@ const FfiConverterTypeInspectRemoteWifiTrialInput = (() => {
         }
         allocationSize(value: TypeName): number {
             return FfiConverterUint8Array.allocationSize(value.targetIdentityFingerprint);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type ListGroupMessagesInput = {
+    groupId: Bytes32,
+    beforeSequence?: bigint | undefined,
+    limit: number
+}
+
+/**
+ * Generated factory for {@link ListGroupMessagesInput} record objects.
+ */
+export const ListGroupMessagesInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<ListGroupMessagesInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<ListGroupMessagesInput>,
+    });
+})();
+
+const FfiConverterTypeListGroupMessagesInput = (() => {
+    type TypeName = ListGroupMessagesInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                beforeSequence: FfiConverterOptionalUInt64.readFromCursor(c),
+                limit: FfiConverterUInt32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterOptionalUInt64.writeIntoCursor(value.beforeSequence, c);
+            FfiConverterUInt32.writeIntoCursor(value.limit, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterOptionalUInt64.allocationSize(value.beforeSequence) +
+             FfiConverterUInt32.allocationSize(value.limit);
 
         }
     };
@@ -7282,14 +9721,6 @@ const FfiConverterTypeLocalMessagingProfile = (() => {
     };
     return new FFIConverter();
 })();
-
-/**
- * Typealias from the type name used in the UDL file to the builtin type.  This
- * is needed because the UDL type name is used in function/method signatures.
- */
-export type Bytes32 = Uint8Array;
-// FfiConverter for Bytes32, a type alias for Uint8Array.
-const FfiConverterTypeBytes32 = FfiConverterUint8Array;
 
 
 // Enum: LxmfText
@@ -8011,6 +10442,52 @@ const FfiConverterTypeMeasureLxmfTextInput = (() => {
         allocationSize(value: TypeName): number {
             return FfiConverterString.allocationSize(value.title) +
              FfiConverterString.allocationSize(value.content);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type PrepareGroupActionInput = {
+    /**
+     * Caller-visible identity; mismatches fail before any durable mutation.
+     */
+    ownerIdentity: Bytes16,
+    input: GroupActionInput
+}
+
+/**
+ * Generated factory for {@link PrepareGroupActionInput} record objects.
+ */
+export const PrepareGroupActionInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<PrepareGroupActionInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<PrepareGroupActionInput>,
+    });
+})();
+
+const FfiConverterTypePrepareGroupActionInput = (() => {
+    type TypeName = PrepareGroupActionInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                ownerIdentity: FfiConverterTypeBytes16.readFromCursor(c),
+                input: FfiConverterTypeGroupActionInput.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes16.writeIntoCursor(value.ownerIdentity, c);
+            FfiConverterTypeGroupActionInput.writeIntoCursor(value.input, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes16.allocationSize(value.ownerIdentity) +
+             FfiConverterTypeGroupActionInput.allocationSize(value.input);
 
         }
     };
@@ -9723,6 +12200,8 @@ const FfiConverterTypeStartRemoteWifiTrialInput = (() => {
 })();
 
 export enum AnnounceLxmfOutcome {
+    Queued,
+    Throttled,
     Requested,
     NoUsableConnection,
     LocalNodeStopped,
@@ -9735,21 +12214,25 @@ const FfiConverterTypeAnnounceLxmfOutcome = (() => {
     class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
         readFromCursor(c: Cursor): TypeName {
             switch (c.readI32()) {
-                case 1: return AnnounceLxmfOutcome.Requested;
-                case 2: return AnnounceLxmfOutcome.NoUsableConnection;
-                case 3: return AnnounceLxmfOutcome.LocalNodeStopped;
-                case 4: return AnnounceLxmfOutcome.Busy;
-                case 5: return AnnounceLxmfOutcome.Failed;
+                case 1: return AnnounceLxmfOutcome.Queued;
+                case 2: return AnnounceLxmfOutcome.Throttled;
+                case 3: return AnnounceLxmfOutcome.Requested;
+                case 4: return AnnounceLxmfOutcome.NoUsableConnection;
+                case 5: return AnnounceLxmfOutcome.LocalNodeStopped;
+                case 6: return AnnounceLxmfOutcome.Busy;
+                case 7: return AnnounceLxmfOutcome.Failed;
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
         }
         writeIntoCursor(value: TypeName, c: Cursor): void {
             switch (value) {
-                case AnnounceLxmfOutcome.Requested: return c.writeI32(1);
-                case AnnounceLxmfOutcome.NoUsableConnection: return c.writeI32(2);
-                case AnnounceLxmfOutcome.LocalNodeStopped: return c.writeI32(3);
-                case AnnounceLxmfOutcome.Busy: return c.writeI32(4);
-                case AnnounceLxmfOutcome.Failed: return c.writeI32(5);
+                case AnnounceLxmfOutcome.Queued: return c.writeI32(1);
+                case AnnounceLxmfOutcome.Throttled: return c.writeI32(2);
+                case AnnounceLxmfOutcome.Requested: return c.writeI32(3);
+                case AnnounceLxmfOutcome.NoUsableConnection: return c.writeI32(4);
+                case AnnounceLxmfOutcome.LocalNodeStopped: return c.writeI32(5);
+                case AnnounceLxmfOutcome.Busy: return c.writeI32(6);
+                case AnnounceLxmfOutcome.Failed: return c.writeI32(7);
             }
         }
         allocationSize(value: TypeName): number {
@@ -11618,6 +14101,298 @@ const FfiConverterTypeContactMutationOutcome = (() => {
 })();
 
 
+// Enum: CreateGroupOutcome
+export enum CreateGroupOutcome_Tags {
+    Accepted = "Accepted",
+    RetryExpired = "RetryExpired",
+    StorageFull = "StorageFull",
+    Busy = "Busy",
+    InvalidInput = "InvalidInput",
+    Unavailable = "Unavailable"
+}
+export const CreateGroupOutcome = (() => {
+
+    type Accepted__interface = {
+        tag: CreateGroupOutcome_Tags.Accepted;
+        inner:
+Readonly<{groupId: Bytes32}>
+    };
+    class Accepted_ extends UniffiEnum implements Accepted__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "CreateGroupOutcome";
+        readonly tag = CreateGroupOutcome_Tags.Accepted;
+        readonly inner:
+Readonly<{groupId: Bytes32}>;
+        constructor(
+inner: {groupId: Bytes32 }) {
+            super("CreateGroupOutcome", "Accepted");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {groupId: Bytes32 }): Accepted_ {
+            return new Accepted_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Accepted_ {
+            return obj.tag === CreateGroupOutcome_Tags.Accepted;
+        }
+
+    }
+
+    type RetryExpired__interface = {
+        tag: CreateGroupOutcome_Tags.RetryExpired
+    };
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    class RetryExpired_ extends UniffiEnum implements RetryExpired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "CreateGroupOutcome";
+        readonly tag = CreateGroupOutcome_Tags.RetryExpired;
+        constructor() {
+            super("CreateGroupOutcome", "RetryExpired");
+        }
+
+        static new(): RetryExpired_ {
+            return new RetryExpired_();
+        }
+
+        static instanceOf(obj: any): obj is RetryExpired_ {
+            return obj.tag === CreateGroupOutcome_Tags.RetryExpired;
+        }
+
+    }
+
+    type StorageFull__interface = {
+        tag: CreateGroupOutcome_Tags.StorageFull
+    };
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    class StorageFull_ extends UniffiEnum implements StorageFull__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "CreateGroupOutcome";
+        readonly tag = CreateGroupOutcome_Tags.StorageFull;
+        constructor() {
+            super("CreateGroupOutcome", "StorageFull");
+        }
+
+        static new(): StorageFull_ {
+            return new StorageFull_();
+        }
+
+        static instanceOf(obj: any): obj is StorageFull_ {
+            return obj.tag === CreateGroupOutcome_Tags.StorageFull;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: CreateGroupOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "CreateGroupOutcome";
+        readonly tag = CreateGroupOutcome_Tags.Busy;
+        constructor() {
+            super("CreateGroupOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === CreateGroupOutcome_Tags.Busy;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: CreateGroupOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "CreateGroupOutcome";
+        readonly tag = CreateGroupOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>;
+        constructor(
+inner: {reason: GroupRejectionReason; detail: string }) {
+            super("CreateGroupOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {reason: GroupRejectionReason; detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === CreateGroupOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: CreateGroupOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "CreateGroupOutcome";
+        readonly tag = CreateGroupOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("CreateGroupOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === CreateGroupOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is CreateGroupOutcome {
+        return obj[uniffiTypeNameSymbol] === "CreateGroupOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Accepted: Accepted_,
+  RetryExpired: RetryExpired_,
+  StorageFull: StorageFull_,
+  Busy: Busy_,
+  InvalidInput: InvalidInput_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type CreateGroupOutcome = InstanceType<
+    typeof CreateGroupOutcome['Accepted' | 'RetryExpired' | 'StorageFull' | 'Busy' | 'InvalidInput' | 'Unavailable']
+>;
+
+// FfiConverter for enum CreateGroupOutcome
+const FfiConverterTypeCreateGroupOutcome = (() => {
+    type TypeName = CreateGroupOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new CreateGroupOutcome.Accepted({groupId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 2: return new CreateGroupOutcome.RetryExpired();
+                case 3: return new CreateGroupOutcome.StorageFull();
+                case 4: return new CreateGroupOutcome.Busy();
+                case 5: return new CreateGroupOutcome.InvalidInput({reason: FfiConverterTypeGroupRejectionReason.readFromCursor(c), detail: FfiConverterString.readFromCursor(c) });
+                case 6: return new CreateGroupOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case CreateGroupOutcome_Tags.Accepted: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.groupId, c);
+                    return;
+                }
+                case CreateGroupOutcome_Tags.RetryExpired: {
+                    c.writeI32(2);
+                    return;
+                }
+                case CreateGroupOutcome_Tags.StorageFull: {
+                    c.writeI32(3);
+                    return;
+                }
+                case CreateGroupOutcome_Tags.Busy: {
+                    c.writeI32(4);
+                    return;
+                }
+                case CreateGroupOutcome_Tags.InvalidInput: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupRejectionReason.writeIntoCursor(inner.reason, c);
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case CreateGroupOutcome_Tags.Unavailable: {
+                    c.writeI32(6);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that CreateGroupOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case CreateGroupOutcome_Tags.Accepted: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.groupId);
+                    return size;
+                }
+                case CreateGroupOutcome_Tags.RetryExpired: {
+                    return 4;
+                }
+                case CreateGroupOutcome_Tags.StorageFull: {
+                    return 4;
+                }
+                case CreateGroupOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case CreateGroupOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupRejectionReason.allocationSize(inner.reason);
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case CreateGroupOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
 // Enum: DevelopmentNodeStartOutcome
 export enum DevelopmentNodeStartOutcome_Tags {
     Started = "Started",
@@ -11999,6 +14774,2174 @@ const FfiConverterTypeDevelopmentNodeStopOutcome = (() => {
 })();
 
 
+// Enum: GroupActionAcknowledgeOutcome
+export enum GroupActionAcknowledgeOutcome_Tags {
+    Removed = "Removed",
+    NeedsReview = "NeedsReview",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupActionAcknowledgeOutcome = (() => {
+
+    type Removed__interface = {
+        tag: GroupActionAcknowledgeOutcome_Tags.Removed
+    };
+    class Removed_ extends UniffiEnum implements Removed__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionAcknowledgeOutcome";
+        readonly tag = GroupActionAcknowledgeOutcome_Tags.Removed;
+        constructor() {
+            super("GroupActionAcknowledgeOutcome", "Removed");
+        }
+
+        static new(): Removed_ {
+            return new Removed_();
+        }
+
+        static instanceOf(obj: any): obj is Removed_ {
+            return obj.tag === GroupActionAcknowledgeOutcome_Tags.Removed;
+        }
+
+    }
+
+    type NeedsReview__interface = {
+        tag: GroupActionAcknowledgeOutcome_Tags.NeedsReview
+    };
+    /**
+     * Pending work cannot be discarded; expired work requires reviewed discard.
+     */
+    class NeedsReview_ extends UniffiEnum implements NeedsReview__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionAcknowledgeOutcome";
+        readonly tag = GroupActionAcknowledgeOutcome_Tags.NeedsReview;
+        constructor() {
+            super("GroupActionAcknowledgeOutcome", "NeedsReview");
+        }
+
+        static new(): NeedsReview_ {
+            return new NeedsReview_();
+        }
+
+        static instanceOf(obj: any): obj is NeedsReview_ {
+            return obj.tag === GroupActionAcknowledgeOutcome_Tags.NeedsReview;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupActionAcknowledgeOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionAcknowledgeOutcome";
+        readonly tag = GroupActionAcknowledgeOutcome_Tags.Busy;
+        constructor() {
+            super("GroupActionAcknowledgeOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupActionAcknowledgeOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupActionAcknowledgeOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionAcknowledgeOutcome";
+        readonly tag = GroupActionAcknowledgeOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupActionAcknowledgeOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupActionAcknowledgeOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupActionAcknowledgeOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupActionAcknowledgeOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Removed: Removed_,
+  NeedsReview: NeedsReview_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupActionAcknowledgeOutcome = InstanceType<
+    typeof GroupActionAcknowledgeOutcome['Removed' | 'NeedsReview' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupActionAcknowledgeOutcome
+const FfiConverterTypeGroupActionAcknowledgeOutcome = (() => {
+    type TypeName = GroupActionAcknowledgeOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupActionAcknowledgeOutcome.Removed();
+                case 2: return new GroupActionAcknowledgeOutcome.NeedsReview();
+                case 3: return new GroupActionAcknowledgeOutcome.Busy();
+                case 4: return new GroupActionAcknowledgeOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupActionAcknowledgeOutcome_Tags.Removed: {
+                    c.writeI32(1);
+                    return;
+                }
+                case GroupActionAcknowledgeOutcome_Tags.NeedsReview: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupActionAcknowledgeOutcome_Tags.Busy: {
+                    c.writeI32(3);
+                    return;
+                }
+                case GroupActionAcknowledgeOutcome_Tags.Unavailable: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupActionAcknowledgeOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupActionAcknowledgeOutcome_Tags.Removed: {
+                    return 4;
+                }
+                case GroupActionAcknowledgeOutcome_Tags.NeedsReview: {
+                    return 4;
+                }
+                case GroupActionAcknowledgeOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupActionAcknowledgeOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupActionListOutcome
+export enum GroupActionListOutcome_Tags {
+    Ready = "Ready",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupActionListOutcome = (() => {
+
+    type Ready__interface = {
+        tag: GroupActionListOutcome_Tags.Ready;
+        inner:
+Readonly<{actions: Array<GroupAction>}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionListOutcome";
+        readonly tag = GroupActionListOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{actions: Array<GroupAction>}>;
+        constructor(
+inner: {actions: Array<GroupAction> }) {
+            super("GroupActionListOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {actions: Array<GroupAction> }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === GroupActionListOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupActionListOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionListOutcome";
+        readonly tag = GroupActionListOutcome_Tags.Busy;
+        constructor() {
+            super("GroupActionListOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupActionListOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupActionListOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionListOutcome";
+        readonly tag = GroupActionListOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupActionListOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupActionListOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupActionListOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupActionListOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupActionListOutcome = InstanceType<
+    typeof GroupActionListOutcome['Ready' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupActionListOutcome
+const FfiConverterTypeGroupActionListOutcome = (() => {
+    type TypeName = GroupActionListOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupActionListOutcome.Ready({actions: FfiConverterSequenceTypeGroupAction.readFromCursor(c) });
+                case 2: return new GroupActionListOutcome.Busy();
+                case 3: return new GroupActionListOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupActionListOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterSequenceTypeGroupAction.writeIntoCursor(inner.actions, c);
+                    return;
+                }
+                case GroupActionListOutcome_Tags.Busy: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupActionListOutcome_Tags.Unavailable: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupActionListOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupActionListOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterSequenceTypeGroupAction.allocationSize(inner.actions);
+                    return size;
+                }
+                case GroupActionListOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupActionListOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupActionOutcome
+export enum GroupActionOutcome_Tags {
+    Ready = "Ready",
+    InvalidInput = "InvalidInput",
+    StorageFull = "StorageFull",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupActionOutcome = (() => {
+
+    type Ready__interface = {
+        tag: GroupActionOutcome_Tags.Ready;
+        inner:
+Readonly<{action: GroupAction}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionOutcome";
+        readonly tag = GroupActionOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{action: GroupAction}>;
+        constructor(
+inner: {action: GroupAction }) {
+            super("GroupActionOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {action: GroupAction }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === GroupActionOutcome_Tags.Ready;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: GroupActionOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionOutcome";
+        readonly tag = GroupActionOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupActionOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === GroupActionOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type StorageFull__interface = {
+        tag: GroupActionOutcome_Tags.StorageFull
+    };
+    class StorageFull_ extends UniffiEnum implements StorageFull__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionOutcome";
+        readonly tag = GroupActionOutcome_Tags.StorageFull;
+        constructor() {
+            super("GroupActionOutcome", "StorageFull");
+        }
+
+        static new(): StorageFull_ {
+            return new StorageFull_();
+        }
+
+        static instanceOf(obj: any): obj is StorageFull_ {
+            return obj.tag === GroupActionOutcome_Tags.StorageFull;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupActionOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionOutcome";
+        readonly tag = GroupActionOutcome_Tags.Busy;
+        constructor() {
+            super("GroupActionOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupActionOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupActionOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionOutcome";
+        readonly tag = GroupActionOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupActionOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupActionOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupActionOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupActionOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  InvalidInput: InvalidInput_,
+  StorageFull: StorageFull_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupActionOutcome = InstanceType<
+    typeof GroupActionOutcome['Ready' | 'InvalidInput' | 'StorageFull' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupActionOutcome
+const FfiConverterTypeGroupActionOutcome = (() => {
+    type TypeName = GroupActionOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupActionOutcome.Ready({action: FfiConverterTypeGroupAction.readFromCursor(c) });
+                case 2: return new GroupActionOutcome.InvalidInput({detail: FfiConverterString.readFromCursor(c) });
+                case 3: return new GroupActionOutcome.StorageFull();
+                case 4: return new GroupActionOutcome.Busy();
+                case 5: return new GroupActionOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupActionOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupAction.writeIntoCursor(inner.action, c);
+                    return;
+                }
+                case GroupActionOutcome_Tags.InvalidInput: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case GroupActionOutcome_Tags.StorageFull: {
+                    c.writeI32(3);
+                    return;
+                }
+                case GroupActionOutcome_Tags.Busy: {
+                    c.writeI32(4);
+                    return;
+                }
+                case GroupActionOutcome_Tags.Unavailable: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupActionOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupActionOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupAction.allocationSize(inner.action);
+                    return size;
+                }
+                case GroupActionOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case GroupActionOutcome_Tags.StorageFull: {
+                    return 4;
+                }
+                case GroupActionOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupActionOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupAnnounceOutcome
+export enum GroupAnnounceOutcome_Tags {
+    Queued = "Queued",
+    Requested = "Requested",
+    Throttled = "Throttled",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupAnnounceOutcome = (() => {
+
+    type Queued__interface = {
+        tag: GroupAnnounceOutcome_Tags.Queued
+    };
+    /**
+     * Coalesced in this runtime; waiting for an interface or the shared budget.
+     */
+    class Queued_ extends UniffiEnum implements Queued__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceOutcome";
+        readonly tag = GroupAnnounceOutcome_Tags.Queued;
+        constructor() {
+            super("GroupAnnounceOutcome", "Queued");
+        }
+
+        static new(): Queued_ {
+            return new Queued_();
+        }
+
+        static instanceOf(obj: any): obj is Queued_ {
+            return obj.tag === GroupAnnounceOutcome_Tags.Queued;
+        }
+
+    }
+
+    type Requested__interface = {
+        tag: GroupAnnounceOutcome_Tags.Requested
+    };
+    /**
+     * The local host accepted both commands. This is not peer receipt evidence.
+     */
+    class Requested_ extends UniffiEnum implements Requested__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceOutcome";
+        readonly tag = GroupAnnounceOutcome_Tags.Requested;
+        constructor() {
+            super("GroupAnnounceOutcome", "Requested");
+        }
+
+        static new(): Requested_ {
+            return new Requested_();
+        }
+
+        static instanceOf(obj: any): obj is Requested_ {
+            return obj.tag === GroupAnnounceOutcome_Tags.Requested;
+        }
+
+    }
+
+    type Throttled__interface = {
+        tag: GroupAnnounceOutcome_Tags.Throttled;
+        inner:
+Readonly<{retryAfterMillis: bigint}>
+    };
+    class Throttled_ extends UniffiEnum implements Throttled__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceOutcome";
+        readonly tag = GroupAnnounceOutcome_Tags.Throttled;
+        readonly inner:
+Readonly<{retryAfterMillis: bigint}>;
+        constructor(
+inner: {retryAfterMillis: bigint }) {
+            super("GroupAnnounceOutcome", "Throttled");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {retryAfterMillis: bigint }): Throttled_ {
+            return new Throttled_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Throttled_ {
+            return obj.tag === GroupAnnounceOutcome_Tags.Throttled;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupAnnounceOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceOutcome";
+        readonly tag = GroupAnnounceOutcome_Tags.Busy;
+        constructor() {
+            super("GroupAnnounceOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupAnnounceOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupAnnounceOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceOutcome";
+        readonly tag = GroupAnnounceOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupAnnounceOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupAnnounceOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupAnnounceOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupAnnounceOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Queued: Queued_,
+  Requested: Requested_,
+  Throttled: Throttled_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupAnnounceOutcome = InstanceType<
+    typeof GroupAnnounceOutcome['Queued' | 'Requested' | 'Throttled' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupAnnounceOutcome
+const FfiConverterTypeGroupAnnounceOutcome = (() => {
+    type TypeName = GroupAnnounceOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupAnnounceOutcome.Queued();
+                case 2: return new GroupAnnounceOutcome.Requested();
+                case 3: return new GroupAnnounceOutcome.Throttled({retryAfterMillis: FfiConverterUInt64.readFromCursor(c) });
+                case 4: return new GroupAnnounceOutcome.Busy();
+                case 5: return new GroupAnnounceOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupAnnounceOutcome_Tags.Queued: {
+                    c.writeI32(1);
+                    return;
+                }
+                case GroupAnnounceOutcome_Tags.Requested: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupAnnounceOutcome_Tags.Throttled: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterUInt64.writeIntoCursor(inner.retryAfterMillis, c);
+                    return;
+                }
+                case GroupAnnounceOutcome_Tags.Busy: {
+                    c.writeI32(4);
+                    return;
+                }
+                case GroupAnnounceOutcome_Tags.Unavailable: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupAnnounceOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupAnnounceOutcome_Tags.Queued: {
+                    return 4;
+                }
+                case GroupAnnounceOutcome_Tags.Requested: {
+                    return 4;
+                }
+                case GroupAnnounceOutcome_Tags.Throttled: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterUInt64.allocationSize(inner.retryAfterMillis);
+                    return size;
+                }
+                case GroupAnnounceOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupAnnounceOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupAnnounceSettingsOutcome
+export enum GroupAnnounceSettingsOutcome_Tags {
+    Ready = "Ready",
+    Busy = "Busy",
+    InvalidInput = "InvalidInput",
+    Unavailable = "Unavailable"
+}
+export const GroupAnnounceSettingsOutcome = (() => {
+
+    type Ready__interface = {
+        tag: GroupAnnounceSettingsOutcome_Tags.Ready;
+        inner:
+Readonly<{settings: GroupAnnounceSettings}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceSettingsOutcome";
+        readonly tag = GroupAnnounceSettingsOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{settings: GroupAnnounceSettings}>;
+        constructor(
+inner: {settings: GroupAnnounceSettings }) {
+            super("GroupAnnounceSettingsOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {settings: GroupAnnounceSettings }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === GroupAnnounceSettingsOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupAnnounceSettingsOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceSettingsOutcome";
+        readonly tag = GroupAnnounceSettingsOutcome_Tags.Busy;
+        constructor() {
+            super("GroupAnnounceSettingsOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupAnnounceSettingsOutcome_Tags.Busy;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: GroupAnnounceSettingsOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceSettingsOutcome";
+        readonly tag = GroupAnnounceSettingsOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupAnnounceSettingsOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === GroupAnnounceSettingsOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupAnnounceSettingsOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupAnnounceSettingsOutcome";
+        readonly tag = GroupAnnounceSettingsOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupAnnounceSettingsOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupAnnounceSettingsOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupAnnounceSettingsOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupAnnounceSettingsOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Busy: Busy_,
+  InvalidInput: InvalidInput_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupAnnounceSettingsOutcome = InstanceType<
+    typeof GroupAnnounceSettingsOutcome['Ready' | 'Busy' | 'InvalidInput' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupAnnounceSettingsOutcome
+const FfiConverterTypeGroupAnnounceSettingsOutcome = (() => {
+    type TypeName = GroupAnnounceSettingsOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupAnnounceSettingsOutcome.Ready({settings: FfiConverterTypeGroupAnnounceSettings.readFromCursor(c) });
+                case 2: return new GroupAnnounceSettingsOutcome.Busy();
+                case 3: return new GroupAnnounceSettingsOutcome.InvalidInput({detail: FfiConverterString.readFromCursor(c) });
+                case 4: return new GroupAnnounceSettingsOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupAnnounceSettingsOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupAnnounceSettings.writeIntoCursor(inner.settings, c);
+                    return;
+                }
+                case GroupAnnounceSettingsOutcome_Tags.Busy: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupAnnounceSettingsOutcome_Tags.InvalidInput: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case GroupAnnounceSettingsOutcome_Tags.Unavailable: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupAnnounceSettingsOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupAnnounceSettingsOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupAnnounceSettings.allocationSize(inner.settings);
+                    return size;
+                }
+                case GroupAnnounceSettingsOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupAnnounceSettingsOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case GroupAnnounceSettingsOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupConversationListOutcome
+export enum GroupConversationListOutcome_Tags {
+    Ready = "Ready",
+    NotProvisioned = "NotProvisioned",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupConversationListOutcome = (() => {
+
+    type Ready__interface = {
+        tag: GroupConversationListOutcome_Tags.Ready;
+        inner:
+Readonly<{conversations: Array<GroupConversation>}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupConversationListOutcome";
+        readonly tag = GroupConversationListOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{conversations: Array<GroupConversation>}>;
+        constructor(
+inner: {conversations: Array<GroupConversation> }) {
+            super("GroupConversationListOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {conversations: Array<GroupConversation> }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === GroupConversationListOutcome_Tags.Ready;
+        }
+
+    }
+
+    type NotProvisioned__interface = {
+        tag: GroupConversationListOutcome_Tags.NotProvisioned
+    };
+    class NotProvisioned_ extends UniffiEnum implements NotProvisioned__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupConversationListOutcome";
+        readonly tag = GroupConversationListOutcome_Tags.NotProvisioned;
+        constructor() {
+            super("GroupConversationListOutcome", "NotProvisioned");
+        }
+
+        static new(): NotProvisioned_ {
+            return new NotProvisioned_();
+        }
+
+        static instanceOf(obj: any): obj is NotProvisioned_ {
+            return obj.tag === GroupConversationListOutcome_Tags.NotProvisioned;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupConversationListOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupConversationListOutcome";
+        readonly tag = GroupConversationListOutcome_Tags.Busy;
+        constructor() {
+            super("GroupConversationListOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupConversationListOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupConversationListOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupConversationListOutcome";
+        readonly tag = GroupConversationListOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupConversationListOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupConversationListOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupConversationListOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupConversationListOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  NotProvisioned: NotProvisioned_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupConversationListOutcome = InstanceType<
+    typeof GroupConversationListOutcome['Ready' | 'NotProvisioned' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupConversationListOutcome
+const FfiConverterTypeGroupConversationListOutcome = (() => {
+    type TypeName = GroupConversationListOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupConversationListOutcome.Ready({conversations: FfiConverterSequenceTypeGroupConversation.readFromCursor(c) });
+                case 2: return new GroupConversationListOutcome.NotProvisioned();
+                case 3: return new GroupConversationListOutcome.Busy();
+                case 4: return new GroupConversationListOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupConversationListOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterSequenceTypeGroupConversation.writeIntoCursor(inner.conversations, c);
+                    return;
+                }
+                case GroupConversationListOutcome_Tags.NotProvisioned: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupConversationListOutcome_Tags.Busy: {
+                    c.writeI32(3);
+                    return;
+                }
+                case GroupConversationListOutcome_Tags.Unavailable: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupConversationListOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupConversationListOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterSequenceTypeGroupConversation.allocationSize(inner.conversations);
+                    return size;
+                }
+                case GroupConversationListOutcome_Tags.NotProvisioned: {
+                    return 4;
+                }
+                case GroupConversationListOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupConversationListOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupInvitationListOutcome
+export enum GroupInvitationListOutcome_Tags {
+    Ready = "Ready",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupInvitationListOutcome = (() => {
+
+    type Ready__interface = {
+        tag: GroupInvitationListOutcome_Tags.Ready;
+        inner:
+Readonly<{invitations: Array<GroupInvitation>}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupInvitationListOutcome";
+        readonly tag = GroupInvitationListOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{invitations: Array<GroupInvitation>}>;
+        constructor(
+inner: {invitations: Array<GroupInvitation> }) {
+            super("GroupInvitationListOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {invitations: Array<GroupInvitation> }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === GroupInvitationListOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupInvitationListOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupInvitationListOutcome";
+        readonly tag = GroupInvitationListOutcome_Tags.Busy;
+        constructor() {
+            super("GroupInvitationListOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupInvitationListOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupInvitationListOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupInvitationListOutcome";
+        readonly tag = GroupInvitationListOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupInvitationListOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupInvitationListOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupInvitationListOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupInvitationListOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupInvitationListOutcome = InstanceType<
+    typeof GroupInvitationListOutcome['Ready' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupInvitationListOutcome
+const FfiConverterTypeGroupInvitationListOutcome = (() => {
+    type TypeName = GroupInvitationListOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupInvitationListOutcome.Ready({invitations: FfiConverterSequenceTypeGroupInvitation.readFromCursor(c) });
+                case 2: return new GroupInvitationListOutcome.Busy();
+                case 3: return new GroupInvitationListOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupInvitationListOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterSequenceTypeGroupInvitation.writeIntoCursor(inner.invitations, c);
+                    return;
+                }
+                case GroupInvitationListOutcome_Tags.Busy: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupInvitationListOutcome_Tags.Unavailable: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupInvitationListOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupInvitationListOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterSequenceTypeGroupInvitation.allocationSize(inner.invitations);
+                    return size;
+                }
+                case GroupInvitationListOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupInvitationListOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupMessageListOutcome
+export enum GroupMessageListOutcome_Tags {
+    Ready = "Ready",
+    NotProvisioned = "NotProvisioned",
+    InvalidInput = "InvalidInput",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupMessageListOutcome = (() => {
+
+    type Ready__interface = {
+        tag: GroupMessageListOutcome_Tags.Ready;
+        inner:
+Readonly<{messages: Array<GroupTextMessage>; revision: bigint; nextBeforeSequence?: bigint | undefined}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupMessageListOutcome";
+        readonly tag = GroupMessageListOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{messages: Array<GroupTextMessage>; revision: bigint; nextBeforeSequence?: bigint | undefined}>;
+        constructor(
+inner: {messages: Array<GroupTextMessage>; revision: bigint; nextBeforeSequence?: bigint | undefined }) {
+            super("GroupMessageListOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {messages: Array<GroupTextMessage>; revision: bigint; nextBeforeSequence?: bigint | undefined }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === GroupMessageListOutcome_Tags.Ready;
+        }
+
+    }
+
+    type NotProvisioned__interface = {
+        tag: GroupMessageListOutcome_Tags.NotProvisioned
+    };
+    class NotProvisioned_ extends UniffiEnum implements NotProvisioned__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupMessageListOutcome";
+        readonly tag = GroupMessageListOutcome_Tags.NotProvisioned;
+        constructor() {
+            super("GroupMessageListOutcome", "NotProvisioned");
+        }
+
+        static new(): NotProvisioned_ {
+            return new NotProvisioned_();
+        }
+
+        static instanceOf(obj: any): obj is NotProvisioned_ {
+            return obj.tag === GroupMessageListOutcome_Tags.NotProvisioned;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: GroupMessageListOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupMessageListOutcome";
+        readonly tag = GroupMessageListOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupMessageListOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === GroupMessageListOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupMessageListOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupMessageListOutcome";
+        readonly tag = GroupMessageListOutcome_Tags.Busy;
+        constructor() {
+            super("GroupMessageListOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupMessageListOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupMessageListOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupMessageListOutcome";
+        readonly tag = GroupMessageListOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupMessageListOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupMessageListOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupMessageListOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupMessageListOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  NotProvisioned: NotProvisioned_,
+  InvalidInput: InvalidInput_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupMessageListOutcome = InstanceType<
+    typeof GroupMessageListOutcome['Ready' | 'NotProvisioned' | 'InvalidInput' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupMessageListOutcome
+const FfiConverterTypeGroupMessageListOutcome = (() => {
+    type TypeName = GroupMessageListOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupMessageListOutcome.Ready({messages: FfiConverterSequenceTypeGroupTextMessage.readFromCursor(c), revision: FfiConverterUInt64.readFromCursor(c), nextBeforeSequence: FfiConverterOptionalUInt64.readFromCursor(c) });
+                case 2: return new GroupMessageListOutcome.NotProvisioned();
+                case 3: return new GroupMessageListOutcome.InvalidInput({detail: FfiConverterString.readFromCursor(c) });
+                case 4: return new GroupMessageListOutcome.Busy();
+                case 5: return new GroupMessageListOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupMessageListOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterSequenceTypeGroupTextMessage.writeIntoCursor(inner.messages, c);
+                    FfiConverterUInt64.writeIntoCursor(inner.revision, c);
+                    FfiConverterOptionalUInt64.writeIntoCursor(inner.nextBeforeSequence, c);
+                    return;
+                }
+                case GroupMessageListOutcome_Tags.NotProvisioned: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupMessageListOutcome_Tags.InvalidInput: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case GroupMessageListOutcome_Tags.Busy: {
+                    c.writeI32(4);
+                    return;
+                }
+                case GroupMessageListOutcome_Tags.Unavailable: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupMessageListOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupMessageListOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterSequenceTypeGroupTextMessage.allocationSize(inner.messages);
+                    size += FfiConverterUInt64.allocationSize(inner.revision);
+                    size += FfiConverterOptionalUInt64.allocationSize(inner.nextBeforeSequence);
+                    return size;
+                }
+                case GroupMessageListOutcome_Tags.NotProvisioned: {
+                    return 4;
+                }
+                case GroupMessageListOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case GroupMessageListOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupMessageListOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupRequestIdOutcome
+export enum GroupRequestIdOutcome_Tags {
+    Ready = "Ready",
+    Unavailable = "Unavailable"
+}
+export const GroupRequestIdOutcome = (() => {
+
+    type Ready__interface = {
+        tag: GroupRequestIdOutcome_Tags.Ready;
+        inner:
+Readonly<{clientRequestId: Bytes32}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupRequestIdOutcome";
+        readonly tag = GroupRequestIdOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{clientRequestId: Bytes32}>;
+        constructor(
+inner: {clientRequestId: Bytes32 }) {
+            super("GroupRequestIdOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {clientRequestId: Bytes32 }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === GroupRequestIdOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupRequestIdOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupRequestIdOutcome";
+        readonly tag = GroupRequestIdOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupRequestIdOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupRequestIdOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupRequestIdOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupRequestIdOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupRequestIdOutcome = InstanceType<
+    typeof GroupRequestIdOutcome['Ready' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupRequestIdOutcome
+const FfiConverterTypeGroupRequestIdOutcome = (() => {
+    type TypeName = GroupRequestIdOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupRequestIdOutcome.Ready({clientRequestId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 2: return new GroupRequestIdOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupRequestIdOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.clientRequestId, c);
+                    return;
+                }
+                case GroupRequestIdOutcome_Tags.Unavailable: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupRequestIdOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupRequestIdOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.clientRequestId);
+                    return size;
+                }
+                case GroupRequestIdOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: GroupTextSendOutcome
+export enum GroupTextSendOutcome_Tags {
+    Accepted = "Accepted",
+    NotProvisioned = "NotProvisioned",
+    InvalidInput = "InvalidInput",
+    RetryExpired = "RetryExpired",
+    StorageFull = "StorageFull",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const GroupTextSendOutcome = (() => {
+
+    type Accepted__interface = {
+        tag: GroupTextSendOutcome_Tags.Accepted;
+        inner:
+Readonly<{messageId: Bytes32}>
+    };
+    /**
+     * Durable local acceptance; peer receipt counts are queried separately.
+     */
+    class Accepted_ extends UniffiEnum implements Accepted__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupTextSendOutcome";
+        readonly tag = GroupTextSendOutcome_Tags.Accepted;
+        readonly inner:
+Readonly<{messageId: Bytes32}>;
+        constructor(
+inner: {messageId: Bytes32 }) {
+            super("GroupTextSendOutcome", "Accepted");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {messageId: Bytes32 }): Accepted_ {
+            return new Accepted_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Accepted_ {
+            return obj.tag === GroupTextSendOutcome_Tags.Accepted;
+        }
+
+    }
+
+    type NotProvisioned__interface = {
+        tag: GroupTextSendOutcome_Tags.NotProvisioned
+    };
+    class NotProvisioned_ extends UniffiEnum implements NotProvisioned__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupTextSendOutcome";
+        readonly tag = GroupTextSendOutcome_Tags.NotProvisioned;
+        constructor() {
+            super("GroupTextSendOutcome", "NotProvisioned");
+        }
+
+        static new(): NotProvisioned_ {
+            return new NotProvisioned_();
+        }
+
+        static instanceOf(obj: any): obj is NotProvisioned_ {
+            return obj.tag === GroupTextSendOutcome_Tags.NotProvisioned;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: GroupTextSendOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupTextSendOutcome";
+        readonly tag = GroupTextSendOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>;
+        constructor(
+inner: {reason: GroupRejectionReason; detail: string }) {
+            super("GroupTextSendOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {reason: GroupRejectionReason; detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === GroupTextSendOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type RetryExpired__interface = {
+        tag: GroupTextSendOutcome_Tags.RetryExpired
+    };
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    class RetryExpired_ extends UniffiEnum implements RetryExpired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupTextSendOutcome";
+        readonly tag = GroupTextSendOutcome_Tags.RetryExpired;
+        constructor() {
+            super("GroupTextSendOutcome", "RetryExpired");
+        }
+
+        static new(): RetryExpired_ {
+            return new RetryExpired_();
+        }
+
+        static instanceOf(obj: any): obj is RetryExpired_ {
+            return obj.tag === GroupTextSendOutcome_Tags.RetryExpired;
+        }
+
+    }
+
+    type StorageFull__interface = {
+        tag: GroupTextSendOutcome_Tags.StorageFull
+    };
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    class StorageFull_ extends UniffiEnum implements StorageFull__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupTextSendOutcome";
+        readonly tag = GroupTextSendOutcome_Tags.StorageFull;
+        constructor() {
+            super("GroupTextSendOutcome", "StorageFull");
+        }
+
+        static new(): StorageFull_ {
+            return new StorageFull_();
+        }
+
+        static instanceOf(obj: any): obj is StorageFull_ {
+            return obj.tag === GroupTextSendOutcome_Tags.StorageFull;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: GroupTextSendOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupTextSendOutcome";
+        readonly tag = GroupTextSendOutcome_Tags.Busy;
+        constructor() {
+            super("GroupTextSendOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === GroupTextSendOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: GroupTextSendOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupTextSendOutcome";
+        readonly tag = GroupTextSendOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("GroupTextSendOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === GroupTextSendOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is GroupTextSendOutcome {
+        return obj[uniffiTypeNameSymbol] === "GroupTextSendOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Accepted: Accepted_,
+  NotProvisioned: NotProvisioned_,
+  InvalidInput: InvalidInput_,
+  RetryExpired: RetryExpired_,
+  StorageFull: StorageFull_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type GroupTextSendOutcome = InstanceType<
+    typeof GroupTextSendOutcome['Accepted' | 'NotProvisioned' | 'InvalidInput' | 'RetryExpired' | 'StorageFull' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum GroupTextSendOutcome
+const FfiConverterTypeGroupTextSendOutcome = (() => {
+    type TypeName = GroupTextSendOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new GroupTextSendOutcome.Accepted({messageId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 2: return new GroupTextSendOutcome.NotProvisioned();
+                case 3: return new GroupTextSendOutcome.InvalidInput({reason: FfiConverterTypeGroupRejectionReason.readFromCursor(c), detail: FfiConverterString.readFromCursor(c) });
+                case 4: return new GroupTextSendOutcome.RetryExpired();
+                case 5: return new GroupTextSendOutcome.StorageFull();
+                case 6: return new GroupTextSendOutcome.Busy();
+                case 7: return new GroupTextSendOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case GroupTextSendOutcome_Tags.Accepted: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.messageId, c);
+                    return;
+                }
+                case GroupTextSendOutcome_Tags.NotProvisioned: {
+                    c.writeI32(2);
+                    return;
+                }
+                case GroupTextSendOutcome_Tags.InvalidInput: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupRejectionReason.writeIntoCursor(inner.reason, c);
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case GroupTextSendOutcome_Tags.RetryExpired: {
+                    c.writeI32(4);
+                    return;
+                }
+                case GroupTextSendOutcome_Tags.StorageFull: {
+                    c.writeI32(5);
+                    return;
+                }
+                case GroupTextSendOutcome_Tags.Busy: {
+                    c.writeI32(6);
+                    return;
+                }
+                case GroupTextSendOutcome_Tags.Unavailable: {
+                    c.writeI32(7);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that GroupTextSendOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case GroupTextSendOutcome_Tags.Accepted: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.messageId);
+                    return size;
+                }
+                case GroupTextSendOutcome_Tags.NotProvisioned: {
+                    return 4;
+                }
+                case GroupTextSendOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupRejectionReason.allocationSize(inner.reason);
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case GroupTextSendOutcome_Tags.RetryExpired: {
+                    return 4;
+                }
+                case GroupTextSendOutcome_Tags.StorageFull: {
+                    return 4;
+                }
+                case GroupTextSendOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case GroupTextSendOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
 // Enum: IdentityCreationOutcome
 export enum IdentityCreationOutcome_Tags {
     Created = "Created",
@@ -12364,6 +17307,298 @@ const FfiConverterTypeIdentityImportPreviewOutcome = (() => {
                 }
                 case IdentityImportPreviewOutcome_Tags.InvalidLength: {
                     return 4;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: InviteToGroupOutcome
+export enum InviteToGroupOutcome_Tags {
+    Queued = "Queued",
+    RetryExpired = "RetryExpired",
+    StorageFull = "StorageFull",
+    Busy = "Busy",
+    InvalidInput = "InvalidInput",
+    Unavailable = "Unavailable"
+}
+export const InviteToGroupOutcome = (() => {
+
+    type Queued__interface = {
+        tag: InviteToGroupOutcome_Tags.Queued;
+        inner:
+Readonly<{invitationId: Bytes32}>
+    };
+    class Queued_ extends UniffiEnum implements Queued__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "InviteToGroupOutcome";
+        readonly tag = InviteToGroupOutcome_Tags.Queued;
+        readonly inner:
+Readonly<{invitationId: Bytes32}>;
+        constructor(
+inner: {invitationId: Bytes32 }) {
+            super("InviteToGroupOutcome", "Queued");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {invitationId: Bytes32 }): Queued_ {
+            return new Queued_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Queued_ {
+            return obj.tag === InviteToGroupOutcome_Tags.Queued;
+        }
+
+    }
+
+    type RetryExpired__interface = {
+        tag: InviteToGroupOutcome_Tags.RetryExpired
+    };
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    class RetryExpired_ extends UniffiEnum implements RetryExpired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "InviteToGroupOutcome";
+        readonly tag = InviteToGroupOutcome_Tags.RetryExpired;
+        constructor() {
+            super("InviteToGroupOutcome", "RetryExpired");
+        }
+
+        static new(): RetryExpired_ {
+            return new RetryExpired_();
+        }
+
+        static instanceOf(obj: any): obj is RetryExpired_ {
+            return obj.tag === InviteToGroupOutcome_Tags.RetryExpired;
+        }
+
+    }
+
+    type StorageFull__interface = {
+        tag: InviteToGroupOutcome_Tags.StorageFull
+    };
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    class StorageFull_ extends UniffiEnum implements StorageFull__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "InviteToGroupOutcome";
+        readonly tag = InviteToGroupOutcome_Tags.StorageFull;
+        constructor() {
+            super("InviteToGroupOutcome", "StorageFull");
+        }
+
+        static new(): StorageFull_ {
+            return new StorageFull_();
+        }
+
+        static instanceOf(obj: any): obj is StorageFull_ {
+            return obj.tag === InviteToGroupOutcome_Tags.StorageFull;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: InviteToGroupOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "InviteToGroupOutcome";
+        readonly tag = InviteToGroupOutcome_Tags.Busy;
+        constructor() {
+            super("InviteToGroupOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === InviteToGroupOutcome_Tags.Busy;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: InviteToGroupOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "InviteToGroupOutcome";
+        readonly tag = InviteToGroupOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>;
+        constructor(
+inner: {reason: GroupRejectionReason; detail: string }) {
+            super("InviteToGroupOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {reason: GroupRejectionReason; detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === InviteToGroupOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: InviteToGroupOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "InviteToGroupOutcome";
+        readonly tag = InviteToGroupOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("InviteToGroupOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === InviteToGroupOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is InviteToGroupOutcome {
+        return obj[uniffiTypeNameSymbol] === "InviteToGroupOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Queued: Queued_,
+  RetryExpired: RetryExpired_,
+  StorageFull: StorageFull_,
+  Busy: Busy_,
+  InvalidInput: InvalidInput_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type InviteToGroupOutcome = InstanceType<
+    typeof InviteToGroupOutcome['Queued' | 'RetryExpired' | 'StorageFull' | 'Busy' | 'InvalidInput' | 'Unavailable']
+>;
+
+// FfiConverter for enum InviteToGroupOutcome
+const FfiConverterTypeInviteToGroupOutcome = (() => {
+    type TypeName = InviteToGroupOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new InviteToGroupOutcome.Queued({invitationId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 2: return new InviteToGroupOutcome.RetryExpired();
+                case 3: return new InviteToGroupOutcome.StorageFull();
+                case 4: return new InviteToGroupOutcome.Busy();
+                case 5: return new InviteToGroupOutcome.InvalidInput({reason: FfiConverterTypeGroupRejectionReason.readFromCursor(c), detail: FfiConverterString.readFromCursor(c) });
+                case 6: return new InviteToGroupOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case InviteToGroupOutcome_Tags.Queued: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.invitationId, c);
+                    return;
+                }
+                case InviteToGroupOutcome_Tags.RetryExpired: {
+                    c.writeI32(2);
+                    return;
+                }
+                case InviteToGroupOutcome_Tags.StorageFull: {
+                    c.writeI32(3);
+                    return;
+                }
+                case InviteToGroupOutcome_Tags.Busy: {
+                    c.writeI32(4);
+                    return;
+                }
+                case InviteToGroupOutcome_Tags.InvalidInput: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupRejectionReason.writeIntoCursor(inner.reason, c);
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case InviteToGroupOutcome_Tags.Unavailable: {
+                    c.writeI32(6);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that InviteToGroupOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case InviteToGroupOutcome_Tags.Queued: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.invitationId);
+                    return size;
+                }
+                case InviteToGroupOutcome_Tags.RetryExpired: {
+                    return 4;
+                }
+                case InviteToGroupOutcome_Tags.StorageFull: {
+                    return 4;
+                }
+                case InviteToGroupOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case InviteToGroupOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupRejectionReason.allocationSize(inner.reason);
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case InviteToGroupOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
                 }
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
@@ -14887,6 +20122,289 @@ const FfiConverterTypeRemoteWifiCommandOutcome = (() => {
 })();
 
 
+// Enum: RespondGroupInvitationOutcome
+export enum RespondGroupInvitationOutcome_Tags {
+    Saved = "Saved",
+    RetryExpired = "RetryExpired",
+    StorageFull = "StorageFull",
+    Busy = "Busy",
+    InvalidInput = "InvalidInput",
+    Unavailable = "Unavailable"
+}
+export const RespondGroupInvitationOutcome = (() => {
+
+    type Saved__interface = {
+        tag: RespondGroupInvitationOutcome_Tags.Saved
+    };
+    /**
+     * The decision is durable; joining can still require network exchanges.
+     */
+    class Saved_ extends UniffiEnum implements Saved__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "RespondGroupInvitationOutcome";
+        readonly tag = RespondGroupInvitationOutcome_Tags.Saved;
+        constructor() {
+            super("RespondGroupInvitationOutcome", "Saved");
+        }
+
+        static new(): Saved_ {
+            return new Saved_();
+        }
+
+        static instanceOf(obj: any): obj is Saved_ {
+            return obj.tag === RespondGroupInvitationOutcome_Tags.Saved;
+        }
+
+    }
+
+    type RetryExpired__interface = {
+        tag: RespondGroupInvitationOutcome_Tags.RetryExpired
+    };
+    /**
+     * Recovery evidence has been retired. Do not automatically mint a new ID.
+     */
+    class RetryExpired_ extends UniffiEnum implements RetryExpired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "RespondGroupInvitationOutcome";
+        readonly tag = RespondGroupInvitationOutcome_Tags.RetryExpired;
+        constructor() {
+            super("RespondGroupInvitationOutcome", "RetryExpired");
+        }
+
+        static new(): RetryExpired_ {
+            return new RetryExpired_();
+        }
+
+        static instanceOf(obj: any): obj is RetryExpired_ {
+            return obj.tag === RespondGroupInvitationOutcome_Tags.RetryExpired;
+        }
+
+    }
+
+    type StorageFull__interface = {
+        tag: RespondGroupInvitationOutcome_Tags.StorageFull
+    };
+    /**
+     * Bounded admission is full; existing work and this retry ID remain intact.
+     */
+    class StorageFull_ extends UniffiEnum implements StorageFull__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "RespondGroupInvitationOutcome";
+        readonly tag = RespondGroupInvitationOutcome_Tags.StorageFull;
+        constructor() {
+            super("RespondGroupInvitationOutcome", "StorageFull");
+        }
+
+        static new(): StorageFull_ {
+            return new StorageFull_();
+        }
+
+        static instanceOf(obj: any): obj is StorageFull_ {
+            return obj.tag === RespondGroupInvitationOutcome_Tags.StorageFull;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: RespondGroupInvitationOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "RespondGroupInvitationOutcome";
+        readonly tag = RespondGroupInvitationOutcome_Tags.Busy;
+        constructor() {
+            super("RespondGroupInvitationOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === RespondGroupInvitationOutcome_Tags.Busy;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: RespondGroupInvitationOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "RespondGroupInvitationOutcome";
+        readonly tag = RespondGroupInvitationOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{reason: GroupRejectionReason; detail: string}>;
+        constructor(
+inner: {reason: GroupRejectionReason; detail: string }) {
+            super("RespondGroupInvitationOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {reason: GroupRejectionReason; detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === RespondGroupInvitationOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: RespondGroupInvitationOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "RespondGroupInvitationOutcome";
+        readonly tag = RespondGroupInvitationOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("RespondGroupInvitationOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === RespondGroupInvitationOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is RespondGroupInvitationOutcome {
+        return obj[uniffiTypeNameSymbol] === "RespondGroupInvitationOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Saved: Saved_,
+  RetryExpired: RetryExpired_,
+  StorageFull: StorageFull_,
+  Busy: Busy_,
+  InvalidInput: InvalidInput_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type RespondGroupInvitationOutcome = InstanceType<
+    typeof RespondGroupInvitationOutcome['Saved' | 'RetryExpired' | 'StorageFull' | 'Busy' | 'InvalidInput' | 'Unavailable']
+>;
+
+// FfiConverter for enum RespondGroupInvitationOutcome
+const FfiConverterTypeRespondGroupInvitationOutcome = (() => {
+    type TypeName = RespondGroupInvitationOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new RespondGroupInvitationOutcome.Saved();
+                case 2: return new RespondGroupInvitationOutcome.RetryExpired();
+                case 3: return new RespondGroupInvitationOutcome.StorageFull();
+                case 4: return new RespondGroupInvitationOutcome.Busy();
+                case 5: return new RespondGroupInvitationOutcome.InvalidInput({reason: FfiConverterTypeGroupRejectionReason.readFromCursor(c), detail: FfiConverterString.readFromCursor(c) });
+                case 6: return new RespondGroupInvitationOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case RespondGroupInvitationOutcome_Tags.Saved: {
+                    c.writeI32(1);
+                    return;
+                }
+                case RespondGroupInvitationOutcome_Tags.RetryExpired: {
+                    c.writeI32(2);
+                    return;
+                }
+                case RespondGroupInvitationOutcome_Tags.StorageFull: {
+                    c.writeI32(3);
+                    return;
+                }
+                case RespondGroupInvitationOutcome_Tags.Busy: {
+                    c.writeI32(4);
+                    return;
+                }
+                case RespondGroupInvitationOutcome_Tags.InvalidInput: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterTypeGroupRejectionReason.writeIntoCursor(inner.reason, c);
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case RespondGroupInvitationOutcome_Tags.Unavailable: {
+                    c.writeI32(6);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that RespondGroupInvitationOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case RespondGroupInvitationOutcome_Tags.Saved: {
+                    return 4;
+                }
+                case RespondGroupInvitationOutcome_Tags.RetryExpired: {
+                    return 4;
+                }
+                case RespondGroupInvitationOutcome_Tags.StorageFull: {
+                    return 4;
+                }
+                case RespondGroupInvitationOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case RespondGroupInvitationOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeGroupRejectionReason.allocationSize(inner.reason);
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case RespondGroupInvitationOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
 // Enum: RetryLxmfMessageOutcome
 export enum RetryLxmfMessageOutcome_Tags {
     Accepted = "Accepted",
@@ -15550,6 +21068,14 @@ const FfiConverterTypeSendDirectTextOutcome = (() => {
     return new FFIConverter();
 })();
 
+/**
+ * Typealias from the type name used in the UDL file to the builtin type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
+export type Bytes10 = Uint8Array;
+// FfiConverter for Bytes10, a type alias for Uint8Array.
+const FfiConverterTypeBytes10 = FfiConverterUint8Array;
+
 // FfiConverter for Array<string>
 const FfiConverterSequenceString = new FfiConverterArray(FfiConverterString);
 
@@ -15604,8 +21130,20 @@ const FfiConverterOptionalTypeDevelopmentNodeOperation = new FfiConverterOptiona
 // FfiConverter for DevelopmentNodeFailure | undefined
 const FfiConverterOptionalTypeDevelopmentNodeFailure = new FfiConverterOptional(FfiConverterTypeDevelopmentNodeFailure);
 
+// FfiConverter for Array<GroupMember>
+const FfiConverterSequenceTypeGroupMember = new FfiConverterArray(FfiConverterTypeGroupMember);
+
 // FfiConverter for bigint | undefined
 const FfiConverterOptionalUInt64 = new FfiConverterOptional(FfiConverterUInt64);
+
+// FfiConverter for GroupSynchronizationIssue | undefined
+const FfiConverterOptionalTypeGroupSynchronizationIssue = new FfiConverterOptional(FfiConverterTypeGroupSynchronizationIssue);
+
+// FfiConverter for Array<GroupPeerSynchronizationProgress>
+const FfiConverterSequenceTypeGroupPeerSynchronizationProgress = new FfiConverterArray(FfiConverterTypeGroupPeerSynchronizationProgress);
+
+// FfiConverter for Bytes32 | undefined
+const FfiConverterOptionalTypeBytes32 = new FfiConverterOptional(FfiConverterTypeBytes32);
 
 // FfiConverter for Array<Uint8Array>
 const FfiConverterSequenceBytes = new FfiConverterArray(FfiConverterUint8Array);
@@ -15633,6 +21171,18 @@ const FfiConverterSequenceTypeRemotePeerEntry = new FfiConverterArray(FfiConvert
 
 // FfiConverter for Array<Contact>
 const FfiConverterSequenceTypeContact = new FfiConverterArray(FfiConverterTypeContact);
+
+// FfiConverter for Array<GroupAction>
+const FfiConverterSequenceTypeGroupAction = new FfiConverterArray(FfiConverterTypeGroupAction);
+
+// FfiConverter for Array<GroupConversation>
+const FfiConverterSequenceTypeGroupConversation = new FfiConverterArray(FfiConverterTypeGroupConversation);
+
+// FfiConverter for Array<GroupInvitation>
+const FfiConverterSequenceTypeGroupInvitation = new FfiConverterArray(FfiConverterTypeGroupInvitation);
+
+// FfiConverter for Array<GroupTextMessage>
+const FfiConverterSequenceTypeGroupTextMessage = new FfiConverterArray(FfiConverterTypeGroupTextMessage);
 
 // FfiConverter for Array<LxmfMessage>
 const FfiConverterSequenceTypeLxmfMessage = new FfiConverterArray(FfiConverterTypeLxmfMessage);
@@ -15662,6 +21212,12 @@ function uniffiEnsureInitialized() {
     if (bindingsContractVersion !== scaffoldingContractVersion) {
         throw new UniffiInternalError.ContractVersionMismatch(scaffoldingContractVersion, bindingsContractVersion);
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_acknowledge_group_action() !== 33412) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_acknowledge_group_action");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_announce_groups() !== 31801) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_announce_groups");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_announce_lxmf() !== 40331) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_announce_lxmf");
     }
@@ -15686,6 +21242,12 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_clear_network_activity() !== 38833) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_clear_network_activity");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_create_group() !== 34827) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_create_group");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_create_group_request_id() !== 33804) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_create_group_request_id");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_create_manual_contact() !== 1882) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_create_manual_contact");
     }
@@ -15695,11 +21257,20 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_describe_target() !== 49809) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_describe_target");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_discard_expired_group_action() !== 2362) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_discard_expired_group_action");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_execute_group_action() !== 3415) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_execute_group_action");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_finish_remote_wifi_trial() !== 11313) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_finish_remote_wifi_trial");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_get_contact() !== 18891) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_get_contact");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_get_group_announce_settings() !== 25903) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_get_group_announce_settings");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_initiate_pairing() !== 58991) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_initiate_pairing");
@@ -15707,8 +21278,23 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_inspect_remote_wifi_trial() !== 22782) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_inspect_remote_wifi_trial");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_invite_to_group() !== 26962) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_invite_to_group");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_list_contacts() !== 57283) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_contacts");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_list_group_actions() !== 45687) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_group_actions");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_list_group_conversations() !== 48151) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_group_conversations");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_list_group_invitations() !== 2989) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_group_invitations");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_list_group_messages() !== 18375) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_group_messages");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_list_lxmf_conversations() !== 3437) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_lxmf_conversations");
@@ -15749,6 +21335,9 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_native_stop() !== 41536) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_native_stop");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_prepare_group_action() !== 9779) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_prepare_group_action");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_preview_identity_import() !== 31445) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_preview_identity_import");
     }
@@ -15767,6 +21356,9 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_reject_pairing() !== 34936) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_reject_pairing");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_respond_group_invitation() !== 50214) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_respond_group_invitation");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_retry_lxmf_message() !== 20310) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_retry_lxmf_message");
     }
@@ -15779,6 +21371,9 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_send_direct_text() !== 24289) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_send_direct_text");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_send_group_text() !== 51044) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_send_group_text");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_set_bluetooth_enabled() !== 13413) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_set_bluetooth_enabled");
     }
@@ -15787,6 +21382,9 @@ function uniffiEnsureInitialized() {
     }
     if (nativeModule().uniffi_prns_app_checksum_func_set_contact_pinned() !== 4387) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_set_contact_pinned");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_set_group_announce_settings() !== 31011) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_set_group_announce_settings");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_set_messaging_name() !== 62039) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_set_messaging_name");
@@ -15808,6 +21406,7 @@ export default Object.freeze({
     FfiConverterTypeAppleBluetoothRestorationPreparationFailureStage,
     FfiConverterTypeAppleBluetoothRestorationPreparationOutcome,
     FfiConverterTypeBindingContract,
+    FfiConverterTypeBytes10,
     FfiConverterTypeBytes16,
     FfiConverterTypeBytes32,
     FfiConverterTypeCancelLxmfMessageInput,
@@ -15822,6 +21421,8 @@ export default Object.freeze({
     FfiConverterTypeContactListOutcome,
     FfiConverterTypeContactLookupOutcome,
     FfiConverterTypeContactMutationOutcome,
+    FfiConverterTypeCreateGroupInput,
+    FfiConverterTypeCreateGroupOutcome,
     FfiConverterTypeCreateManualContactInput,
     FfiConverterTypeDescribeRemoteControlTargetInput,
     FfiConverterTypeDevelopmentNodeFailure,
@@ -15835,10 +21436,40 @@ export default Object.freeze({
     FfiConverterTypeDevelopmentNodeStopOutcome,
     FfiConverterTypeDevelopmentNodeStopStage,
     FfiConverterTypeFinishRemoteWifiTrialInput,
+    FfiConverterTypeGroupAction,
+    FfiConverterTypeGroupActionAcknowledgeOutcome,
+    FfiConverterTypeGroupActionInput,
+    FfiConverterTypeGroupActionListOutcome,
+    FfiConverterTypeGroupActionOutcome,
+    FfiConverterTypeGroupActionReference,
+    FfiConverterTypeGroupActionResult,
+    FfiConverterTypeGroupActionState,
+    FfiConverterTypeGroupAnnounceOutcome,
+    FfiConverterTypeGroupAnnounceSettings,
+    FfiConverterTypeGroupAnnounceSettingsOutcome,
+    FfiConverterTypeGroupConversation,
+    FfiConverterTypeGroupConversationListOutcome,
+    FfiConverterTypeGroupInvitation,
+    FfiConverterTypeGroupInvitationListOutcome,
+    FfiConverterTypeGroupInvitationState,
+    FfiConverterTypeGroupMember,
+    FfiConverterTypeGroupMessageListOutcome,
+    FfiConverterTypeGroupPeerSynchronizationProgress,
+    FfiConverterTypeGroupRejectionReason,
+    FfiConverterTypeGroupRequestIdOutcome,
+    FfiConverterTypeGroupSynchronizationIssue,
+    FfiConverterTypeGroupSynchronizationPhase,
+    FfiConverterTypeGroupSynchronizationProgress,
+    FfiConverterTypeGroupSynchronizationState,
+    FfiConverterTypeGroupTextMessage,
+    FfiConverterTypeGroupTextSendOutcome,
     FfiConverterTypeIdentityCreationOutcome,
     FfiConverterTypeIdentityImportPreviewOutcome,
     FfiConverterTypeInitiateRemoteControlPairingInput,
     FfiConverterTypeInspectRemoteWifiTrialInput,
+    FfiConverterTypeInviteToGroupInput,
+    FfiConverterTypeInviteToGroupOutcome,
+    FfiConverterTypeListGroupMessagesInput,
     FfiConverterTypeListLxmfConversationsInput,
     FfiConverterTypeListLxmfMessagesInput,
     FfiConverterTypeLocalAnnounceActivity,
@@ -15867,6 +21498,7 @@ export default Object.freeze({
     FfiConverterTypeMeasureLxmfTextInput,
     FfiConverterTypeMeasureLxmfTextOutcome,
     FfiConverterTypeNativeStoragePreparationOutcome,
+    FfiConverterTypePrepareGroupActionInput,
     FfiConverterTypePrimaryIdentityState,
     FfiConverterTypeReadRemoteNodeInput,
     FfiConverterTypeReadRemoteNodeOutcome,
@@ -15916,10 +21548,13 @@ export default Object.freeze({
     FfiConverterTypeRemoteWifiOperation,
     FfiConverterTypeRemoteWifiStatus,
     FfiConverterTypeRemoteWifiTransaction,
+    FfiConverterTypeRespondGroupInvitationInput,
+    FfiConverterTypeRespondGroupInvitationOutcome,
     FfiConverterTypeRetryLxmfMessageInput,
     FfiConverterTypeRetryLxmfMessageOutcome,
     FfiConverterTypeSendDirectTextInput,
     FfiConverterTypeSendDirectTextOutcome,
+    FfiConverterTypeSendGroupTextInput,
     FfiConverterTypeSetContactAliasInput,
     FfiConverterTypeSetContactPinnedInput,
     FfiConverterTypeSnapshotBox,

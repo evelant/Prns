@@ -122,6 +122,43 @@ no path resolution, database opening, synchronous response wait or worker join
 on Hermes. A process-wide timer driver keeps offline query deadlines working;
 it owns neither an executor nor a node.
 
+## Group conversations and recoverable actions
+
+The group APIs use the application database owner shared with contacts and LXMF.
+Create groups and exchange authenticated invitations without development fixtures.
+`createGroupRequestId` obtains an identifier from platform entropy; keep that ID
+and the exact input when retrying an uncertain create, invitation or send.
+`Accepted` means local durable acceptance. Per-device receipts do not imply human
+read status. History uses exclusive local-sequence pagination and a durable
+revision that changes when receipts arrive.
+
+Use `prepareGroupAction` before submitting create/invite/respond/send intent.
+Preparation checks the expected local identity and commits an immutable input.
+`listGroupActions` recovers outstanding work after restart; `executeGroupAction`
+reuses the original request ID. Completed results require acknowledgment, while
+`RetryExpired` requires explicit discard. An uncertain reply cannot justify a
+new request ID. The low-level methods remain available to consumers that own
+their own durable intent.
+
+`getGroupAnnounceSettings` and `setGroupAnnounceSettings` save preferences without
+starting the network. The app adapter defaults to hourly announcements with
+positive jitter; callers can select manual-only or 15/30-minute and 1/3/6-hour
+intervals. `announceGroups` requests the two group service destinations. A
+`Requested` outcome means local host admission, not peer reception. The reusable
+runner retains its six-hour default.
+
+One group worker shares the existing Reticulum host and interleaves inbound
+requests with bounded outbound synchronization. Accepted database jobs drain on
+Stop, and durable sends can be accepted without a live interface. Network
+progress requires a running node and usable route. Synchronization/progress
+projections are disposable observations; message IDs and device receipts remain
+authoritative across restart. No JavaScript network retry loop is required.
+
+The optional `group-fixture.json` path is only a regression tool: it installs into
+vacant matching storage and never restores initial ratchets over live state.
+The native backend remains development plaintext; protected phone storage and
+fresh mobile acceptance are separate work.
+
 ## Runtime scope and validation
 
 The runtime and generator use the exact jsi2 source revision and ordered patches

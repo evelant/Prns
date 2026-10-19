@@ -12,11 +12,14 @@ use redb::{Database, ReadableDatabase, ReadableTable, TableDefinition};
 use tokio::sync::oneshot;
 
 use crate::directory::{self, DirectoryRequest, DirectoryResponse};
+use prns_groups_runner_native::{
+    Client as GroupClient, Error as GroupError, Job as GroupJob, Submit,
+};
 
 pub(crate) const DEVELOPMENT_META: TableDefinition<&str, u64> =
     TableDefinition::new("development_meta");
 pub(crate) const CONTACTS: TableDefinition<&[u8], &[u8]> = TableDefinition::new("contacts");
-const APPLICATION_SETTINGS: TableDefinition<&str, &str> =
+pub(crate) const APPLICATION_SETTINGS: TableDefinition<&str, &str> =
     TableDefinition::new("application_settings");
 const MESSAGING_NAME_KEY: &str = "messaging_name";
 
@@ -24,10 +27,8 @@ const DEVELOPMENT_FORMAT_KEY: &str = "format";
 const DEVELOPMENT_FORMAT: u64 = 2;
 const BLUETOOTH_ENABLED_KEY: &str = "bluetooth_enabled";
 const STORE_LANE_CAPACITY: usize = 8;
-
 pub(crate) type StoreReply = Result<DirectoryResponse, DevelopmentStoreFailure>;
 pub(crate) type MailboxStoreReply = Result<MailboxReply, MailboxFailure>;
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum DevelopmentStoreFailure {
     Unavailable(String),
@@ -45,6 +46,23 @@ impl DevelopmentStoreFailure {
 }
 
 enum StoreJob {
+    Drain(SyncSender<()>),
+    InitializeGroups {
+        identity: prns_host::IdentityHash,
+        response: SyncSender<Result<(), DevelopmentStoreFailure>>,
+    },
+    Group(GroupJob),
+    GroupAction {
+        request: crate::group_actions::Request,
+        response: oneshot::Sender<Result<crate::group_actions::Reply, crate::group_actions::Error>>,
+    },
+    GroupAnnounces {
+        settings: Option<crate::contract::GroupAnnounceSettings>,
+        completion: Box<
+            dyn FnOnce(Result<crate::contract::GroupAnnounceSettings, DevelopmentStoreFailure>)
+                + Send,
+        >,
+    },
     MessagingName {
         name: Option<String>,
         completion: Box<dyn FnOnce(Result<String, DevelopmentStoreFailure>) + Send>,
@@ -70,6 +88,125 @@ enum StoreJob {
 
 struct StoreLane {
     jobs: StdMutex<Option<SyncSender<StoreJob>>>,
+    group_action_executing: std::sync::atomic::AtomicBool,
+    group_identity: StdMutex<Option<[u8; 16]>>,
+}
+
+enum StoreAdmissionError {
+    Full,
+    Disconnected,
+}
+
+impl StoreLane {
+    /// Check owner availability and enqueue while holding its admission lock.
+    fn admit_default(&self, job: StoreJob) -> Result<(), StoreAdmissionError> {
+        let jobs = self
+            .jobs
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        let Some(jobs) = jobs.as_ref() else {
+            return Err(StoreAdmissionError::Disconnected);
+        };
+        jobs.try_send(job).map_err(|error| match error {
+            TrySendError::Full(_) => StoreAdmissionError::Full,
+            TrySendError::Disconnected(_) => StoreAdmissionError::Disconnected,
+        })
+    }
+}
+
+struct DevelopmentGroupSubmitter {
+    lane: Weak<StoreLane>,
+}
+
+#[derive(Clone)]
+pub(crate) struct GroupActionClient {
+    lane: Weak<StoreLane>,
+}
+
+pub(crate) struct GroupActionExecution(Arc<StoreLane>);
+
+impl Drop for GroupActionExecution {
+    fn drop(&mut self) {
+        self.0
+            .group_action_executing
+            .store(false, std::sync::atomic::Ordering::Release);
+    }
+}
+
+impl GroupActionClient {
+    pub(crate) fn identity(&self) -> Result<[u8; 16], crate::group_actions::Error> {
+        let unavailable = || {
+            crate::group_actions::Error::Unavailable("The local group identity is not open.".into())
+        };
+        let lane = self.lane.upgrade().ok_or_else(unavailable)?;
+        let identity = *lane
+            .group_identity
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        identity.ok_or_else(unavailable)
+    }
+    /// Only one UI recovery execution may observe and settle a Pending action
+    /// at once. Native accepted jobs still finish after cancellation; any later
+    /// journal read is ordered after their admitted writes on this same lane.
+    pub(crate) fn start_execution(
+        &self,
+    ) -> Result<GroupActionExecution, crate::group_actions::Error> {
+        let lane = self.lane.upgrade().ok_or_else(|| {
+            crate::group_actions::Error::Unavailable("The group action store has closed.".into())
+        })?;
+        lane.group_action_executing
+            .compare_exchange(
+                false,
+                true,
+                std::sync::atomic::Ordering::Acquire,
+                std::sync::atomic::Ordering::Relaxed,
+            )
+            .map_err(|_| crate::group_actions::Error::Busy)?;
+        Ok(GroupActionExecution(lane))
+    }
+    pub(crate) fn same_owner(&self, other: &Self) -> bool {
+        self.lane.ptr_eq(&other.lane)
+    }
+
+    pub(crate) fn admit(
+        &self,
+        request: crate::group_actions::Request,
+    ) -> Result<
+        impl std::future::Future<
+                Output = Result<crate::group_actions::Reply, crate::group_actions::Error>,
+            > + Send
+            + 'static,
+        crate::group_actions::Error,
+    > {
+        use crate::group_actions::Error;
+        let unavailable = || Error::Unavailable("The group action store has closed.".into());
+        let lane = self.lane.upgrade().ok_or_else(unavailable)?;
+        let (response, receiver) = oneshot::channel();
+        lane.admit_default(StoreJob::GroupAction { request, response })
+            .map_err(|error| match error {
+                StoreAdmissionError::Full => Error::Busy,
+                StoreAdmissionError::Disconnected => unavailable(),
+            })?;
+        Ok(async move { receiver.await.map_err(|_| unavailable())? })
+    }
+
+    pub(crate) async fn execute(
+        &self,
+        request: crate::group_actions::Request,
+    ) -> Result<crate::group_actions::Reply, crate::group_actions::Error> {
+        self.admit(request)?.await
+    }
+}
+
+impl Submit for DevelopmentGroupSubmitter {
+    fn submit(&self, job: GroupJob) -> Result<(), GroupError> {
+        let lane = self.lane.upgrade().ok_or(GroupError::Unavailable)?;
+        lane.admit_default(StoreJob::Group(job))
+            .map_err(|error| match error {
+                StoreAdmissionError::Full => GroupError::Busy,
+                StoreAdmissionError::Disconnected => GroupError::Unavailable,
+            })
+    }
 }
 
 #[derive(Clone)]
@@ -86,25 +223,15 @@ impl MailboxSubmitter for DevelopmentMailboxSubmitter {
                     "the development database owner has closed".to_owned(),
                 ));
             };
-            let jobs = lane
-                .jobs
-                .lock()
-                .unwrap_or_else(std::sync::PoisonError::into_inner)
-                .clone()
-                .ok_or_else(|| {
-                    MailboxFailure::Unavailable(
-                        "the development database owner is closing".to_owned(),
-                    )
-                })?;
             let (response, receiver) = oneshot::channel();
-            match jobs.try_send(StoreJob::MailboxAsync { request, response }) {
+            match lane.admit_default(StoreJob::MailboxAsync { request, response }) {
                 Ok(()) => receiver.await.map_err(|_| {
                     MailboxFailure::Unavailable(
                         "the development database owner stopped before replying".to_owned(),
                     )
                 })?,
-                Err(TrySendError::Full(_)) => Err(MailboxFailure::Busy),
-                Err(TrySendError::Disconnected(_)) => Err(MailboxFailure::Unavailable(
+                Err(StoreAdmissionError::Full) => Err(MailboxFailure::Busy),
+                Err(StoreAdmissionError::Disconnected) => Err(MailboxFailure::Unavailable(
                     "the development database owner has stopped".to_owned(),
                 )),
             }
@@ -115,17 +242,98 @@ impl MailboxSubmitter for DevelopmentMailboxSubmitter {
 pub(crate) struct DevelopmentStoreOwner {
     pub(crate) root: PathBuf,
     lane: Arc<StoreLane>,
+    group_client: GroupClient,
+    group_health: crate::groups::GroupHealth,
     join: Option<JoinHandle<()>>,
 }
 
 impl DevelopmentStoreOwner {
+    pub(crate) fn drain_blocking(&self) -> Result<(), DevelopmentStoreFailure> {
+        let (reply, receiver) = mpsc::sync_channel(1);
+        self.jobs()?.send(StoreJob::Drain(reply)).map_err(|_| {
+            DevelopmentStoreFailure::unavailable(
+                "The development database owner stopped before draining admitted work.",
+            )
+        })?;
+        receiver.recv().map_err(|_| {
+            DevelopmentStoreFailure::unavailable(
+                "The development database owner stopped while draining admitted work.",
+            )
+        })
+    }
+
+    pub(crate) fn group_client(&self) -> GroupClient {
+        self.group_client.clone()
+    }
+
+    pub(crate) fn group_action_client(&self) -> GroupActionClient {
+        GroupActionClient {
+            lane: Arc::downgrade(&self.lane),
+        }
+    }
+
+    pub(crate) fn group_health(&self) -> crate::groups::GroupHealth {
+        self.group_health.clone()
+    }
+
+    /// Only the native lifecycle queue may wait for fixture installation.
+    pub(crate) fn initialize_groups_blocking(
+        &self,
+        identity: prns_host::IdentityHash,
+    ) -> Result<(), DevelopmentStoreFailure> {
+        let (response, receiver) = mpsc::sync_channel(1);
+        self.lane
+            .admit_default(StoreJob::InitializeGroups { identity, response })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable(
+                    "The database lane cannot admit group initialization.",
+                )
+            })?;
+        receiver.recv().map_err(|_| {
+            DevelopmentStoreFailure::unavailable(
+                "The group storage owner stopped before initialization.",
+            )
+        })??;
+        *self
+            .lane
+            .group_identity
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner) = Some(*identity.as_bytes());
+        Ok(())
+    }
+
+    pub(crate) fn admit_group_announces(
+        &self,
+        settings: Option<crate::contract::GroupAnnounceSettings>,
+        completion: impl FnOnce(Result<crate::contract::GroupAnnounceSettings, DevelopmentStoreFailure>)
+            + Send
+            + 'static,
+    ) -> Result<(), DevelopmentStoreFailure> {
+        let live = self.group_health.announces();
+        self.lane
+            .admit_default(StoreJob::GroupAnnounces {
+                settings,
+                completion: Box::new(move |result| {
+                    if let Ok(settings) = &result {
+                        live.update(settings.clone());
+                    }
+                    completion(result);
+                }),
+            })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable(
+                    "The group announcement settings lane is full or closed.",
+                )
+            })
+    }
+
     pub(crate) fn admit_messaging_name(
         &self,
         name: Option<String>,
         completion: impl FnOnce(Result<String, DevelopmentStoreFailure>) + Send + 'static,
     ) -> Result<(), DevelopmentStoreFailure> {
-        self.jobs()?
-            .try_send(StoreJob::MessagingName {
+        self.lane
+            .admit_default(StoreJob::MessagingName {
                 name,
                 completion: Box::new(completion),
             })
@@ -153,8 +361,8 @@ impl DevelopmentStoreOwner {
         enabled: Option<bool>,
         completion: impl FnOnce(Result<bool, DevelopmentStoreFailure>) + Send + 'static,
     ) -> Result<(), DevelopmentStoreFailure> {
-        self.jobs()?
-            .try_send(StoreJob::Bluetooth {
+        self.lane
+            .admit_default(StoreJob::Bluetooth {
                 enabled,
                 completion: Box::new(completion),
             })
@@ -182,18 +390,21 @@ impl DevelopmentStoreOwner {
         let (jobs_tx, jobs_rx) = mpsc::sync_channel(STORE_LANE_CAPACITY);
         let (ready_tx, ready_rx) = mpsc::sync_channel(1);
         let database_path = database_path.to_path_buf();
+        let group_fixture_path = root.join("group-fixture.json");
         let join = std::thread::Builder::new()
             .name("prns-app-development-store".to_owned())
-            .spawn(move || {
-                let database = open_database(&database_path);
-                match database {
-                    Ok(database) => {
-                        let _ = ready_tx.send(Ok(()));
-                        run_owner(&database, &jobs_rx);
+            .spawn(move || match open_database(&database_path) {
+                Ok(database) => {
+                    let settings = crate::group_announces::settings(&database, None);
+                    if settings.is_err() {
+                        let _ = ready_tx.send(settings);
+                        return;
                     }
-                    Err(failure) => {
-                        let _ = ready_tx.send(Err(failure));
-                    }
+                    let _ = ready_tx.send(settings);
+                    run_owner(&database, &jobs_rx, Some(group_fixture_path.as_path()));
+                }
+                Err(failure) => {
+                    let _ = ready_tx.send(Err(failure));
                 }
             })
             .map_err(|error| {
@@ -208,13 +419,25 @@ impl DevelopmentStoreOwner {
         // admission lane above; read-only callers may bound their waits, while
         // admitted mutation waiters are retained through a definitive reply.
         match ready_rx.recv() {
-            Ok(Ok(())) => Ok(Self {
-                root: root.to_path_buf(),
-                lane: Arc::new(StoreLane {
+            Ok(Ok(announce_settings)) => {
+                let group_health = crate::groups::GroupHealth::new();
+                group_health.announces().update(announce_settings);
+                let lane = Arc::new(StoreLane {
                     jobs: StdMutex::new(Some(jobs_tx)),
-                }),
-                join: Some(join),
-            }),
+                    group_action_executing: std::sync::atomic::AtomicBool::new(false),
+                    group_identity: StdMutex::new(None),
+                });
+                let group_client = GroupClient::new(Arc::new(DevelopmentGroupSubmitter {
+                    lane: Arc::downgrade(&lane),
+                }));
+                Ok(Self {
+                    root: root.to_path_buf(),
+                    lane,
+                    group_client,
+                    group_health,
+                    join: Some(join),
+                })
+            }
             Ok(Err(failure)) => {
                 let _ = join.join();
                 Err(failure)
@@ -232,9 +455,9 @@ impl DevelopmentStoreOwner {
         &self,
         request: DirectoryRequest,
     ) -> Result<oneshot::Receiver<StoreReply>, DevelopmentStoreFailure> {
-        let jobs = self.jobs()?;
         let (response, receiver) = oneshot::channel();
-        jobs.try_send(StoreJob::DirectoryAsync { request, response })
+        self.lane
+            .admit_default(StoreJob::DirectoryAsync { request, response })
             .map_err(|_| {
                 DevelopmentStoreFailure::unavailable(
                     "the development database lane is full or closed",
@@ -247,10 +470,15 @@ impl DevelopmentStoreOwner {
         &self,
         request: MailboxRequest,
     ) -> Result<oneshot::Receiver<MailboxStoreReply>, MailboxFailure> {
-        let jobs = self.jobs().map_err(map_development_failure_to_mailbox)?;
         let (response, receiver) = oneshot::channel();
-        jobs.try_send(StoreJob::MailboxAsync { request, response })
-            .map_err(|_| MailboxFailure::Busy)?;
+        self.lane
+            .admit_default(StoreJob::MailboxAsync { request, response })
+            .map_err(|error| match error {
+                StoreAdmissionError::Full => MailboxFailure::Busy,
+                StoreAdmissionError::Disconnected => {
+                    MailboxFailure::Unavailable("The application mailbox is closed.".into())
+                }
+            })?;
         Ok(receiver)
     }
 
@@ -316,9 +544,66 @@ impl Drop for DevelopmentStoreOwner {
     }
 }
 
-fn run_owner(database: &Database, jobs: &Receiver<StoreJob>) {
+fn run_owner(database: &Database, jobs: &Receiver<StoreJob>, group_fixture: Option<&Path>) {
+    let mut group_session = None;
+    let mut group_failed = false;
+    let mut group_identity = None;
     while let Ok(job) = jobs.recv() {
         match job {
+            StoreJob::Drain(reply) => {
+                let _ = reply.send(());
+            }
+            StoreJob::InitializeGroups { identity, response } => {
+                let result = if group_session.is_some() {
+                    if group_identity == Some(identity) {
+                        Ok(())
+                    } else {
+                        Err(DevelopmentStoreFailure::unavailable(
+                            "The group fixture belongs to another native identity.",
+                        ))
+                    }
+                } else {
+                    group_fixture
+                        .map(|path| crate::groups::open_fixture(database, path, identity))
+                        .unwrap_or(Ok(None))
+                        .and_then(|legacy| {
+                            let session = prns_groups_runner_native::GroupManager::open(
+                                database, identity, legacy,
+                            )
+                            .map_err(|error| {
+                                DevelopmentStoreFailure::unavailable(error.to_string())
+                            })?;
+                            group_session = Some(session);
+                            group_identity = Some(identity);
+                            Ok(())
+                        })
+                };
+                group_failed = result.is_err();
+                let _ = response.send(result);
+            }
+            StoreJob::Group(job) => match group_session.as_mut() {
+                Some(session) => session.execute(job),
+                None => job.fail(if group_failed {
+                    GroupError::Configuration
+                } else {
+                    GroupError::NotProvisioned
+                }),
+            },
+            StoreJob::GroupAction { request, response } => {
+                // Like accepted group operations, admitted intent writes finish
+                // even when a bridge caller disappears before receiving them.
+                let _ = response.send(crate::group_actions::execute(
+                    database,
+                    group_identity,
+                    request,
+                ));
+            }
+            StoreJob::GroupAnnounces {
+                settings,
+                completion,
+            } => {
+                completion(crate::group_announces::settings(database, settings));
+            }
             StoreJob::MessagingName { name, completion } => {
                 completion(messaging_name(database, name));
             }
@@ -345,13 +630,17 @@ fn run_owner(database: &Database, jobs: &Receiver<StoreJob>) {
     }
 }
 
-fn messaging_name(
+pub(crate) fn messaging_name(
     database: &Database,
     name: Option<String>,
 ) -> Result<String, DevelopmentStoreFailure> {
     if let Some(name) = name {
-        let name = crate::messaging_profile::normalize_name(&name)
-            .map_err(DevelopmentStoreFailure::unavailable)?;
+        let name = if name.is_empty() {
+            name
+        } else {
+            crate::messaging_profile::normalize_name(&name)
+                .map_err(DevelopmentStoreFailure::unavailable)?
+        };
         let write = database
             .begin_write()
             .map_err(|error| classify_redb_error(error.into(), "write messaging name"))?;
@@ -388,6 +677,9 @@ fn messaging_name(
         .map_err(|error| classify_redb_error(error.into(), "load messaging name"))?
         .map(|name| name.value().to_owned())
         .unwrap_or_else(|| crate::messaging_profile::DEFAULT_MESSAGING_NAME.to_owned());
+    if stored.is_empty() {
+        return Ok(stored);
+    }
     match crate::messaging_profile::normalize_name(&stored) {
         Ok(normalized) if normalized == stored => Ok(stored),
         _ => Err(DevelopmentStoreFailure::reset_required(
@@ -469,6 +761,12 @@ fn open_database(path: &Path) -> Result<Database, DevelopmentStoreFailure> {
 }
 
 fn initialize_database(database: &Database) -> Result<(), DevelopmentStoreFailure> {
+    initialize_database_with_name(database, None)
+}
+fn initialize_database_with_name(
+    database: &Database,
+    initial_name: Option<&str>,
+) -> Result<(), DevelopmentStoreFailure> {
     let write = database
         .begin_write()
         .map_err(|error| classify_redb_error(error.into(), "initialize development database"))?;
@@ -487,6 +785,13 @@ fn initialize_database(database: &Database) -> Result<(), DevelopmentStoreFailur
         })?;
     }
     initialize_mailbox_tables(&write).map_err(map_mailbox_failure)?;
+    if let Some(name) = initial_name {
+        write
+            .open_table(APPLICATION_SETTINGS)
+            .map_err(|error| classify_redb_error(error.into(), "initialize scoped profile"))?
+            .insert(MESSAGING_NAME_KEY, name)
+            .map_err(|error| classify_redb_error(error.into(), "initialize scoped name"))?;
+    }
     write.commit().map_err(|error| {
         classify_redb_error(error.into(), "commit development database initialization")
     })
@@ -535,13 +840,6 @@ fn map_mailbox_failure(failure: MailboxFailure) -> DevelopmentStoreFailure {
         ),
         MailboxFailure::Unavailable(detail) => DevelopmentStoreFailure::unavailable(detail),
         MailboxFailure::ResetRequired(reason) => DevelopmentStoreFailure::reset_required(reason),
-    }
-}
-
-fn map_development_failure_to_mailbox(failure: DevelopmentStoreFailure) -> MailboxFailure {
-    match failure {
-        DevelopmentStoreFailure::Unavailable(detail) => MailboxFailure::Unavailable(detail),
-        DevelopmentStoreFailure::ResetRequired(reason) => MailboxFailure::ResetRequired(reason),
     }
 }
 
@@ -781,6 +1079,90 @@ mod tests {
             DevelopmentStoreOwner::open(root.path(), &path),
             Err(DevelopmentStoreFailure::ResetRequired(_))
         ));
+    }
+
+    #[test]
+    fn group_send_survives_caller_drop_and_reopen_on_the_shared_store_lane() {
+        use crate::test_support::foreign_block_on;
+        use prns_groups_runner_native::{fixture, Clock, SendText, SystemClock};
+        use std::{
+            future::Future,
+            task::{Context, Waker},
+        };
+
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("application.redb");
+        let identity = prns_host::IdentityHash::new([61; 16]);
+        let clock = SystemClock.now();
+        let now = match clock {
+            prns_groups_service::ClockReading::Trusted(interval) => interval.upper(),
+            prns_groups_service::ClockReading::Unknown => panic!("host clock unavailable"),
+        };
+        let fixtures = fixture::generate(
+            "Native recovery",
+            &[identity, prns_host::IdentityHash::new([62; 16])],
+            now,
+        )
+        .unwrap();
+        std::fs::write(root.path().join("group-fixture.json"), &fixtures[0]).unwrap();
+        let owner = DevelopmentStoreOwner::open(root.path(), &path).unwrap();
+        owner.initialize_groups_blocking(identity).unwrap();
+        let client = owner.group_client();
+        let group = foreign_block_on(client.network_config()).unwrap().group;
+        let request = SendText {
+            group,
+            client_request_id: prns_groups_runner_native::RequestToken::new(now.0, [71; 20])
+                .unwrap()
+                .into_bytes(),
+            text: "Survives caller teardown".into(),
+            clock,
+        };
+        let (entered_tx, entered_rx) = mpsc::sync_channel(1);
+        let (release_tx, release_rx) = mpsc::sync_channel(1);
+        owner.admit_test_barrier(entered_tx, release_rx).unwrap();
+        entered_rx.recv().unwrap();
+        let mut waiter = Box::pin(client.send_text(request.clone()));
+        let mut context = Context::from_waker(Waker::noop());
+        assert!(waiter.as_mut().poll(&mut context).is_pending());
+        drop(waiter);
+        release_tx.send(()).unwrap();
+        owner.drain_blocking().unwrap();
+        owner.close().unwrap();
+        assert!(matches!(
+            foreign_block_on(client.conversations()),
+            Err(GroupError::Unavailable)
+        ));
+
+        let reopened = DevelopmentStoreOwner::open(root.path(), &path).unwrap();
+        reopened.initialize_groups_blocking(identity).unwrap();
+        let client = reopened.group_client();
+        let page = foreign_block_on(client.messages(group, None, 50, clock)).unwrap();
+        assert_eq!(page.messages.len(), 1);
+        assert_eq!(
+            page.messages[0].client_request_id,
+            Some(request.client_request_id)
+        );
+        let original = page.messages[0].id;
+        assert_eq!(
+            foreign_block_on(client.send_text(request.clone())).unwrap(),
+            original
+        );
+        let conflicting = SendText {
+            text: "Changed text".into(),
+            ..request
+        };
+        assert!(matches!(
+            foreign_block_on(client.send_text(conflicting)),
+            Err(GroupError::IdempotencyConflict)
+        ));
+        assert_eq!(
+            foreign_block_on(client.messages(group, None, 50, clock))
+                .unwrap()
+                .messages
+                .len(),
+            1
+        );
+        reopened.close().unwrap();
     }
 
     #[test]

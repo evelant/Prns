@@ -243,6 +243,17 @@ typedef void (*UniffiForeignFutureCompleteVoid)(uint64_t, UniffiForeignFutureRes
     );
 
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_ACKNOWLEDGE_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_ACKNOWLEDGE_GROUP_ACTION
+uint64_t uniffi_prns_app_fn_func_acknowledge_group_action(RustBuffer reference
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_ANNOUNCE_GROUPS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_ANNOUNCE_GROUPS
+uint64_t uniffi_prns_app_fn_func_announce_groups(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_ANNOUNCE_LXMF
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_ANNOUNCE_LXMF
 uint64_t uniffi_prns_app_fn_func_announce_lxmf(void
@@ -286,6 +297,17 @@ uint64_t uniffi_prns_app_fn_func_clear_lxmf_discovery(void
 uint64_t uniffi_prns_app_fn_func_clear_network_activity(RustBuffer input
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_CREATE_GROUP
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_CREATE_GROUP
+uint64_t uniffi_prns_app_fn_func_create_group(RustBuffer input
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_CREATE_GROUP_REQUEST_ID
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_CREATE_GROUP_REQUEST_ID
+uint64_t uniffi_prns_app_fn_func_create_group_request_id(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_CREATE_MANUAL_CONTACT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_CREATE_MANUAL_CONTACT
 uint64_t uniffi_prns_app_fn_func_create_manual_contact(RustBuffer input
@@ -301,6 +323,16 @@ uint64_t uniffi_prns_app_fn_func_delete_contact(RustBuffer input
 uint64_t uniffi_prns_app_fn_func_describe_target(RustBuffer input
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_DISCARD_EXPIRED_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_DISCARD_EXPIRED_GROUP_ACTION
+uint64_t uniffi_prns_app_fn_func_discard_expired_group_action(RustBuffer reference
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_EXECUTE_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_EXECUTE_GROUP_ACTION
+uint64_t uniffi_prns_app_fn_func_execute_group_action(RustBuffer reference
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_FINISH_REMOTE_WIFI_TRIAL
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_FINISH_REMOTE_WIFI_TRIAL
 uint64_t uniffi_prns_app_fn_func_finish_remote_wifi_trial(RustBuffer input
@@ -309,6 +341,12 @@ uint64_t uniffi_prns_app_fn_func_finish_remote_wifi_trial(RustBuffer input
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_GET_CONTACT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_GET_CONTACT
 uint64_t uniffi_prns_app_fn_func_get_contact(RustBuffer input
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_GET_GROUP_ANNOUNCE_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_GET_GROUP_ANNOUNCE_SETTINGS
+uint64_t uniffi_prns_app_fn_func_get_group_announce_settings(void
+
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_INITIATE_PAIRING
@@ -321,10 +359,38 @@ uint64_t uniffi_prns_app_fn_func_initiate_pairing(RustBuffer input
 uint64_t uniffi_prns_app_fn_func_inspect_remote_wifi_trial(RustBuffer input
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_INVITE_TO_GROUP
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_INVITE_TO_GROUP
+uint64_t uniffi_prns_app_fn_func_invite_to_group(RustBuffer input
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_CONTACTS
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_CONTACTS
 uint64_t uniffi_prns_app_fn_func_list_contacts(void
 
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_ACTIONS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_ACTIONS
+uint64_t uniffi_prns_app_fn_func_list_group_actions(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_CONVERSATIONS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_CONVERSATIONS
+uint64_t uniffi_prns_app_fn_func_list_group_conversations(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_INVITATIONS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_INVITATIONS
+uint64_t uniffi_prns_app_fn_func_list_group_invitations(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_MESSAGES
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_GROUP_MESSAGES
+uint64_t uniffi_prns_app_fn_func_list_group_messages(RustBuffer input
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_LIST_LXMF_CONVERSATIONS
@@ -394,6 +460,11 @@ RustBuffer uniffi_prns_app_fn_func_native_stop(RustCallStatus *_Nonnull out_stat
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREPARE_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREPARE_GROUP_ACTION
+uint64_t uniffi_prns_app_fn_func_prepare_group_action(RustBuffer input
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREVIEW_IDENTITY_IMPORT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREVIEW_IDENTITY_IMPORT
 RustBuffer uniffi_prns_app_fn_func_preview_identity_import(RustBuffer identity, RustCallStatus *_Nonnull out_status
@@ -427,6 +498,11 @@ uint64_t uniffi_prns_app_fn_func_read_snapshot(void
 uint64_t uniffi_prns_app_fn_func_reject_pairing(RustBuffer input
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RESPOND_GROUP_INVITATION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RESPOND_GROUP_INVITATION
+uint64_t uniffi_prns_app_fn_func_respond_group_invitation(RustBuffer input
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RETRY_LXMF_MESSAGE
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RETRY_LXMF_MESSAGE
 uint64_t uniffi_prns_app_fn_func_retry_lxmf_message(RustBuffer input
@@ -447,6 +523,11 @@ uint64_t uniffi_prns_app_fn_func_save_observed_destination(RustBuffer input
 uint64_t uniffi_prns_app_fn_func_send_direct_text(RustBuffer input
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SEND_GROUP_TEXT
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SEND_GROUP_TEXT
+uint64_t uniffi_prns_app_fn_func_send_group_text(RustBuffer input
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SET_BLUETOOTH_ENABLED
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SET_BLUETOOTH_ENABLED
 uint64_t uniffi_prns_app_fn_func_set_bluetooth_enabled(int8_t enabled
@@ -460,6 +541,11 @@ uint64_t uniffi_prns_app_fn_func_set_contact_alias(RustBuffer input
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SET_CONTACT_PINNED
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SET_CONTACT_PINNED
 uint64_t uniffi_prns_app_fn_func_set_contact_pinned(RustBuffer input
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SET_GROUP_ANNOUNCE_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SET_GROUP_ANNOUNCE_SETTINGS
+uint64_t uniffi_prns_app_fn_func_set_group_announce_settings(RustBuffer input
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_SET_MESSAGING_NAME
@@ -738,6 +824,18 @@ void ffi_prns_app_rust_future_free_void(uint64_t handle
 void ffi_prns_app_rust_future_complete_void(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_ACKNOWLEDGE_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_ACKNOWLEDGE_GROUP_ACTION
+uint16_t uniffi_prns_app_checksum_func_acknowledge_group_action(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_ANNOUNCE_GROUPS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_ANNOUNCE_GROUPS
+uint16_t uniffi_prns_app_checksum_func_announce_groups(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_ANNOUNCE_LXMF
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_ANNOUNCE_LXMF
 uint16_t uniffi_prns_app_checksum_func_announce_lxmf(void
@@ -786,6 +884,18 @@ uint16_t uniffi_prns_app_checksum_func_clear_network_activity(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_CREATE_GROUP
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_CREATE_GROUP
+uint16_t uniffi_prns_app_checksum_func_create_group(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_CREATE_GROUP_REQUEST_ID
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_CREATE_GROUP_REQUEST_ID
+uint16_t uniffi_prns_app_checksum_func_create_group_request_id(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_CREATE_MANUAL_CONTACT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_CREATE_MANUAL_CONTACT
 uint16_t uniffi_prns_app_checksum_func_create_manual_contact(void
@@ -804,6 +914,18 @@ uint16_t uniffi_prns_app_checksum_func_describe_target(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_DISCARD_EXPIRED_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_DISCARD_EXPIRED_GROUP_ACTION
+uint16_t uniffi_prns_app_checksum_func_discard_expired_group_action(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_EXECUTE_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_EXECUTE_GROUP_ACTION
+uint16_t uniffi_prns_app_checksum_func_execute_group_action(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_FINISH_REMOTE_WIFI_TRIAL
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_FINISH_REMOTE_WIFI_TRIAL
 uint16_t uniffi_prns_app_checksum_func_finish_remote_wifi_trial(void
@@ -813,6 +935,12 @@ uint16_t uniffi_prns_app_checksum_func_finish_remote_wifi_trial(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_GET_CONTACT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_GET_CONTACT
 uint16_t uniffi_prns_app_checksum_func_get_contact(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_GET_GROUP_ANNOUNCE_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_GET_GROUP_ANNOUNCE_SETTINGS
+uint16_t uniffi_prns_app_checksum_func_get_group_announce_settings(void
 
 );
 #endif
@@ -828,9 +956,39 @@ uint16_t uniffi_prns_app_checksum_func_inspect_remote_wifi_trial(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_INVITE_TO_GROUP
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_INVITE_TO_GROUP
+uint16_t uniffi_prns_app_checksum_func_invite_to_group(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_CONTACTS
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_CONTACTS
 uint16_t uniffi_prns_app_checksum_func_list_contacts(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_ACTIONS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_ACTIONS
+uint16_t uniffi_prns_app_checksum_func_list_group_actions(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_CONVERSATIONS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_CONVERSATIONS
+uint16_t uniffi_prns_app_checksum_func_list_group_conversations(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_INVITATIONS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_INVITATIONS
+uint16_t uniffi_prns_app_checksum_func_list_group_invitations(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_MESSAGES
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_LIST_GROUP_MESSAGES
+uint16_t uniffi_prns_app_checksum_func_list_group_messages(void
 
 );
 #endif
@@ -912,6 +1070,12 @@ uint16_t uniffi_prns_app_checksum_func_native_stop(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREPARE_GROUP_ACTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREPARE_GROUP_ACTION
+uint16_t uniffi_prns_app_checksum_func_prepare_group_action(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREVIEW_IDENTITY_IMPORT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREVIEW_IDENTITY_IMPORT
 uint16_t uniffi_prns_app_checksum_func_preview_identity_import(void
@@ -948,6 +1112,12 @@ uint16_t uniffi_prns_app_checksum_func_reject_pairing(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RESPOND_GROUP_INVITATION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RESPOND_GROUP_INVITATION
+uint16_t uniffi_prns_app_checksum_func_respond_group_invitation(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RETRY_LXMF_MESSAGE
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RETRY_LXMF_MESSAGE
 uint16_t uniffi_prns_app_checksum_func_retry_lxmf_message(void
@@ -972,6 +1142,12 @@ uint16_t uniffi_prns_app_checksum_func_send_direct_text(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SEND_GROUP_TEXT
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SEND_GROUP_TEXT
+uint16_t uniffi_prns_app_checksum_func_send_group_text(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SET_BLUETOOTH_ENABLED
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SET_BLUETOOTH_ENABLED
 uint16_t uniffi_prns_app_checksum_func_set_bluetooth_enabled(void
@@ -987,6 +1163,12 @@ uint16_t uniffi_prns_app_checksum_func_set_contact_alias(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SET_CONTACT_PINNED
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SET_CONTACT_PINNED
 uint16_t uniffi_prns_app_checksum_func_set_contact_pinned(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SET_GROUP_ANNOUNCE_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_SET_GROUP_ANNOUNCE_SETTINGS
+uint16_t uniffi_prns_app_checksum_func_set_group_announce_settings(void
 
 );
 #endif

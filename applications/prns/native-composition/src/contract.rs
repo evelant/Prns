@@ -2,6 +2,12 @@ mod remote_management;
 pub use remote_management::*;
 mod remote_wifi;
 pub use remote_wifi::*;
+mod group_actions;
+pub use group_actions::*;
+mod group_announces;
+pub use group_announces::*;
+mod groups;
+pub use groups::*;
 
 pub const CONTRACT_FINGERPRINT: &str = env!("PRNS_APP_CONTRACT_FINGERPRINT");
 pub const HOST_CONTRACT_FINGERPRINT: &str = prns_host::HOST_SEMANTIC_FINGERPRINT;
@@ -517,6 +523,8 @@ pub enum LxmfMessageListOutcome {
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Enum))]
 pub enum AnnounceLxmfOutcome {
+    Queued,
+    Throttled,
     Requested,
     NoUsableConnection,
     LocalNodeStopped,

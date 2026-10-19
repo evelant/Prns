@@ -22,6 +22,17 @@ async def run():
     with tempfile.TemporaryDirectory(prefix="prns-aggregate-") as directory:
         root = str(Path(directory) / "prns" / "development")
         assert isinstance(app.native_prepare_storage(root), app.NativeStoragePreparationOutcome.PREPARED)
+        request_id = await app.create_group_request_id()
+        assert isinstance(request_id, app.GroupRequestIdOutcome.READY)
+        assert len(request_id.client_request_id) == 32
+        assert isinstance(await app.list_group_conversations(), app.GroupConversationListOutcome.NOT_PROVISIONED)
+        assert isinstance(await app.list_group_messages(app.ListGroupMessagesInput(
+            group_id=bytes([1] * 32), before_sequence=None, limit=50,
+        )), app.GroupMessageListOutcome.NOT_PROVISIONED)
+        assert isinstance(await app.send_group_text(app.SendGroupTextInput(
+            group_id=bytes([1] * 32), client_request_id=request_id.client_request_id, text="Explicit enrollment required",
+        )), app.GroupTextSendOutcome.NOT_PROVISIONED)
+        assert app.shared_host() is None
         created = app.native_create_generated_identity(root)
         assert isinstance(created, app.IdentityCreationOutcome.CREATED), created
         identity = created.identity_hash
@@ -56,7 +67,7 @@ async def run():
             app.DevelopmentNodeStopOutcome.ALREADY_STOPPED,
         ))
         assert isinstance(app.native_inspect_identity(root), app.PrimaryIdentityState.MISSING)
-    print("Aggregate foreign ownership, native event claim, retained identity, restart and reset passed")
+    print("Aggregate foreign ownership, group API pre-enrollment checks, retained identity, restart and reset passed")
 
 
 asyncio.run(run())

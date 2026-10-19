@@ -70,6 +70,25 @@ class UnsafeAuditTests(unittest.TestCase):
         self.assertEqual(graphs["prns-app-ios"]["features"], ["apple"])
         self.assertNotIn("features", graphs["expo-host-linux"])
 
+    def test_app_native_exception_still_requires_both_unsafe_lints(self) -> None:
+        manifest = audit.ROOT / "applications/prns/native-composition/Cargo.toml"
+        package = {"name": "prns-app-native", "source": None, "targets": []}
+        self.assertIn(package["name"], audit.UNSAFE_EXCEPTIONS)
+        self.assertNotIn(package["name"], audit.UNDOCUMENTED_UNSAFE_POLICY_EXCEPTIONS)
+        with mock.patch.object(audit, "lint_policy_declared", return_value=True) as policy:
+            audit.assert_first_party_policy(package, manifest)
+            self.assertEqual(
+                policy.call_args_list,
+                [mock.call(manifest, "rust", "unsafe_op_in_unsafe_fn"),
+                 mock.call(manifest, "clippy", "undocumented_unsafe_blocks")],
+            )
+        with mock.patch.object(audit, "lint_policy_declared", return_value=False):
+            with self.assertRaisesRegex(RuntimeError, "unsafe_op_in_unsafe_fn"):
+                audit.assert_first_party_policy(package, manifest)
+        with mock.patch.object(audit, "lint_policy_declared", side_effect=[True, False]):
+            with self.assertRaisesRegex(RuntimeError, "undocumented unsafe blocks"):
+                audit.assert_first_party_policy(package, manifest)
+
 
 if __name__ == "__main__":
     unittest.main()

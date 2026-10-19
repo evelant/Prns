@@ -116,6 +116,108 @@ export function createDevelopmentRuntime(
   };
 
   return {
+    readMessagingProfile: () => call((api) => api.readMessagingProfile(), undefined, "storage"),
+    setMessagingName: (name: string) =>
+      call((api) => api.setMessagingName(name), undefined, "storage"),
+    saveObservedDestination: (destination: Uint8Array, signal?: AbortSignal) =>
+      call(
+        (api) => api.saveObservedDestination({ destination }, asyncOptions(signal)),
+        signal,
+        "storage",
+      ),
+    createManualContact: (
+      destination: Uint8Array,
+      identity?: Uint8Array,
+      alias?: string,
+      signal?: AbortSignal,
+    ) =>
+      call(
+        (api) => api.createManualContact({ destination, identity, alias }, asyncOptions(signal)),
+        signal,
+        "storage",
+      ),
+    setContactAlias: (destination: Uint8Array, alias?: string, signal?: AbortSignal) =>
+      call(
+        (api) => api.setContactAlias({ destination, alias }, asyncOptions(signal)),
+        signal,
+        "storage",
+      ),
+    setContactPinned: (destination: Uint8Array, pinned: boolean, signal?: AbortSignal) =>
+      call(
+        (api) => api.setContactPinned({ destination, pinned }, asyncOptions(signal)),
+        signal,
+        "storage",
+      ),
+    deleteContact: (destination: Uint8Array, signal?: AbortSignal) =>
+      call((api) => api.deleteContact({ destination }, asyncOptions(signal)), signal, "storage"),
+    getContact: (destination: Uint8Array, signal?: AbortSignal) =>
+      call((api) => api.getContact({ destination }, asyncOptions(signal)), signal, "storage"),
+    listContacts: (signal?: AbortSignal) =>
+      call((api) => api.listContacts(asyncOptions(signal)), signal, "storage"),
+    listGroupActions: (signal?: AbortSignal) =>
+      call((api) => api.listGroupActions(asyncOptions(signal)), signal, "storage"),
+    prepareGroupAction: (input: Bindings.PrepareGroupActionInput, signal?: AbortSignal) =>
+      call((api) => api.prepareGroupAction(input, asyncOptions(signal)), signal, "storage"),
+    executeGroupAction: (reference: Bindings.GroupActionReference, signal?: AbortSignal) =>
+      call((api) => api.executeGroupAction(reference, asyncOptions(signal)), signal, "storage"),
+    acknowledgeGroupAction: (reference: Bindings.GroupActionReference, signal?: AbortSignal) =>
+      call((api) => api.acknowledgeGroupAction(reference, asyncOptions(signal)), signal, "storage"),
+    discardExpiredGroupAction: (reference: Bindings.GroupActionReference, signal?: AbortSignal) =>
+      call(
+        (api) => api.discardExpiredGroupAction(reference, asyncOptions(signal)),
+        signal,
+        "storage",
+      ),
+    getGroupAnnounceSettings: (signal?: AbortSignal) =>
+      call((api) => api.getGroupAnnounceSettings(asyncOptions(signal)), signal, "storage"),
+    setGroupAnnounceSettings: (input: Bindings.GroupAnnounceSettings, signal?: AbortSignal) =>
+      call((api) => api.setGroupAnnounceSettings(input, asyncOptions(signal)), signal, "storage"),
+    announceGroups: (signal?: AbortSignal) =>
+      call((api) => api.announceGroups(asyncOptions(signal)), signal, "outbound"),
+    createGroupRequestId: (signal?: AbortSignal) =>
+      call((api) => api.createGroupRequestId(asyncOptions(signal)), signal),
+    createGroup: (input: Bindings.CreateGroupInput, signal?: AbortSignal) =>
+      call((api) => api.createGroup(input, asyncOptions(signal)), signal, "storage"),
+    inviteToGroup: (input: Bindings.InviteToGroupInput, signal?: AbortSignal) =>
+      call((api) => api.inviteToGroup(input, asyncOptions(signal)), signal, "storage"),
+    listGroupInvitations: (signal?: AbortSignal) =>
+      call((api) => api.listGroupInvitations(asyncOptions(signal)), signal, "storage"),
+    respondGroupInvitation: (input: Bindings.RespondGroupInvitationInput, signal?: AbortSignal) =>
+      call((api) => api.respondGroupInvitation(input, asyncOptions(signal)), signal, "storage"),
+    listGroupConversations: (signal?: AbortSignal) =>
+      call((api) => api.listGroupConversations(asyncOptions(signal)), signal, "storage"),
+    listGroupMessages: (input: Bindings.ListGroupMessagesInput, signal?: AbortSignal) =>
+      call((api) => api.listGroupMessages(input, asyncOptions(signal)), signal, "storage"),
+    sendGroupText: (input: Bindings.SendGroupTextInput, signal?: AbortSignal) =>
+      call((api) => api.sendGroupText(input, asyncOptions(signal)), signal, "storage"),
+    listLxmfPeers: (signal?: AbortSignal) =>
+      call((api) => api.listLxmfPeers(asyncOptions(signal)), signal),
+    saveDiscoveredContact: (input: Bindings.ContactDestinationInput, signal?: AbortSignal) =>
+      call((api) => api.saveDiscoveredContact(input, asyncOptions(signal)), signal, "storage"),
+    clearLxmfDiscovery: (signal?: AbortSignal) =>
+      call((api) => api.clearLxmfDiscovery(asyncOptions(signal)), signal),
+    listLxmfMessages: (input: Bindings.ListLxmfMessagesInput, signal?: AbortSignal) =>
+      call((api) => api.listLxmfMessages(input, asyncOptions(signal)), signal, "storage"),
+    listLxmfConversations: (input: Bindings.ListLxmfConversationsInput, signal?: AbortSignal) =>
+      call((api) => api.listLxmfConversations(input, asyncOptions(signal)), signal, "storage"),
+    retryLxmfMessage: (localRecordId: bigint, signal?: AbortSignal) =>
+      call(
+        (api) => api.retryLxmfMessage({ localRecordId }, asyncOptions(signal)),
+        signal,
+        "storageAndOutbound",
+      ),
+    cancelLxmfMessage: (localRecordId: bigint, signal?: AbortSignal) =>
+      call(
+        (api) => api.cancelLxmfMessage({ localRecordId }, asyncOptions(signal)),
+        signal,
+        "storage",
+      ),
+    announceLxmf: (signal?: AbortSignal) =>
+      call((api) => api.announceLxmf(asyncOptions(signal)), signal, "outbound"),
+    measureLxmfText: (input: Bindings.MeasureLxmfTextInput, signal?: AbortSignal) =>
+      call((api) => api.measureLxmfText(input, asyncOptions(signal)), signal),
+    sendDirectText: (input: Bindings.SendDirectTextInput, signal?: AbortSignal) =>
+      call((api) => api.sendDirectText(input, asyncOptions(signal)), signal, "outbound"),
     inspectDevelopmentIdentity: () =>
       decode((native) => native.inspectIdentity(), codecs.FfiConverterTypePrimaryIdentityState),
     previewIdentityImport: (identity: Uint8Array) =>
@@ -148,10 +250,6 @@ export function createDevelopmentRuntime(
     readBluetoothSettings: () => call((api) => api.readBluetoothSettings(), undefined, "storage"),
     setBluetoothEnabled: (enabled: boolean) =>
       call((api) => api.setBluetoothEnabled(enabled), undefined, "storage"),
-    readMessagingProfile: () => call((api) => api.readMessagingProfile(), undefined, "storage"),
-    setMessagingName: (name: string) =>
-      call((api) => api.setMessagingName(name), undefined, "storage"),
-    /** Borrow the app's retained host; releasing this view cannot stop services. */
     attachHost: async () => {
       const api = await bindings();
       const host = api.sharedHost();
@@ -188,69 +286,6 @@ export function createDevelopmentRuntime(
       call((api) => api.inspectRemoteWifiTrial(input, asyncOptions(signal)), signal, "outbound"),
     finishRemoteWifiTrial: (input: Bindings.FinishRemoteWifiTrialInput, signal?: AbortSignal) =>
       call((api) => api.finishRemoteWifiTrial(input, asyncOptions(signal)), signal, "outbound"),
-    saveObservedDestination: (destination: Uint8Array, signal?: AbortSignal) =>
-      call(
-        (api) => api.saveObservedDestination({ destination }, asyncOptions(signal)),
-        signal,
-        "storage",
-      ),
-    createManualContact: (
-      destination: Uint8Array,
-      identity?: Uint8Array,
-      alias?: string,
-      signal?: AbortSignal,
-    ) =>
-      call(
-        (api) => api.createManualContact({ destination, identity, alias }, asyncOptions(signal)),
-        signal,
-        "storage",
-      ),
-    setContactAlias: (destination: Uint8Array, alias?: string, signal?: AbortSignal) =>
-      call(
-        (api) => api.setContactAlias({ destination, alias }, asyncOptions(signal)),
-        signal,
-        "storage",
-      ),
-    setContactPinned: (destination: Uint8Array, pinned: boolean, signal?: AbortSignal) =>
-      call(
-        (api) => api.setContactPinned({ destination, pinned }, asyncOptions(signal)),
-        signal,
-        "storage",
-      ),
-    deleteContact: (destination: Uint8Array, signal?: AbortSignal) =>
-      call((api) => api.deleteContact({ destination }, asyncOptions(signal)), signal, "storage"),
-    getContact: (destination: Uint8Array, signal?: AbortSignal) =>
-      call((api) => api.getContact({ destination }, asyncOptions(signal)), signal, "storage"),
-    listContacts: (signal?: AbortSignal) =>
-      call((api) => api.listContacts(asyncOptions(signal)), signal, "storage"),
-    listLxmfPeers: (signal?: AbortSignal) =>
-      call((api) => api.listLxmfPeers(asyncOptions(signal)), signal),
-    saveDiscoveredContact: (input: Bindings.ContactDestinationInput, signal?: AbortSignal) =>
-      call((api) => api.saveDiscoveredContact(input, asyncOptions(signal)), signal, "storage"),
-    clearLxmfDiscovery: (signal?: AbortSignal) =>
-      call((api) => api.clearLxmfDiscovery(asyncOptions(signal)), signal),
-    listLxmfMessages: (input: Bindings.ListLxmfMessagesInput, signal?: AbortSignal) =>
-      call((api) => api.listLxmfMessages(input, asyncOptions(signal)), signal, "storage"),
-    listLxmfConversations: (input: Bindings.ListLxmfConversationsInput, signal?: AbortSignal) =>
-      call((api) => api.listLxmfConversations(input, asyncOptions(signal)), signal, "storage"),
-    retryLxmfMessage: (localRecordId: bigint, signal?: AbortSignal) =>
-      call(
-        (api) => api.retryLxmfMessage({ localRecordId }, asyncOptions(signal)),
-        signal,
-        "storageAndOutbound",
-      ),
-    cancelLxmfMessage: (localRecordId: bigint, signal?: AbortSignal) =>
-      call(
-        (api) => api.cancelLxmfMessage({ localRecordId }, asyncOptions(signal)),
-        signal,
-        "storage",
-      ),
-    announceLxmf: (signal?: AbortSignal) =>
-      call((api) => api.announceLxmf(asyncOptions(signal)), signal, "outbound"),
-    measureLxmfText: (input: Bindings.MeasureLxmfTextInput, signal?: AbortSignal) =>
-      call((api) => api.measureLxmfText(input, asyncOptions(signal)), signal),
-    sendDirectText: (input: Bindings.SendDirectTextInput, signal?: AbortSignal) =>
-      call((api) => api.sendDirectText(input, asyncOptions(signal)), signal, "outbound"),
     stopDevelopmentNode: () =>
       decode((native) => native.stop(), codecs.FfiConverterTypeDevelopmentNodeStopOutcome),
     resetDevelopmentData: async () => {

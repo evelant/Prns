@@ -1,4 +1,4 @@
-#![forbid(unsafe_code)]
+#![deny(unsafe_code)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
 #[cfg(all(feature = "android", target_os = "android"))]
@@ -7,6 +7,10 @@ mod bluetooth;
 pub mod contract;
 mod development_store;
 mod directory;
+mod group_actions;
+mod group_announces;
+mod group_diagnostics;
+mod groups;
 mod input;
 mod ios_restoration_probe;
 mod lifecycle;

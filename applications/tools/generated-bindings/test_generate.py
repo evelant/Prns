@@ -1,5 +1,6 @@
 import argparse
 import json
+import re
 from pathlib import Path
 import tempfile
 import unittest
@@ -26,6 +27,17 @@ class ApplicationOutputTests(unittest.TestCase):
 
 
 class BuildBoundaryTests(unittest.TestCase):
+    def test_runtime_contract_fingerprint_covers_every_contract_module(self):
+        native = generate.APPLICATIONS / 'prns/native-composition'
+        declared = set(re.findall(r'"(src/contract[^"\n]*\.rs)"',
+                                  (native / 'build.rs').read_text()))
+        expected = {'src/contract.rs'} | {
+            str(path.relative_to(native))
+            for path in (native / 'src/contract').rglob('*.rs')
+        }
+        self.assertEqual(declared, expected,
+                         'Every exported record module must affect the runtime ABI guard')
+
     def test_sdk_barrel_exposes_record_and_enum_values_without_execution_or_transport(self):
         source = '''export type Contact = { alias?: string };
 export const Contact = {};
