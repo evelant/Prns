@@ -1,5 +1,5 @@
 [workspace]
-members = ["core", "store", "store/native", "service", "profiles/text"]
+members = ["core", "store", "store/native", "service", "profiles/text", "transport/reticulum"]
 exclude = ["security/mls-rs"]
 resolver = "3"
 

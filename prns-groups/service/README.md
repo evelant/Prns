@@ -220,9 +220,9 @@ uncertain commits and atomic application/crypto publication. Native storage test
 kill a process before and after commit and receipt-retirement boundaries.
 
 These are host library tests, not Reticulum network, React Native lifecycle,
-physical flash-erasure or firmware resource qualifications. Reticulum transport,
-automatic peer scheduling and native authenticated enrollment are following
-integrations. Each needs its own tests; application bindings and mobile
+physical flash-erasure or firmware resource qualifications. The [Reticulum adapter](../transport/reticulum/README.md) now consumes the
+inventory through identified Links. Automatic peer scheduling and native
+authenticated enrollment are following integrations. Each needs its own tests; application bindings and mobile
 protected storage remain separate work. Canonical versioned wire/capability
 contracts also remain a qualification gate.
 A richer receive disposition
