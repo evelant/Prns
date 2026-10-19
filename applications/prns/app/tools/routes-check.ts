@@ -46,8 +46,8 @@ for (const entry of screenCatalog) {
   }
 }
 
-if (screenCatalog.length !== 33) {
-  fail(`the closed catalog must contain 33 rows, received ${screenCatalog.length}`);
+if (screenCatalog.length !== 36) {
+  fail(`the closed catalog must contain 36 rows, received ${screenCatalog.length}`);
 }
 const onboarding = screenCatalog.find((entry) => entry.id === "installation.onboarding");
 if (onboarding?.routeFiles.length !== 2) {
@@ -61,7 +61,7 @@ for (const entry of screenCatalog) {
 }
 
 const actualFiles = routeLeaves(routesRoot).toSorted();
-const infrastructure = new Set(["app/index.tsx", "app/+not-found.tsx"]);
+const infrastructure = new Set(["app/index.tsx", "app/+not-found.tsx", "app/+native-intent.tsx"]);
 for (const file of actualFiles) {
   if (infrastructure.has(file)) {
     continue;

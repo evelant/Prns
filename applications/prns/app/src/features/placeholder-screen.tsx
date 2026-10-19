@@ -1,5 +1,6 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
 import type { ReactNode } from "react";
+import { MessagingJourney } from "@/native/messaging-journey";
 import {
   type RawRouteParams,
   routeParamsAreValid,
@@ -52,7 +53,13 @@ export function CatalogRouteGuard({
   if (!routeParamsAreValid(entry, params)) {
     return <NotFoundScreen backPath={entry.backPath} />;
   }
-  return children;
+  // Ownership resets belong at leaves. Keying a provider around Slot would
+  // discard a nested destination while crossing from setup into messaging.
+  return /^\/(contacts|inbox)(?:\/|$)/.test(entry.path) ? (
+    <MessagingJourney>{children}</MessagingJourney>
+  ) : (
+    children
+  );
 }
 
 export function CatalogPlaceholderRoute({ screenId }: { readonly screenId: ScreenId }) {

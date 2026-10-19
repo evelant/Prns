@@ -30,7 +30,7 @@ export default function BootstrapRoute() {
         }
         switch (identity.tag) {
           case Bindings.PrimaryIdentityState_Tags.Present:
-            router.replace("/nodes");
+            router.replace("/inbox");
             break;
           case Bindings.PrimaryIdentityState_Tags.Missing:
             router.replace("/onboarding/welcome");

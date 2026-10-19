@@ -1,5 +1,5 @@
-import * as Bindings from "@prns-internal/expo";
 import type { IdentityCreationOutcome } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import * as DocumentPicker from "expo-document-picker";
 import { File } from "expo-file-system";
 import { useRouter } from "expo-router";
@@ -8,6 +8,8 @@ import { useState } from "react";
 import { formatBytes } from "@/features/nodes/format";
 import { runtimeProvider } from "@/native/runtime-provider";
 import { screenById } from "@/navigation/catalog";
+import { InfoDisclosure } from "@/ui/info-disclosure";
+import { NavigationLink } from "@/ui/navigation-link";
 import {
   Badge,
   BodyText,
@@ -65,20 +67,17 @@ function Welcome() {
     <Screen>
       <Badge>Get started</Badge>
       <ScreenHeading>Welcome to prns</ScreenHeading>
-      <BodyText>
-        Create a new Reticulum identity or import one from a file. Your identity stays on this
-        device and lets prns connect to the network.
-      </BodyText>
-      <CardStack>
-        <Button onPress={() => router.push("/onboarding/create")}>Create a new identity</Button>
-        <Button tone="secondary" onPress={() => router.push("/onboarding/import")}>
-          Import an existing identity
-        </Button>
-        <Button tone="secondary" onPress={() => router.push("/recovery")}>
-          Recovery options
-        </Button>
-      </CardStack>
-      <BodyText muted>Identity export and backup are not available in this preview.</BodyText>
+      <BodyText>Connect nearby. Share a contact. Start a group.</BodyText>
+      <Button onPress={() => router.push("/onboarding/create")}>Set up this phone</Button>
+      <InfoDisclosure label="Existing identity or recovery">
+        <BodyText>
+          Your phone’s connection identity is separate from the named identities you use for
+          messaging.
+        </BodyText>
+        <NavigationLink href="/onboarding/import">Import a phone identity</NavigationLink>
+        <NavigationLink href="/recovery">Recovery options</NavigationLink>
+        <BodyText>Key export and backup are not available in this preview.</BodyText>
+      </InfoDisclosure>
     </Screen>
   );
 }
@@ -107,20 +106,24 @@ function CreateIdentity() {
 
   return (
     <Screen>
-      <Badge>Create identity</Badge>
-      <ScreenHeading>Create a new identity</ScreenHeading>
-      <BodyText>
-        Your identity will be generated securely on this device and saved when you continue.
-      </BodyText>
+      <Badge>Phone setup</Badge>
+      <ScreenHeading>Make this phone yours</ScreenHeading>
+      <BodyText>Create a private identity for this phone’s connections.</BodyText>
+      <InfoDisclosure label="About your phone identity">
+        <BodyText>
+          The key stays on this phone. Your named messaging identities use separate keys and
+          addresses.
+        </BodyText>
+      </InfoDisclosure>
       {unavailable ? <PlatformUnavailable /> : null}
       <CreationResult outcome={outcome} failure={failure} />
       <CardStack>
         {outcome?.tag === Bindings.IdentityCreationOutcome_Tags.Created ||
         outcome?.tag === Bindings.IdentityCreationOutcome_Tags.AlreadyExists ? (
-          <Button onPress={() => router.replace("/nodes/local")}>Continue to this device</Button>
+          <Button onPress={() => router.replace("/setup")}>Connect this phone</Button>
         ) : (
           <Button disabled={pending || unavailable} onPress={() => void create()}>
-            {pending ? "Creating…" : "Create identity"}
+            {pending ? "Creating…" : "Create phone identity"}
           </Button>
         )}
         <Button tone="secondary" onPress={() => router.back()}>
@@ -211,23 +214,27 @@ function ImportIdentity() {
 
   return (
     <Screen>
-      <Badge>Import identity</Badge>
-      <ScreenHeading>Import an existing identity</ScreenHeading>
-      <BodyText>
-        Choose a Reticulum identity file, then check the identity hash before importing it.
-      </BodyText>
+      <Badge>Phone setup</Badge>
+      <ScreenHeading>Import a phone identity</ScreenHeading>
+      <BodyText>Choose your Reticulum identity file, then confirm it.</BodyText>
+      <InfoDisclosure label="What is imported?">
+        <BodyText>
+          This does not import a messaging identity, contacts or conversations. Named messaging
+          identities are managed separately in More → Identities.
+        </BodyText>
+      </InfoDisclosure>
       {unavailable ? <PlatformUnavailable /> : null}
       {previewHash === null ? null : (
         <Card>
-          <Subheading>Confirm identity</Subheading>
-          <KeyValue label="Identity hash" value={formatBytes(previewHash)} />
+          <Subheading>Confirm node identity</Subheading>
+          <KeyValue label="Node identity hash" value={formatBytes(previewHash)} />
         </Card>
       )}
       <CreationResult outcome={outcome} failure={failure} />
       <CardStack>
         {outcome?.tag === Bindings.IdentityCreationOutcome_Tags.Created ||
         outcome?.tag === Bindings.IdentityCreationOutcome_Tags.AlreadyExists ? (
-          <Button onPress={() => router.replace("/nodes/local")}>Continue to this device</Button>
+          <Button onPress={() => router.replace("/setup")}>Connect this phone</Button>
         ) : (
           <>
             <Button disabled={pending !== null || unavailable} onPress={() => void pick()}>
@@ -272,15 +279,17 @@ function CreationResult({
     case Bindings.IdentityCreationOutcome_Tags.Created:
       return (
         <Card>
-          <Badge>Identity stored</Badge>
-          <KeyValue label="Identity hash" value={formatBytes(outcome.inner.identityHash)} />
+          <Badge>Phone identity ready</Badge>
+          <InfoDisclosure label="Phone identity details">
+            <KeyValue label="Node identity hash" value={formatBytes(outcome.inner.identityHash)} />
+          </InfoDisclosure>
         </Card>
       );
     case Bindings.IdentityCreationOutcome_Tags.AlreadyExists:
       return (
         <Card>
-          <Badge>This app already has an identity</Badge>
-          <BodyText>The existing identity will continue to be used.</BodyText>
+          <Badge>Your phone is already set up</Badge>
+          <BodyText>Continue with your existing identity.</BodyText>
         </Card>
       );
     case Bindings.IdentityCreationOutcome_Tags.InvalidLength:

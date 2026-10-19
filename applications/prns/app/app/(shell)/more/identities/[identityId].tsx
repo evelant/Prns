@@ -1,7 +1,7 @@
 // route-id: identities.detail
-
-import { CatalogPlaceholderRoute } from "@/features/placeholder-screen";
-
+import { useLocalSearchParams } from "expo-router";
+import { IdentityDetailScreen } from "@/features/identities/identities-screen";
 export default function IdentityRoute() {
-  return <CatalogPlaceholderRoute screenId="identities.detail" />;
+  const { identityId } = useLocalSearchParams<{ identityId: string }>();
+  return <IdentityDetailScreen identityId={typeof identityId === "string" ? identityId : ""} />;
 }

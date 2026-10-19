@@ -1,7 +1,10 @@
 import { type Href, Link } from "expo-router";
-import { type PropsWithChildren, useState } from "react";
+import { type PropsWithChildren, useContext, useState } from "react";
 import { Pressable, StyleSheet, Text } from "react-native";
 
+import { identityHref } from "@/native/identity-navigation";
+import { useNamedIdentity } from "@/native/named-identity-context";
+import { CloseInfoDisclosure } from "./info-disclosure";
 import { radius, space, useAppPalette } from "./theme";
 
 export function NavigationLink({
@@ -9,12 +12,16 @@ export function NavigationLink({
   children,
   direction = "forward",
   href,
+  onPress,
 }: PropsWithChildren<{
   readonly href: Href;
+  readonly onPress?: () => void;
   readonly accessibilityLabel?: string;
   readonly direction?: "forward" | "back";
 }>) {
   const palette = useAppPalette();
+  const closeInfo = useContext(CloseInfoDisclosure);
+  const owner = useNamedIdentity()?.ownerKey;
   const [pressed, setPressed] = useState(false);
   const [focused, setFocused] = useState(false);
   const arrow = (
@@ -23,9 +30,13 @@ export function NavigationLink({
     </Text>
   );
   return (
-    <Link href={href} asChild>
+    <Link href={identityHref(href, owner)} asChild>
       <Pressable
         accessibilityRole="link"
+        onPress={() => {
+          closeInfo?.();
+          onPress?.();
+        }}
         {...(accessibilityLabel === undefined ? {} : { accessibilityLabel })}
         onBlur={() => setFocused(false)}
         onFocus={() => setFocused(true)}

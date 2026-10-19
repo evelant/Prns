@@ -1,17 +1,13 @@
+import { MAX_CONTACT_CARD_URI_LENGTH } from "../features/contacts/contact-card-links.ts";
+
 export type ScaffoldAvailability = "implementedScaffold" | "notYetImplemented";
-export type NavigationSection =
-  | "installation"
-  | "inbox"
-  | "contacts"
-  | "nodes"
-  | "explore"
-  | "more";
+export type NavigationSection = "installation" | "inbox" | "contacts" | "nodes" | "more";
 
 type ScalarParam = {
   readonly kind: "scalar";
   readonly name: string;
   readonly required: boolean;
-  readonly format?: "destinationHash";
+  readonly format?: "destinationHash" | "groupId" | "invitationId" | "contactCardDraft";
 };
 
 type EnumParam = {
@@ -21,15 +17,7 @@ type EnumParam = {
   readonly values: readonly string[];
 };
 
-type UnionParam = {
-  readonly kind: "union";
-  readonly name: string;
-  readonly required: boolean;
-  readonly literals?: readonly string[];
-  readonly prefixes: readonly string[];
-};
-
-export type RouteParamRule = ScalarParam | EnumParam | UnionParam;
+export type RouteParamRule = ScalarParam | EnumParam;
 
 export type ScreenCatalogEntry = {
   readonly id: string;
@@ -84,6 +72,21 @@ export const screenCatalog = [
     ],
   },
   {
+    id: "installation.setup",
+    path: "/setup",
+    routeFiles: ["app/(shell)/setup.tsx"],
+    label: "Connection setup",
+    section: "installation",
+    phonePlacement: "Guided setup",
+    widePlacement: "Guided setup",
+    deepLink: "external-navigation",
+    availability: "implementedScaffold",
+    summary: "Connect nearby and choose how you appear to contacts.",
+    limitation: "Nearby connections need Bluetooth access on iOS or Android.",
+    backPath: "/inbox",
+    params: noParams,
+  },
+  {
     id: "installation.recovery",
     path: "/recovery",
     routeFiles: ["app/recovery.tsx"],
@@ -129,6 +132,66 @@ export const screenCatalog = [
     limitation: "Failed messages must be retried manually.",
     backPath: "/inbox",
     params: [{ kind: "scalar", name: "destination", required: true, format: "destinationHash" }],
+  },
+  {
+    id: "inbox.group",
+    path: "/inbox/group/:groupId",
+    routeFiles: ["app/(shell)/inbox/group/[groupId].tsx"],
+    label: "Group conversation",
+    section: "inbox",
+    phonePlacement: "Push from Inbox",
+    widePlacement: "Inbox detail pane",
+    deepLink: "app-issued",
+    availability: "implementedScaffold",
+    summary: "Send group text, invite devices, and view device receipts.",
+    limitation: "Test messages only. Saved group data is not yet protected on the phone.",
+    backPath: "/inbox",
+    params: [{ kind: "scalar", name: "groupId", required: true, format: "groupId" }],
+  },
+  {
+    id: "inbox.group-new",
+    path: "/inbox/group/new",
+    routeFiles: ["app/(shell)/inbox/group/new.tsx"],
+    label: "New group",
+    section: "inbox",
+    phonePlacement: "Push from Inbox",
+    widePlacement: "Inbox detail pane",
+    deepLink: "app-issued",
+    availability: "implementedScaffold",
+    summary: "Create a group on this device and invite other devices.",
+    limitation: "Group creation is available on iOS and Android.",
+    backPath: "/inbox",
+    params: noParams,
+  },
+  {
+    id: "inbox.group-invite",
+    path: "/inbox/group/:groupId/invite",
+    routeFiles: ["app/(shell)/inbox/group/[groupId]/invite.tsx"],
+    label: "Invite a device",
+    section: "inbox",
+    phonePlacement: "Push from group conversation",
+    widePlacement: "Inbox detail pane",
+    deepLink: "app-issued",
+    availability: "implementedScaffold",
+    summary: "Invite a device using its chosen messaging identity.",
+    limitation: "Only the owner can invite devices. Earlier history is not shared.",
+    backPath: "/inbox",
+    params: [{ kind: "scalar", name: "groupId", required: true, format: "groupId" }],
+  },
+  {
+    id: "inbox.invitation",
+    path: "/inbox/invitation/:invitationId",
+    routeFiles: ["app/(shell)/inbox/invitation/[invitationId].tsx"],
+    label: "Group invitation",
+    section: "inbox",
+    phonePlacement: "Push from Inbox",
+    widePlacement: "Inbox detail pane",
+    deepLink: "app-issued",
+    availability: "implementedScaffold",
+    summary: "Review an authenticated invitation and accept or decline it.",
+    limitation: "Joining waits for the owner and invited device to connect.",
+    backPath: "/inbox",
+    params: [{ kind: "scalar", name: "invitationId", required: true, format: "invitationId" }],
   },
   {
     id: "inbox.message",
@@ -203,9 +266,42 @@ export const screenCatalog = [
     deepLink: "none",
     availability: "implementedScaffold",
     summary: "Save a destination with an optional identity and name.",
-    limitation: "Verified destinations can also be saved from Nodes > This device.",
+    limitation: "Signed cards can also be scanned or pasted from Contacts.",
     backPath: "/contacts",
     params: noParams,
+  },
+  {
+    id: "contacts.card",
+    path: "/contacts/card",
+    routeFiles: ["app/(shell)/contacts/card.tsx"],
+    label: "My contact card",
+    section: "contacts",
+    phonePlacement: "Push from Contacts",
+    widePlacement: "Contacts detail pane",
+    deepLink: "app-issued",
+    availability: "implementedScaffold",
+    summary: "Share your signed public contact card as a QR code or portable link.",
+    limitation: "Contact cards bind an identity to a service; confirm who shared a card with you.",
+    backPath: "/contacts",
+    params: noParams,
+  },
+  {
+    id: "contacts.import",
+    path: "/contacts/import",
+    routeFiles: ["app/(shell)/contacts/import.tsx"],
+    label: "Add a contact card",
+    section: "contacts",
+    phonePlacement: "Push from Contacts",
+    widePlacement: "Contacts detail pane",
+    deepLink: "external-navigation",
+    availability: "implementedScaffold",
+    summary: "Scan or paste a signed contact card and review it before saving.",
+    limitation: "Saving a contact never grants group membership.",
+    backPath: "/contacts",
+    params: [
+      { kind: "scalar", name: "card", required: false, format: "contactCardDraft" },
+      { kind: "enum", name: "invalid", required: false, values: ["0", "1"] },
+    ],
   },
   {
     id: "contacts.merge",
@@ -304,78 +400,6 @@ export const screenCatalog = [
     params: noParams,
   },
   {
-    id: "explore.index",
-    path: "/explore",
-    routeFiles: ["app/(shell)/explore/index.tsx"],
-    label: "Explore",
-    section: "explore",
-    phonePlacement: "Explore tab root",
-    widePlacement: "Explore rail group",
-    deepLink: "external-navigation",
-    availability: "implementedScaffold",
-    summary: "Explore services available through Reticulum.",
-    limitation: "NomadNet and location support are coming later.",
-    backPath: "/explore",
-    params: noParams,
-    phoneRootOrder: 3,
-    wideRootOrder: 3,
-  },
-  {
-    id: "nomadnet.index",
-    path: "/explore/nomadnet",
-    routeFiles: ["app/(shell)/explore/nomadnet/index.tsx"],
-    label: "NomadNet",
-    section: "explore",
-    phonePlacement: "Explore stack",
-    widePlacement: "NomadNet rail root",
-    deepLink: "external-navigation",
-    availability: "notYetImplemented",
-    summary: "Browse NomadNet pages.",
-    limitation: "NomadNet browsing is not available yet.",
-    backPath: "/explore",
-    params: noParams,
-    wideRootOrder: 5,
-  },
-  {
-    id: "nomadnet.page",
-    path: "/explore/nomadnet/page",
-    routeFiles: ["app/(shell)/explore/nomadnet/page.tsx"],
-    label: "NomadNet page",
-    section: "explore",
-    phonePlacement: "NomadNet detail",
-    widePlacement: "NomadNet detail pane",
-    deepLink: "external-navigation",
-    availability: "notYetImplemented",
-    summary: "View a NomadNet page.",
-    limitation: "NomadNet pages are not available yet.",
-    backPath: "/explore/nomadnet",
-    params: [{ kind: "scalar", name: "address", required: true }],
-  },
-  {
-    id: "location.map",
-    path: "/explore/location",
-    routeFiles: ["app/(shell)/explore/location.tsx"],
-    label: "Location",
-    section: "explore",
-    phonePlacement: "Explore stack",
-    widePlacement: "Map rail root",
-    deepLink: "app-issued",
-    availability: "notYetImplemented",
-    summary: "View shared locations and choose when to share yours.",
-    limitation: "Location sharing is not available yet.",
-    backPath: "/explore",
-    params: [
-      {
-        kind: "union",
-        name: "focus",
-        required: false,
-        literals: ["local"],
-        prefixes: ["directory:", "message:"],
-      },
-    ],
-    wideRootOrder: 6,
-  },
-  {
     id: "more.index",
     path: "/more",
     routeFiles: ["app/(shell)/more/index.tsx"],
@@ -385,12 +409,12 @@ export const screenCatalog = [
     widePlacement: "More and settings group",
     deepLink: "external-navigation",
     availability: "implementedScaffold",
-    summary: "Open identities, connections, notifications, settings, and help.",
-    limitation: "Some areas are still being built.",
+    summary: "Open identities, connections, network inspection, settings, and help.",
+    limitation: "Messaging and node connections require the iOS or Android app.",
     backPath: "/more",
     params: noParams,
-    phoneRootOrder: 4,
-    wideRootOrder: 4,
+    phoneRootOrder: 3,
+    wideRootOrder: 3,
   },
   {
     id: "identities.index",
@@ -401,9 +425,9 @@ export const screenCatalog = [
     phonePlacement: "More stack",
     widePlacement: "Identities rail and detail",
     deepLink: "external-navigation",
-    availability: "notYetImplemented",
-    summary: "View identities used by this app.",
-    limitation: "Identity management is not available yet.",
+    availability: "implementedScaffold",
+    summary: "Create and choose identities with separate contacts and conversations.",
+    limitation: "Pausing preserves local history and pending deliveries.",
     backPath: "/more",
     params: noParams,
   },
@@ -416,9 +440,9 @@ export const screenCatalog = [
     phonePlacement: "Push",
     widePlacement: "Identities detail pane",
     deepLink: "external-navigation",
-    availability: "notYetImplemented",
-    summary: "View an identity and what it is used for.",
-    limitation: "Identity details are not available yet.",
+    availability: "implementedScaffold",
+    summary: "Rename, pause or resume an identity and browse its saved history.",
+    limitation: "Identity names are private labels. Managed nodes are shared by the installation.",
     backPath: "/more/identities",
     params: [{ kind: "scalar", name: "identityId", required: true }],
   },
@@ -437,7 +461,7 @@ export const screenCatalog = [
       "Bluetooth connections are available on iOS and Android. Other connection settings are not available yet.",
     backPath: "/more",
     params: noParams,
-    wideRootOrder: 7,
+    wideRootOrder: 4,
   },
   {
     id: "interfaces.detail",
@@ -506,7 +530,7 @@ export const screenCatalog = [
         values: ["connections", "routes", "announcements"],
       },
     ],
-    wideRootOrder: 8,
+    wideRootOrder: 5,
   },
   {
     id: "activity.operation",
@@ -533,7 +557,7 @@ export const screenCatalog = [
     widePlacement: "Settings rail root",
     deepLink: "external-navigation",
     availability: "implementedScaffold",
-    summary: "Choose preview options or reset this app's data.",
+    summary: "View app information and manage this app's data.",
     limitation: "These settings affect only this app.",
     backPath: "/more",
     params: noParams,
@@ -586,7 +610,7 @@ export const screenCatalog = [
     deepLink: "external-navigation",
     availability: "implementedScaffold",
     summary: "View app and version information.",
-    limitation: "This is a development preview, not a release build.",
+    limitation: "A build label identifies a package; the API contract is not a source revision.",
     backPath: "/more/settings",
     params: noParams,
   },
@@ -600,8 +624,8 @@ export const screenCatalog = [
     widePlacement: "Help detail",
     deepLink: "external-navigation",
     availability: "implementedScaffold",
-    summary: "See what works in this preview and what is coming later.",
-    limitation: "Preview data may be reset and cannot be backed up yet.",
+    summary: "Find setup, messaging, identity and node help.",
+    limitation: "The maintainer alpha uses test data and foreground operation.",
     backPath: "/more",
     params: noParams,
   },
@@ -624,19 +648,24 @@ function isNonEmptySingle(value: string | string[] | undefined): value is string
 
 function valueMatches(rule: RouteParamRule, value: string): boolean {
   if (rule.kind === "scalar") {
+    if (rule.format === "groupId" || rule.format === "invitationId")
+      return /^[0-9a-fA-F]{64}$/u.test(value);
     return rule.format === "destinationHash" ? /^[0-9a-fA-F]{32}$/u.test(value) : true;
   }
-  if (rule.kind === "enum") {
-    return rule.values.includes(value);
-  }
-  return (
-    (rule.literals?.includes(value) ?? false) ||
-    rule.prefixes.some((prefix) => value.startsWith(prefix) && value.length > prefix.length)
-  );
+  return rule.values.includes(value);
 }
 
 export function routeParamsAreValid(entry: ScreenCatalogEntry, params: RawRouteParams): boolean {
   const allowed = new Set(entry.params.map((rule) => rule.name));
+  if (entry.path === "/setup" || /^\/(contacts|inbox)(?:\/|$)/.test(entry.path)) {
+    allowed.add("owner");
+    const owner = params.owner;
+    if (
+      owner !== undefined &&
+      (typeof owner !== "string" || !/^[a-f0-9]{32}-[1-9][0-9]{0,19}-[a-f0-9]{32}$/.test(owner))
+    )
+      return false;
+  }
   for (const [name, value] of Object.entries(params)) {
     if (!allowed.has(name) || Array.isArray(value)) {
       return false;
@@ -648,6 +677,10 @@ export function routeParamsAreValid(entry: ScreenCatalogEntry, params: RawRouteP
     if (value === undefined) {
       return !rule.required;
     }
+    // Owner selection carries editable input, including an empty reset value.
+    // URI admission and native signature verification still happen before save.
+    if (rule.kind === "scalar" && rule.format === "contactCardDraft")
+      return typeof value === "string" && value.length <= MAX_CONTACT_CARD_URI_LENGTH + 1;
     return isNonEmptySingle(value) && valueMatches(rule, value);
   });
 }

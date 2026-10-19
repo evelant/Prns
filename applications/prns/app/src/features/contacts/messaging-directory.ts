@@ -13,6 +13,7 @@ export function useMessagingDirectory() {
   const development = useDevelopmentRuntime();
   const { listLxmfPeers } = development;
   const nodeRunning =
+    development.canPublish !== false &&
     development.phase === "ready" &&
     development.snapshot?.runtime === Bindings.DevelopmentNodeRuntime.Running;
   const generation = development.snapshot?.generationId;

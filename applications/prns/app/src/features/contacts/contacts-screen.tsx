@@ -1,4 +1,3 @@
-import * as Bindings from "@prns-internal/expo";
 import type {
   Contact,
   ContactListOutcome,
@@ -7,21 +6,21 @@ import type {
   DevelopmentRuntime,
   LxmfPeerSummary,
 } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import type { Href } from "expo-router";
-import { useRouter } from "expo-router";
 import type { DestinationHash } from "personal-rns/contract";
-import { useCallback, useEffect, useState } from "react";
-
-import { StoragePreparationFailure } from "@/native/storage-preparation-failure";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { peerLabel, shortDestination } from "@/features/inbox/format";
 import { useContactRuntime } from "@/native/contact-runtime-context";
 import { useDevelopmentRuntime } from "@/native/development-runtime-context";
-import { peerLabel, shortDestination } from "@/features/inbox/format";
-import { useMessagingDirectory, lastHeardLabel } from "./messaging-directory";
-import { MessagingProfileCard } from "./messaging-profile";
+import { useIdentityRouter } from "@/native/identity-navigation";
+import { StoragePreparationFailure } from "@/native/storage-preparation-failure";
+import { Disclosure } from "@/ui/disclosure";
+import { InfoDisclosure } from "@/ui/info-disclosure";
 import { NavigationLink } from "@/ui/navigation-link";
 import {
-  Badge,
   ActionRow,
+  Badge,
   BodyText,
   Button,
   Card,
@@ -30,10 +29,11 @@ import {
   KeyValue,
   Screen,
   ScreenHeading,
-  Subheading,
 } from "@/ui/primitives";
 import { TextField } from "@/ui/text-field";
 import { formatContactHash, parseDestinationHash, parseIdentityHash } from "./format";
+import { lastHeardLabel, useMessagingDirectory } from "./messaging-directory";
+import { MessagingProfileCard } from "./messaging-profile";
 
 export function ContactsScreen() {
   const contactRuntime = useContactRuntime();
@@ -110,21 +110,29 @@ function MessagingContacts() {
     <>
       <MessagingProfileCard onSavingChange={setSavingProfile} />
       <Card>
-        <BodyText muted>
-          Announce your messaging name and address on connected networks so others can discover you.
-          They may be several hops away.
-        </BodyText>
+        <CardHeader title="Discovery">
+          <InfoDisclosure label="About discovery">
+            <BodyText>
+              Announce your name and address so people on connected networks can find you.
+            </BodyText>
+            <BodyText>
+              Names are supplied by their owners. Recent discovery does not guarantee someone is
+              reachable.
+            </BodyText>
+            <BodyText>
+              Discovery expires after a day or a node restart. Clearing discovery keeps your saved
+              contacts and messages.
+            </BodyText>
+          </InfoDisclosure>
+        </CardHeader>
         <Button
           disabled={!directory.nodeRunning || pendingAction !== null || savingProfile}
           onPress={() => void announce()}
         >
           {pendingAction === "announce" ? "Requesting announcement…" : "Announce yourself"}
         </Button>
-        {directory.nodeRunning ? null : (
-          <BodyText muted>
-            Start this phone&apos;s node to announce yourself or discover contacts. Saved contacts
-            remain available.
-          </BodyText>
+        {directory.nodeRunning || development.canPublish === false ? null : (
+          <NavigationLink href="/setup">Set up connections</NavigationLink>
         )}
         {command === null ? null : <BodyText>{command}</BodyText>}
       </Card>
@@ -145,7 +153,8 @@ function MessagingContacts() {
         </Button>
       </ActionRow>
       <ActionRow>
-        <NavigationLink href="/contacts/add">Add contact</NavigationLink>
+        <NavigationLink href="/contacts/import">Scan or paste contact</NavigationLink>
+        <NavigationLink href="/contacts/add">Add contact manually</NavigationLink>
         <Button
           disabled={directory.pending || directory.discoveryPending}
           onPress={() => void directory.refresh()}
@@ -163,10 +172,6 @@ function MessagingContacts() {
         ) : null
       ) : (
         <>
-          <BodyText muted>
-            Names are supplied by their owners. Discovery is recent activity, not a guarantee that
-            someone is reachable now.
-          </BodyText>
           {directory.discoveryFailure === null ? null : (
             <FailureCard detail={directory.discoveryFailure} />
           )}
@@ -236,10 +241,6 @@ function MessagingContacts() {
           >
             Clear discovered contacts
           </Button>
-          <BodyText muted>
-            Discovered contacts expire after a day and reset when the node restarts. Clearing this
-            list does not block anyone or remove saved contacts.
-          </BodyText>
         </>
       )}
     </>
@@ -305,6 +306,10 @@ function DiscoveryDetails({
 
 function announceLabel(outcome: Bindings.AnnounceLxmfOutcome): string {
   switch (outcome) {
+    case Bindings.AnnounceLxmfOutcome.Queued:
+      return "Announcement queued. Other identities share this phone’s announcement budget. Keep prns open.";
+    case Bindings.AnnounceLxmfOutcome.Throttled:
+      return "Announcement waiting for the shared limit. Keep prns open; repeated taps do not send it sooner.";
     case Bindings.AnnounceLxmfOutcome.Requested:
       return "Announcement requested. Other devices may hear it on connected networks.";
     case Bindings.AnnounceLxmfOutcome.NoUsableConnection:
@@ -341,25 +346,34 @@ function ContactListResult({ outcome }: { readonly outcome: ContactListOutcome |
       </Card>
     );
   }
+  const titleFor = (contact: Contact) =>
+    contact.alias ?? contact.announcedName ?? shortDestination(contact.destination);
+  const titleCounts = new Map<string, number>();
+  for (const contact of outcome.inner.contacts) {
+    const title = titleFor(contact).trim().toLowerCase();
+    titleCounts.set(title, (titleCounts.get(title) ?? 0) + 1);
+  }
   return (
     <>
       {outcome.inner.contacts.map((contact) => {
         const destination = formatContactHash(contact.destination);
+        const title = titleFor(contact);
+        const repeatedName = (titleCounts.get(title.trim().toLowerCase()) ?? 0) > 1;
+        const shortAddress = shortDestination(contact.destination);
         const href: Href = {
           pathname: "/contacts/[destination]",
           params: { destination },
         };
         return (
           <Card key={destination}>
-            <CardHeader
-              title={
-                contact.alias ?? contact.announcedName ?? shortDestination(contact.destination)
-              }
+            <CardHeader title={title}>{contact.pinned ? <Badge>Pinned</Badge> : null}</CardHeader>
+            {repeatedName ? <BodyText muted>{shortAddress}</BodyText> : null}
+            <NavigationLink
+              href={href}
+              accessibilityLabel={`Open contact ${title}${repeatedName ? `, ${shortAddress}` : ""}`}
             >
-              {contact.pinned ? <Badge>Pinned</Badge> : null}
-            </CardHeader>
-            <BodyText muted>{destination}</BodyText>
-            <NavigationLink href={href}>Open contact</NavigationLink>
+              Open contact
+            </NavigationLink>
           </Card>
         );
       })}
@@ -367,10 +381,38 @@ function ContactListResult({ outcome }: { readonly outcome: ContactListOutcome |
   );
 }
 
+/** Admitted writes finish on their captured client, but cannot steer a later journey. */
+function useContactCompletion(runtime: DevelopmentRuntime | null, record: string) {
+  const generation = useDevelopmentRuntime().snapshot?.generationId;
+  const session = useRef({ runtime, record, generation });
+  if (
+    session.current.runtime !== runtime ||
+    session.current.record !== record ||
+    session.current.generation !== generation
+  )
+    session.current = { runtime, record, generation };
+  const currentSession = session.current;
+  const mounted = useRef(false);
+  const epoch = useRef(0);
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+      epoch.current++;
+    };
+  }, []);
+  return useCallback(() => {
+    const capturedEpoch = epoch.current;
+    return () =>
+      mounted.current && epoch.current === capturedEpoch && session.current === currentSession;
+  }, [currentSession]);
+}
+
 export function ContactDetailScreen({ destination }: { readonly destination: DestinationHash }) {
   const contactRuntime = useContactRuntime();
-  const router = useRouter();
+  const router = useIdentityRouter();
   const destinationText = formatContactHash(destination);
+  const captureCompletion = useContactCompletion(contactRuntime.runtime, destinationText);
   const [lookup, setLookup] = useState<ContactLookupOutcome | null>(null);
   const [contact, setContact] = useState<Contact | null>(null);
   const [alias, setAlias] = useState("");
@@ -386,8 +428,10 @@ export function ContactDetailScreen({ destination }: { readonly destination: Des
     }
     setPending(true);
     setFailure(null);
+    const current = captureCompletion();
     try {
       const next = await contactRuntime.runtime.getContact(destination);
+      if (!current()) return;
       setLookup(next);
       if (next.tag === Bindings.ContactLookupOutcome_Tags.Found) {
         setContact(next.inner.contact);
@@ -396,15 +440,16 @@ export function ContactDetailScreen({ destination }: { readonly destination: Des
         setContact(null);
       }
     } catch (failure) {
+      if (!current()) return;
       setFailure(
         failure instanceof Bindings.NativeStoragePreparationError
           ? failure
           : "The contact could not be loaded. Try again.",
       );
     } finally {
-      setPending(false);
+      if (current()) setPending(false);
     }
-  }, [contactRuntime.runtime, destination]);
+  }, [contactRuntime.runtime, destination, captureCompletion]);
 
   useEffect(() => {
     void load();
@@ -421,8 +466,10 @@ export function ContactDetailScreen({ destination }: { readonly destination: Des
     setPending(true);
     setFailure(null);
     setMutation(null);
+    const current = captureCompletion();
     try {
       const next = await operation(activeRuntime);
+      if (!current()) return;
       setMutation(next);
       if (
         next.tag === Bindings.ContactMutationOutcome_Tags.Saved ||
@@ -435,21 +482,20 @@ export function ContactDetailScreen({ destination }: { readonly destination: Des
         router.replace("/contacts");
       }
     } catch (failure) {
+      if (!current()) return;
       setFailure(
         failure instanceof Bindings.NativeStoragePreparationError
           ? failure
           : "The contact could not be updated. Try again.",
       );
     } finally {
-      setPending(false);
+      if (current()) setPending(false);
     }
   };
 
   return (
     <Screen>
-      <Badge>Saved destination</Badge>
       <ScreenHeading>{contact?.alias ?? contact?.announcedName ?? "Contact"}</ScreenHeading>
-      <KeyValue label="Destination" value={destinationText} />
       {contactRuntime.runtime === null ? (
         <NativeContactsUnavailable platform={contactRuntime.availability.platform} />
       ) : lookup?.tag === Bindings.ContactLookupOutcome_Tags.DevelopmentResetRequired ? (
@@ -479,20 +525,25 @@ export function ContactDetailScreen({ destination }: { readonly destination: Des
             </BodyText>
           )}
           <Card>
-            <Subheading>Association</Subheading>
-            <KeyValue
-              label="Identity"
-              value={
-                contact.identity === undefined ? "Not known" : formatContactHash(contact.identity)
-              }
-            />
-            <KeyValue label="Pinned" value={contact.pinned ? "Yes" : "No"} />
+            <Disclosure label="Contact details">
+              <KeyValue label="Destination" value={destinationText} />
+              <KeyValue
+                label="Identity"
+                value={
+                  contact.identity === undefined ? "Not known" : formatContactHash(contact.identity)
+                }
+              />
+              <KeyValue label="Pinned" value={contact.pinned ? "Yes" : "No"} />
+            </Disclosure>
           </Card>
           <Card>
-            <Subheading>Private contact name</Subheading>
-            <BodyText muted>
-              This name is only for you. It does not change the name this contact announces.
-            </BodyText>
+            <CardHeader title="Private contact name">
+              <InfoDisclosure label="About contact names">
+                <BodyText>
+                  This name is only for you. It does not change the name this contact announces.
+                </BodyText>
+              </InfoDisclosure>
+            </CardHeader>
             <TextField
               label="Name (optional)"
               autoCapitalize="sentences"
@@ -541,7 +592,8 @@ export function ContactDetailScreen({ destination }: { readonly destination: Des
 
 export function AddContactScreen() {
   const contactRuntime = useContactRuntime();
-  const router = useRouter();
+  const router = useIdentityRouter();
+  const captureCompletion = useContactCompletion(contactRuntime.runtime, "new");
   const [destinationText, setDestinationText] = useState("");
   const [identityText, setIdentityText] = useState("");
   const [alias, setAlias] = useState("");
@@ -568,12 +620,14 @@ export function AddContactScreen() {
     }
     setPending(true);
     setFailure(null);
+    const current = captureCompletion();
     try {
       const next = await contactRuntime.runtime.createManualContact(
         destination,
         identity ?? undefined,
         alias || undefined,
       );
+      if (!current()) return;
       setOutcome(next);
       if (
         next.tag === Bindings.ContactMutationOutcome_Tags.Saved ||
@@ -586,13 +640,14 @@ export function AddContactScreen() {
         router.replace(href);
       }
     } catch (failure) {
+      if (!current()) return;
       setFailure(
         failure instanceof Bindings.NativeStoragePreparationError
           ? failure
           : "The contact could not be saved. Try again.",
       );
     } finally {
-      setPending(false);
+      if (current()) setPending(false);
     }
   };
 

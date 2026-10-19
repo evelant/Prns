@@ -1,9 +1,9 @@
-import * as Bindings from "@prns-internal/expo";
 import type { DevelopmentNodeSnapshot } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import { act, fireEvent, render } from "@testing-library/react-native";
 import { Link } from "expo-router";
-import type { ReactNode } from "react";
 import { destinationHash, identityHash } from "personal-rns/contract";
+import type { ReactNode } from "react";
 
 import type { DevelopmentRuntimeView } from "@/native/development-runtime-context";
 import { NodesScreen } from "./nodes-screen";
@@ -142,7 +142,7 @@ test("puts this phone, its connections and controls before paired nodes", () => 
   expect(view.queryByText("Connected")).toBeNull();
   expect(view.getByRole("link", { name: "Manage node" })).toBeTruthy();
   expect(view.getByRole("link", { name: "Pair a node" })).toBeTruthy();
-  expect(view.getByRole("link", { name: "Remote access" })).toBeTruthy();
+  expect(view.queryByRole("link", { name: "Remote access" })).toBeNull();
   expect(view.getByRole("link", { name: "View this device" })).toBeTruthy();
   expect(view.getByText("View device")).toBeTruthy();
   expect(view.queryByText("View this device")).toBeNull();
@@ -242,6 +242,6 @@ test("retains startup diagnostics and recovery when no snapshot is available", (
   expect(view.getByRole("link", { name: "View diagnostics" })).toBeTruthy();
   expect(view.getByRole("link", { name: "Connections" })).toBeTruthy();
   expect(view.getByRole("link", { name: "Pair a node" })).toBeTruthy();
-  expect(view.getByRole("link", { name: "Remote access" })).toBeTruthy();
+  expect(view.queryByRole("link", { name: "Remote access" })).toBeNull();
   expect(view.queryByRole("button", { name: "Refresh now" })).toBeNull();
 });
