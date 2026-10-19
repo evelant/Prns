@@ -241,6 +241,7 @@ async fn observe_target_readiness(
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum ReachabilityFailure {
+    ReadinessExpired,
     Route,
     Node,
 }
@@ -318,7 +319,9 @@ where
         }
     })
     .await
-    .map_err(|_| ReachableTargetConnectionError::Reachability(ReachabilityFailure::Route))?;
+    .map_err(|_| {
+        ReachableTargetConnectionError::Reachability(ReachabilityFailure::ReadinessExpired)
+    })?;
     if ready == TargetReadiness::DiscoveryReady {
         request_path(destination)
             .await
@@ -351,6 +354,14 @@ fn fail_describe_reachable_connect(
 ) -> RemoteControlDescribeOutcome {
     clear_operation(snapshots);
     match error {
+        // The readiness and actor timers share one deadline. Either may settle
+        // first, so both must expose the same public timeout result.
+        ReachableTargetConnectionError::Reachability(ReachabilityFailure::ReadinessExpired) => {
+            failed(
+                RemoteControlDescribeFailureStage::Timeout,
+                "The Describe operation timed out while waiting for transport readiness.",
+            )
+        }
         ReachableTargetConnectionError::Reachability(ReachabilityFailure::Route) => failed(
             RemoteControlDescribeFailureStage::Route,
             "Prns could not discover a route to the selected target.",
@@ -367,11 +378,11 @@ fn announce_reachable_connect_failure(
     error: ReachableTargetConnectionError<ConnectRemoteControlTargetError>,
 ) -> AnnounceStatus {
     match error {
-        ReachableTargetConnectionError::Reachability(ReachabilityFailure::Route) => {
-            AnnounceStatus::Failed {
-                stage: AnnounceStage::Route,
-            }
-        }
+        ReachableTargetConnectionError::Reachability(
+            ReachabilityFailure::ReadinessExpired | ReachabilityFailure::Route,
+        ) => AnnounceStatus::Failed {
+            stage: AnnounceStage::Route,
+        },
         ReachableTargetConnectionError::Reachability(ReachabilityFailure::Node) => {
             AnnounceStatus::Failed {
                 stage: AnnounceStage::Node,
@@ -741,16 +752,26 @@ pub(crate) mod tests {
                 },
                 || {
                     emitted.set(true);
-                    core::future::ready(Ok::<_, ()>(()))
+                    core::future::ready(Ok::<_, ConnectRemoteControlTargetError>(()))
                 },
             )
             .await;
-            assert_eq!(
-                result,
-                Err(ReachableTargetConnectionError::Reachability(
-                    ReachabilityFailure::Route
-                ))
-            );
+            let error = result.expect_err("offline readiness expires");
+            let snapshots = SnapshotStore::new();
+            snapshots.update(|snapshot| {
+                snapshot.active_operation = Some(DevelopmentNodeOperation {
+                    kind: DevelopmentNodeOperationKind::Describe,
+                    started_at_millis: 1,
+                });
+            });
+            assert!(matches!(
+                fail_describe_reachable_connect(&snapshots, error),
+                RemoteControlDescribeOutcome::Failed {
+                    stage: RemoteControlDescribeFailureStage::Timeout,
+                    ..
+                }
+            ));
+            assert!(snapshots.read().active_operation.is_none());
             assert_eq!(tokio::time::Instant::now(), deadline);
             assert!(!emitted.get());
         }
@@ -885,15 +906,15 @@ pub(crate) mod tests {
             },
             || {
                 connections.set(connections.get() + 1);
-                core::future::ready(Ok::<_, ()>(7))
+                core::future::ready(Ok::<_, ConnectRemoteControlTargetError>(7))
             },
         )
         .await;
         assert_eq!(
-            result,
-            Err(ReachableTargetConnectionError::Reachability(
-                ReachabilityFailure::Route
-            ))
+            announce_reachable_connect_failure(result.expect_err("offline preflight expires")),
+            AnnounceStatus::Failed {
+                stage: AnnounceStage::Route
+            },
         );
         assert_eq!(started.elapsed(), Duration::from_secs(5));
         assert_eq!((paths.get(), connections.get()), (0, 0));
