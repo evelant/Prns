@@ -15,6 +15,18 @@ import tomllib
 
 POLICY = Path('applications/release/working-tree-qualification.json')
 EXCLUDED = {'node_modules', 'target', 'build', '.gradle', '.expo', '__pycache__', 'dist', 'dist-cjs', '.git'}
+BUILD_SOURCE_DIRECTORIES = {
+    Path('vendor/object-0.39.1/src/build'),
+    Path('vendor/object-0.39.1/tests/build'),
+}
+
+
+def excluded(relative):
+    # These exact vendored module directories contain reviewed Rust source.
+    # Other build directories, including nested ones, remain generated output.
+    return any(part in EXCLUDED and not (
+        part == 'build' and Path(*relative.parts[:index + 1]) in BUILD_SOURCE_DIRECTORIES
+    ) for index, part in enumerate(relative.parts))
 
 
 def load_policy(root):
@@ -65,7 +77,7 @@ def inventory(root, policy):
         if not encoded:
             continue
         relative = Path(os.fsdecode(encoded))
-        if EXCLUDED.intersection(relative.parts):
+        if excluded(relative):
             continue
         source = root / relative
         # A removed tracked file is a deletion in the current snapshot.
@@ -106,13 +118,21 @@ def snapshot(root, work, policy):
     return export, receipt
 
 
+def patch_paths(document):
+    for patches in document.get('patch', {}).values():
+        for name, dependency in patches.items():
+            if isinstance(dependency, dict) and 'path' in dependency:
+                yield name, dependency
+
+
 def dependency_paths(document):
+    yield from patch_paths(document)
     for key, value in document.items():
         if key in ('dependencies', 'dev-dependencies', 'build-dependencies') and isinstance(value, dict):
             for name, dependency in value.items():
                 if isinstance(dependency, dict) and 'path' in dependency:
                     yield name, dependency
-        elif isinstance(value, dict):
+        elif key != 'patch' and isinstance(value, dict):
             yield from dependency_paths(value)
 
 
@@ -122,6 +142,23 @@ def validate_dependencies(root, policy, mobility):
     pending = [root / path for path in policy['cargoEntrypoints']]
     manifests = set()
     packages = {}
+
+    def include_dependency(manifest, name, dependency):
+        target = (manifest.parent / dependency['path'] / 'Cargo.toml').resolve()
+        if not reviewed(target, root, policy) or not target.is_file():
+            raise ValueError(f'Cargo dependency {name} escapes source snapshot: {target}')
+        identity = tomllib.loads(target.read_text()).get('package', {}).get('name')
+        if identity != dependency.get('package', name):
+            raise ValueError(f'Cargo dependency identity mismatch: {name} at {target}')
+        pending.append(target)
+
+    # The root manifest is projected separately so unrelated workspace members
+    # stay excluded. Its retained resolver patches still need their full source.
+    root_manifest = root / 'Cargo.toml'
+    if root_manifest.is_file():
+        for name, dependency in patch_paths(tomllib.loads(root_manifest.read_text())):
+            include_dependency(root_manifest, name, dependency)
+
     while pending:
         manifest = pending.pop().resolve()
         if manifest in manifests:
@@ -134,13 +171,7 @@ def validate_dependencies(root, policy, mobility):
         if package.get('name'):
             packages[package['name']] = manifest.relative_to(root).as_posix()
         for name, dependency in dependency_paths(document):
-            target = (manifest.parent / dependency['path'] / 'Cargo.toml').resolve()
-            if not reviewed(target, root, policy) or not target.is_file():
-                raise ValueError(f'Cargo dependency {name} escapes source snapshot: {target}')
-            identity = tomllib.loads(target.read_text()).get('package', {}).get('name')
-            if identity != dependency.get('package', name):
-                raise ValueError(f'Cargo dependency identity mismatch: {name} at {target}')
-            pending.append(target)
+            include_dependency(manifest, name, dependency)
         for member in document.get('workspace', {}).get('members', []):
             if '*' in member:
                 raise ValueError('review wildcard workspace members before exporting them')
@@ -166,8 +197,8 @@ def validate_dependencies(root, policy, mobility):
                     raise ValueError(f'unreviewed npm dependency {name}: {target}')
     for scope in policy['sourceRoots']:
         for directory, children, files in os.walk(root / scope, followlinks=False):
-            children[:] = [child for child in children if child not in EXCLUDED]
             current = Path(directory)
+            children[:] = [child for child in children if not excluded((current / child).relative_to(root))]
             if '.npmrc' in files or (current.name == '.cargo' and {'config', 'config.toml'}.intersection(files)):
                 raise ValueError(f'current-source qualification forbids resolver overrides: {current}')
     return dict(sorted(packages.items()))

@@ -123,18 +123,24 @@ ties its iOS 26 AccessorySetupKit condition to specific relaunch cases; an
 limits the ASK-specific exception to user force-quit and Control Center Bluetooth
 toggle cases. Ordinary background event delivery and state restoration remain
 available without ASK. The app accepts losing those additional ASK recovery
-cases to support automatic, unpaired phone networking. The historical
-[current checkpoint](../checkpoints/2026-09-09-follow-up.md) records a bounded
-restoration-requested relaunch and its remaining UI, delivery and lifecycle
-limits. The full physical matrix remains open; source, simulator, build and
-ordinary foreground results do not establish it.
+cases to support automatic, unpaired phone networking. Qualify ordinary CoreBluetooth on the actual packaged build, separately from
+any earlier ASK-based installation. The [app guide](../prns/app/README.md)
+covers foreground messaging; long idle, natural suspension, process restoration,
+system-radio recovery and permission changes need separate physical checks.
+Source, simulator and foreground results do not establish those lifecycle cases.
 
-The [BLE-only phone demo](phone-node-demo.md) qualifies this ordinary
-CoreBluetooth path separately. The [September 23 checkpoint](../checkpoints/2026-09-23-ordinary-corebluetooth.md)
-records unpaired Galaxy discovery, two-way foreground messages, one same-process
-off-screen receipt and first resumed send on the retained-data Release install.
-Quiet/long idle and process restoration still require new evidence; earlier ASK
-results do not qualify the replacement.
+Automatic connections still require ordinary app-level Bluetooth permission.
+They do not require an OS bond, per-peer system picker or RemoteControl pairing.
+Treat discovered peers as untrusted network access; Reticulum/LXMF authentication
+and board-management authorization remain separate. The Apple backend avoids
+central-initiated L2CAP where it would introduce bonding.
+
+iOS background peripheral advertising omits the local name and puts service UUIDs
+in an overflow area discoverable only by scanning iOS devices
+([Apple documentation](https://developer.apple.com/documentation/corebluetooth/cbperipheralmanager/startadvertising(_:))).
+For mixed-platform background discovery, test iOS scanning an Android advertiser
+separately from maintaining an existing connection. Two-iPhone behavior needs its
+own physical acceptance.
 
 During an iOS-granted Bluetooth background window, the process-owned Host and
 Bluetooth interface can run without React. This is bounded, event-driven iOS
@@ -166,9 +172,8 @@ session, Hello means the acknowledged GATT write completed; neither
 event alone proves a validated, settled handshake. Closed-session reaping records
 the local cancellation path, not its cause or a measured handshake timeout.
 Only static event codes leave the probe; control fields are not exported.
-The [ASK cleanup](../checkpoints/2026-09-23-ask-cleanup.md) replaces obsolete
-central-only readiness events with `bluetooth_managers_ready` and
-`bluetooth_managers_timeout`, matching the dual-role backend without exposing its
+The readiness events `bluetooth_managers_ready` and
+`bluetooth_managers_timeout` cover the dual-role backend without exposing its
 dynamically assigned PSM.
 Reset/reconnect request markers identify the one-shot restored-native recovery
 path, not a guarantee that the physical connection has closed or reopened.

@@ -19,9 +19,9 @@ The native iOS and Android providers support contacts and a persistent mailbox
 for small direct LXMF messages, along with identity creation/import, local node
 inspection, RemoteControl pairing and connection checks, node address sharing
 and expanded node read/write controls. Group messaging remains planned.
-Coordinated multi-device identity and state synchronization remain open design
-work, and light profile/social functionality beyond today's messaging name is
-exploratory. None is implemented by this scope revision.
+Named identities and coordinated multi-device synchronization are not integrated
+at this app boundary. Legacy Explore, NomadNet and location shell routes do not
+provide working services and are outside the product scope.
 
 **Nodes → This phone → Connections** shows local Bluetooth state, connected
 physical peers and their traffic/details. Its stored enable/disable setting
@@ -34,11 +34,6 @@ required location services, with recovery actions.
 Android also exposes service-owned Stop/Start and connection-notification
 controls. Web renders the shell with an explicitly unavailable native runtime;
 there is no browser or Tauri application provider.
-
-The [Connections checkpoint](../../checkpoints/2026-09-24-local-bluetooth.md)
-records the original control and large-text checks; the
-[validation index](../../docs/validation.md) distinguishes them from later
-messaging and lifecycle evidence.
 
 **Contacts** now owns the editable messaging name, My address sharing and explicit
 **Announce yourself**. Saving a name updates future announces and path responses;
@@ -63,13 +58,8 @@ a missing sender public key produces an Unverified receipt, even for a saved
 contact. Inbox previews warn before showing an unverified sender's claimed name.
 A later verified copy of the same message upgrades the existing receipt without
 creating a second row; learning a key alone does not reverify saved messages.
-The [messaging checkpoint](../../checkpoints/2026-09-24-messaging-discovery.md)
-records the discovery/send journey and sender-key follow-up.
-
-The [September 30 recovery checkpoint](../../checkpoints/2026-09-30-mobile-liveness.md)
-supersedes the earlier stale-peer restart blocker with successful isolated app
-restarts and saved-contact delivery in both directions. These are bounded
-observations, not a guarantee of silent-peer expiry or background delivery.
+Use the [validation guide](../../docs/validation.md) for exact-build acceptance;
+foreground success does not establish silent-peer expiry or background delivery.
 
 **Network**, available from Nodes, Connections and More, separates physical
 Bluetooth connections, current routes and the latest 200 accepted announcements.
@@ -77,28 +67,22 @@ It shows traffic, route age/expiry and expandable technical IDs. Times reflect
 the last native update; current routes are not evidence of a past message's path.
 Announcement history lasts for the current node session. Clearing it does not
 delete contacts, routes or messages, and the next announcement can be heard
-normally. The [Network checkpoint](../../checkpoints/2026-09-30-network-inspection.md)
-records focused checks on rebuilt standalone apps on both phones.
+normally.
 
 Pairing is authorization, not a live connection. Contacts and mailbox rows are
 local application records, not proof that their peer is reachable. Development
 data is resettable and is not promised to survive incompatible upgrades.
 
 The app represents all 30 RemoteControl request kinds in the integrated upstream
-protocol. The original read/write integration is recorded in its
-[September 21 checkpoint](../../checkpoints/2026-09-21-remote-control-management.md);
-that checkpoint's upstream revision is historical, not a current branch pin.
-New board pairings grant Administrator authority
+protocol. New board pairings grant Administrator authority
 and the board's exact supported request set. Confirmation shows a short access
 summary and keeps administrator powers visible; exact controls and the node ID
 are available under **Show pairing details**. This is a single preset, not a
 permissions picker. Test devices may be
 reset and paired again; no deployed-pairing migration is needed.
 
-The expanded controls have host tests and limited Android/board read/write evidence,
-not complete physical qualification on either platform. See the
-[settings checkpoint](../../checkpoints/2026-09-21-remote-settings-workflows.md)
-for the exact builds, checks and remaining limits.
+Qualify controls on the actual app and board firmware. See the
+[validation guide](../../docs/validation.md) for the physical acceptance boundary.
 
 ## Route parameters
 
