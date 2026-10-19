@@ -2449,7 +2449,7 @@ async fn initial_mailbox_refresh_failure_stops_the_paused_service() {
         Duration::from_secs(2),
         run_actor(
             native.protocols().clone(),
-            service.clone(),
+            Some(service.clone()),
             service.subscribe(),
             commands,
             events,

@@ -3,9 +3,11 @@
 `@prns-internal/native-bindings` is the generated interface to the existing
 `prns-app-native` composition. UniFFI is enabled by default. Swift/Kotlin
 lifecycle owners and generated JavaScript calls use one `prns_app` shared native
-image per target, with the same supervisor, storage owner, generation and node
-identity. Native startup and iOS restoration can precede JavaScript. Loading or
-reloading JavaScript does not construct another node or Tokio runtime.
+image per target, with one supervisor, generation and shared Reticulum host.
+Named messaging identities have separate keys and storage; Bluetooth and managed
+node access retain the installation identity. Native startup and iOS restoration
+can precede JavaScript. Loading or reloading JavaScript does not construct another
+node or Tokio runtime.
 
 ## Generate and build
 
@@ -61,6 +63,73 @@ establishes the existing database owner before offline async access. Async calls
 cannot supply filesystem paths or silently reopen storage after reset. Native
 Start uses that same owner.
 
+## Named identity clients
+
+Production messaging uses `listNamedIdentities`, `createNamedIdentity` and
+`changeNamedIdentity` for the bounded local catalog (currently eight identities).
+Changes include `Select`, `Rename`, `Pause` and `Resume`. Persist the creation
+`requestId` before submission and retry the same ID and input after an uncertain
+result. A private catalog `label` is separate from the public messaging name;
+new identities publish no name unless one is explicitly supplied.
+
+After starting the native node, capture a reference and bind all domain calls:
+
+```ts
+import { developmentRuntime } from "@prns-internal/expo";
+
+const result = await developmentRuntime.listNamedIdentities();
+if (result.tag === "Ready" && result.inner.catalog.selected !== undefined) {
+  const reference = result.inner.catalog.selected;
+  const identity = developmentRuntime.forIdentity(reference);
+  const contacts = await identity.listContacts();
+}
+```
+
+`forIdentity` copies the complete immutable reference and lazily opens the
+generated `openNamedIdentity(reference)` / `NamedIdentityClient`. Keep that
+client with the screen, request or recovery record. Changing the selected default
+never retargets an existing client or admitted operation. Native code verifies
+the catalog incarnation, sequence and public hash on every dispatch, including
+deferred requests. Contacts, direct messages, groups, recovery actions and
+announce preferences use that identity's storage.
+
+`state` is the durable desired state; `transitioning` means activation or drainage
+is unfinished. A successful Pause reply confirms completed drainage. Paused
+identities retain history, local contact/profile edits and completed
+action recovery, while fresh sends, group mutations and announces are rejected.
+Other identities keep running. These local operations require the shared native
+owner to remain started; stopping the entire node makes named clients unavailable
+until restart. They never activate a paused identity implicitly.
+
+Unbound global messaging functions remain for legacy/development fixtures; they
+do not resolve the selected named identity. Production code must use the bound
+client, without falling back to those globals when it is unavailable. Installation
+startup, Bluetooth and remote management remain shared operations.
+
+### Local activity and viewed cursors
+
+`listNamedIdentityActivity()` returns per-owner summaries for the bounded catalog;
+the bound client exposes `readIdentityActivity()` and
+`markIdentityActivitySeen({ scope, throughSequence })`. `scope` identifies a group
+or direct destination under that captured owner. Use the exact incoming record
+position displayed by the consumer (`GroupTextMessage.sequence` or
+`LxmfMessage.localRecordId`, both `bigint`), not a newer summary watermark after
+rendering an older page. Marks are monotonic and durable. A later arrival remains
+unread after a stale mark; selecting an identity never marks anything viewed.
+
+These are local viewed markers, not network read receipts. Summary/mark calls do
+not announce, activate a paused identity or transmit messages. Pending incoming
+invitations remain actionable until accepted, declined or expired. Local activity
+requires the shared native owner to remain started, including for paused identities.
+
+The current adapter scans 512 retained direct rows, lists up to 64 direct
+conversations and retains 260 combined group/direct cursor slots per identity.
+Groups use the current four-group/256-text-record retention bounds. Treat `partial`
+counts as lower bounds and preserve unavailable results; neither establishes an
+empty inbox. Cursor exhaustion returns `Capacity` without discarding unread state.
+A busy owner's activity can be unavailable while other owners remain readable.
+The app refreshes and marks focused conversations only while foregrounded.
+
 ## Canonical values
 
 Application counters and identifiers use Rust `u64`, generated as exact
@@ -100,9 +169,9 @@ by their native lanes after the caller departs. Stop drains admitted durable
 work. A rejected caller promise therefore does not prove that an accepted write
 was rolled back and must not trigger an automatic retry.
 
-Messaging profile reads/writes prepare local storage without starting the node or
-announcing. A saved name updates the registered LXMF announce data of a running
-node; `SavedButNotApplied` explicitly separates a committed preference from an
+Messaging profile reads/writes do not activate the identity or announce it.
+A saved public name updates that identity's registered LXMF announce data when
+active; `SavedButNotApplied` explicitly separates a committed preference from an
 unconfirmed live update. `AnnounceLxmfOutcome.Requested` means fan-out admission,
 not proof that another device heard it. Discovery clearing affects visibility,
 not durable contacts or routing. A fresh send resolves missing authenticated
@@ -122,42 +191,72 @@ no path resolution, database opening, synchronous response wait or worker join
 on Hermes. A process-wide timer driver keeps offline query deadlines working;
 it owns neither an executor nor a node.
 
-## Group conversations and recoverable actions
+## Group conversations and recoverable app actions
 
-The group APIs use the application database owner shared with contacts and LXMF.
-Create groups and exchange authenticated invitations without development fixtures.
-`createGroupRequestId` obtains an identifier from platform entropy; keep that ID
-and the exact input when retrying an uncertain create, invitation or send.
-`Accepted` means local durable acceptance. Per-device receipts do not imply human
-read status. History uses exclusive local-sequence pagination and a durable
-revision that changes when receipts arrive.
+The bound group text API reads and writes through the identity-scoped database
+owner shared with its contacts and LXMF. `createGroupRequestId` obtains an
+identifier from platform entropy; `sendGroupText` binds that identifier to one
+immutable text payload.
+After an uncertain result, retry the same identifier and text. A committed send
+survives a dropped caller, JavaScript reload, and database reopen. `Accepted`
+means local durable acceptance. Per-device receipt counts never imply human read
+status. History is newest first, with exclusive local sequence pagination and a
+durable revision that also changes when receipts arrive.
 
-Use `prepareGroupAction` before submitting create/invite/respond/send intent.
-Preparation checks the expected local identity and commits an immutable input.
-`listGroupActions` recovers outstanding work after restart; `executeGroupAction`
-reuses the original request ID. Completed results require acknowledgment, while
-`RetryExpired` requires explicit discard. An uncertain reply cannot justify a
-new request ID. The low-level methods remain available to consumers that own
-their own durable intent.
+The app creates groups and exchanges authenticated invitations without fixtures.
+The optional `group-fixture.json` remains a legacy development regression tool:
+its primary-identity checks apply to that fixture path, not production named
+enrollment. It installs only into vacant matching group storage and never
+restores initial ratchets over live state. The redb backend is still development
+plaintext; protected mobile keys and history remain work.
 
-`getGroupAnnounceSettings` and `setGroupAnnounceSettings` save preferences without
-starting the network. The app adapter defaults to hourly announcements with
-positive jitter; callers can select manual-only or 15/30-minute and 1/3/6-hour
-intervals. `announceGroups` requests the two group service destinations. A
-`Requested` outcome means local host admission, not peer reception. The reusable
-runner retains its six-hour default.
+The app UI prepares each create/invite/respond/send input durably before
+execution. Preparation and action references include the expected device identity;
+native admission refuses a stale identity before any mutation. `listGroupActions` restores outstanding intent and local outcomes;
+`executeGroupAction` retries the saved immutable ID and input. Completed actions
+require acknowledgment; `RetryExpired` requires explicit reviewed discard.
+Native scope admission rejects a second outstanding action if the first prepare
+reply was lost. This is a bounded UI recovery journal, not another delivery queue.
+The existing low-level mutation functions remain available to clients that own
+their own durable intent. Text not yet prepared is still an unsaved UI draft.
 
-One group worker shares the existing Reticulum host and interleaves inbound
-requests with bounded outbound synchronization. Accepted database jobs drain on
-Stop, and durable sends can be accepted without a live interface. Network
-progress requires a running node and usable route. Synchronization/progress
-projections are disposable observations; message IDs and device receipts remain
-authoritative across restart. No JavaScript network retry loop is required.
+Bound `getGroupAnnounceSettings` and `setGroupAnnounceSettings` change local
+preferences without activating the identity or announcing. The app defaults to
+hourly announcements and supports
+manual-only, 15/30 minutes and 1/3/6 hours; automatic timing has positive jitter.
+`announceGroups` queues both group service destinations for the captured identity.
+All identities and their LXMF/group services share a bounded scheduler and
+60-second aggregate cooldown. Named manual calls return `Queued` or `Throttled`;
+neither means host dispatch or reception. Where a legacy API returns `Requested`,
+it means local host admission, not receipt by another device. Settings changes
+do not announce.
+The reusable runner still defaults to six hours. See the
+[announcement rationale](../../../../prns-groups/transport/reticulum/docs/announce-strategy.md).
 
-The optional `group-fixture.json` path is only a regression tool: it installs into
-vacant matching storage and never restores initial ratchets over live state.
-The native backend remains development plaintext; protected phone storage and
-fresh mobile acceptance are separate work.
+Each active identity's group driver uses its own destinations on the shared
+Reticulum host and interleaves inbound requests with bounded outbound sync.
+It owns no separate runtime. Pause/Stop fence admission and drain accepted
+database jobs. An enabled identity can accept durable sends without a live
+interface; paused identities allow history but reject fresh publication.
+Network progress requires the shared node and a usable route. Platform background
+lifetime and phone recovery still require device qualification.
+
+`GroupConversation.synchronization` reports whether the generation's group
+worker is enabled, stopped, or unavailable. `Running` is not delivery evidence.
+A terminal group-worker error marks synchronization unavailable and retains
+readable history and durable local send admission; it does not stop the shared
+Reticulum host or direct LXMF service. Restarting the native node creates a new
+group synchronization lifetime over the retained state.
+
+`GroupConversation.progress` reads the shared runner's bounded, disposable
+per-peer observations: connecting/synchronizing, retry delay, storage barriers,
+membership catch-up and typed failure categories. An unknown pending value is
+not an empty queue; a retry delay is not a delivery estimate. Stopping or losing
+the worker suppresses live phases and retry deadlines. Durable message IDs and
+device receipts remain authoritative across restart. The app displays this
+projection and never schedules network retries in JavaScript. Message body
+test identifiers include the durable record ID so physical lifecycle trials can
+verify exact records without exposing private database contents.
 
 ## Runtime scope and validation
 

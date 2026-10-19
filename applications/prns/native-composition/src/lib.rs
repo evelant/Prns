@@ -11,6 +11,7 @@ mod group_actions;
 mod group_announces;
 mod group_diagnostics;
 mod groups;
+pub mod identity_services;
 mod input;
 mod ios_restoration_probe;
 mod lifecycle;
@@ -52,3 +53,5 @@ pub mod bindings;
 
 #[cfg(feature = "uniffi-bindings")]
 uniffi::setup_scaffolding!();
+
+pub mod named_identities;

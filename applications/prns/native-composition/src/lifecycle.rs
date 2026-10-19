@@ -1828,6 +1828,15 @@ fn supervisor() -> &'static Supervisor {
     })
 }
 
+/// Read the last published installation Bluetooth state without enqueueing a
+/// command back into the shared actor. Named services never own this setting.
+pub(crate) fn named_announce_bluetooth_ready() -> bool {
+    matches!(
+        supervisor().snapshots.read().bluetooth.state,
+        LocalBluetoothState::Connected
+    )
+}
+
 /// Borrow the current host without bypassing the app's service-draining owner.
 pub fn shared_host() -> Option<HostClient> {
     supervisor()
@@ -1914,6 +1923,7 @@ fn run_worker(
         })?;
     let _ = published_runtime.set(runtime.handle().clone());
     runtime.block_on(run_generation(
+        !cfg!(test),
         published_host,
         bluetooth_control,
         bluetooth_enabled,
@@ -1936,6 +1946,7 @@ fn run_worker(
 
 #[allow(clippy::too_many_arguments)]
 async fn run_generation(
+    named_mode: bool,
     published_host: Arc<OnceLock<HostClient>>,
     bluetooth_control: Arc<OnceLock<BluetoothControl>>,
     bluetooth_enabled: bool,
@@ -2071,20 +2082,28 @@ async fn run_generation(
             format!("could not derive the built-in LXMF destination: {error:?}"),
         )
     })?;
-    let prepared_groups = crate::groups::prepare_network(group_client)
-        .await
-        .map_err(|detail| {
-            boot_failure(
-                &ready,
-                &snapshots,
-                DevelopmentNodeFailureStage::Storage,
-                detail.to_string(),
-            )
-        })?;
+    let prepared_groups = if named_mode {
+        None
+    } else {
+        crate::groups::prepare_network(group_client)
+            .await
+            .map_err(|detail| {
+                boot_failure(
+                    &ready,
+                    &snapshots,
+                    DevelopmentNodeFailureStage::Storage,
+                    detail.to_string(),
+                )
+            })?
+    };
     let group_ingress = prepared_groups
         .as_ref()
         .map(crate::groups::PreparedNetwork::ingress);
-    let mut destinations = vec![lxmf_destination];
+    let mut destinations = if named_mode {
+        Vec::new()
+    } else {
+        vec![lxmf_destination]
+    };
     if let Some(groups) = prepared_groups.as_ref() {
         for destination in groups.destination_configs().map_err(|detail| {
             boot_failure(
@@ -2111,6 +2130,17 @@ async fn run_generation(
     };
     let (pending_lxmf, lxmf_callbacks) =
         prns_lxmf::mailbox::DurableDirectLxmfService::prepare(lxmf_identity);
+    let named_events = crate::identity_services::MessagingEvents::new(64).map_err(|error| {
+        boot_failure(
+            &ready,
+            &snapshots,
+            DevelopmentNodeFailureStage::Runtime,
+            error.to_string(),
+        )
+    })?;
+    let named_event_callback = named_events.clone();
+    let named_announce_callback = named_events.clone();
+    let mut legacy_announces = lxmf_callbacks.authenticated_announce_observer();
     let (event_tx, event_rx) = mpsc::channel(EVENT_LANE_CAPACITY);
     let overflowed = Arc::new(std::sync::atomic::AtomicBool::new(false));
     let event_overflowed = Arc::clone(&overflowed);
@@ -2155,15 +2185,21 @@ async fn run_generation(
         application_events: ApplicationEventDispatch::NativeCallback,
         on_event: Some(Box::new(move |event| {
             crate::group_diagnostics::on_event(&event);
-            let _lxmf_outcome = lxmf_events.on_prns_event(&event);
+            named_event_callback.on_event(&event);
+            if !named_mode {
+                let _lxmf_outcome = lxmf_events.on_prns_event(&event);
+            }
             if let Some(ingress) = group_ingress.as_ref() {
                 ingress.on_event_ref(&event);
             }
             send_event(&event_tx, &event_overflowed, event);
         })),
-        accepted_announces: Some(
-            network_activity.compose_observer(lxmf_callbacks.authenticated_announce_observer()),
-        ),
+        accepted_announces: Some(network_activity.compose_observer(move |observation| {
+            named_announce_callback.on_announce(&observation);
+            if !named_mode {
+                legacy_announces(observation);
+            }
+        })),
         prepare_interfaces: Some(Box::new(move |_client| {
             #[allow(unused_mut)]
             let mut attachments = Vec::new();
@@ -2210,6 +2246,7 @@ async fn run_generation(
         })?;
     // Joining the host belongs to this generation even if service startup fails.
     // A foreign finalizer's scheduled cleanup is insufficient for app reset safety.
+    let mut named_runtime = None;
     let result = async {
         let host_client = owner.client();
         let services = host_client.native_services().map_err(|error| boot_failure(
@@ -2218,7 +2255,16 @@ async fn run_generation(
         let clock = services.clock();
         let _ = published_host.set(host_client.clone());
 
-        let lxmf_service = pending_lxmf
+        if named_mode {
+            let runtime = crate::named_identities::NamedRuntime::open(
+                &paths.root, host_client.clone(), named_events,
+            ).await.map_err(|detail| boot_failure(
+                &ready, &snapshots, DevelopmentNodeFailureStage::Storage, detail,
+            ))?;
+            crate::named_identities::install_global(Some(runtime.clone()));
+            named_runtime = Some(runtime);
+        }
+        let lxmf_service = if named_mode { None } else { Some(pending_lxmf
             .start_paused(
                 Arc::new(prns_lxmf::direct::PrnsDirectNetwork::new(host_client.clone())),
                 mailbox_submitter,
@@ -2232,8 +2278,13 @@ async fn run_generation(
                     DevelopmentNodeFailureStage::Runtime,
                     format!("could not start the LXMF service worker: {error:?}"),
                 )
-            })?;
-        let lxmf_refresh = lxmf_service.subscribe();
+            })?
+        ) };
+        // A disabled legacy lane is retained only as a receiver for the actor's
+        // select shape. Named identities own their independent refresh streams.
+        let (_unused_refresh, empty_refresh) = watch::channel(0);
+        let lxmf_refresh = lxmf_service.as_ref().map(|service| service.subscribe())
+            .unwrap_or(empty_refresh);
 
         snapshots.update(|snapshot| {
             snapshot.controller_identity_fingerprint = Some(controller_identity_fingerprint);
@@ -2281,6 +2332,18 @@ async fn run_generation(
             }
         }
     }.await;
+    let named_stopped = if let Some(runtime) = named_runtime {
+        // Remove admission before drain. Already admitted work stays owned by the
+        // runtime until its service fences and storage drains have completed.
+        crate::named_identities::install_global(None);
+        runtime
+            .stop()
+            .await
+            .map_err(|detail| (DevelopmentNodeStopStage::Worker, detail))
+    } else {
+        Ok(())
+    };
+    let result = result.and(named_stopped);
     let joined = owner.stop().await.map_err(map_host_stop_error);
     let result = joined.and(result);
     settle_worker_result(&operation_admitted, &snapshots, &result);
@@ -2445,7 +2508,7 @@ where
 #[allow(clippy::too_many_arguments)]
 async fn run_actor(
     handle: PrnsNodeHandle,
-    lxmf_service: prns_lxmf::mailbox::DurableDirectLxmfService,
+    lxmf_service: Option<prns_lxmf::mailbox::DurableDirectLxmfService>,
     mut lxmf_refresh: watch::Receiver<u64>,
     commands: mpsc::Receiver<Command>,
     events: mpsc::Receiver<OwnedNodeEvent>,
@@ -2462,7 +2525,7 @@ async fn run_actor(
     let mut send_tasks = JoinSet::new();
     let result = run_actor_loop(
         &handle,
-        &lxmf_service,
+        lxmf_service.as_ref(),
         &mut lxmf_refresh,
         &mut send_tasks,
         commands,
@@ -2479,6 +2542,9 @@ async fn run_actor(
     )
     .await;
 
+    let Some(lxmf_service) = lxmf_service else {
+        return result;
+    };
     let lxmf_stop_result = stop_lxmf_service_and_drain(&lxmf_service, &mut send_tasks).await;
     let health_result = refresh_lxmf_health(&lxmf_service, &snapshots)
         .await
@@ -2493,7 +2559,7 @@ async fn run_actor(
 #[allow(clippy::too_many_arguments)]
 async fn run_actor_loop(
     handle: &PrnsNodeHandle,
-    lxmf_service: &prns_lxmf::mailbox::DurableDirectLxmfService,
+    lxmf_service: Option<&prns_lxmf::mailbox::DurableDirectLxmfService>,
     lxmf_refresh: &mut watch::Receiver<u64>,
     send_tasks: &mut JoinSet<()>,
     mut commands: mpsc::Receiver<Command>,
@@ -2511,18 +2577,20 @@ async fn run_actor_loop(
     let mut controls = PairingControls::default();
     // The paused service already accepts inbound callbacks. Keep this fallible
     // startup read inside run_actor's guaranteed service-stop/drain scope.
-    refresh_lxmf_health(lxmf_service, snapshots)
-        .await
-        .map(|_| ())
-        .map_err(|failure| {
-            let detail = lxmf_storage_failure_detail(snapshots, &failure);
-            boot_failure(
-                ready,
-                snapshots,
-                DevelopmentNodeFailureStage::Storage,
-                detail,
-            )
-        })?;
+    if let Some(lxmf_service) = lxmf_service {
+        refresh_lxmf_health(lxmf_service, snapshots)
+            .await
+            .map(|_| ())
+            .map_err(|failure| {
+                let detail = lxmf_storage_failure_detail(snapshots, &failure);
+                boot_failure(
+                    ready,
+                    snapshots,
+                    DevelopmentNodeFailureStage::Storage,
+                    detail,
+                )
+            })?;
+    }
     let startup = async {
         loop {
             let Some(event) = events.recv().await else {
@@ -2556,13 +2624,14 @@ async fn run_actor_loop(
         }
     }
 
-    if !lxmf_service.activate_queued_attempts().await {
-        let detail =
-            "The durable LXMF service stopped before queued attempts were activated.".to_owned();
-        let _ = ready.send(Err((DevelopmentNodeFailureStage::Runtime, detail.clone())));
-        return Err((DevelopmentNodeStopStage::Worker, detail));
+    if let Some(lxmf_service) = lxmf_service {
+        if !lxmf_service.activate_queued_attempts().await {
+            let detail = "The durable LXMF service stopped before queued attempts were activated."
+                .to_owned();
+            let _ = ready.send(Err((DevelopmentNodeFailureStage::Runtime, detail.clone())));
+            return Err((DevelopmentNodeStopStage::Worker, detail));
+        }
     }
-
     let _ = crate::remote_control::refresh_targets(handle, snapshots).await;
     snapshots.update(|snapshot| {
         snapshot.runtime = DevelopmentNodeRuntime::Running;
@@ -2594,7 +2663,8 @@ async fn run_actor_loop(
                     return Ok(());
                 }
             }
-            changed = lxmf_refresh.changed() => {
+            changed = lxmf_refresh.changed(), if lxmf_service.is_some() => {
+                let Some(lxmf_service) = lxmf_service else { continue; };
                 if changed.is_err() {
                     snapshots.fail(DevelopmentNodeFailure {
                         stage: DevelopmentNodeFailureStage::Runtime,
@@ -2613,6 +2683,7 @@ async fn run_actor_loop(
                 ).await?;
             }
             _ = lxmf_health_retry.tick(), if retry_lxmf_health => {
+                let Some(lxmf_service) = lxmf_service else { continue; };
                 retry_lxmf_health = refresh_running_lxmf_health(lxmf_service, snapshots).await?;
             }
             completed = send_tasks.join_next(), if !send_tasks.is_empty() => {
@@ -2774,6 +2845,7 @@ async fn run_actor_loop(
                     });
                     let identity = match identity {
                         Ok(Some(identity)) if messaging_only => {
+                            let Some(lxmf_service) = lxmf_service else { continue; };
                             match lxmf_service.snapshot(prns_lxmf::mailbox::MailboxListRequest {
                                 peer: None, direction: None, before: None, limit: 1,
                             }).await {
@@ -2789,13 +2861,16 @@ async fn run_actor_loop(
                     let _ = response.send(identity);
                 }
                 Some(Command::SetMessagingProfile(reply)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     profile::apply_profile(handle, lxmf_service.local_destination(), reply).await;
                 }
                 Some(Command::ClearLxmfDiscovery(response)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     lxmf_service.clear_discovered_peers().await;
                     let _ = response.send(LxmfDiscoveryClearOutcome::Cleared);
                 }
                 Some(Command::ListLxmfPeers(response)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     let outcome = match lxmf_service
                         .snapshot(prns_lxmf::mailbox::MailboxListRequest {
                             peer: None,
@@ -2811,12 +2886,15 @@ async fn run_actor_loop(
                     let _ = response.send(outcome);
                 }
                 Some(Command::ListLxmfMessages(request, response)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     dispatch_lxmf_message_list(lxmf_service, request, response).await;
                 }
                 Some(Command::ListLxmfConversations(request, response)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     dispatch_lxmf_conversation_list(lxmf_service, request, response).await;
                 }
                 Some(Command::RetryLxmfMessage(local_record_id, response)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     let outcome = lxmf_service.retry_lxmf_message(local_record_id).await;
                     let _ = response.send(crate::lxmf::project_retry_outcome(outcome));
                 }
@@ -2825,6 +2903,7 @@ async fn run_actor_loop(
                     cancelled_at_millis,
                     response,
                 )) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     let outcome = lxmf_service
                         .cancel_lxmf_message(local_record_id, cancelled_at_millis)
                         .await;
@@ -2834,6 +2913,7 @@ async fn run_actor_loop(
                     let _ = response.send(crate::lxmf::measure_text(&input));
                 }
                 Some(Command::AnnounceLxmf(response)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     let inventory = handle.interface_inventory();
                     let current = snapshots.read();
                     let bluetooth_ready = bluetooth_control.get().is_some_and(|control| {
@@ -2853,6 +2933,7 @@ async fn run_actor_loop(
                     let _ = response.send(outcome);
                 }
                 Some(Command::SendDirectText(input, expected_identity, response)) => {
+                    let Some(lxmf_service) = lxmf_service else { continue; };
                     dispatch_lxmf_send(
                         lxmf_service,
                         send_tasks,

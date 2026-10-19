@@ -5,7 +5,7 @@ import { type UniffiRustFutureContinuationCallback, type UniffiForeignFutureDrop
 } from "./prns_app-ffi";
 import { type HostClientHandleLike, type HostSnapshot,
 } from "./prns_host_uniffi";
-import { type FfiConverter, type RustBufferAllocator, type UniffiByteArray, AbstractFfiConverterByteArray, Cursor, FfiConverterArray, FfiConverterBool, FfiConverterInt16, FfiConverterInt8, FfiConverterOptional, FfiConverterUInt16, FfiConverterUInt32, FfiConverterUInt64, FfiConverterUInt8, FfiConverterUint8Array, RustBuffer, UniffiEnum, UniffiInternalError, UniffiRustCaller, uniffiCreateFfiConverterString, uniffiCreateRecord, uniffiRustCallAsync, uniffiTypeNameSymbol,
+import { type FfiConverter, type RustBufferAllocator, type UniffiByteArray, type UniffiGcObject, type UniffiHandle, type UniffiObjectFactory, AbstractFfiConverterByteArray, Cursor, FfiConverterArray, FfiConverterBool, FfiConverterInt16, FfiConverterInt8, FfiConverterObject, FfiConverterOptional, FfiConverterUInt16, FfiConverterUInt32, FfiConverterUInt64, FfiConverterUInt8, FfiConverterUint8Array, RustBuffer, UniffiAbstractObject, UniffiEnum, UniffiInternalError, UniffiRustCaller, destructorGuardSymbol, pointerLiteralSymbol, uniffiCreateFfiConverterString, uniffiCreateRecord, uniffiRustCallAsync, uniffiTypeNameSymbol,
 } from "@ubjs/core";
 import { liftHostSnapshot, lowerHostSnapshot,
 } from "personal-rns-expo/contract-adapter";
@@ -282,6 +282,46 @@ export async function cancelLxmfMessage(input: CancelLxmfMessageInput, asyncOpts
     }
     }
 
+export async function changeNamedIdentity(input: ChangeNamedIdentityInput, asyncOpts_?: { signal: AbortSignal }): Promise<NamedIdentityCatalogOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_change_named_identity(FfiConverterTypeChangeNamedIdentityInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeNamedIdentityCatalogOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function changeRemoteNode(input: ChangeRemoteNodeInput, asyncOpts_?: { signal: AbortSignal }): Promise<ChangeRemoteNodeOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -509,6 +549,46 @@ export async function createManualContact(input: CreateManualContactInput, async
             /*liftFunc:*/ (__rb) => {
                 try {
                     return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function createNamedIdentity(input: CreateNamedIdentityInput, asyncOpts_?: { signal: AbortSignal }): Promise<NamedIdentityCatalogOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_create_named_identity(FfiConverterTypeCreateNamedIdentityInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeNamedIdentityCatalogOutcome.lift(__rb);
                 } finally {
                     nativeModule().rustbuffer_free(__rb);
                 }
@@ -1251,6 +1331,86 @@ export async function listLxmfPeers(asyncOpts_?: { signal: AbortSignal }): Promi
     }
     }
 
+export async function listNamedIdentities(asyncOpts_?: { signal: AbortSignal }): Promise<NamedIdentityCatalogOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_list_named_identities(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeNamedIdentityCatalogOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function listNamedIdentityActivity(asyncOpts_?: { signal: AbortSignal }): Promise<NamedIdentityActivityListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_list_named_identity_activity(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeNamedIdentityActivityListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function measureLxmfText(input: MeasureLxmfTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<MeasureLxmfTextOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -1467,6 +1627,17 @@ export function nativeStop(): DevelopmentNodeStopOutcome {
     } finally {
         nativeModule().rustbuffer_free(__rb);
     }
+    }
+
+export function openNamedIdentity(identity: NamedIdentityReference): NamedIdentityClientLike {
+    return FfiConverterTypeNamedIdentityClient.lift(uniffiCaller.rustCall(
+            /*caller:*/ (callStatus) => {
+                return nativeModule().uniffi_prns_app_fn_func_open_named_identity(
+        FfiConverterTypeNamedIdentityReference.lower(identity, nativeModule().rustbuffer_alloc),
+                callStatus);
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+    ));
     }
 
 /**
@@ -2408,6 +2579,296 @@ const FfiConverterTypeCancelLxmfMessageInput = (() => {
         }
         allocationSize(value: TypeName): number {
             return FfiConverterUInt64.allocationSize(value.localRecordId);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+/**
+ * Typealias from the type name used in the UDL file to the builtin type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
+export type Bytes16 = Uint8Array;
+// FfiConverter for Bytes16, a type alias for Uint8Array.
+const FfiConverterTypeBytes16 = FfiConverterUint8Array;
+
+export type NamedIdentityReference = {
+    incarnation: Bytes16,
+    sequence: bigint,
+    publicHash: Bytes16
+}
+
+/**
+ * Generated factory for {@link NamedIdentityReference} record objects.
+ */
+export const NamedIdentityReference = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<NamedIdentityReference, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<NamedIdentityReference>,
+    });
+})();
+
+const FfiConverterTypeNamedIdentityReference = (() => {
+    type TypeName = NamedIdentityReference;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                incarnation: FfiConverterTypeBytes16.readFromCursor(c),
+                sequence: FfiConverterUInt64.readFromCursor(c),
+                publicHash: FfiConverterTypeBytes16.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes16.writeIntoCursor(value.incarnation, c);
+            FfiConverterUInt64.writeIntoCursor(value.sequence, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.publicHash, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes16.allocationSize(value.incarnation) +
+             FfiConverterUInt64.allocationSize(value.sequence) +
+             FfiConverterTypeBytes16.allocationSize(value.publicHash);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+
+// Enum: NamedIdentityChange
+export enum NamedIdentityChange_Tags {
+    Select = "Select",
+    Rename = "Rename",
+    Pause = "Pause",
+    Resume = "Resume"
+}
+export const NamedIdentityChange = (() => {
+
+    type Select__interface = {
+        tag: NamedIdentityChange_Tags.Select
+    };
+    class Select_ extends UniffiEnum implements Select__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityChange";
+        readonly tag = NamedIdentityChange_Tags.Select;
+        constructor() {
+            super("NamedIdentityChange", "Select");
+        }
+
+        static new(): Select_ {
+            return new Select_();
+        }
+
+        static instanceOf(obj: any): obj is Select_ {
+            return obj.tag === NamedIdentityChange_Tags.Select;
+        }
+
+    }
+
+    type Rename__interface = {
+        tag: NamedIdentityChange_Tags.Rename;
+        inner:
+Readonly<{label: string}>
+    };
+    class Rename_ extends UniffiEnum implements Rename__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityChange";
+        readonly tag = NamedIdentityChange_Tags.Rename;
+        readonly inner:
+Readonly<{label: string}>;
+        constructor(
+inner: {label: string }) {
+            super("NamedIdentityChange", "Rename");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {label: string }): Rename_ {
+            return new Rename_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Rename_ {
+            return obj.tag === NamedIdentityChange_Tags.Rename;
+        }
+
+    }
+
+    type Pause__interface = {
+        tag: NamedIdentityChange_Tags.Pause
+    };
+    class Pause_ extends UniffiEnum implements Pause__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityChange";
+        readonly tag = NamedIdentityChange_Tags.Pause;
+        constructor() {
+            super("NamedIdentityChange", "Pause");
+        }
+
+        static new(): Pause_ {
+            return new Pause_();
+        }
+
+        static instanceOf(obj: any): obj is Pause_ {
+            return obj.tag === NamedIdentityChange_Tags.Pause;
+        }
+
+    }
+
+    type Resume__interface = {
+        tag: NamedIdentityChange_Tags.Resume
+    };
+    class Resume_ extends UniffiEnum implements Resume__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityChange";
+        readonly tag = NamedIdentityChange_Tags.Resume;
+        constructor() {
+            super("NamedIdentityChange", "Resume");
+        }
+
+        static new(): Resume_ {
+            return new Resume_();
+        }
+
+        static instanceOf(obj: any): obj is Resume_ {
+            return obj.tag === NamedIdentityChange_Tags.Resume;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is NamedIdentityChange {
+        return obj[uniffiTypeNameSymbol] === "NamedIdentityChange";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Select: Select_,
+  Rename: Rename_,
+  Pause: Pause_,
+  Resume: Resume_
+    });
+
+})();
+export type NamedIdentityChange = InstanceType<
+    typeof NamedIdentityChange['Select' | 'Rename' | 'Pause' | 'Resume']
+>;
+
+// FfiConverter for enum NamedIdentityChange
+const FfiConverterTypeNamedIdentityChange = (() => {
+    type TypeName = NamedIdentityChange;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new NamedIdentityChange.Select();
+                case 2: return new NamedIdentityChange.Rename({label: FfiConverterString.readFromCursor(c) });
+                case 3: return new NamedIdentityChange.Pause();
+                case 4: return new NamedIdentityChange.Resume();
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case NamedIdentityChange_Tags.Select: {
+                    c.writeI32(1);
+                    return;
+                }
+                case NamedIdentityChange_Tags.Rename: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.label, c);
+                    return;
+                }
+                case NamedIdentityChange_Tags.Pause: {
+                    c.writeI32(3);
+                    return;
+                }
+                case NamedIdentityChange_Tags.Resume: {
+                    c.writeI32(4);
+                    return;
+                }
+                default:
+                    // Throwing from here means that NamedIdentityChange_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case NamedIdentityChange_Tags.Select: {
+                    return 4;
+                }
+                case NamedIdentityChange_Tags.Rename: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.label);
+                    return size;
+                }
+                case NamedIdentityChange_Tags.Pause: {
+                    return 4;
+                }
+                case NamedIdentityChange_Tags.Resume: {
+                    return 4;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+export type ChangeNamedIdentityInput = {
+    identity: NamedIdentityReference,
+    change: NamedIdentityChange
+}
+
+/**
+ * Generated factory for {@link ChangeNamedIdentityInput} record objects.
+ */
+export const ChangeNamedIdentityInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<ChangeNamedIdentityInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<ChangeNamedIdentityInput>,
+    });
+})();
+
+const FfiConverterTypeChangeNamedIdentityInput = (() => {
+    type TypeName = ChangeNamedIdentityInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                identity: FfiConverterTypeNamedIdentityReference.readFromCursor(c),
+                change: FfiConverterTypeNamedIdentityChange.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeNamedIdentityReference.writeIntoCursor(value.identity, c);
+            FfiConverterTypeNamedIdentityChange.writeIntoCursor(value.change, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeNamedIdentityReference.allocationSize(value.identity) +
+             FfiConverterTypeNamedIdentityChange.allocationSize(value.change);
 
         }
     };
@@ -3367,14 +3828,6 @@ const FfiConverterTypeClearNetworkActivityInput = (() => {
     return new FFIConverter();
 })();
 
-/**
- * Typealias from the type name used in the UDL file to the builtin type.  This
- * is needed because the UDL type name is used in function/method signatures.
- */
-export type Bytes16 = Uint8Array;
-// FfiConverter for Bytes16, a type alias for Uint8Array.
-const FfiConverterTypeBytes16 = FfiConverterUint8Array;
-
 export type Contact = {
     destination: Bytes16,
     alias?: string | undefined,
@@ -3565,6 +4018,53 @@ const FfiConverterTypeCreateManualContactInput = (() => {
             return FfiConverterTypeBytes16.allocationSize(value.destination) +
              FfiConverterOptionalTypeBytes16.allocationSize(value.identity) +
              FfiConverterOptionalString.allocationSize(value.alias);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type CreateNamedIdentityInput = {
+    requestId: Bytes32,
+    label: string,
+    publishedName?: string | undefined
+}
+
+/**
+ * Generated factory for {@link CreateNamedIdentityInput} record objects.
+ */
+export const CreateNamedIdentityInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<CreateNamedIdentityInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<CreateNamedIdentityInput>,
+    });
+})();
+
+const FfiConverterTypeCreateNamedIdentityInput = (() => {
+    type TypeName = CreateNamedIdentityInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                requestId: FfiConverterTypeBytes32.readFromCursor(c),
+                label: FfiConverterString.readFromCursor(c),
+                publishedName: FfiConverterOptionalString.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.requestId, c);
+            FfiConverterString.writeIntoCursor(value.label, c);
+            FfiConverterOptionalString.writeIntoCursor(value.publishedName, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.requestId) +
+             FfiConverterString.allocationSize(value.label) +
+             FfiConverterOptionalString.allocationSize(value.publishedName);
 
         }
     };
@@ -9460,6 +9960,257 @@ const FfiConverterTypeGroupTextMessage = (() => {
     return new FFIConverter();
 })();
 
+
+// Enum: IdentityActivityScope
+export enum IdentityActivityScope_Tags {
+    Group = "Group",
+    Direct = "Direct"
+}
+/**
+ * Local conversation ownership; never a combined history or network receipt.
+ */
+export const IdentityActivityScope = (() => {
+
+    type Group__interface = {
+        tag: IdentityActivityScope_Tags.Group;
+        inner:
+Readonly<{groupId: Bytes32}>
+    };
+    class Group_ extends UniffiEnum implements Group__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivityScope";
+        readonly tag = IdentityActivityScope_Tags.Group;
+        readonly inner:
+Readonly<{groupId: Bytes32}>;
+        constructor(
+inner: {groupId: Bytes32 }) {
+            super("IdentityActivityScope", "Group");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {groupId: Bytes32 }): Group_ {
+            return new Group_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Group_ {
+            return obj.tag === IdentityActivityScope_Tags.Group;
+        }
+
+    }
+
+    type Direct__interface = {
+        tag: IdentityActivityScope_Tags.Direct;
+        inner:
+Readonly<{destination: Bytes16}>
+    };
+    class Direct_ extends UniffiEnum implements Direct__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivityScope";
+        readonly tag = IdentityActivityScope_Tags.Direct;
+        readonly inner:
+Readonly<{destination: Bytes16}>;
+        constructor(
+inner: {destination: Bytes16 }) {
+            super("IdentityActivityScope", "Direct");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {destination: Bytes16 }): Direct_ {
+            return new Direct_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Direct_ {
+            return obj.tag === IdentityActivityScope_Tags.Direct;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is IdentityActivityScope {
+        return obj[uniffiTypeNameSymbol] === "IdentityActivityScope";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Group: Group_,
+  Direct: Direct_
+    });
+
+})();
+/**
+ * Local conversation ownership; never a combined history or network receipt.
+ */
+export type IdentityActivityScope = InstanceType<
+    typeof IdentityActivityScope['Group' | 'Direct']
+>;
+
+// FfiConverter for enum IdentityActivityScope
+const FfiConverterTypeIdentityActivityScope = (() => {
+    type TypeName = IdentityActivityScope;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new IdentityActivityScope.Group({groupId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 2: return new IdentityActivityScope.Direct({destination: FfiConverterTypeBytes16.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case IdentityActivityScope_Tags.Group: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes32.writeIntoCursor(inner.groupId, c);
+                    return;
+                }
+                case IdentityActivityScope_Tags.Direct: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes16.writeIntoCursor(inner.destination, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that IdentityActivityScope_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case IdentityActivityScope_Tags.Group: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes32.allocationSize(inner.groupId);
+                    return size;
+                }
+                case IdentityActivityScope_Tags.Direct: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes16.allocationSize(inner.destination);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+export type IdentityConversationActivity = {
+    scope: IdentityActivityScope,
+    unreadCount: number,
+    /**
+     * Durable local record position. A screen acknowledges only positions it displayed.
+     */
+    throughSequence: bigint
+}
+
+/**
+ * Generated factory for {@link IdentityConversationActivity} record objects.
+ */
+export const IdentityConversationActivity = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<IdentityConversationActivity, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<IdentityConversationActivity>,
+    });
+})();
+
+const FfiConverterTypeIdentityConversationActivity = (() => {
+    type TypeName = IdentityConversationActivity;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                scope: FfiConverterTypeIdentityActivityScope.readFromCursor(c),
+                unreadCount: FfiConverterUInt32.readFromCursor(c),
+                throughSequence: FfiConverterUInt64.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeIdentityActivityScope.writeIntoCursor(value.scope, c);
+            FfiConverterUInt32.writeIntoCursor(value.unreadCount, c);
+            FfiConverterUInt64.writeIntoCursor(value.throughSequence, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeIdentityActivityScope.allocationSize(value.scope) +
+             FfiConverterUInt32.allocationSize(value.unreadCount) +
+             FfiConverterUInt64.allocationSize(value.throughSequence);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type IdentityActivitySummary = {
+    actionableInvitations: number,
+    unreadGroups: number,
+    unreadDirect: number,
+    conversations: Array<IdentityConversationActivity>,
+    /**
+     * The bounded retained-record scan omitted older content or conversations.
+     * Counts are lower bounds when true, never evidence of an empty inbox.
+     */
+    partial: boolean
+}
+
+/**
+ * Generated factory for {@link IdentityActivitySummary} record objects.
+ */
+export const IdentityActivitySummary = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<IdentityActivitySummary, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<IdentityActivitySummary>,
+    });
+})();
+
+const FfiConverterTypeIdentityActivitySummary = (() => {
+    type TypeName = IdentityActivitySummary;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                actionableInvitations: FfiConverterUInt32.readFromCursor(c),
+                unreadGroups: FfiConverterUInt32.readFromCursor(c),
+                unreadDirect: FfiConverterUInt32.readFromCursor(c),
+                conversations: FfiConverterSequenceTypeIdentityConversationActivity.readFromCursor(c),
+                partial: FfiConverterBool.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterUInt32.writeIntoCursor(value.actionableInvitations, c);
+            FfiConverterUInt32.writeIntoCursor(value.unreadGroups, c);
+            FfiConverterUInt32.writeIntoCursor(value.unreadDirect, c);
+            FfiConverterSequenceTypeIdentityConversationActivity.writeIntoCursor(value.conversations, c);
+            FfiConverterBool.writeIntoCursor(value.partial, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterUInt32.allocationSize(value.actionableInvitations) +
+             FfiConverterUInt32.allocationSize(value.unreadGroups) +
+             FfiConverterUInt32.allocationSize(value.unreadDirect) +
+             FfiConverterSequenceTypeIdentityConversationActivity.allocationSize(value.conversations) +
+             FfiConverterBool.allocationSize(value.partial);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export type InitiateRemoteControlPairingInput = {
     candidateId: string,
     invitationCode: string
@@ -10405,6 +11156,49 @@ const FfiConverterTypeLxmfPeerSummary = (() => {
     return new FFIConverter();
 })();
 
+export type MarkIdentityActivitySeenInput = {
+    scope: IdentityActivityScope,
+    throughSequence: bigint
+}
+
+/**
+ * Generated factory for {@link MarkIdentityActivitySeenInput} record objects.
+ */
+export const MarkIdentityActivitySeenInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<MarkIdentityActivitySeenInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<MarkIdentityActivitySeenInput>,
+    });
+})();
+
+const FfiConverterTypeMarkIdentityActivitySeenInput = (() => {
+    type TypeName = MarkIdentityActivitySeenInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                scope: FfiConverterTypeIdentityActivityScope.readFromCursor(c),
+                throughSequence: FfiConverterUInt64.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeIdentityActivityScope.writeIntoCursor(value.scope, c);
+            FfiConverterUInt64.writeIntoCursor(value.throughSequence, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeIdentityActivityScope.allocationSize(value.scope) +
+             FfiConverterUInt64.allocationSize(value.throughSequence);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export type MeasureLxmfTextInput = {
     title: string,
     content: string
@@ -10442,6 +11236,321 @@ const FfiConverterTypeMeasureLxmfTextInput = (() => {
         allocationSize(value: TypeName): number {
             return FfiConverterString.allocationSize(value.title) +
              FfiConverterString.allocationSize(value.content);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+
+// Enum: IdentityActivityOutcome
+export enum IdentityActivityOutcome_Tags {
+    Ready = "Ready",
+    Unavailable = "Unavailable"
+}
+export const IdentityActivityOutcome = (() => {
+
+    type Ready__interface = {
+        tag: IdentityActivityOutcome_Tags.Ready;
+        inner:
+Readonly<{summary: IdentityActivitySummary}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivityOutcome";
+        readonly tag = IdentityActivityOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{summary: IdentityActivitySummary}>;
+        constructor(
+inner: {summary: IdentityActivitySummary }) {
+            super("IdentityActivityOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {summary: IdentityActivitySummary }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === IdentityActivityOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: IdentityActivityOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivityOutcome";
+        readonly tag = IdentityActivityOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("IdentityActivityOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === IdentityActivityOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is IdentityActivityOutcome {
+        return obj[uniffiTypeNameSymbol] === "IdentityActivityOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type IdentityActivityOutcome = InstanceType<
+    typeof IdentityActivityOutcome['Ready' | 'Unavailable']
+>;
+
+// FfiConverter for enum IdentityActivityOutcome
+const FfiConverterTypeIdentityActivityOutcome = (() => {
+    type TypeName = IdentityActivityOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new IdentityActivityOutcome.Ready({summary: FfiConverterTypeIdentityActivitySummary.readFromCursor(c) });
+                case 2: return new IdentityActivityOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case IdentityActivityOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeIdentityActivitySummary.writeIntoCursor(inner.summary, c);
+                    return;
+                }
+                case IdentityActivityOutcome_Tags.Unavailable: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that IdentityActivityOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case IdentityActivityOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeIdentityActivitySummary.allocationSize(inner.summary);
+                    return size;
+                }
+                case IdentityActivityOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+export type NamedIdentityActivity = {
+    identity: NamedIdentityReference,
+    activity: IdentityActivityOutcome
+}
+
+/**
+ * Generated factory for {@link NamedIdentityActivity} record objects.
+ */
+export const NamedIdentityActivity = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<NamedIdentityActivity, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<NamedIdentityActivity>,
+    });
+})();
+
+const FfiConverterTypeNamedIdentityActivity = (() => {
+    type TypeName = NamedIdentityActivity;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                identity: FfiConverterTypeNamedIdentityReference.readFromCursor(c),
+                activity: FfiConverterTypeIdentityActivityOutcome.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeNamedIdentityReference.writeIntoCursor(value.identity, c);
+            FfiConverterTypeIdentityActivityOutcome.writeIntoCursor(value.activity, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeNamedIdentityReference.allocationSize(value.identity) +
+             FfiConverterTypeIdentityActivityOutcome.allocationSize(value.activity);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export enum NamedIdentityState {
+    Enabled,
+    Paused,
+    Retired
+}
+
+const FfiConverterTypeNamedIdentityState = (() => {
+    type TypeName = NamedIdentityState;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return NamedIdentityState.Enabled;
+                case 2: return NamedIdentityState.Paused;
+                case 3: return NamedIdentityState.Retired;
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value) {
+                case NamedIdentityState.Enabled: return c.writeI32(1);
+                case NamedIdentityState.Paused: return c.writeI32(2);
+                case NamedIdentityState.Retired: return c.writeI32(3);
+            }
+        }
+        allocationSize(value: TypeName): number {
+            return 4;
+        }
+    }
+    return new FFIConverter();
+})();
+
+export type NamedIdentitySummary = {
+    reference: NamedIdentityReference,
+    label: string,
+    publishedName?: string | undefined,
+    state: NamedIdentityState,
+    /**
+     * Desired state is durable, but service activation or drainage remains.
+     */
+    transitioning: boolean,
+    ready: boolean
+}
+
+/**
+ * Generated factory for {@link NamedIdentitySummary} record objects.
+ */
+export const NamedIdentitySummary = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<NamedIdentitySummary, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<NamedIdentitySummary>,
+    });
+})();
+
+const FfiConverterTypeNamedIdentitySummary = (() => {
+    type TypeName = NamedIdentitySummary;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                reference: FfiConverterTypeNamedIdentityReference.readFromCursor(c),
+                label: FfiConverterString.readFromCursor(c),
+                publishedName: FfiConverterOptionalString.readFromCursor(c),
+                state: FfiConverterTypeNamedIdentityState.readFromCursor(c),
+                transitioning: FfiConverterBool.readFromCursor(c),
+                ready: FfiConverterBool.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeNamedIdentityReference.writeIntoCursor(value.reference, c);
+            FfiConverterString.writeIntoCursor(value.label, c);
+            FfiConverterOptionalString.writeIntoCursor(value.publishedName, c);
+            FfiConverterTypeNamedIdentityState.writeIntoCursor(value.state, c);
+            FfiConverterBool.writeIntoCursor(value.transitioning, c);
+            FfiConverterBool.writeIntoCursor(value.ready, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeNamedIdentityReference.allocationSize(value.reference) +
+             FfiConverterString.allocationSize(value.label) +
+             FfiConverterOptionalString.allocationSize(value.publishedName) +
+             FfiConverterTypeNamedIdentityState.allocationSize(value.state) +
+             FfiConverterBool.allocationSize(value.transitioning) +
+             FfiConverterBool.allocationSize(value.ready);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type NamedIdentityCatalog = {
+    identities: Array<NamedIdentitySummary>,
+    selected?: NamedIdentityReference | undefined
+}
+
+/**
+ * Generated factory for {@link NamedIdentityCatalog} record objects.
+ */
+export const NamedIdentityCatalog = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<NamedIdentityCatalog, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<NamedIdentityCatalog>,
+    });
+})();
+
+const FfiConverterTypeNamedIdentityCatalog = (() => {
+    type TypeName = NamedIdentityCatalog;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                identities: FfiConverterSequenceTypeNamedIdentitySummary.readFromCursor(c),
+                selected: FfiConverterOptionalTypeNamedIdentityReference.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterSequenceTypeNamedIdentitySummary.writeIntoCursor(value.identities, c);
+            FfiConverterOptionalTypeNamedIdentityReference.writeIntoCursor(value.selected, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterSequenceTypeNamedIdentitySummary.allocationSize(value.identities) +
+             FfiConverterOptionalTypeNamedIdentityReference.allocationSize(value.selected);
 
         }
     };
@@ -16942,6 +18051,210 @@ const FfiConverterTypeGroupTextSendOutcome = (() => {
 })();
 
 
+// Enum: IdentityActivitySeenOutcome
+export enum IdentityActivitySeenOutcome_Tags {
+    Saved = "Saved",
+    Capacity = "Capacity",
+    InvalidInput = "InvalidInput",
+    Unavailable = "Unavailable"
+}
+export const IdentityActivitySeenOutcome = (() => {
+
+    type Saved__interface = {
+        tag: IdentityActivitySeenOutcome_Tags.Saved
+    };
+    class Saved_ extends UniffiEnum implements Saved__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivitySeenOutcome";
+        readonly tag = IdentityActivitySeenOutcome_Tags.Saved;
+        constructor() {
+            super("IdentityActivitySeenOutcome", "Saved");
+        }
+
+        static new(): Saved_ {
+            return new Saved_();
+        }
+
+        static instanceOf(obj: any): obj is Saved_ {
+            return obj.tag === IdentityActivitySeenOutcome_Tags.Saved;
+        }
+
+    }
+
+    type Capacity__interface = {
+        tag: IdentityActivitySeenOutcome_Tags.Capacity
+    };
+    class Capacity_ extends UniffiEnum implements Capacity__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivitySeenOutcome";
+        readonly tag = IdentityActivitySeenOutcome_Tags.Capacity;
+        constructor() {
+            super("IdentityActivitySeenOutcome", "Capacity");
+        }
+
+        static new(): Capacity_ {
+            return new Capacity_();
+        }
+
+        static instanceOf(obj: any): obj is Capacity_ {
+            return obj.tag === IdentityActivitySeenOutcome_Tags.Capacity;
+        }
+
+    }
+
+    type InvalidInput__interface = {
+        tag: IdentityActivitySeenOutcome_Tags.InvalidInput;
+        inner:
+Readonly<{detail: string}>
+    };
+    class InvalidInput_ extends UniffiEnum implements InvalidInput__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivitySeenOutcome";
+        readonly tag = IdentityActivitySeenOutcome_Tags.InvalidInput;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("IdentityActivitySeenOutcome", "InvalidInput");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): InvalidInput_ {
+            return new InvalidInput_(inner);
+        }
+
+        static instanceOf(obj: any): obj is InvalidInput_ {
+            return obj.tag === IdentityActivitySeenOutcome_Tags.InvalidInput;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: IdentityActivitySeenOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "IdentityActivitySeenOutcome";
+        readonly tag = IdentityActivitySeenOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("IdentityActivitySeenOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === IdentityActivitySeenOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is IdentityActivitySeenOutcome {
+        return obj[uniffiTypeNameSymbol] === "IdentityActivitySeenOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Saved: Saved_,
+  Capacity: Capacity_,
+  InvalidInput: InvalidInput_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type IdentityActivitySeenOutcome = InstanceType<
+    typeof IdentityActivitySeenOutcome['Saved' | 'Capacity' | 'InvalidInput' | 'Unavailable']
+>;
+
+// FfiConverter for enum IdentityActivitySeenOutcome
+const FfiConverterTypeIdentityActivitySeenOutcome = (() => {
+    type TypeName = IdentityActivitySeenOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new IdentityActivitySeenOutcome.Saved();
+                case 2: return new IdentityActivitySeenOutcome.Capacity();
+                case 3: return new IdentityActivitySeenOutcome.InvalidInput({detail: FfiConverterString.readFromCursor(c) });
+                case 4: return new IdentityActivitySeenOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case IdentityActivitySeenOutcome_Tags.Saved: {
+                    c.writeI32(1);
+                    return;
+                }
+                case IdentityActivitySeenOutcome_Tags.Capacity: {
+                    c.writeI32(2);
+                    return;
+                }
+                case IdentityActivitySeenOutcome_Tags.InvalidInput: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case IdentityActivitySeenOutcome_Tags.Unavailable: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that IdentityActivitySeenOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case IdentityActivitySeenOutcome_Tags.Saved: {
+                    return 4;
+                }
+                case IdentityActivitySeenOutcome_Tags.Capacity: {
+                    return 4;
+                }
+                case IdentityActivitySeenOutcome_Tags.InvalidInput: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case IdentityActivitySeenOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
 // Enum: IdentityCreationOutcome
 export enum IdentityCreationOutcome_Tags {
     Created = "Created",
@@ -18736,6 +20049,392 @@ const FfiConverterTypeMeasureLxmfTextOutcome = (() => {
                 }
                 case MeasureLxmfTextOutcome_Tags.Busy: {
                     return 4;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: NamedIdentityActivityListOutcome
+export enum NamedIdentityActivityListOutcome_Tags {
+    Ready = "Ready",
+    Busy = "Busy",
+    Unavailable = "Unavailable"
+}
+export const NamedIdentityActivityListOutcome = (() => {
+
+    type Ready__interface = {
+        tag: NamedIdentityActivityListOutcome_Tags.Ready;
+        inner:
+Readonly<{activities: Array<NamedIdentityActivity>}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityActivityListOutcome";
+        readonly tag = NamedIdentityActivityListOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{activities: Array<NamedIdentityActivity>}>;
+        constructor(
+inner: {activities: Array<NamedIdentityActivity> }) {
+            super("NamedIdentityActivityListOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {activities: Array<NamedIdentityActivity> }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === NamedIdentityActivityListOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: NamedIdentityActivityListOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityActivityListOutcome";
+        readonly tag = NamedIdentityActivityListOutcome_Tags.Busy;
+        constructor() {
+            super("NamedIdentityActivityListOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === NamedIdentityActivityListOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: NamedIdentityActivityListOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityActivityListOutcome";
+        readonly tag = NamedIdentityActivityListOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("NamedIdentityActivityListOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === NamedIdentityActivityListOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is NamedIdentityActivityListOutcome {
+        return obj[uniffiTypeNameSymbol] === "NamedIdentityActivityListOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Busy: Busy_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type NamedIdentityActivityListOutcome = InstanceType<
+    typeof NamedIdentityActivityListOutcome['Ready' | 'Busy' | 'Unavailable']
+>;
+
+// FfiConverter for enum NamedIdentityActivityListOutcome
+const FfiConverterTypeNamedIdentityActivityListOutcome = (() => {
+    type TypeName = NamedIdentityActivityListOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new NamedIdentityActivityListOutcome.Ready({activities: FfiConverterSequenceTypeNamedIdentityActivity.readFromCursor(c) });
+                case 2: return new NamedIdentityActivityListOutcome.Busy();
+                case 3: return new NamedIdentityActivityListOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case NamedIdentityActivityListOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterSequenceTypeNamedIdentityActivity.writeIntoCursor(inner.activities, c);
+                    return;
+                }
+                case NamedIdentityActivityListOutcome_Tags.Busy: {
+                    c.writeI32(2);
+                    return;
+                }
+                case NamedIdentityActivityListOutcome_Tags.Unavailable: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that NamedIdentityActivityListOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case NamedIdentityActivityListOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterSequenceTypeNamedIdentityActivity.allocationSize(inner.activities);
+                    return size;
+                }
+                case NamedIdentityActivityListOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case NamedIdentityActivityListOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: NamedIdentityCatalogOutcome
+export enum NamedIdentityCatalogOutcome_Tags {
+    Ready = "Ready",
+    Busy = "Busy",
+    Unavailable = "Unavailable",
+    Rejected = "Rejected"
+}
+export const NamedIdentityCatalogOutcome = (() => {
+
+    type Ready__interface = {
+        tag: NamedIdentityCatalogOutcome_Tags.Ready;
+        inner:
+Readonly<{catalog: NamedIdentityCatalog}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityCatalogOutcome";
+        readonly tag = NamedIdentityCatalogOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{catalog: NamedIdentityCatalog}>;
+        constructor(
+inner: {catalog: NamedIdentityCatalog }) {
+            super("NamedIdentityCatalogOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {catalog: NamedIdentityCatalog }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === NamedIdentityCatalogOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: NamedIdentityCatalogOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityCatalogOutcome";
+        readonly tag = NamedIdentityCatalogOutcome_Tags.Busy;
+        constructor() {
+            super("NamedIdentityCatalogOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === NamedIdentityCatalogOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: NamedIdentityCatalogOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityCatalogOutcome";
+        readonly tag = NamedIdentityCatalogOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("NamedIdentityCatalogOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === NamedIdentityCatalogOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    type Rejected__interface = {
+        tag: NamedIdentityCatalogOutcome_Tags.Rejected;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Rejected_ extends UniffiEnum implements Rejected__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "NamedIdentityCatalogOutcome";
+        readonly tag = NamedIdentityCatalogOutcome_Tags.Rejected;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("NamedIdentityCatalogOutcome", "Rejected");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Rejected_ {
+            return new Rejected_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Rejected_ {
+            return obj.tag === NamedIdentityCatalogOutcome_Tags.Rejected;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is NamedIdentityCatalogOutcome {
+        return obj[uniffiTypeNameSymbol] === "NamedIdentityCatalogOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Busy: Busy_,
+  Unavailable: Unavailable_,
+  Rejected: Rejected_
+    });
+
+})();
+export type NamedIdentityCatalogOutcome = InstanceType<
+    typeof NamedIdentityCatalogOutcome['Ready' | 'Busy' | 'Unavailable' | 'Rejected']
+>;
+
+// FfiConverter for enum NamedIdentityCatalogOutcome
+const FfiConverterTypeNamedIdentityCatalogOutcome = (() => {
+    type TypeName = NamedIdentityCatalogOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new NamedIdentityCatalogOutcome.Ready({catalog: FfiConverterTypeNamedIdentityCatalog.readFromCursor(c) });
+                case 2: return new NamedIdentityCatalogOutcome.Busy();
+                case 3: return new NamedIdentityCatalogOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                case 4: return new NamedIdentityCatalogOutcome.Rejected({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case NamedIdentityCatalogOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeNamedIdentityCatalog.writeIntoCursor(inner.catalog, c);
+                    return;
+                }
+                case NamedIdentityCatalogOutcome_Tags.Busy: {
+                    c.writeI32(2);
+                    return;
+                }
+                case NamedIdentityCatalogOutcome_Tags.Unavailable: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case NamedIdentityCatalogOutcome_Tags.Rejected: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that NamedIdentityCatalogOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case NamedIdentityCatalogOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeNamedIdentityCatalog.allocationSize(inner.catalog);
+                    return size;
+                }
+                case NamedIdentityCatalogOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case NamedIdentityCatalogOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case NamedIdentityCatalogOutcome_Tags.Rejected: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
                 }
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
@@ -21076,6 +22775,1631 @@ export type Bytes10 = Uint8Array;
 // FfiConverter for Bytes10, a type alias for Uint8Array.
 const FfiConverterTypeBytes10 = FfiConverterUint8Array;
 
+export interface NamedIdentityClientLike {
+
+    acknowledgeGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome>;
+    announceGroups(asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceOutcome>;
+    announceLxmf(asyncOpts_?: { signal: AbortSignal }): Promise<AnnounceLxmfOutcome>;
+    cancelLxmfMessage(input: CancelLxmfMessageInput, asyncOpts_?: { signal: AbortSignal }): Promise<CancelLxmfMessageOutcome>;
+    clearLxmfDiscovery(asyncOpts_?: { signal: AbortSignal }): Promise<LxmfDiscoveryClearOutcome>;
+    createGroup(input: CreateGroupInput, asyncOpts_?: { signal: AbortSignal }): Promise<CreateGroupOutcome>;
+    createManualContact(input: CreateManualContactInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
+    deleteContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
+    discardExpiredGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome>;
+    executeGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionOutcome>;
+    getContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactLookupOutcome>;
+    getGroupAnnounceSettings(asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome>;
+    inviteToGroup(input: InviteToGroupInput, asyncOpts_?: { signal: AbortSignal }): Promise<InviteToGroupOutcome>;
+    listContacts(asyncOpts_?: { signal: AbortSignal }): Promise<ContactListOutcome>;
+    listGroupActions(asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionListOutcome>;
+    listGroupConversations(asyncOpts_?: { signal: AbortSignal }): Promise<GroupConversationListOutcome>;
+    listGroupInvitations(asyncOpts_?: { signal: AbortSignal }): Promise<GroupInvitationListOutcome>;
+    listGroupMessages(input: ListGroupMessagesInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupMessageListOutcome>;
+    listLxmfConversations(input: ListLxmfConversationsInput, asyncOpts_?: { signal: AbortSignal }): Promise<LxmfMessageListOutcome>;
+    listLxmfMessages(input: ListLxmfMessagesInput, asyncOpts_?: { signal: AbortSignal }): Promise<LxmfMessageListOutcome>;
+    listLxmfPeers(asyncOpts_?: { signal: AbortSignal }): Promise<LxmfPeerListOutcome>;
+    markIdentityActivitySeen(input: MarkIdentityActivitySeenInput, asyncOpts_?: { signal: AbortSignal }): Promise<IdentityActivitySeenOutcome>;
+    measureLxmfText(input: MeasureLxmfTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<MeasureLxmfTextOutcome>;
+    prepareGroupAction(input: PrepareGroupActionInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionOutcome>;
+    readIdentityActivity(asyncOpts_?: { signal: AbortSignal }): Promise<IdentityActivityOutcome>;
+    readMessagingProfile(asyncOpts_?: { signal: AbortSignal }): Promise<LocalMessagingProfileOutcome>;
+    respondGroupInvitation(input: RespondGroupInvitationInput, asyncOpts_?: { signal: AbortSignal }): Promise<RespondGroupInvitationOutcome>;
+    retryLxmfMessage(input: RetryLxmfMessageInput, asyncOpts_?: { signal: AbortSignal }): Promise<RetryLxmfMessageOutcome>;
+    saveDiscoveredContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
+    saveObservedDestination(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
+    sendDirectText(input: SendDirectTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<SendDirectTextOutcome>;
+    sendGroupText(input: SendGroupTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupTextSendOutcome>;
+    setContactAlias(input: SetContactAliasInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
+    setContactPinned(input: SetContactPinnedInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
+    setGroupAnnounceSettings(settings: GroupAnnounceSettings, asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome>;
+    setMessagingName(name: string, asyncOpts_?: { signal: AbortSignal }): Promise<LocalMessagingProfileOutcome>;
+}
+/**
+ * @deprecated Use `NamedIdentityClientLike` instead.
+ */
+export type NamedIdentityClientInterface = NamedIdentityClientLike;
+
+
+export class NamedIdentityClient extends UniffiAbstractObject implements NamedIdentityClientLike {
+
+    readonly [uniffiTypeNameSymbol] = "NamedIdentityClient";
+    readonly [destructorGuardSymbol]: UniffiGcObject;
+    readonly [pointerLiteralSymbol]: UniffiHandle;
+    // No primary constructor declared for this class.
+private constructor(pointer: UniffiHandle) {
+    super();
+    this[pointerLiteralSymbol] = pointer;
+    this[destructorGuardSymbol] = uniffiTypeNamedIdentityClientObjectFactory.bless(pointer);
+}
+
+
+
+
+    async acknowledgeGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_acknowledge_group_action(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeGroupActionReference.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionAcknowledgeOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async announceGroups(asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_announce_groups(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupAnnounceOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async announceLxmf(asyncOpts_?: { signal: AbortSignal }): Promise<AnnounceLxmfOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_announce_lxmf(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeAnnounceLxmfOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async cancelLxmfMessage(input: CancelLxmfMessageInput, asyncOpts_?: { signal: AbortSignal }): Promise<CancelLxmfMessageOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_cancel_lxmf_message(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeCancelLxmfMessageInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeCancelLxmfMessageOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async clearLxmfDiscovery(asyncOpts_?: { signal: AbortSignal }): Promise<LxmfDiscoveryClearOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_clear_lxmf_discovery(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeLxmfDiscoveryClearOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async createGroup(input: CreateGroupInput, asyncOpts_?: { signal: AbortSignal }): Promise<CreateGroupOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_create_group(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeCreateGroupInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeCreateGroupOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async createManualContact(input: CreateManualContactInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_create_manual_contact(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeCreateManualContactInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async deleteContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_delete_contact(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeContactDestinationInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async discardExpiredGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group_action(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeGroupActionReference.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionAcknowledgeOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async executeGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_execute_group_action(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeGroupActionReference.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async getContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactLookupOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_get_contact(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeContactDestinationInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactLookupOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async getGroupAnnounceSettings(asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupAnnounceSettingsOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async inviteToGroup(input: InviteToGroupInput, asyncOpts_?: { signal: AbortSignal }): Promise<InviteToGroupOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_invite_to_group(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeInviteToGroupInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeInviteToGroupOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listContacts(asyncOpts_?: { signal: AbortSignal }): Promise<ContactListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_contacts(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listGroupActions(asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_group_actions(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listGroupConversations(asyncOpts_?: { signal: AbortSignal }): Promise<GroupConversationListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_group_conversations(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupConversationListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listGroupInvitations(asyncOpts_?: { signal: AbortSignal }): Promise<GroupInvitationListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_group_invitations(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupInvitationListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listGroupMessages(input: ListGroupMessagesInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupMessageListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_group_messages(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeListGroupMessagesInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupMessageListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listLxmfConversations(input: ListLxmfConversationsInput, asyncOpts_?: { signal: AbortSignal }): Promise<LxmfMessageListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_conversations(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeListLxmfConversationsInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeLxmfMessageListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listLxmfMessages(input: ListLxmfMessagesInput, asyncOpts_?: { signal: AbortSignal }): Promise<LxmfMessageListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_messages(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeListLxmfMessagesInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeLxmfMessageListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async listLxmfPeers(asyncOpts_?: { signal: AbortSignal }): Promise<LxmfPeerListOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_peers(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeLxmfPeerListOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async markIdentityActivitySeen(input: MarkIdentityActivitySeenInput, asyncOpts_?: { signal: AbortSignal }): Promise<IdentityActivitySeenOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_mark_identity_activity_seen(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeMarkIdentityActivitySeenInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeIdentityActivitySeenOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async measureLxmfText(input: MeasureLxmfTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<MeasureLxmfTextOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_measure_lxmf_text(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeMeasureLxmfTextInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeMeasureLxmfTextOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async prepareGroupAction(input: PrepareGroupActionInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_prepare_group_action(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypePrepareGroupActionInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupActionOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async readIdentityActivity(asyncOpts_?: { signal: AbortSignal }): Promise<IdentityActivityOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_read_identity_activity(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeIdentityActivityOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async readMessagingProfile(asyncOpts_?: { signal: AbortSignal }): Promise<LocalMessagingProfileOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_read_messaging_profile(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeLocalMessagingProfileOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async respondGroupInvitation(input: RespondGroupInvitationInput, asyncOpts_?: { signal: AbortSignal }): Promise<RespondGroupInvitationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_respond_group_invitation(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeRespondGroupInvitationInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeRespondGroupInvitationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async retryLxmfMessage(input: RetryLxmfMessageInput, asyncOpts_?: { signal: AbortSignal }): Promise<RetryLxmfMessageOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_retry_lxmf_message(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeRetryLxmfMessageInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeRetryLxmfMessageOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async saveDiscoveredContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_save_discovered_contact(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeContactDestinationInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async saveObservedDestination(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_save_observed_destination(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeContactDestinationInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async sendDirectText(input: SendDirectTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<SendDirectTextOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_send_direct_text(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeSendDirectTextInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeSendDirectTextOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async sendGroupText(input: SendGroupTextInput, asyncOpts_?: { signal: AbortSignal }): Promise<GroupTextSendOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_send_group_text(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeSendGroupTextInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupTextSendOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async setContactAlias(input: SetContactAliasInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_set_contact_alias(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeSetContactAliasInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async setContactPinned(input: SetContactPinnedInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeSetContactPinnedInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactMutationOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async setGroupAnnounceSettings(settings: GroupAnnounceSettings, asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_set_group_announce_settings(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeGroupAnnounceSettings.lower(settings, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeGroupAnnounceSettingsOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async setMessagingName(name: string, asyncOpts_?: { signal: AbortSignal }): Promise<LocalMessagingProfileOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterString.lower(name, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeLocalMessagingProfileOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+
+    uniffiDestroy(): void {
+        const ptr = (this as any)[destructorGuardSymbol];
+        if (ptr !== undefined) {
+            const pointer = uniffiTypeNamedIdentityClientObjectFactory.pointer(this);
+            try {
+                uniffiTypeNamedIdentityClientObjectFactory.freePointer(pointer);
+            } finally {
+                uniffiTypeNamedIdentityClientObjectFactory.unbless(ptr);
+                delete (this as any)[destructorGuardSymbol];
+            }
+        }
+    }
+
+    static instanceOf(obj_: any): obj_ is NamedIdentityClient {
+        return uniffiTypeNamedIdentityClientObjectFactory.isConcreteType(obj_);
+    }
+
+
+}
+
+const uniffiTypeNamedIdentityClientObjectFactory: UniffiObjectFactory<NamedIdentityClientLike> = (() => {
+
+    /// <reference lib="es2021" />
+    const registry = typeof FinalizationRegistry !== 'undefined' ? new FinalizationRegistry<UniffiHandle>((heldValue: UniffiHandle) => {
+        uniffiTypeNamedIdentityClientObjectFactory.freePointer(heldValue);
+    }) : null;
+
+    return {
+    create(pointer: UniffiHandle): NamedIdentityClientLike {
+        const instance = Object.create(NamedIdentityClient.prototype);
+        instance[pointerLiteralSymbol] = pointer;
+        instance[destructorGuardSymbol] = this.bless(pointer);
+        instance[uniffiTypeNameSymbol] = "NamedIdentityClient";
+        return instance;
+    },
+
+
+    bless(p: UniffiHandle): UniffiGcObject {
+
+        // Native guards also release objects when the JS runtime is replaced.
+        const bless = nativeModule().$uniffiBlessPointer;
+        if (bless !== undefined) return bless(p, "uniffi_prns_app_fn_free_namedidentityclient");
+
+        const ptr = {
+            p, // make sure this object doesn't get optimized away.
+            markDestroyed: () => undefined,
+        };
+        if (registry) {
+            registry.register(ptr, p, ptr);
+        }
+        return ptr;
+    },
+
+    unbless(ptr_: UniffiGcObject) {
+        ptr_.markDestroyed();
+        if (registry) {
+            registry.unregister(ptr_);
+        }
+    },
+
+    pointer(obj_: NamedIdentityClientLike): UniffiHandle {
+        if ((obj_ as any)[destructorGuardSymbol] === undefined) {
+            throw new UniffiInternalError.UnexpectedNullPointer();
+        }
+        return (obj_ as any)[pointerLiteralSymbol];
+    },
+
+    clonePointer(obj_: NamedIdentityClientLike): UniffiHandle {
+        const pointer = this.pointer(obj_);
+        return uniffiCaller.rustCall(
+            /*caller:*/ (callStatus) => nativeModule().uniffi_prns_app_fn_clone_namedidentityclient(pointer, callStatus),
+            /*liftString:*/ FfiConverterString.lift
+        );
+    },
+
+    freePointer(pointer: UniffiHandle): void {
+        uniffiCaller.rustCall(
+            /*caller:*/ (callStatus) => nativeModule().uniffi_prns_app_fn_free_namedidentityclient(pointer, callStatus),
+            /*liftString:*/ FfiConverterString.lift
+        );
+    },
+
+    isConcreteType(obj_: any): obj_ is NamedIdentityClientLike {
+        return obj_[destructorGuardSymbol] && obj_[uniffiTypeNameSymbol] === "NamedIdentityClient";
+    },
+}})();
+const FfiConverterTypeNamedIdentityClient = new FfiConverterObject(uniffiTypeNamedIdentityClientObjectFactory);
+
 // FfiConverter for Array<string>
 const FfiConverterSequenceString = new FfiConverterArray(FfiConverterString);
 
@@ -21145,6 +24469,15 @@ const FfiConverterSequenceTypeGroupPeerSynchronizationProgress = new FfiConverte
 // FfiConverter for Bytes32 | undefined
 const FfiConverterOptionalTypeBytes32 = new FfiConverterOptional(FfiConverterTypeBytes32);
 
+// FfiConverter for Array<IdentityConversationActivity>
+const FfiConverterSequenceTypeIdentityConversationActivity = new FfiConverterArray(FfiConverterTypeIdentityConversationActivity);
+
+// FfiConverter for Array<NamedIdentitySummary>
+const FfiConverterSequenceTypeNamedIdentitySummary = new FfiConverterArray(FfiConverterTypeNamedIdentitySummary);
+
+// FfiConverter for NamedIdentityReference | undefined
+const FfiConverterOptionalTypeNamedIdentityReference = new FfiConverterOptional(FfiConverterTypeNamedIdentityReference);
+
 // FfiConverter for Array<Uint8Array>
 const FfiConverterSequenceBytes = new FfiConverterArray(FfiConverterUint8Array);
 
@@ -21190,6 +24523,9 @@ const FfiConverterSequenceTypeLxmfMessage = new FfiConverterArray(FfiConverterTy
 // FfiConverter for Array<LxmfPeerSummary>
 const FfiConverterSequenceTypeLxmfPeerSummary = new FfiConverterArray(FfiConverterTypeLxmfPeerSummary);
 
+// FfiConverter for Array<NamedIdentityActivity>
+const FfiConverterSequenceTypeNamedIdentityActivity = new FfiConverterArray(FfiConverterTypeNamedIdentityActivity);
+
 // FfiConverter for HostClientHandleLike | undefined
 const FfiConverterOptionalTypeHostClientHandle = new FfiConverterOptional(FfiConverterTypeHostClientHandle);
 
@@ -21233,6 +24569,9 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_cancel_lxmf_message() !== 17446) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_cancel_lxmf_message");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_change_named_identity() !== 19035) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_change_named_identity");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_change_remote_node() !== 10229) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_change_remote_node");
     }
@@ -21250,6 +24589,9 @@ function uniffiEnsureInitialized() {
     }
     if (nativeModule().uniffi_prns_app_checksum_func_create_manual_contact() !== 1882) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_create_manual_contact");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_create_named_identity() !== 29474) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_create_named_identity");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_delete_contact() !== 21607) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_delete_contact");
@@ -21305,6 +24647,12 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_list_lxmf_peers() !== 12450) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_lxmf_peers");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_list_named_identities() !== 64877) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_named_identities");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_list_named_identity_activity() !== 22492) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_list_named_identity_activity");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_measure_lxmf_text() !== 39248) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_measure_lxmf_text");
     }
@@ -21334,6 +24682,9 @@ function uniffiEnsureInitialized() {
     }
     if (nativeModule().uniffi_prns_app_checksum_func_native_stop() !== 41536) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_native_stop");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_open_named_identity() !== 2583) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_open_named_identity");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_prepare_group_action() !== 9779) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_prepare_group_action");
@@ -21395,6 +24746,114 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_start_remote_wifi_trial() !== 55182) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_start_remote_wifi_trial");
     }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_acknowledge_group_action() !== 61619) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_acknowledge_group_action");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_announce_groups() !== 37425) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_announce_groups");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_announce_lxmf() !== 64764) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_announce_lxmf");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_cancel_lxmf_message() !== 53942) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_cancel_lxmf_message");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_clear_lxmf_discovery() !== 33714) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_clear_lxmf_discovery");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_create_group() !== 19023) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_create_group");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_create_manual_contact() !== 53628) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_create_manual_contact");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_delete_contact() !== 624) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_delete_contact");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action() !== 35173) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action() !== 10060) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_get_contact() !== 53127) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_get_contact");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings() !== 61059) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group() !== 53768) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_contacts() !== 2658) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_contacts");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions() !== 40375) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_group_conversations() !== 58580) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_group_conversations");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_group_invitations() !== 11856) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_group_invitations");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_group_messages() !== 17077) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_group_messages");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_conversations() !== 23246) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_conversations");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_messages() !== 29606) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_messages");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_peers() !== 51104) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_peers");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_mark_identity_activity_seen() !== 4206) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_mark_identity_activity_seen");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_measure_lxmf_text() !== 51426) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_measure_lxmf_text");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_prepare_group_action() !== 59105) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_prepare_group_action");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_read_identity_activity() !== 1356) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_read_identity_activity");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_read_messaging_profile() !== 54562) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_read_messaging_profile");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_respond_group_invitation() !== 59463) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_respond_group_invitation");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_retry_lxmf_message() !== 18792) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_retry_lxmf_message");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_save_discovered_contact() !== 62772) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_save_discovered_contact");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_save_observed_destination() !== 109) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_save_observed_destination");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_send_direct_text() !== 17720) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_send_direct_text");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_send_group_text() !== 10757) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_send_group_text");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_set_contact_alias() !== 11267) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_set_contact_alias");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned() !== 47671) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings() !== 61970) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name() !== 31566) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name");
+    }
 
     }
 
@@ -21412,6 +24871,7 @@ export default Object.freeze({
     FfiConverterTypeCancelLxmfMessageInput,
     FfiConverterTypeCancelLxmfMessageOutcome,
     FfiConverterTypeCanonicalHostSnapshot,
+    FfiConverterTypeChangeNamedIdentityInput,
     FfiConverterTypeChangeRemoteNodeInput,
     FfiConverterTypeChangeRemoteNodeOutcome,
     FfiConverterTypeClearNetworkActivityInput,
@@ -21424,6 +24884,7 @@ export default Object.freeze({
     FfiConverterTypeCreateGroupInput,
     FfiConverterTypeCreateGroupOutcome,
     FfiConverterTypeCreateManualContactInput,
+    FfiConverterTypeCreateNamedIdentityInput,
     FfiConverterTypeDescribeRemoteControlTargetInput,
     FfiConverterTypeDevelopmentNodeFailure,
     FfiConverterTypeDevelopmentNodeFailureStage,
@@ -21463,6 +24924,11 @@ export default Object.freeze({
     FfiConverterTypeGroupSynchronizationState,
     FfiConverterTypeGroupTextMessage,
     FfiConverterTypeGroupTextSendOutcome,
+    FfiConverterTypeIdentityActivityOutcome,
+    FfiConverterTypeIdentityActivityScope,
+    FfiConverterTypeIdentityActivitySeenOutcome,
+    FfiConverterTypeIdentityActivitySummary,
+    FfiConverterTypeIdentityConversationActivity,
     FfiConverterTypeIdentityCreationOutcome,
     FfiConverterTypeIdentityImportPreviewOutcome,
     FfiConverterTypeInitiateRemoteControlPairingInput,
@@ -21495,8 +24961,18 @@ export default Object.freeze({
     FfiConverterTypeLxmfPeerSummary,
     FfiConverterTypeLxmfText,
     FfiConverterTypeLxmfVerification,
+    FfiConverterTypeMarkIdentityActivitySeenInput,
     FfiConverterTypeMeasureLxmfTextInput,
     FfiConverterTypeMeasureLxmfTextOutcome,
+    FfiConverterTypeNamedIdentityActivity,
+    FfiConverterTypeNamedIdentityActivityListOutcome,
+    FfiConverterTypeNamedIdentityCatalog,
+    FfiConverterTypeNamedIdentityCatalogOutcome,
+    FfiConverterTypeNamedIdentityChange,
+    FfiConverterTypeNamedIdentityClient,
+    FfiConverterTypeNamedIdentityReference,
+    FfiConverterTypeNamedIdentityState,
+    FfiConverterTypeNamedIdentitySummary,
     FfiConverterTypeNativeStoragePreparationOutcome,
     FfiConverterTypePrepareGroupActionInput,
     FfiConverterTypePrimaryIdentityState,

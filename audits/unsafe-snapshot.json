@@ -26120,7 +26120,9 @@
     },
     {
       "graphs": {
-        "identity-native": []
+        "identity-native": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-identities-codec",
       "source": "prns-identities/codec",
@@ -26135,7 +26137,9 @@
     },
     {
       "graphs": {
-        "identity-native": []
+        "identity-native": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-identities-core",
       "source": "prns-identities/core",
@@ -26153,6 +26157,14 @@
         "identity-native": [
           "default",
           "redb-store"
+        ],
+        "prns-app-android": [
+          "default",
+          "redb-store"
+        ],
+        "prns-app-ios": [
+          "default",
+          "redb-store"
         ]
       },
       "name": "prns-identities-native",
@@ -26168,7 +26180,9 @@
     },
     {
       "graphs": {
-        "identity-native": []
+        "identity-native": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-identities-runtime",
       "source": "prns-identities/runtime",

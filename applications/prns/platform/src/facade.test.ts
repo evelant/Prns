@@ -871,3 +871,84 @@ test("supports React Native's actual AbortSignal polyfill without modern conveni
   });
   expect(api.readSnapshot).toHaveBeenCalledTimes(1);
 });
+
+test("named clients capture immutable local references and never consult global selection", async () => {
+  const first: Bindings.NamedIdentityReference = {
+    incarnation: new Uint8Array(16).fill(1),
+    sequence: 1n,
+    publicHash: new Uint8Array(16).fill(2),
+  };
+  const second = { ...first, sequence: 2n, publicHash: new Uint8Array(16).fill(3) };
+  const captured = {
+    ...first,
+    incarnation: first.incarnation.slice(),
+    publicHash: first.publicHash.slice(),
+  };
+  const a = jest.fn(async () => Bindings.ContactListOutcome.Listed.new({ contacts: [] }));
+  const b = jest.fn(async () => Bindings.ContactListOutcome.Listed.new({ contacts: [] }));
+  const openNamedIdentity = jest.fn(
+    (reference: Bindings.NamedIdentityReference) =>
+      ({
+        listContacts: reference.sequence === 1n ? a : b,
+      }) as unknown as Bindings.NamedIdentityClient,
+  );
+  const { runtime, api, native } = setup({ openNamedIdentity });
+  const clientA = runtime.forIdentity(first);
+  first.incarnation.fill(99);
+  first.publicHash.fill(99);
+  const clientB = runtime.forIdentity(second);
+  await clientB.listContacts();
+  await clientA.listContacts();
+  await clientA.listContacts();
+  expect(openNamedIdentity).toHaveBeenCalledWith(captured);
+  expect(openNamedIdentity).toHaveBeenCalledTimes(2);
+  expect(a).toHaveBeenCalledTimes(2);
+  expect(b).toHaveBeenCalledTimes(1);
+  expect(api.listContacts).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
+test("activity inspection and captured seen cursors use local scoped storage without outbound preparation", async () => {
+  const identity: Bindings.NamedIdentityReference = {
+    incarnation: new Uint8Array(16).fill(1),
+    sequence: 2n,
+    publicHash: new Uint8Array(16).fill(3),
+  };
+  const summary = {
+    actionableInvitations: 1,
+    unreadGroups: 2,
+    unreadDirect: 3,
+    conversations: [],
+    partial: false,
+  };
+  const readIdentityActivity = jest.fn(async () =>
+    Bindings.IdentityActivityOutcome.Ready.new({ summary }),
+  );
+  const markIdentityActivitySeen = jest.fn(async () =>
+    Bindings.IdentityActivitySeenOutcome.Saved.new(),
+  );
+  const openNamedIdentity = jest.fn(
+    () =>
+      ({
+        readIdentityActivity,
+        markIdentityActivitySeen,
+      }) as unknown as Bindings.NamedIdentityClient,
+  );
+  const listNamedIdentityActivity = jest.fn(async () =>
+    Bindings.NamedIdentityActivityListOutcome.Ready.new({ activities: [] }),
+  );
+  const { runtime, native } = setup({ openNamedIdentity, listNamedIdentityActivity });
+  const client = runtime.forIdentity(identity);
+  const input = {
+    scope: Bindings.IdentityActivityScope.Group.new({ groupId: new Uint8Array(32).fill(7) }),
+    throughSequence: 42n,
+  };
+  await runtime.listNamedIdentityActivity();
+  await client.readIdentityActivity();
+  expect(markIdentityActivitySeen).not.toHaveBeenCalled();
+  await client.markIdentityActivitySeen(input);
+  expect(markIdentityActivitySeen).toHaveBeenCalledWith(input);
+  expect(openNamedIdentity).toHaveBeenCalledWith(identity);
+  expect(openNamedIdentity).toHaveBeenCalledTimes(1);
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});

@@ -12,9 +12,11 @@ use redb::{Database, ReadableDatabase, ReadableTable, TableDefinition};
 use tokio::sync::oneshot;
 
 use crate::directory::{self, DirectoryRequest, DirectoryResponse};
+use prns_core::identity::{vault::IdentitySecretKey, PrivateIdentityMaterial};
 use prns_groups_runner_native::{
     Client as GroupClient, Error as GroupError, Job as GroupJob, Submit,
 };
+use prns_identities_native::scoped_store::{ScopedDatabase, StorageScope};
 
 pub(crate) const DEVELOPMENT_META: TableDefinition<&str, u64> =
     TableDefinition::new("development_meta");
@@ -27,8 +29,17 @@ const DEVELOPMENT_FORMAT_KEY: &str = "format";
 const DEVELOPMENT_FORMAT: u64 = 2;
 const BLUETOOTH_ENABLED_KEY: &str = "bluetooth_enabled";
 const STORE_LANE_CAPACITY: usize = 8;
+const RECEIVE_STATE: TableDefinition<&[u8], &[u8]> =
+    TableDefinition::new("identity_receive_state_v1");
+const DEPENDENCY_REVISION: TableDefinition<u8, &[u8]> =
+    TableDefinition::new("identity_dependency_revision_v1");
+pub(crate) const MAX_RECEIVE_STATE_BYTES: usize = 256 * 1024;
+
 pub(crate) type StoreReply = Result<DirectoryResponse, DevelopmentStoreFailure>;
 pub(crate) type MailboxStoreReply = Result<MailboxReply, MailboxFailure>;
+pub(crate) type ReceiveStateReply =
+    Result<Option<zeroize::Zeroizing<Vec<u8>>>, DevelopmentStoreFailure>;
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub(crate) enum DevelopmentStoreFailure {
     Unavailable(String),
@@ -46,6 +57,20 @@ impl DevelopmentStoreFailure {
 }
 
 enum StoreJob {
+    Activity {
+        operation: crate::named_identities::activity::Operation,
+        response: oneshot::Sender<Result<crate::named_identities::activity::Reply, String>>,
+    },
+    DependencyRevision {
+        fingerprint: [u8; 32],
+        response: oneshot::Sender<Result<u64, DevelopmentStoreFailure>>,
+    },
+    DrainAsync(oneshot::Sender<()>),
+    ReceiveState {
+        destination: [u8; 16],
+        state: Option<zeroize::Zeroizing<Vec<u8>>>,
+        response: oneshot::Sender<ReceiveStateReply>,
+    },
     Drain(SyncSender<()>),
     InitializeGroups {
         identity: prns_host::IdentityHash,
@@ -90,6 +115,7 @@ struct StoreLane {
     jobs: StdMutex<Option<SyncSender<StoreJob>>>,
     group_action_executing: std::sync::atomic::AtomicBool,
     group_identity: StdMutex<Option<[u8; 16]>>,
+    admission: std::sync::atomic::AtomicU8,
 }
 
 enum StoreAdmissionError {
@@ -98,13 +124,48 @@ enum StoreAdmissionError {
 }
 
 impl StoreLane {
-    /// Check owner availability and enqueue while holding its admission lock.
     fn admit_default(&self, job: StoreJob) -> Result<(), StoreAdmissionError> {
+        self.admit(job, false)
+    }
+    /// Check and enqueue under the same lock as lifecycle fencing. An admission
+    /// cannot race past a fence by retaining a sender clone.
+    fn admit(&self, job: StoreJob, inspection: bool) -> Result<(), StoreAdmissionError> {
+        if inspection && !matches!(&job, StoreJob::Group(job) if job.is_lifecycle_inspection()) {
+            return Err(StoreAdmissionError::Disconnected);
+        }
         let jobs = self
             .jobs
             .lock()
             .unwrap_or_else(std::sync::PoisonError::into_inner);
-        let Some(jobs) = jobs.as_ref() else {
+        let phase = self.admission.load(std::sync::atomic::Ordering::Relaxed);
+        let allowed = phase == 0
+            || match &job {
+            StoreJob::Group(job) => inspection && job.is_lifecycle_inspection(),
+            StoreJob::MailboxAsync { request, .. } => match request {
+                MailboxRequest::List(_) | MailboxRequest::ListConversations(_) | MailboxRequest::ListQueued => true,
+                // Accepted network callbacks and send attempts drain before the
+                // final fence; new application sends remain rejected here.
+                MailboxRequest::InsertInbound(_) | MailboxRequest::CompleteAttempt { .. } => phase == 1,
+                _ => false,
+            },
+            StoreJob::GroupAction { request, .. } => match request {
+                crate::group_actions::Request::List | crate::group_actions::Request::Read(_) => true,
+                crate::group_actions::Request::Finish { .. } => phase == 1,
+                _ => false,
+            },
+            StoreJob::DirectoryAsync { request: DirectoryRequest::Get { .. } | DirectoryRequest::List, .. }
+            | StoreJob::MessagingName { name: None, .. }
+            | StoreJob::GroupAnnounces { settings: None, .. }
+            | StoreJob::Bluetooth { enabled: None, .. }
+            | StoreJob::Drain(_)
+            | StoreJob::DrainAsync(_)
+            // This private owner method is used by the scoped teardown driver,
+            // not exposed through ordinary application or network clients.
+            | StoreJob::ReceiveState { .. }
+            | StoreJob::DependencyRevision { .. } => true,
+            _ => false,
+        };
+        let Some(jobs) = jobs.as_ref().filter(|_| allowed) else {
             return Err(StoreAdmissionError::Disconnected);
         };
         jobs.try_send(job).map_err(|error| match error {
@@ -112,10 +173,20 @@ impl StoreLane {
             TrySendError::Disconnected(_) => StoreAdmissionError::Disconnected,
         })
     }
+
+    fn fence(&self, phase: u8) {
+        let _jobs = self
+            .jobs
+            .lock()
+            .unwrap_or_else(std::sync::PoisonError::into_inner);
+        self.admission
+            .fetch_max(phase, std::sync::atomic::Ordering::Relaxed);
+    }
 }
 
 struct DevelopmentGroupSubmitter {
     lane: Weak<StoreLane>,
+    inspection: bool,
 }
 
 #[derive(Clone)]
@@ -182,7 +253,7 @@ impl GroupActionClient {
         let unavailable = || Error::Unavailable("The group action store has closed.".into());
         let lane = self.lane.upgrade().ok_or_else(unavailable)?;
         let (response, receiver) = oneshot::channel();
-        lane.admit_default(StoreJob::GroupAction { request, response })
+        lane.admit(StoreJob::GroupAction { request, response }, false)
             .map_err(|error| match error {
                 StoreAdmissionError::Full => Error::Busy,
                 StoreAdmissionError::Disconnected => unavailable(),
@@ -201,7 +272,7 @@ impl GroupActionClient {
 impl Submit for DevelopmentGroupSubmitter {
     fn submit(&self, job: GroupJob) -> Result<(), GroupError> {
         let lane = self.lane.upgrade().ok_or(GroupError::Unavailable)?;
-        lane.admit_default(StoreJob::Group(job))
+        lane.admit(StoreJob::Group(job), self.inspection)
             .map_err(|error| match error {
                 StoreAdmissionError::Full => GroupError::Busy,
                 StoreAdmissionError::Disconnected => GroupError::Unavailable,
@@ -224,7 +295,7 @@ impl MailboxSubmitter for DevelopmentMailboxSubmitter {
                 ));
             };
             let (response, receiver) = oneshot::channel();
-            match lane.admit_default(StoreJob::MailboxAsync { request, response }) {
+            match lane.admit(StoreJob::MailboxAsync { request, response }, false) {
                 Ok(()) => receiver.await.map_err(|_| {
                     MailboxFailure::Unavailable(
                         "the development database owner stopped before replying".to_owned(),
@@ -241,13 +312,146 @@ impl MailboxSubmitter for DevelopmentMailboxSubmitter {
 
 pub(crate) struct DevelopmentStoreOwner {
     pub(crate) root: PathBuf,
+    scope: Option<StorageScope>,
     lane: Arc<StoreLane>,
     group_client: GroupClient,
     group_health: crate::groups::GroupHealth,
     join: Option<JoinHandle<()>>,
 }
 
+#[derive(Clone, Copy)]
+pub(crate) enum ScopedOpen {
+    Create,
+    Existing,
+}
+
 impl DevelopmentStoreOwner {
+    pub(crate) fn admit_activity(
+        &self,
+        operation: crate::named_identities::activity::Operation,
+    ) -> Result<
+        oneshot::Receiver<Result<crate::named_identities::activity::Reply, String>>,
+        DevelopmentStoreFailure,
+    > {
+        if self.scope.is_none() {
+            return Err(DevelopmentStoreFailure::unavailable(
+                "Activity requires an explicit identity owner.",
+            ));
+        }
+        let (response, receive) = oneshot::channel();
+        self.lane
+            .admit_default(StoreJob::Activity {
+                operation,
+                response,
+            })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable("Activity storage is busy or closed.")
+            })?;
+        Ok(receive)
+    }
+    #[cfg(test)]
+    pub(crate) fn scope(&self) -> Option<StorageScope> {
+        self.scope
+    }
+
+    pub(crate) fn fence_fresh_mutations(&self) {
+        self.lane.fence(1);
+    }
+
+    /// Call after service workers have joined, before final dependency reads.
+    /// Exact completion writes are now fenced too; already queued jobs drain.
+    pub(crate) fn fence_all_mutations(&self) {
+        self.lane.fence(2);
+    }
+
+    /// Exclusive lifecycle-owner inspection only. It can recover old accepted
+    /// group work, so keep this client private and await it before final report.
+    pub(crate) fn inspection_group_client(&self) -> GroupClient {
+        GroupClient::new(Arc::new(DevelopmentGroupSubmitter {
+            lane: Arc::downgrade(&self.lane),
+            inspection: true,
+        }))
+    }
+
+    /// A barrier through every previously admitted store job. The caller must
+    /// close fresh lifecycle admission before using this as shutdown evidence.
+    pub(crate) async fn drain(&self) -> Result<(), DevelopmentStoreFailure> {
+        let (response, receiver) = oneshot::channel();
+        self.lane
+            .admit_default(StoreJob::DrainAsync(response))
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable("The storage drain lane is full or closed.")
+            })?;
+        receiver.await.map_err(|_| {
+            DevelopmentStoreFailure::unavailable(
+                "The storage owner stopped before its drain barrier.",
+            )
+        })
+    }
+
+    /// Opaque destination receive-key checkpoint in this identity's database.
+    /// The service adapter validates the destination and codec before calling;
+    /// it must save successfully before unregistering/untracking live ratchets.
+    pub(crate) fn admit_receive_state(
+        &self,
+        destination: [u8; 16],
+        state: Option<zeroize::Zeroizing<Vec<u8>>>,
+    ) -> Result<oneshot::Receiver<ReceiveStateReply>, DevelopmentStoreFailure> {
+        if self.scope.is_none() {
+            return Err(DevelopmentStoreFailure::unavailable(
+                "Receive-state checkpoints require an explicit local identity scope.",
+            ));
+        }
+        if state
+            .as_ref()
+            .is_some_and(|bytes| bytes.is_empty() || bytes.len() > MAX_RECEIVE_STATE_BYTES)
+        {
+            return Err(DevelopmentStoreFailure::unavailable(
+                "Receive-state checkpoint exceeds its byte bounds.",
+            ));
+        }
+        let (response, receiver) = oneshot::channel();
+        self.lane
+            .admit_default(StoreJob::ReceiveState {
+                destination,
+                state,
+                response,
+            })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable(
+                    "The receive-state storage lane is full or closed.",
+                )
+            })?;
+        Ok(receiver)
+    }
+
+    /// Publish the revision of a stable dependency observation. Only the owner
+    /// lifecycle adapter may call this; ordinary clients cannot mint evidence.
+    /// Observe all facts after fencing/draining before supplying the digest.
+    pub(crate) fn admit_dependency_revision(
+        &self,
+        fingerprint: [u8; 32],
+    ) -> Result<oneshot::Receiver<Result<u64, DevelopmentStoreFailure>>, DevelopmentStoreFailure>
+    {
+        if self.scope.is_none() {
+            return Err(DevelopmentStoreFailure::unavailable(
+                "Dependency evidence requires an explicit local identity scope.",
+            ));
+        }
+        let (response, receiver) = oneshot::channel();
+        self.lane
+            .admit_default(StoreJob::DependencyRevision {
+                fingerprint,
+                response,
+            })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable(
+                    "The dependency observation lane is full or closed.",
+                )
+            })?;
+        Ok(receiver)
+    }
+
     pub(crate) fn drain_blocking(&self) -> Result<(), DevelopmentStoreFailure> {
         let (reply, receiver) = mpsc::sync_channel(1);
         self.jobs()?.send(StoreJob::Drain(reply)).map_err(|_| {
@@ -361,6 +565,7 @@ impl DevelopmentStoreOwner {
         enabled: Option<bool>,
         completion: impl FnOnce(Result<bool, DevelopmentStoreFailure>) + Send + 'static,
     ) -> Result<(), DevelopmentStoreFailure> {
+        self.require_installation_owner()?;
         self.lane
             .admit_default(StoreJob::Bluetooth {
                 enabled,
@@ -387,24 +592,136 @@ impl DevelopmentStoreOwner {
     }
 
     pub(crate) fn open(root: &Path, database_path: &Path) -> Result<Self, DevelopmentStoreFailure> {
+        Self::open_inner(root, database_path, None)
+    }
+
+    /// Immutable application-data owner. Every cloned client and admitted job
+    /// stays on this identity's lane; changing UI selection cannot retarget it.
+    /// The lifecycle coordinator must authorize admission and drain this owner
+    /// before completing a stop. Neither reopening nor selecting creates keys.
+    pub(crate) fn open_scoped(
+        root: &Path,
+        scope: StorageScope,
+        secret: IdentitySecretKey,
+        mode: ScopedOpen,
+    ) -> Result<Self, DevelopmentStoreFailure> {
+        let identity = PrivateIdentityMaterial::from(secret);
+        if identity.identity_hash().as_bytes() != &scope.public_hash.0 {
+            return Err(DevelopmentStoreFailure::reset_required(
+                "The scoped database key belongs to another local identity.",
+            ));
+        }
+        let directory = root.join("identity-data");
+        if matches!(mode, ScopedOpen::Create) {
+            let mut builder = std::fs::DirBuilder::new();
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::DirBuilderExt;
+                builder.mode(0o700);
+            }
+            match builder.create(&directory) {
+                Ok(()) => {}
+                Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {}
+                Err(error) => return Err(DevelopmentStoreFailure::unavailable(error.to_string())),
+            }
+        }
+        let metadata = std::fs::symlink_metadata(&directory)
+            .map_err(|error| DevelopmentStoreFailure::unavailable(error.to_string()))?;
+        if !metadata.is_dir() || metadata.file_type().is_symlink() {
+            return Err(DevelopmentStoreFailure::reset_required(
+                "Identity data requires its own ordinary directory.",
+            ));
+        }
+        let path = scope
+            .path_under(&directory)
+            .map_err(|error| DevelopmentStoreFailure::unavailable(error.to_string()))?;
+        Self::open_inner(root, &path, Some((scope, identity, mode)))
+    }
+
+    fn require_installation_owner(&self) -> Result<(), DevelopmentStoreFailure> {
+        if self.scope.is_some() {
+            Err(DevelopmentStoreFailure::unavailable(
+                "Bluetooth preferences belong to the installation, not a local identity.",
+            ))
+        } else {
+            Ok(())
+        }
+    }
+
+    fn open_inner(
+        root: &Path,
+        database_path: &Path,
+        scoped: Option<(StorageScope, PrivateIdentityMaterial, ScopedOpen)>,
+    ) -> Result<Self, DevelopmentStoreFailure> {
+        let scope = scoped.as_ref().map(|(scope, _, _)| *scope);
         let (jobs_tx, jobs_rx) = mpsc::sync_channel(STORE_LANE_CAPACITY);
         let (ready_tx, ready_rx) = mpsc::sync_channel(1);
         let database_path = database_path.to_path_buf();
         let group_fixture_path = root.join("group-fixture.json");
         let join = std::thread::Builder::new()
             .name("prns-app-development-store".to_owned())
-            .spawn(move || match open_database(&database_path) {
-                Ok(database) => {
-                    let settings = crate::group_announces::settings(&database, None);
-                    if settings.is_err() {
-                        let _ = ready_tx.send(settings);
+            .spawn(move || {
+                // The wrapper remains alive for the complete store lane and
+                // proves its durable owner before any service schema is read.
+                let scoped_database = scoped
+                    .as_ref()
+                    .map(|(scope, _, mode)| {
+                        match mode {
+                            ScopedOpen::Create => {
+                                ScopedDatabase::create_new(&database_path, *scope)
+                            }
+                            ScopedOpen::Existing => ScopedDatabase::open(&database_path, *scope),
+                        }
+                        .map_err(map_scoped_failure)
+                    })
+                    .transpose();
+                let scoped_database = match scoped_database {
+                    Ok(database) => database,
+                    Err(error) => {
+                        let _ = ready_tx.send(Err(error));
                         return;
                     }
-                    let _ = ready_tx.send(settings);
-                    run_owner(&database, &jobs_rx, Some(group_fixture_path.as_path()));
-                }
-                Err(failure) => {
-                    let _ = ready_tx.send(Err(failure));
+                };
+                let legacy_database = if scoped_database.is_none() {
+                    Some(open_database(&database_path))
+                } else {
+                    None
+                };
+                let database = if let Some(database) = &scoped_database {
+                    let validation = match scoped.as_ref().map(|(_, _, mode)| *mode) {
+                        Some(ScopedOpen::Create) => {
+                            initialize_database_with_name(database.database(), Some(""))
+                        }
+                        _ => validate_existing_database(database.database()),
+                    };
+                    validation.map(|()| database.database())
+                } else {
+                    match legacy_database.as_ref() {
+                        Some(Ok(database)) => Ok(database),
+                        Some(Err(error)) => Err(error.clone()),
+                        None => Err(DevelopmentStoreFailure::unavailable(
+                            "No database owner was prepared.",
+                        )),
+                    }
+                };
+                match database {
+                    Ok(database) => {
+                        let settings = crate::group_announces::settings(database, None);
+                        if settings.is_err() {
+                            let _ = ready_tx.send(settings);
+                            return;
+                        }
+                        let _ = ready_tx.send(settings);
+                        run_owner(
+                            database,
+                            &jobs_rx,
+                            scope.is_none().then_some(group_fixture_path.as_path()),
+                            scoped.as_ref().map(|(_, identity, _)| identity),
+                        );
+                    }
+                    Err(failure) => {
+                        let _ = ready_tx.send(Err(failure));
+                    }
                 }
             })
             .map_err(|error| {
@@ -426,12 +743,15 @@ impl DevelopmentStoreOwner {
                     jobs: StdMutex::new(Some(jobs_tx)),
                     group_action_executing: std::sync::atomic::AtomicBool::new(false),
                     group_identity: StdMutex::new(None),
+                    admission: std::sync::atomic::AtomicU8::new(0),
                 });
                 let group_client = GroupClient::new(Arc::new(DevelopmentGroupSubmitter {
                     lane: Arc::downgrade(&lane),
+                    inspection: false,
                 }));
                 Ok(Self {
                     root: root.to_path_buf(),
+                    scope,
                     lane,
                     group_client,
                     group_health,
@@ -476,7 +796,7 @@ impl DevelopmentStoreOwner {
             .map_err(|error| match error {
                 StoreAdmissionError::Full => MailboxFailure::Busy,
                 StoreAdmissionError::Disconnected => {
-                    MailboxFailure::Unavailable("The application mailbox is closed.".into())
+                    MailboxFailure::Unavailable("The identity mailbox is fenced or closed.".into())
                 }
             })?;
         Ok(receiver)
@@ -544,17 +864,54 @@ impl Drop for DevelopmentStoreOwner {
     }
 }
 
-fn run_owner(database: &Database, jobs: &Receiver<StoreJob>, group_fixture: Option<&Path>) {
+fn run_owner(
+    database: &Database,
+    jobs: &Receiver<StoreJob>,
+    group_fixture: Option<&Path>,
+    scoped_identity: Option<&PrivateIdentityMaterial>,
+) {
     let mut group_session = None;
     let mut group_failed = false;
     let mut group_identity = None;
     while let Ok(job) = jobs.recv() {
         match job {
+            StoreJob::Activity {
+                operation,
+                response,
+            } => {
+                let _ = response.send(crate::named_identities::activity::execute(
+                    database,
+                    group_session.as_mut(),
+                    operation,
+                ));
+            }
+            StoreJob::DependencyRevision {
+                fingerprint,
+                response,
+            } => {
+                let _ = response.send(dependency_revision(database, fingerprint));
+            }
+            StoreJob::DrainAsync(reply) => {
+                let _ = reply.send(());
+            }
+            StoreJob::ReceiveState {
+                destination,
+                state,
+                response,
+            } => {
+                let _ = response.send(receive_state(database, destination, state));
+            }
             StoreJob::Drain(reply) => {
                 let _ = reply.send(());
             }
             StoreJob::InitializeGroups { identity, response } => {
-                let result = if group_session.is_some() {
+                let result = if scoped_identity
+                    .is_some_and(|local| local.identity_hash().as_bytes() != identity.as_bytes())
+                {
+                    Err(DevelopmentStoreFailure::reset_required(
+                        "Group initialization cannot change the local storage owner.",
+                    ))
+                } else if group_session.is_some() {
                     if group_identity == Some(identity) {
                         Ok(())
                     } else {
@@ -619,7 +976,30 @@ fn run_owner(database: &Database, jobs: &Receiver<StoreJob>, group_fixture: Opti
                 let _ = response.send(directory::execute(database, request));
             }
             StoreJob::MailboxAsync { request, response } => {
-                let _ = response.send(execute_mailbox_request(database, request));
+                let result = if let Some(identity) = scoped_identity {
+                    let destination = crate::messaging_profile::messaging_destination(
+                        *identity.identity_hash().as_bytes(),
+                    );
+                    let belongs = match &request {
+                        MailboxRequest::InsertOutbound(message) => {
+                            Some(message.source) == destination
+                        }
+                        MailboxRequest::InsertInbound(message) => {
+                            Some(message.destination) == destination
+                        }
+                        _ => true,
+                    };
+                    if belongs {
+                        execute_mailbox_request(database, request)
+                    } else {
+                        Err(MailboxFailure::Unavailable(
+                            "The message belongs to another local identity.".into(),
+                        ))
+                    }
+                } else {
+                    execute_mailbox_request(database, request)
+                };
+                let _ = response.send(result);
             }
             #[cfg(test)]
             StoreJob::Barrier { entered, release } => {
@@ -629,6 +1009,125 @@ fn run_owner(database: &Database, jobs: &Receiver<StoreJob>, group_fixture: Opti
         }
     }
 }
+
+fn map_scoped_failure(
+    error: prns_identities_native::scoped_store::Error,
+) -> DevelopmentStoreFailure {
+    use prns_identities_native::scoped_store::Error;
+    match error {
+        Error::Database(error) => {
+            classify_redb_error(error, "open identity-scoped service database")
+        }
+        Error::MissingBinding | Error::WrongBinding | Error::UnsafePath => {
+            DevelopmentStoreFailure::reset_required(error.to_string())
+        }
+        Error::Io(_) | Error::InvalidScope | Error::UnsupportedPlatform => {
+            DevelopmentStoreFailure::unavailable(error.to_string())
+        }
+    }
+}
+
+fn dependency_revision(
+    database: &Database,
+    fingerprint: [u8; 32],
+) -> Result<u64, DevelopmentStoreFailure> {
+    let mut write = database
+        .begin_write()
+        .map_err(|error| classify_redb_error(error.into(), "write dependency revision"))?;
+    write
+        .set_durability(redb::Durability::Immediate)
+        .map_err(|error| classify_redb_error(error.into(), "set dependency durability"))?;
+    let revision;
+    {
+        let mut table = write
+            .open_table(DEPENDENCY_REVISION)
+            .map_err(|error| classify_redb_error(error.into(), "open dependency revision"))?;
+        let existing = table
+            .get(0)
+            .map_err(|error| classify_redb_error(error.into(), "read dependency revision"))?;
+        let previous = match existing.as_ref() {
+            Some(value) => {
+                let bytes = value.value();
+                if bytes.len() != 40 {
+                    return Err(DevelopmentStoreFailure::reset_required(
+                        "Invalid dependency observation record.",
+                    ));
+                }
+                let revision = u64::from_be_bytes(bytes[..8].try_into().map_err(|_| {
+                    DevelopmentStoreFailure::reset_required("Invalid dependency revision.")
+                })?);
+                if revision == 0 {
+                    return Err(DevelopmentStoreFailure::reset_required(
+                        "Invalid zero dependency revision.",
+                    ));
+                }
+                if bytes[8..] == fingerprint {
+                    return Ok(revision);
+                }
+                revision
+            }
+            None => 0,
+        };
+        drop(existing);
+        revision = previous.checked_add(1).ok_or_else(|| {
+            DevelopmentStoreFailure::reset_required("Dependency revision exhausted.")
+        })?;
+        let mut encoded = [0; 40];
+        encoded[..8].copy_from_slice(&revision.to_be_bytes());
+        encoded[8..].copy_from_slice(&fingerprint);
+        table
+            .insert(0, encoded.as_slice())
+            .map_err(|error| classify_redb_error(error.into(), "save dependency revision"))?;
+    }
+    write
+        .commit()
+        .map_err(|error| classify_redb_error(error.into(), "commit dependency revision"))?;
+    Ok(revision)
+}
+
+fn receive_state(
+    database: &Database,
+    destination: [u8; 16],
+    state: Option<zeroize::Zeroizing<Vec<u8>>>,
+) -> ReceiveStateReply {
+    if let Some(state) = state {
+        let mut tx = database
+            .begin_write()
+            .map_err(|error| classify_redb_error(error.into(), "save receive state"))?;
+        tx.set_durability(redb::Durability::Immediate)
+            .map_err(|error| classify_redb_error(error.into(), "set receive state durability"))?;
+        tx.open_table(RECEIVE_STATE)
+            .map_err(|error| classify_redb_error(error.into(), "open receive state"))?
+            .insert(destination.as_slice(), state.as_slice())
+            .map_err(|error| classify_redb_error(error.into(), "write receive state"))?;
+        tx.commit()
+            .map_err(|error| classify_redb_error(error.into(), "commit receive state"))?;
+        return Ok(None);
+    }
+    let read = database
+        .begin_read()
+        .map_err(|error| classify_redb_error(error.into(), "read receive state"))?;
+    let table = match read.open_table(RECEIVE_STATE) {
+        Ok(table) => table,
+        Err(redb::TableError::TableDoesNotExist(_)) => return Ok(None),
+        Err(error) => return Err(classify_redb_error(error.into(), "open receive state")),
+    };
+    let value = table
+        .get(destination.as_slice())
+        .map_err(|error| classify_redb_error(error.into(), "get receive state"))?;
+    let Some(value) = value else {
+        return Ok(None);
+    };
+    if value.value().is_empty() || value.value().len() > MAX_RECEIVE_STATE_BYTES {
+        return Err(DevelopmentStoreFailure::reset_required(
+            "The saved receive state exceeds its byte bounds.",
+        ));
+    }
+    Ok(Some(zeroize::Zeroizing::new(value.value().to_vec())))
+}
+
+#[cfg(test)]
+mod scoped_tests;
 
 pub(crate) fn messaging_name(
     database: &Database,

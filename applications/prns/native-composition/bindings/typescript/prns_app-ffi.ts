@@ -259,6 +259,16 @@ const DEFINITIONS = {
       ret: FfiType.Void,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_clone_namedidentityclient": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: true,
+    },
+    "uniffi_prns_app_fn_free_namedidentityclient": {
+      args: [FfiType.Handle],
+      ret: FfiType.Void,
+      hasRustCallStatus: true,
+    },
     "uniffi_prns_app_fn_func_acknowledge_group_action": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -294,6 +304,11 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_change_named_identity": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_change_remote_node": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -320,6 +335,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_fn_func_create_manual_contact": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_create_named_identity": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
@@ -414,6 +434,16 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_list_named_identities": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_list_named_identity_activity": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_measure_lxmf_text": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -462,6 +492,11 @@ const DEFINITIONS = {
     "uniffi_prns_app_fn_func_native_stop": {
       args: [],
       ret: FfiType.RustBuffer,
+      hasRustCallStatus: true,
+    },
+    "uniffi_prns_app_fn_func_open_named_identity": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
       hasRustCallStatus: true,
     },
     "uniffi_prns_app_fn_func_prepare_group_action": {
@@ -564,6 +599,186 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_method_namedidentityclient_acknowledge_group_action": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_announce_groups": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_announce_lxmf": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_cancel_lxmf_message": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_clear_lxmf_discovery": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_create_group": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_create_manual_contact": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_delete_contact": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group_action": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_execute_group_action": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_get_contact": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_invite_to_group": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_contacts": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_group_actions": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_group_conversations": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_group_invitations": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_group_messages": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_conversations": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_messages": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_peers": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_mark_identity_activity_seen": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_measure_lxmf_text": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_prepare_group_action": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_read_identity_activity": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_read_messaging_profile": {
+      args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_respond_group_invitation": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_retry_lxmf_message": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_save_discovered_contact": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_save_observed_destination": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_send_direct_text": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_send_group_text": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_set_contact_alias": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_set_group_announce_settings": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "ffi_prns_app_uniffi_contract_version": {
       args: [],
       ret: FfiType.UInt32,
@@ -604,6 +819,11 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_change_named_identity": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_change_remote_node": {
       args: [],
       ret: FfiType.UInt16,
@@ -630,6 +850,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_create_manual_contact": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_create_named_identity": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -724,6 +949,16 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_list_named_identities": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_list_named_identity_activity": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_measure_lxmf_text": {
       args: [],
       ret: FfiType.UInt16,
@@ -770,6 +1005,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_native_stop": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_open_named_identity": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -874,6 +1114,186 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_method_namedidentityclient_acknowledge_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_announce_groups": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_announce_lxmf": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_cancel_lxmf_message": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_clear_lxmf_discovery": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_create_group": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_create_manual_contact": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_delete_contact": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_get_contact": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_contacts": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_group_conversations": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_group_invitations": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_group_messages": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_conversations": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_messages": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_peers": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_mark_identity_activity_seen": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_measure_lxmf_text": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_prepare_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_read_identity_activity": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_read_messaging_profile": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_respond_group_invitation": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_retry_lxmf_message": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_save_discovered_contact": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_save_observed_destination": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_send_direct_text": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_send_group_text": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_set_contact_alias": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
   },
   callbacks: {
     "RustFutureContinuationCallback": {
@@ -948,6 +1368,8 @@ interface NativeModuleInterface {
     ffi_prns_app_rust_future_cancel_void(handle: bigint): void;
     ffi_prns_app_rust_future_complete_void(handle: bigint, uniffi_out_err: UniffiRustCallStatus): void;
     ffi_prns_app_rust_future_free_void(handle: bigint): void;
+    uniffi_prns_app_fn_clone_namedidentityclient(ptr: bigint, uniffi_out_err: UniffiRustCallStatus): bigint;
+    uniffi_prns_app_fn_free_namedidentityclient(ptr: bigint, uniffi_out_err: UniffiRustCallStatus): void;
     uniffi_prns_app_fn_func_acknowledge_group_action(reference: Uint8Array): bigint;
     uniffi_prns_app_fn_func_announce_groups(): bigint;
     uniffi_prns_app_fn_func_announce_lxmf(): bigint;
@@ -955,12 +1377,14 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_approve_pairing(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_binding_contract(uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_cancel_lxmf_message(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_change_named_identity(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_change_remote_node(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_clear_lxmf_discovery(): bigint;
     uniffi_prns_app_fn_func_clear_network_activity(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_create_group(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_create_group_request_id(): bigint;
     uniffi_prns_app_fn_func_create_manual_contact(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_create_named_identity(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_delete_contact(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_describe_target(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_discard_expired_group_action(reference: Uint8Array): bigint;
@@ -979,6 +1403,8 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_list_lxmf_conversations(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_list_lxmf_messages(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_list_lxmf_peers(): bigint;
+    uniffi_prns_app_fn_func_list_named_identities(): bigint;
+    uniffi_prns_app_fn_func_list_named_identity_activity(): bigint;
     uniffi_prns_app_fn_func_measure_lxmf_text(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_native_create_generated_identity(storageRoot: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_native_create_imported_identity(storageRoot: Uint8Array, identity: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
@@ -989,6 +1415,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_native_start(storageRoot: Uint8Array, input: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_native_start_with_apple_bluetooth_restoration(storageRoot: Uint8Array, input: Uint8Array, centralIdentifier: Uint8Array, peripheralIdentifier: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallStatus): Uint8Array;
+    uniffi_prns_app_fn_func_open_named_identity(identity: Uint8Array, uniffi_out_err: UniffiRustCallStatus): bigint;
     uniffi_prns_app_fn_func_prepare_group_action(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_preview_identity_import(identity: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_read_bluetooth_settings(): bigint;
@@ -1009,6 +1436,42 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_set_messaging_name(name: Uint8Array): bigint;
     uniffi_prns_app_fn_func_shared_host(uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_start_remote_wifi_trial(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_acknowledge_group_action(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_announce_groups(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_announce_lxmf(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_cancel_lxmf_message(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_clear_lxmf_discovery(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_create_group(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_create_manual_contact(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_delete_contact(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group_action(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_execute_group_action(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_get_contact(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_invite_to_group(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_contacts(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_group_actions(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_group_conversations(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_group_invitations(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_group_messages(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_conversations(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_messages(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_list_lxmf_peers(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_mark_identity_activity_seen(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_measure_lxmf_text(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_prepare_group_action(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_read_identity_activity(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_read_messaging_profile(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_respond_group_invitation(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_retry_lxmf_message(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_save_discovered_contact(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_save_observed_destination(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_send_direct_text(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_send_group_text(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_set_contact_alias(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_set_group_announce_settings(uniffiSelf: bigint, settings: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(uniffiSelf: bigint, name: Uint8Array): bigint;
     ffi_prns_app_uniffi_contract_version(): number;
     uniffi_prns_app_checksum_func_acknowledge_group_action(): number;
     uniffi_prns_app_checksum_func_announce_groups(): number;
@@ -1017,12 +1480,14 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_approve_pairing(): number;
     uniffi_prns_app_checksum_func_binding_contract(): number;
     uniffi_prns_app_checksum_func_cancel_lxmf_message(): number;
+    uniffi_prns_app_checksum_func_change_named_identity(): number;
     uniffi_prns_app_checksum_func_change_remote_node(): number;
     uniffi_prns_app_checksum_func_clear_lxmf_discovery(): number;
     uniffi_prns_app_checksum_func_clear_network_activity(): number;
     uniffi_prns_app_checksum_func_create_group(): number;
     uniffi_prns_app_checksum_func_create_group_request_id(): number;
     uniffi_prns_app_checksum_func_create_manual_contact(): number;
+    uniffi_prns_app_checksum_func_create_named_identity(): number;
     uniffi_prns_app_checksum_func_delete_contact(): number;
     uniffi_prns_app_checksum_func_describe_target(): number;
     uniffi_prns_app_checksum_func_discard_expired_group_action(): number;
@@ -1041,6 +1506,8 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_list_lxmf_conversations(): number;
     uniffi_prns_app_checksum_func_list_lxmf_messages(): number;
     uniffi_prns_app_checksum_func_list_lxmf_peers(): number;
+    uniffi_prns_app_checksum_func_list_named_identities(): number;
+    uniffi_prns_app_checksum_func_list_named_identity_activity(): number;
     uniffi_prns_app_checksum_func_measure_lxmf_text(): number;
     uniffi_prns_app_checksum_func_native_create_generated_identity(): number;
     uniffi_prns_app_checksum_func_native_create_imported_identity(): number;
@@ -1051,6 +1518,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_native_start(): number;
     uniffi_prns_app_checksum_func_native_start_with_apple_bluetooth_restoration(): number;
     uniffi_prns_app_checksum_func_native_stop(): number;
+    uniffi_prns_app_checksum_func_open_named_identity(): number;
     uniffi_prns_app_checksum_func_prepare_group_action(): number;
     uniffi_prns_app_checksum_func_preview_identity_import(): number;
     uniffi_prns_app_checksum_func_read_bluetooth_settings(): number;
@@ -1071,6 +1539,42 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_set_messaging_name(): number;
     uniffi_prns_app_checksum_func_shared_host(): number;
     uniffi_prns_app_checksum_func_start_remote_wifi_trial(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_acknowledge_group_action(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_announce_groups(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_announce_lxmf(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_cancel_lxmf_message(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_clear_lxmf_discovery(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_create_group(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_create_manual_contact(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_delete_contact(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_get_contact(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_contacts(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_group_conversations(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_group_invitations(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_group_messages(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_conversations(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_messages(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_list_lxmf_peers(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_mark_identity_activity_seen(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_measure_lxmf_text(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_prepare_group_action(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_read_identity_activity(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_read_messaging_profile(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_respond_group_invitation(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_retry_lxmf_message(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_save_discovered_contact(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_save_observed_destination(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_send_direct_text(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_send_group_text(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_set_contact_alias(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name(): number;
     // Codegen call sites use these via `nativeModule().rustbuffer_alloc(...)`
     // and `nativeModule().rustbuffer_free(...)`. The runtime's registered
     // module exposes them as method properties.

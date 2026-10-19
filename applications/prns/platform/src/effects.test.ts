@@ -49,6 +49,15 @@ function snapshot(revision: bigint): DevelopmentNodeSnapshot {
 }
 function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRuntime {
   return {
+    readIdentityActivity: async () =>
+      Bindings.IdentityActivityOutcome.Unavailable.new({ detail: "fixture" }),
+    markIdentityActivitySeen: async () =>
+      Bindings.IdentityActivitySeenOutcome.Unavailable.new({ detail: "fixture" }),
+    listNamedIdentityActivity: async () => Bindings.NamedIdentityActivityListOutcome.Busy.new(),
+    listNamedIdentities: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    createNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    changeNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    forIdentity: () => fakeRuntime(overrides),
     attachHost: async () => undefined,
     readBluetoothSettings: jest.fn(async () =>
       Bindings.LocalBluetoothSettingsOutcome.Ready.new({ enabled: true }),
