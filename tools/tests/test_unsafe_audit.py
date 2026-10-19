@@ -32,12 +32,17 @@ class UnsafeAuditTests(unittest.TestCase):
         self.assertEqual(graphs["group-headless-peer"], ("prns-groups/runner/native/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertEqual(audit.GRAPH_FEATURES["group-headless-peer"], ("headless",))
 
+    def test_identity_native_graph_selects_its_consumer_features(self) -> None:
+        graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
+        self.assertEqual(graphs["identity-native"], ("prns-identities/native/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertEqual(audit.GRAPH_FEATURES["identity-native"], ("redb-store",))
+
     def test_app_graphs_audit_the_shipped_platform_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
         self.assertEqual(len(graphs), len(audit.GRAPHS))
         self.assertEqual(
             audit.GRAPH_FEATURES,
-            {"group-headless-peer": ("headless",), "prns-app-android": ("android",), "prns-app-ios": ("apple",), "group-secure-storage": ("prns-groups-store/secure",)},
+            {"identity-native": ("redb-store",), "group-headless-peer": ("headless",), "prns-app-android": ("android",), "prns-app-ios": ("apple",), "group-secure-storage": ("prns-groups-store/secure",)},
         )
         manifest = "applications/prns/native-composition/Cargo.toml"
         self.assertEqual(graphs["prns-app-android"], (manifest, "aarch64-linux-android"))

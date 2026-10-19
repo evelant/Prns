@@ -1,5 +1,5 @@
 [workspace]
-members = ["core", "codec", "runtime"]
+members = ["core", "codec", "runtime", "native"]
 default-members = ["core", "codec", "runtime"]
 resolver = "3"
 

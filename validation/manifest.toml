@@ -147,6 +147,7 @@ cargo_manifests = [
     "prns-identities/Cargo.toml",
     "prns-identities/codec/Cargo.toml",
     "prns-identities/core/Cargo.toml",
+    "prns-identities/native/Cargo.toml",
     "prns-identities/runtime/Cargo.toml",
     "prns-interfaces/impls/embassy/Cargo.toml",
     "prns-interfaces/impls/tokio/Cargo.toml",
@@ -206,7 +207,7 @@ format_manifests = [
 ]
 
 [registry.format_package_overrides]
-"prns-identities/Cargo.toml" = ["prns-identities-core", "prns-identities-codec", "prns-identities-runtime"]
+"prns-identities/Cargo.toml" = ["prns-identities-core", "prns-identities-codec", "prns-identities-runtime", "prns-identities-native"]
 "personal-hopspot/embedded/nrf52840/Cargo.toml" = ["t-echo"]
 
 [[registry.cargo_check_delegations]]
@@ -234,6 +235,30 @@ timeout_seconds = 300
 command = ["cargo", "test", "--locked", "--manifest-path", "prns-identities/Cargo.toml", "--all-targets", "--no-default-features"]
 inputs = ["prns-identities"]
 artifacts = "validation-artifacts/results/identity-portable-tests"
+
+[[suite]]
+id = "identity-native-tests-macos"
+domain = "native"
+group = "named-identities"
+tiers = ["pr"]
+platform = "macos"
+toolchain = "stable"
+timeout_seconds = 300
+command = ["cargo", "test", "--locked", "--manifest-path", "prns-identities/Cargo.toml", "-p", "prns-identities-native", "--all-targets", "--features", "fault-injection,redb-store"]
+inputs = ["prns-identities", "prns-core", "prns-macros"]
+artifacts = "validation-artifacts/results/identity-native-tests-macos"
+
+[[suite]]
+id = "identity-native-tests-linux"
+domain = "native"
+group = "named-identities"
+tiers = ["pr"]
+platform = "linux"
+toolchain = "stable"
+timeout_seconds = 300
+command = ["cargo", "test", "--locked", "--manifest-path", "prns-identities/Cargo.toml", "-p", "prns-identities-native", "--all-targets", "--features", "fault-injection,redb-store"]
+inputs = ["prns-identities", "prns-core", "prns-macros"]
+artifacts = "validation-artifacts/results/identity-native-tests-linux"
 
 [[suite]]
 id = "group-communication-tests"

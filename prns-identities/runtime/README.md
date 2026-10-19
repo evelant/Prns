@@ -73,8 +73,8 @@ handle based on a matching public hash.
 
 An `Authority` must validate the current durable session and full lifecycle action.
 The `Coordinator` implementation is sufficient only with externally guaranteed
-exclusive ownership. A durable adapter must reject stale coordinators using the
-same store; that native persistence adapter is a following integration. Serialize authority validation,
+exclusive ownership. Native consumers should use `NativeStore::runtime_authority`
+to reject stale coordinators using the same store. Serialize authority validation,
 dispatch, and lifecycle changes under the embedding host's exclusive owner gate.
 
 Driver calls carry an exact `Scope` containing owner incarnation/sequence, local
@@ -164,8 +164,8 @@ Host tests cover bounded capacity, management headroom, two owners, failed/pendi
 driver steps, stale actions/evidence, retained leases, offline admission, explicit
 Link/queue/ratchet completion, repeated Enable, and before/after-write failures for
 activation and cleanup acknowledgements. They use a recording driver, not live
-Reticulum teardown. Filesystem/key adapters and their native composition tests
-are a following integration.
+Reticulum teardown. Native composition tests additionally exercise the real
+filesystem/key adapter with that recording driver.
 
 A live messaging composition is a following integration. It must implement
 scoped operations and durable stores, stage registrations with ingress closed,
