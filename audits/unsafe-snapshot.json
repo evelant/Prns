@@ -25175,6 +25175,26 @@
     },
     {
       "graphs": {
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
+        ]
+      },
+      "name": "prns-contact-card",
+      "source": "applications/services/contact-card",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
         "android": [
           "alloc",
           "crypto-precomputed",

@@ -1,4 +1,5 @@
 pub(crate) mod admission;
+pub(crate) mod contact_cards;
 pub(crate) mod group_actions;
 pub(crate) mod group_announces;
 pub(crate) mod groups;

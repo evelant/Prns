@@ -71,6 +71,11 @@ enum StoreJob {
         state: Option<zeroize::Zeroizing<Vec<u8>>>,
         response: oneshot::Sender<ReceiveStateReply>,
     },
+    ContactCard {
+        root: PathBuf,
+        request: crate::contact_cards::Request,
+        response: oneshot::Sender<crate::contact_cards::Reply>,
+    },
     Drain(SyncSender<()>),
     InitializeGroups {
         identity: prns_host::IdentityHash,
@@ -771,6 +776,25 @@ impl DevelopmentStoreOwner {
         }
     }
 
+    pub(crate) fn admit_contact_card(
+        &self,
+        request: crate::contact_cards::Request,
+    ) -> Result<oneshot::Receiver<crate::contact_cards::Reply>, DevelopmentStoreFailure> {
+        let (response, receiver) = oneshot::channel();
+        self.lane
+            .admit_default(StoreJob::ContactCard {
+                root: self.root.clone(),
+                request,
+                response,
+            })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable(
+                    "The contact-card storage lane is full or closed.",
+                )
+            })?;
+        Ok(receiver)
+    }
+
     pub(crate) fn admit_directory_async(
         &self,
         request: DirectoryRequest,
@@ -960,6 +984,19 @@ fn run_owner(
                 completion,
             } => {
                 completion(crate::group_announces::settings(database, settings));
+            }
+            StoreJob::ContactCard {
+                root,
+                request,
+                response,
+            } => {
+                let reply = match scoped_identity {
+                    Some(identity) => {
+                        crate::contact_cards::execute_scoped(database, identity, request)
+                    }
+                    None => crate::contact_cards::execute(database, &root, request),
+                };
+                let _ = response.send(reply);
             }
             StoreJob::MessagingName { name, completion } => {
                 completion(messaging_name(database, name));

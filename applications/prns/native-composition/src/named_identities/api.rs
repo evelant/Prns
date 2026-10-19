@@ -279,6 +279,59 @@ impl NamedIdentityClient {
         .await
         .unwrap_or_else(|detail| LocalMessagingProfileOutcome::Unavailable { detail })
     }
+    pub async fn export_contact_card(
+        &self,
+        input: ExportContactCardInput,
+    ) -> ContactCardExportOutcome {
+        self.call(core::AdmissionClass::OfflineSigning, move |services| {
+            Box::pin(async move {
+                if input.expected_local_identity != services.scope().public_hash.0 {
+                    return Ok(ContactCardExportOutcome::IdentityChanged);
+                }
+                match services
+                    .store()
+                    .map_err(detail)?
+                    .admit_contact_card(crate::contact_cards::Request::Export(input))
+                    .map_err(detail)?
+                    .await
+                    .map_err(detail)?
+                {
+                    crate::contact_cards::Reply::Export(outcome) => Ok(outcome),
+                    _ => Err("Unexpected contact card result.".into()),
+                }
+            })
+        })
+        .await
+        .unwrap_or_else(|detail| ContactCardExportOutcome::Unavailable { detail })
+    }
+    pub async fn import_contact_card(
+        &self,
+        input: ImportContactCardInput,
+    ) -> ContactCardImportOutcome {
+        self.call(core::AdmissionClass::LocalMutation, move |services| {
+            Box::pin(async move {
+                if input.expected_local_identity != services.scope().public_hash.0 {
+                    return Ok(ContactCardImportOutcome::IdentityChanged);
+                }
+                if let Err(outcome) = crate::contact_cards::check_import(&input) {
+                    return Ok(outcome);
+                }
+                match services
+                    .store()
+                    .map_err(detail)?
+                    .admit_contact_card(crate::contact_cards::Request::Import(input))
+                    .map_err(detail)?
+                    .await
+                    .map_err(detail)?
+                {
+                    crate::contact_cards::Reply::Import(outcome) => Ok(outcome),
+                    _ => Err("Unexpected contact card result.".into()),
+                }
+            })
+        })
+        .await
+        .unwrap_or_else(|detail| ContactCardImportOutcome::Unavailable { detail })
+    }
     pub async fn list_lxmf_peers(&self) -> LxmfPeerListOutcome {
         self.call(core::AdmissionClass::History, |services| {
             Box::pin(async move {

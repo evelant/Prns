@@ -571,7 +571,7 @@ async fn group_creation_retries_and_stale_clients_are_identity_scoped() {
 }
 
 #[tokio::test]
-async fn scoped_keys_and_mismatched_or_incomplete_stores_fail_closed() {
+async fn contact_cards_use_scoped_keys_and_mismatched_or_incomplete_stores_fail_closed() {
     let root = tempfile::tempdir().unwrap();
     let (a, ka) = scope(31, 1);
     let (b, kb) = scope(32, 2);
@@ -589,6 +589,41 @@ async fn scoped_keys_and_mismatched_or_incomplete_stores_fail_closed() {
         })
         .unwrap();
     rx.await.unwrap().unwrap();
+    let request = crate::contact_cards::Request::Export(ExportContactCardInput {
+        expected_local_identity: a.public_hash.0,
+    });
+    let crate::contact_cards::Reply::Export(ContactCardExportOutcome::Ready { card }) =
+        first.admit_contact_card(request).unwrap().await.unwrap()
+    else {
+        panic!("card");
+    };
+    assert_eq!(card.identity, a.public_hash.0);
+    assert_eq!(card.display_name, "Work persona");
+    let request = crate::contact_cards::Request::Export(ExportContactCardInput {
+        expected_local_identity: b.public_hash.0,
+    });
+    assert!(matches!(
+        first.admit_contact_card(request).unwrap().await.unwrap(),
+        crate::contact_cards::Reply::Export(ContactCardExportOutcome::IdentityChanged)
+    ));
+    let request = crate::contact_cards::Request::Import(ImportContactCardInput {
+        uri: card.uri.clone(),
+        expected_local_identity: a.public_hash.0,
+        alias: None,
+    });
+    assert!(matches!(
+        second.admit_contact_card(request).unwrap().await.unwrap(),
+        crate::contact_cards::Reply::Import(ContactCardImportOutcome::IdentityChanged)
+    ));
+    let request = crate::contact_cards::Request::Import(ImportContactCardInput {
+        uri: card.uri,
+        expected_local_identity: b.public_hash.0,
+        alias: None,
+    });
+    assert!(matches!(
+        second.admit_contact_card(request).unwrap().await.unwrap(),
+        crate::contact_cards::Reply::Import(ContactCardImportOutcome::Saved { .. })
+    ));
     assert_eq!(
         directory(&first, DirectoryRequest::List).await,
         DirectoryResponse::List(ContactListOutcome::Listed { contacts: vec![] })

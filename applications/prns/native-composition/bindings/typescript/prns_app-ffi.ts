@@ -364,6 +364,11 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_export_contact_card": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_finish_remote_wifi_trial": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -376,6 +381,11 @@ const DEFINITIONS = {
     },
     "uniffi_prns_app_fn_func_get_group_announce_settings": {
       args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_import_contact_card": {
+      args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
@@ -503,6 +513,11 @@ const DEFINITIONS = {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_preview_contact_card": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.RustBuffer,
+      hasRustCallStatus: true,
     },
     "uniffi_prns_app_fn_func_preview_identity_import": {
       args: [FfiType.RustBuffer],
@@ -649,6 +664,11 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_method_namedidentityclient_export_contact_card": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_method_namedidentityclient_get_contact": {
       args: [FfiType.Handle, FfiType.RustBuffer],
       ret: FfiType.Handle,
@@ -656,6 +676,11 @@ const DEFINITIONS = {
     },
     "uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings": {
       args: [FfiType.Handle],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_method_namedidentityclient_import_contact_card": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
@@ -879,6 +904,11 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_export_contact_card": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_finish_remote_wifi_trial": {
       args: [],
       ret: FfiType.UInt16,
@@ -890,6 +920,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_get_group_announce_settings": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_import_contact_card": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -1015,6 +1050,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_prepare_group_action": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_preview_contact_card": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -1164,12 +1204,22 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_method_namedidentityclient_export_contact_card": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_method_namedidentityclient_get_contact": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_method_namedidentityclient_import_contact_card": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -1389,9 +1439,11 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_describe_target(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_discard_expired_group_action(reference: Uint8Array): bigint;
     uniffi_prns_app_fn_func_execute_group_action(reference: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_export_contact_card(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_finish_remote_wifi_trial(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_get_contact(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_get_group_announce_settings(): bigint;
+    uniffi_prns_app_fn_func_import_contact_card(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_initiate_pairing(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_inspect_remote_wifi_trial(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_invite_to_group(input: Uint8Array): bigint;
@@ -1417,6 +1469,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_open_named_identity(identity: Uint8Array, uniffi_out_err: UniffiRustCallStatus): bigint;
     uniffi_prns_app_fn_func_prepare_group_action(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_preview_contact_card(uri: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_preview_identity_import(identity: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_read_bluetooth_settings(): bigint;
     uniffi_prns_app_fn_func_read_messaging_profile(): bigint;
@@ -1446,8 +1499,10 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_method_namedidentityclient_delete_contact(uniffiSelf: bigint, input: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group_action(uniffiSelf: bigint, input: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_execute_group_action(uniffiSelf: bigint, input: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_export_contact_card(uniffiSelf: bigint, input: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_get_contact(uniffiSelf: bigint, input: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_get_group_announce_settings(uniffiSelf: bigint): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_import_contact_card(uniffiSelf: bigint, input: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_invite_to_group(uniffiSelf: bigint, input: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_list_contacts(uniffiSelf: bigint): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_list_group_actions(uniffiSelf: bigint): bigint;
@@ -1492,9 +1547,11 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_describe_target(): number;
     uniffi_prns_app_checksum_func_discard_expired_group_action(): number;
     uniffi_prns_app_checksum_func_execute_group_action(): number;
+    uniffi_prns_app_checksum_func_export_contact_card(): number;
     uniffi_prns_app_checksum_func_finish_remote_wifi_trial(): number;
     uniffi_prns_app_checksum_func_get_contact(): number;
     uniffi_prns_app_checksum_func_get_group_announce_settings(): number;
+    uniffi_prns_app_checksum_func_import_contact_card(): number;
     uniffi_prns_app_checksum_func_initiate_pairing(): number;
     uniffi_prns_app_checksum_func_inspect_remote_wifi_trial(): number;
     uniffi_prns_app_checksum_func_invite_to_group(): number;
@@ -1520,6 +1577,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_native_stop(): number;
     uniffi_prns_app_checksum_func_open_named_identity(): number;
     uniffi_prns_app_checksum_func_prepare_group_action(): number;
+    uniffi_prns_app_checksum_func_preview_contact_card(): number;
     uniffi_prns_app_checksum_func_preview_identity_import(): number;
     uniffi_prns_app_checksum_func_read_bluetooth_settings(): number;
     uniffi_prns_app_checksum_func_read_messaging_profile(): number;
@@ -1549,8 +1607,10 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_method_namedidentityclient_delete_contact(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_discard_expired_group_action(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_export_contact_card(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_get_contact(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_import_contact_card(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_list_contacts(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_list_group_actions(): number;

@@ -768,6 +768,49 @@ export async function executeGroupAction(reference: GroupActionReference, asyncO
     }
     }
 
+/**
+ * Sign public contact information using the native identity owner, including offline.
+ */
+export async function exportContactCard(input: ExportContactCardInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactCardExportOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_export_contact_card(FfiConverterTypeExportContactCardInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactCardExportOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function finishRemoteWifiTrial(input: FinishRemoteWifiTrialInput, asyncOpts_?: { signal: AbortSignal }): Promise<RemoteWifiCommandOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -872,6 +915,49 @@ export async function getGroupAnnounceSettings(asyncOpts_?: { signal: AbortSigna
             /*liftFunc:*/ (__rb) => {
                 try {
                     return FfiConverterTypeGroupAnnounceSettingsOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+/**
+ * Call only after explicit confirmation. Native validation is repeated at import.
+ */
+export async function importContactCard(input: ImportContactCardInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactCardImportOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_import_contact_card(FfiConverterTypeImportContactCardInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactCardImportOutcome.lift(__rb);
                 } finally {
                     nativeModule().rustbuffer_free(__rb);
                 }
@@ -1680,6 +1766,25 @@ export async function prepareGroupAction(input: PrepareGroupActionInput, asyncOp
             __error.stack = __stack;
         }
         throw __error;
+    }
+    }
+
+/**
+ * Bounded local validation; never imports a contact, authorizes a peer or contacts the network.
+ */
+export function previewContactCard(uri: string): ContactCardPreviewOutcome {
+    const __rb: Uint8Array = uniffiCaller.rustCall(
+            /*caller:*/ (callStatus) => {
+                return nativeModule().uniffi_prns_app_fn_func_preview_contact_card(
+        FfiConverterString.lower(uri, nativeModule().rustbuffer_alloc),
+                callStatus);
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+    );
+    try {
+        return FfiConverterTypeContactCardPreviewOutcome.lift(__rb);
+    } finally {
+        nativeModule().rustbuffer_free(__rb);
     }
     }
 
@@ -3881,6 +3986,72 @@ const FfiConverterTypeContact = (() => {
              FfiConverterOptionalTypeBytes16.allocationSize(value.identity) +
              FfiConverterBool.allocationSize(value.pinned) +
              FfiConverterBool.allocationSize(value.isMessaging);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+/**
+ * Typealias from the type name used in the UDL file to the builtin type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
+export type Bytes10 = Uint8Array;
+// FfiConverter for Bytes10, a type alias for Uint8Array.
+const FfiConverterTypeBytes10 = FfiConverterUint8Array;
+
+/**
+ * A signature-checked service claim, not a verified person or observed network route.
+ */
+export type ContactCard = {
+    uri: string,
+    displayName: string,
+    identity: Bytes16,
+    destination: Bytes16,
+    serviceNameHash: Bytes10
+}
+
+/**
+ * Generated factory for {@link ContactCard} record objects.
+ */
+export const ContactCard = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<ContactCard, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<ContactCard>,
+    });
+})();
+
+const FfiConverterTypeContactCard = (() => {
+    type TypeName = ContactCard;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                uri: FfiConverterString.readFromCursor(c),
+                displayName: FfiConverterString.readFromCursor(c),
+                identity: FfiConverterTypeBytes16.readFromCursor(c),
+                destination: FfiConverterTypeBytes16.readFromCursor(c),
+                serviceNameHash: FfiConverterTypeBytes10.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterString.writeIntoCursor(value.uri, c);
+            FfiConverterString.writeIntoCursor(value.displayName, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.identity, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.destination, c);
+            FfiConverterTypeBytes10.writeIntoCursor(value.serviceNameHash, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterString.allocationSize(value.uri) +
+             FfiConverterString.allocationSize(value.displayName) +
+             FfiConverterTypeBytes16.allocationSize(value.identity) +
+             FfiConverterTypeBytes16.allocationSize(value.destination) +
+             FfiConverterTypeBytes10.allocationSize(value.serviceNameHash);
 
         }
     };
@@ -8193,6 +8364,45 @@ const FfiConverterTypeDevelopmentNodeStartInput = (() => {
     return new FFIConverter();
 })();
 
+export type ExportContactCardInput = {
+    expectedLocalIdentity: Bytes16
+}
+
+/**
+ * Generated factory for {@link ExportContactCardInput} record objects.
+ */
+export const ExportContactCardInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<ExportContactCardInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<ExportContactCardInput>,
+    });
+})();
+
+const FfiConverterTypeExportContactCardInput = (() => {
+    type TypeName = ExportContactCardInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                expectedLocalIdentity: FfiConverterTypeBytes16.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes16.writeIntoCursor(value.expectedLocalIdentity, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes16.allocationSize(value.expectedLocalIdentity);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export enum RemoteWifiDecision {
     Keep,
     Restore
@@ -10205,6 +10415,53 @@ const FfiConverterTypeIdentityActivitySummary = (() => {
              FfiConverterUInt32.allocationSize(value.unreadDirect) +
              FfiConverterSequenceTypeIdentityConversationActivity.allocationSize(value.conversations) +
              FfiConverterBool.allocationSize(value.partial);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type ImportContactCardInput = {
+    uri: string,
+    expectedLocalIdentity: Bytes16,
+    alias?: string | undefined
+}
+
+/**
+ * Generated factory for {@link ImportContactCardInput} record objects.
+ */
+export const ImportContactCardInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<ImportContactCardInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<ImportContactCardInput>,
+    });
+})();
+
+const FfiConverterTypeImportContactCardInput = (() => {
+    type TypeName = ImportContactCardInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                uri: FfiConverterString.readFromCursor(c),
+                expectedLocalIdentity: FfiConverterTypeBytes16.readFromCursor(c),
+                alias: FfiConverterOptionalString.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterString.writeIntoCursor(value.uri, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.expectedLocalIdentity, c);
+            FfiConverterOptionalString.writeIntoCursor(value.alias, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterString.allocationSize(value.uri) +
+             FfiConverterTypeBytes16.allocationSize(value.expectedLocalIdentity) +
+             FfiConverterOptionalString.allocationSize(value.alias);
 
         }
     };
@@ -14264,6 +14521,964 @@ const FfiConverterTypeClearNetworkActivityOutcome = (() => {
                     return 4;
                 }
                 case ClearNetworkActivityOutcome_Tags.Busy: {
+                    return 4;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: ContactCardExportOutcome
+export enum ContactCardExportOutcome_Tags {
+    Ready = "Ready",
+    IdentityChanged = "IdentityChanged",
+    MissingIdentity = "MissingIdentity",
+    Busy = "Busy",
+    Unavailable = "Unavailable",
+    DevelopmentResetRequired = "DevelopmentResetRequired"
+}
+export const ContactCardExportOutcome = (() => {
+
+    type Ready__interface = {
+        tag: ContactCardExportOutcome_Tags.Ready;
+        inner:
+Readonly<{card: ContactCard}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardExportOutcome";
+        readonly tag = ContactCardExportOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{card: ContactCard}>;
+        constructor(
+inner: {card: ContactCard }) {
+            super("ContactCardExportOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {card: ContactCard }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === ContactCardExportOutcome_Tags.Ready;
+        }
+
+    }
+
+    type IdentityChanged__interface = {
+        tag: ContactCardExportOutcome_Tags.IdentityChanged
+    };
+    class IdentityChanged_ extends UniffiEnum implements IdentityChanged__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardExportOutcome";
+        readonly tag = ContactCardExportOutcome_Tags.IdentityChanged;
+        constructor() {
+            super("ContactCardExportOutcome", "IdentityChanged");
+        }
+
+        static new(): IdentityChanged_ {
+            return new IdentityChanged_();
+        }
+
+        static instanceOf(obj: any): obj is IdentityChanged_ {
+            return obj.tag === ContactCardExportOutcome_Tags.IdentityChanged;
+        }
+
+    }
+
+    type MissingIdentity__interface = {
+        tag: ContactCardExportOutcome_Tags.MissingIdentity
+    };
+    class MissingIdentity_ extends UniffiEnum implements MissingIdentity__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardExportOutcome";
+        readonly tag = ContactCardExportOutcome_Tags.MissingIdentity;
+        constructor() {
+            super("ContactCardExportOutcome", "MissingIdentity");
+        }
+
+        static new(): MissingIdentity_ {
+            return new MissingIdentity_();
+        }
+
+        static instanceOf(obj: any): obj is MissingIdentity_ {
+            return obj.tag === ContactCardExportOutcome_Tags.MissingIdentity;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: ContactCardExportOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardExportOutcome";
+        readonly tag = ContactCardExportOutcome_Tags.Busy;
+        constructor() {
+            super("ContactCardExportOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === ContactCardExportOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: ContactCardExportOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardExportOutcome";
+        readonly tag = ContactCardExportOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("ContactCardExportOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === ContactCardExportOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    type DevelopmentResetRequired__interface = {
+        tag: ContactCardExportOutcome_Tags.DevelopmentResetRequired;
+        inner:
+Readonly<{reason: string}>
+    };
+    class DevelopmentResetRequired_ extends UniffiEnum implements DevelopmentResetRequired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardExportOutcome";
+        readonly tag = ContactCardExportOutcome_Tags.DevelopmentResetRequired;
+        readonly inner:
+Readonly<{reason: string}>;
+        constructor(
+inner: {reason: string }) {
+            super("ContactCardExportOutcome", "DevelopmentResetRequired");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {reason: string }): DevelopmentResetRequired_ {
+            return new DevelopmentResetRequired_(inner);
+        }
+
+        static instanceOf(obj: any): obj is DevelopmentResetRequired_ {
+            return obj.tag === ContactCardExportOutcome_Tags.DevelopmentResetRequired;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is ContactCardExportOutcome {
+        return obj[uniffiTypeNameSymbol] === "ContactCardExportOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  IdentityChanged: IdentityChanged_,
+  MissingIdentity: MissingIdentity_,
+  Busy: Busy_,
+  Unavailable: Unavailable_,
+  DevelopmentResetRequired: DevelopmentResetRequired_
+    });
+
+})();
+export type ContactCardExportOutcome = InstanceType<
+    typeof ContactCardExportOutcome['Ready' | 'IdentityChanged' | 'MissingIdentity' | 'Busy' | 'Unavailable' | 'DevelopmentResetRequired']
+>;
+
+// FfiConverter for enum ContactCardExportOutcome
+const FfiConverterTypeContactCardExportOutcome = (() => {
+    type TypeName = ContactCardExportOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new ContactCardExportOutcome.Ready({card: FfiConverterTypeContactCard.readFromCursor(c) });
+                case 2: return new ContactCardExportOutcome.IdentityChanged();
+                case 3: return new ContactCardExportOutcome.MissingIdentity();
+                case 4: return new ContactCardExportOutcome.Busy();
+                case 5: return new ContactCardExportOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                case 6: return new ContactCardExportOutcome.DevelopmentResetRequired({reason: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case ContactCardExportOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeContactCard.writeIntoCursor(inner.card, c);
+                    return;
+                }
+                case ContactCardExportOutcome_Tags.IdentityChanged: {
+                    c.writeI32(2);
+                    return;
+                }
+                case ContactCardExportOutcome_Tags.MissingIdentity: {
+                    c.writeI32(3);
+                    return;
+                }
+                case ContactCardExportOutcome_Tags.Busy: {
+                    c.writeI32(4);
+                    return;
+                }
+                case ContactCardExportOutcome_Tags.Unavailable: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case ContactCardExportOutcome_Tags.DevelopmentResetRequired: {
+                    c.writeI32(6);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.reason, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that ContactCardExportOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case ContactCardExportOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeContactCard.allocationSize(inner.card);
+                    return size;
+                }
+                case ContactCardExportOutcome_Tags.IdentityChanged: {
+                    return 4;
+                }
+                case ContactCardExportOutcome_Tags.MissingIdentity: {
+                    return 4;
+                }
+                case ContactCardExportOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case ContactCardExportOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case ContactCardExportOutcome_Tags.DevelopmentResetRequired: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.reason);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: ContactCardImportOutcome
+export enum ContactCardImportOutcome_Tags {
+    Saved = "Saved",
+    Updated = "Updated",
+    Existing = "Existing",
+    IdentityConflict = "IdentityConflict",
+    IdentityChanged = "IdentityChanged",
+    MissingIdentity = "MissingIdentity",
+    Invalid = "Invalid",
+    UnsupportedService = "UnsupportedService",
+    Busy = "Busy",
+    Unavailable = "Unavailable",
+    DevelopmentResetRequired = "DevelopmentResetRequired"
+}
+export const ContactCardImportOutcome = (() => {
+
+    type Saved__interface = {
+        tag: ContactCardImportOutcome_Tags.Saved;
+        inner:
+Readonly<{contact: Contact}>
+    };
+    class Saved_ extends UniffiEnum implements Saved__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.Saved;
+        readonly inner:
+Readonly<{contact: Contact}>;
+        constructor(
+inner: {contact: Contact }) {
+            super("ContactCardImportOutcome", "Saved");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {contact: Contact }): Saved_ {
+            return new Saved_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Saved_ {
+            return obj.tag === ContactCardImportOutcome_Tags.Saved;
+        }
+
+    }
+
+    type Updated__interface = {
+        tag: ContactCardImportOutcome_Tags.Updated;
+        inner:
+Readonly<{contact: Contact}>
+    };
+    class Updated_ extends UniffiEnum implements Updated__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.Updated;
+        readonly inner:
+Readonly<{contact: Contact}>;
+        constructor(
+inner: {contact: Contact }) {
+            super("ContactCardImportOutcome", "Updated");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {contact: Contact }): Updated_ {
+            return new Updated_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Updated_ {
+            return obj.tag === ContactCardImportOutcome_Tags.Updated;
+        }
+
+    }
+
+    type Existing__interface = {
+        tag: ContactCardImportOutcome_Tags.Existing;
+        inner:
+Readonly<{contact: Contact}>
+    };
+    class Existing_ extends UniffiEnum implements Existing__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.Existing;
+        readonly inner:
+Readonly<{contact: Contact}>;
+        constructor(
+inner: {contact: Contact }) {
+            super("ContactCardImportOutcome", "Existing");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {contact: Contact }): Existing_ {
+            return new Existing_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Existing_ {
+            return obj.tag === ContactCardImportOutcome_Tags.Existing;
+        }
+
+    }
+
+    type IdentityConflict__interface = {
+        tag: ContactCardImportOutcome_Tags.IdentityConflict;
+        inner:
+Readonly<{existing: Bytes16; attempted: Bytes16}>
+    };
+    class IdentityConflict_ extends UniffiEnum implements IdentityConflict__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.IdentityConflict;
+        readonly inner:
+Readonly<{existing: Bytes16; attempted: Bytes16}>;
+        constructor(
+inner: {existing: Bytes16; attempted: Bytes16 }) {
+            super("ContactCardImportOutcome", "IdentityConflict");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {existing: Bytes16; attempted: Bytes16 }): IdentityConflict_ {
+            return new IdentityConflict_(inner);
+        }
+
+        static instanceOf(obj: any): obj is IdentityConflict_ {
+            return obj.tag === ContactCardImportOutcome_Tags.IdentityConflict;
+        }
+
+    }
+
+    type IdentityChanged__interface = {
+        tag: ContactCardImportOutcome_Tags.IdentityChanged
+    };
+    class IdentityChanged_ extends UniffiEnum implements IdentityChanged__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.IdentityChanged;
+        constructor() {
+            super("ContactCardImportOutcome", "IdentityChanged");
+        }
+
+        static new(): IdentityChanged_ {
+            return new IdentityChanged_();
+        }
+
+        static instanceOf(obj: any): obj is IdentityChanged_ {
+            return obj.tag === ContactCardImportOutcome_Tags.IdentityChanged;
+        }
+
+    }
+
+    type MissingIdentity__interface = {
+        tag: ContactCardImportOutcome_Tags.MissingIdentity
+    };
+    class MissingIdentity_ extends UniffiEnum implements MissingIdentity__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.MissingIdentity;
+        constructor() {
+            super("ContactCardImportOutcome", "MissingIdentity");
+        }
+
+        static new(): MissingIdentity_ {
+            return new MissingIdentity_();
+        }
+
+        static instanceOf(obj: any): obj is MissingIdentity_ {
+            return obj.tag === ContactCardImportOutcome_Tags.MissingIdentity;
+        }
+
+    }
+
+    type Invalid__interface = {
+        tag: ContactCardImportOutcome_Tags.Invalid;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Invalid_ extends UniffiEnum implements Invalid__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.Invalid;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("ContactCardImportOutcome", "Invalid");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Invalid_ {
+            return new Invalid_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Invalid_ {
+            return obj.tag === ContactCardImportOutcome_Tags.Invalid;
+        }
+
+    }
+
+    type UnsupportedService__interface = {
+        tag: ContactCardImportOutcome_Tags.UnsupportedService
+    };
+    class UnsupportedService_ extends UniffiEnum implements UnsupportedService__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.UnsupportedService;
+        constructor() {
+            super("ContactCardImportOutcome", "UnsupportedService");
+        }
+
+        static new(): UnsupportedService_ {
+            return new UnsupportedService_();
+        }
+
+        static instanceOf(obj: any): obj is UnsupportedService_ {
+            return obj.tag === ContactCardImportOutcome_Tags.UnsupportedService;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: ContactCardImportOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.Busy;
+        constructor() {
+            super("ContactCardImportOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === ContactCardImportOutcome_Tags.Busy;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: ContactCardImportOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("ContactCardImportOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === ContactCardImportOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    type DevelopmentResetRequired__interface = {
+        tag: ContactCardImportOutcome_Tags.DevelopmentResetRequired;
+        inner:
+Readonly<{reason: string}>
+    };
+    class DevelopmentResetRequired_ extends UniffiEnum implements DevelopmentResetRequired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardImportOutcome";
+        readonly tag = ContactCardImportOutcome_Tags.DevelopmentResetRequired;
+        readonly inner:
+Readonly<{reason: string}>;
+        constructor(
+inner: {reason: string }) {
+            super("ContactCardImportOutcome", "DevelopmentResetRequired");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {reason: string }): DevelopmentResetRequired_ {
+            return new DevelopmentResetRequired_(inner);
+        }
+
+        static instanceOf(obj: any): obj is DevelopmentResetRequired_ {
+            return obj.tag === ContactCardImportOutcome_Tags.DevelopmentResetRequired;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is ContactCardImportOutcome {
+        return obj[uniffiTypeNameSymbol] === "ContactCardImportOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Saved: Saved_,
+  Updated: Updated_,
+  Existing: Existing_,
+  IdentityConflict: IdentityConflict_,
+  IdentityChanged: IdentityChanged_,
+  MissingIdentity: MissingIdentity_,
+  Invalid: Invalid_,
+  UnsupportedService: UnsupportedService_,
+  Busy: Busy_,
+  Unavailable: Unavailable_,
+  DevelopmentResetRequired: DevelopmentResetRequired_
+    });
+
+})();
+export type ContactCardImportOutcome = InstanceType<
+    typeof ContactCardImportOutcome['Saved' | 'Updated' | 'Existing' | 'IdentityConflict' | 'IdentityChanged' | 'MissingIdentity' | 'Invalid' | 'UnsupportedService' | 'Busy' | 'Unavailable' | 'DevelopmentResetRequired']
+>;
+
+// FfiConverter for enum ContactCardImportOutcome
+const FfiConverterTypeContactCardImportOutcome = (() => {
+    type TypeName = ContactCardImportOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new ContactCardImportOutcome.Saved({contact: FfiConverterTypeContact.readFromCursor(c) });
+                case 2: return new ContactCardImportOutcome.Updated({contact: FfiConverterTypeContact.readFromCursor(c) });
+                case 3: return new ContactCardImportOutcome.Existing({contact: FfiConverterTypeContact.readFromCursor(c) });
+                case 4: return new ContactCardImportOutcome.IdentityConflict({existing: FfiConverterTypeBytes16.readFromCursor(c), attempted: FfiConverterTypeBytes16.readFromCursor(c) });
+                case 5: return new ContactCardImportOutcome.IdentityChanged();
+                case 6: return new ContactCardImportOutcome.MissingIdentity();
+                case 7: return new ContactCardImportOutcome.Invalid({detail: FfiConverterString.readFromCursor(c) });
+                case 8: return new ContactCardImportOutcome.UnsupportedService();
+                case 9: return new ContactCardImportOutcome.Busy();
+                case 10: return new ContactCardImportOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                case 11: return new ContactCardImportOutcome.DevelopmentResetRequired({reason: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case ContactCardImportOutcome_Tags.Saved: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeContact.writeIntoCursor(inner.contact, c);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.Updated: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterTypeContact.writeIntoCursor(inner.contact, c);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.Existing: {
+                    c.writeI32(3);
+                    const inner = value.inner;
+                    FfiConverterTypeContact.writeIntoCursor(inner.contact, c);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.IdentityConflict: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes16.writeIntoCursor(inner.existing, c);
+                    FfiConverterTypeBytes16.writeIntoCursor(inner.attempted, c);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.IdentityChanged: {
+                    c.writeI32(5);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.MissingIdentity: {
+                    c.writeI32(6);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.Invalid: {
+                    c.writeI32(7);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.UnsupportedService: {
+                    c.writeI32(8);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.Busy: {
+                    c.writeI32(9);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.Unavailable: {
+                    c.writeI32(10);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case ContactCardImportOutcome_Tags.DevelopmentResetRequired: {
+                    c.writeI32(11);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.reason, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that ContactCardImportOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case ContactCardImportOutcome_Tags.Saved: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeContact.allocationSize(inner.contact);
+                    return size;
+                }
+                case ContactCardImportOutcome_Tags.Updated: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeContact.allocationSize(inner.contact);
+                    return size;
+                }
+                case ContactCardImportOutcome_Tags.Existing: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeContact.allocationSize(inner.contact);
+                    return size;
+                }
+                case ContactCardImportOutcome_Tags.IdentityConflict: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes16.allocationSize(inner.existing);
+                    size += FfiConverterTypeBytes16.allocationSize(inner.attempted);
+                    return size;
+                }
+                case ContactCardImportOutcome_Tags.IdentityChanged: {
+                    return 4;
+                }
+                case ContactCardImportOutcome_Tags.MissingIdentity: {
+                    return 4;
+                }
+                case ContactCardImportOutcome_Tags.Invalid: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case ContactCardImportOutcome_Tags.UnsupportedService: {
+                    return 4;
+                }
+                case ContactCardImportOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case ContactCardImportOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case ContactCardImportOutcome_Tags.DevelopmentResetRequired: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.reason);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: ContactCardPreviewOutcome
+export enum ContactCardPreviewOutcome_Tags {
+    Valid = "Valid",
+    Invalid = "Invalid",
+    UnsupportedService = "UnsupportedService"
+}
+export const ContactCardPreviewOutcome = (() => {
+
+    type Valid__interface = {
+        tag: ContactCardPreviewOutcome_Tags.Valid;
+        inner:
+Readonly<{card: ContactCard}>
+    };
+    class Valid_ extends UniffiEnum implements Valid__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardPreviewOutcome";
+        readonly tag = ContactCardPreviewOutcome_Tags.Valid;
+        readonly inner:
+Readonly<{card: ContactCard}>;
+        constructor(
+inner: {card: ContactCard }) {
+            super("ContactCardPreviewOutcome", "Valid");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {card: ContactCard }): Valid_ {
+            return new Valid_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Valid_ {
+            return obj.tag === ContactCardPreviewOutcome_Tags.Valid;
+        }
+
+    }
+
+    type Invalid__interface = {
+        tag: ContactCardPreviewOutcome_Tags.Invalid;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Invalid_ extends UniffiEnum implements Invalid__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardPreviewOutcome";
+        readonly tag = ContactCardPreviewOutcome_Tags.Invalid;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("ContactCardPreviewOutcome", "Invalid");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Invalid_ {
+            return new Invalid_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Invalid_ {
+            return obj.tag === ContactCardPreviewOutcome_Tags.Invalid;
+        }
+
+    }
+
+    type UnsupportedService__interface = {
+        tag: ContactCardPreviewOutcome_Tags.UnsupportedService
+    };
+    class UnsupportedService_ extends UniffiEnum implements UnsupportedService__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ContactCardPreviewOutcome";
+        readonly tag = ContactCardPreviewOutcome_Tags.UnsupportedService;
+        constructor() {
+            super("ContactCardPreviewOutcome", "UnsupportedService");
+        }
+
+        static new(): UnsupportedService_ {
+            return new UnsupportedService_();
+        }
+
+        static instanceOf(obj: any): obj is UnsupportedService_ {
+            return obj.tag === ContactCardPreviewOutcome_Tags.UnsupportedService;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is ContactCardPreviewOutcome {
+        return obj[uniffiTypeNameSymbol] === "ContactCardPreviewOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Valid: Valid_,
+  Invalid: Invalid_,
+  UnsupportedService: UnsupportedService_
+    });
+
+})();
+export type ContactCardPreviewOutcome = InstanceType<
+    typeof ContactCardPreviewOutcome['Valid' | 'Invalid' | 'UnsupportedService']
+>;
+
+// FfiConverter for enum ContactCardPreviewOutcome
+const FfiConverterTypeContactCardPreviewOutcome = (() => {
+    type TypeName = ContactCardPreviewOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new ContactCardPreviewOutcome.Valid({card: FfiConverterTypeContactCard.readFromCursor(c) });
+                case 2: return new ContactCardPreviewOutcome.Invalid({detail: FfiConverterString.readFromCursor(c) });
+                case 3: return new ContactCardPreviewOutcome.UnsupportedService();
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case ContactCardPreviewOutcome_Tags.Valid: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeContactCard.writeIntoCursor(inner.card, c);
+                    return;
+                }
+                case ContactCardPreviewOutcome_Tags.Invalid: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case ContactCardPreviewOutcome_Tags.UnsupportedService: {
+                    c.writeI32(3);
+                    return;
+                }
+                default:
+                    // Throwing from here means that ContactCardPreviewOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case ContactCardPreviewOutcome_Tags.Valid: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeContactCard.allocationSize(inner.card);
+                    return size;
+                }
+                case ContactCardPreviewOutcome_Tags.Invalid: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case ContactCardPreviewOutcome_Tags.UnsupportedService: {
                     return 4;
                 }
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
@@ -22767,14 +23982,6 @@ const FfiConverterTypeSendDirectTextOutcome = (() => {
     return new FFIConverter();
 })();
 
-/**
- * Typealias from the type name used in the UDL file to the builtin type.  This
- * is needed because the UDL type name is used in function/method signatures.
- */
-export type Bytes10 = Uint8Array;
-// FfiConverter for Bytes10, a type alias for Uint8Array.
-const FfiConverterTypeBytes10 = FfiConverterUint8Array;
-
 export interface NamedIdentityClientLike {
 
     acknowledgeGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome>;
@@ -22787,8 +23994,10 @@ export interface NamedIdentityClientLike {
     deleteContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
     discardExpiredGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionAcknowledgeOutcome>;
     executeGroupAction(input: GroupActionReference, asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionOutcome>;
+    exportContactCard(input: ExportContactCardInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactCardExportOutcome>;
     getContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactLookupOutcome>;
     getGroupAnnounceSettings(asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome>;
+    importContactCard(input: ImportContactCardInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactCardImportOutcome>;
     inviteToGroup(input: InviteToGroupInput, asyncOpts_?: { signal: AbortSignal }): Promise<InviteToGroupOutcome>;
     listContacts(asyncOpts_?: { signal: AbortSignal }): Promise<ContactListOutcome>;
     listGroupActions(asyncOpts_?: { signal: AbortSignal }): Promise<GroupActionListOutcome>;
@@ -23245,6 +24454,47 @@ private constructor(pointer: UniffiHandle) {
     }
     }
 
+    async exportContactCard(input: ExportContactCardInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactCardExportOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_export_contact_card(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeExportContactCardInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactCardExportOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
     async getContact(input: ContactDestinationInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactLookupOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -23311,6 +24561,47 @@ private constructor(pointer: UniffiHandle) {
             /*liftFunc:*/ (__rb) => {
                 try {
                     return FfiConverterTypeGroupAnnounceSettingsOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+    async importContactCard(input: ImportContactCardInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactCardImportOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_import_contact_card(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterTypeImportContactCardInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeContactCardImportOutcome.lift(__rb);
                 } finally {
                     nativeModule().rustbuffer_free(__rb);
                 }
@@ -24605,6 +25896,9 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_execute_group_action() !== 3415) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_execute_group_action");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_export_contact_card() !== 60936) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_export_contact_card");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_finish_remote_wifi_trial() !== 11313) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_finish_remote_wifi_trial");
     }
@@ -24613,6 +25907,9 @@ function uniffiEnsureInitialized() {
     }
     if (nativeModule().uniffi_prns_app_checksum_func_get_group_announce_settings() !== 25903) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_get_group_announce_settings");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_import_contact_card() !== 33960) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_import_contact_card");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_initiate_pairing() !== 58991) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_initiate_pairing");
@@ -24688,6 +25985,9 @@ function uniffiEnsureInitialized() {
     }
     if (nativeModule().uniffi_prns_app_checksum_func_prepare_group_action() !== 9779) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_prepare_group_action");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_preview_contact_card() !== 35770) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_preview_contact_card");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_preview_identity_import() !== 31445) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_preview_identity_import");
@@ -24776,11 +26076,17 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action() !== 10060) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action");
     }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_export_contact_card() !== 3384) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_export_contact_card");
+    }
     if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_get_contact() !== 53127) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_get_contact");
     }
     if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings() !== 61059) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_get_group_announce_settings");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_import_contact_card() !== 47145) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_import_contact_card");
     }
     if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group() !== 53768) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group");
@@ -24877,6 +26183,10 @@ export default Object.freeze({
     FfiConverterTypeClearNetworkActivityInput,
     FfiConverterTypeClearNetworkActivityOutcome,
     FfiConverterTypeContact,
+    FfiConverterTypeContactCard,
+    FfiConverterTypeContactCardExportOutcome,
+    FfiConverterTypeContactCardImportOutcome,
+    FfiConverterTypeContactCardPreviewOutcome,
     FfiConverterTypeContactDestinationInput,
     FfiConverterTypeContactListOutcome,
     FfiConverterTypeContactLookupOutcome,
@@ -24896,6 +26206,7 @@ export default Object.freeze({
     FfiConverterTypeDevelopmentNodeStartOutcome,
     FfiConverterTypeDevelopmentNodeStopOutcome,
     FfiConverterTypeDevelopmentNodeStopStage,
+    FfiConverterTypeExportContactCardInput,
     FfiConverterTypeFinishRemoteWifiTrialInput,
     FfiConverterTypeGroupAction,
     FfiConverterTypeGroupActionAcknowledgeOutcome,
@@ -24931,6 +26242,7 @@ export default Object.freeze({
     FfiConverterTypeIdentityConversationActivity,
     FfiConverterTypeIdentityCreationOutcome,
     FfiConverterTypeIdentityImportPreviewOutcome,
+    FfiConverterTypeImportContactCardInput,
     FfiConverterTypeInitiateRemoteControlPairingInput,
     FfiConverterTypeInspectRemoteWifiTrialInput,
     FfiConverterTypeInviteToGroupInput,

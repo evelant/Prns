@@ -59,6 +59,10 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
     changeNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
     forIdentity: () => fakeRuntime(overrides),
     attachHost: async () => undefined,
+    exportContactCard: async () => Bindings.ContactCardExportOutcome.Busy.new(),
+    previewContactCard: async () =>
+      Bindings.ContactCardPreviewOutcome.Invalid.new({ detail: "fixture" }),
+    importContactCard: async () => Bindings.ContactCardImportOutcome.Busy.new(),
     readBluetoothSettings: jest.fn(async () =>
       Bindings.LocalBluetoothSettingsOutcome.Ready.new({ enabled: true }),
     ),

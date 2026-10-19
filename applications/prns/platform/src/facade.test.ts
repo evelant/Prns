@@ -632,6 +632,67 @@ test("cold retry does not refresh outbound or submit when storage preparation fa
   }
 });
 
+test("contact cards validate offline and use the prepared native storage owner for export and confirmed import", async () => {
+  const native = nativeModule();
+  const card = {
+    uri: "rns-contact://v1/fixture",
+    displayName: "Other maintainer",
+    identity: new Uint8Array(16).fill(3),
+    destination: new Uint8Array(16).fill(4),
+    serviceNameHash: new Uint8Array(10).fill(5),
+  };
+  const preview = Bindings.ContactCardPreviewOutcome.Valid.new({ card });
+  const exported = Bindings.ContactCardExportOutcome.Ready.new({ card });
+  const imported = Bindings.ContactCardImportOutcome.IdentityConflict.new({
+    existing: new Uint8Array(16).fill(6),
+    attempted: card.identity,
+  });
+  const previewContactCard = jest.fn((_uri: string) => preview);
+  const exportContactCard = jest.fn(async () => exported);
+  const importContactCard = jest.fn(async () => imported);
+  const { runtime } = setup({ previewContactCard, exportContactCard, importContactCard }, native);
+  expect(await runtime.previewContactCard(card.uri)).toBe(preview);
+  expect(native.prepareStorage).not.toHaveBeenCalled();
+  expect(importContactCard).not.toHaveBeenCalled();
+  const controller = new AbortController();
+  const exportInput = { expectedLocalIdentity: card.identity };
+  expect(await runtime.exportContactCard(exportInput, controller.signal)).toBe(exported);
+  const importInput = { uri: card.uri, expectedLocalIdentity: card.identity, alias: "My nickname" };
+  expect(await runtime.importContactCard(importInput, controller.signal)).toBe(imported);
+  expect(previewContactCard).toHaveBeenCalledWith(card.uri);
+  expect(exportContactCard).toHaveBeenCalledWith(exportInput, { signal: controller.signal });
+  expect(importContactCard).toHaveBeenCalledWith(importInput, { signal: controller.signal });
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.start).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
+test("contact-card import does not submit after preparation is cancelled", async () => {
+  const controller = new AbortController();
+  const native = nativeModule({
+    prepareStorage: jest.fn(async () => {
+      controller.abort();
+      return encode(
+        codecs.FfiConverterTypeNativeStoragePreparationOutcome,
+        Bindings.NativeStoragePreparationOutcome.Prepared.new(),
+      );
+    }),
+  });
+  const importContactCard = jest.fn(async () => Bindings.ContactCardImportOutcome.Busy.new());
+  const { runtime } = setup({ importContactCard }, native);
+  await expect(
+    runtime.importContactCard(
+      {
+        uri: "rns-contact://v1/fixture",
+        expectedLocalIdentity: new Uint8Array(16),
+        alias: undefined,
+      },
+      controller.signal,
+    ),
+  ).rejects.toBeDefined();
+  expect(importContactCard).not.toHaveBeenCalled();
+});
+
 test("passes optional fields, bytes, exact integers, and results unchanged", async () => {
   const destination = new Uint8Array(16).fill(0x44);
   const accepted = Bindings.RetryLxmfMessageOutcome.Accepted.new({
