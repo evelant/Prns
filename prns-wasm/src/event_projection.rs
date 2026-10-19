@@ -14,6 +14,9 @@ pub(crate) enum CapturedJournal {
 
 pub(crate) fn capture_journaled(journaled: Journaled<'_>) -> CapturedJournal {
     match journaled {
+        Journaled::PathDiscovery(event) => {
+            remote_control_diagnostic("pathDiscovery", event.phase.name().to_string())
+        }
         Journaled::CommandSettled { id, settlement } => {
             CapturedJournal::Control(CapturedCommandSettlement::capture(id, settlement))
         }

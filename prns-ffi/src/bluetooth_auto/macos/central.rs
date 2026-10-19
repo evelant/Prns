@@ -9,7 +9,8 @@ use objc2::runtime::{AnyObject, ProtocolObject};
 use objc2::{define_class, msg_send, AllocAnyThread, DefinedClass, Message};
 use objc2_core_bluetooth::{
     CBCentralManager, CBCentralManagerDelegate, CBCentralManagerRestoredStatePeripheralsKey,
-    CBCharacteristic, CBCharacteristicProperties, CBPeripheral, CBPeripheralDelegate, CBService,
+    CBCharacteristic, CBCharacteristicProperties, CBManagerState, CBPeripheral,
+    CBPeripheralDelegate, CBService,
 };
 use objc2_foundation::{
     NSArray, NSData, NSDictionary, NSError, NSNumber, NSObject, NSObjectProtocol, NSString,
@@ -20,9 +21,10 @@ use prns_core::interfaces::bluetooth_auto::{
     supports_liveness_capability, BleAddress, BleIdentity, Control, LivenessMode, PeerProtocol,
 };
 
+use super::diagnostics::{self, Family};
 use super::discovery::{
-    advertisement_candidate_strength, discover_disposition, DiscoverDisposition, DiscoveryGuard,
-    PeripheralLinkState, SessionPresence, StaleCancellation, StaleLinkRecovery,
+    advertisement_candidate_strength, discover_disposition, link_recovery, DiscoverDisposition,
+    DiscoveryGuard, PeripheralLinkState, SessionPresence, StaleCancellation, StaleLinkRecovery,
 };
 use super::gatt_arbitration::GattWriteGate;
 use super::gatt_link::{GattInboundSendError, GattInboundSender, GATT_INBOUND_BUDGET_BYTES};
@@ -1177,6 +1179,10 @@ define_class!(
             // SAFETY: CoreBluetooth supplied this live manager to its delegate on the configured
             // serial dispatch queue.
             let state = unsafe { central.state() };
+            diagnostics::emit(
+                Family::Manager,
+                format_args!("stage=manager category=central_state state={}", state.0),
+            );
             self.ivars().manager_signals.central_state_changed(state);
         }
 
@@ -1191,12 +1197,27 @@ define_class!(
             // SAFETY: CoreBluetooth exports this NSString constant with process lifetime.
             let key: &NSString = unsafe { CBCentralManagerRestoredStatePeripheralsKey };
             let Some(restored) = dict.objectForKey(key) else {
+                diagnostics::emit(
+                    Family::Restoration,
+                    format_args!(
+                        "stage=restoration category=callback peripherals=0 radio_enabled={}",
+                        self.ivars().radio_enabled.load(Ordering::Acquire)
+                    ),
+                );
                 return;
             };
             // SAFETY: CoreBluetooth documents this restoration dictionary value as an NSArray of
             // CBPeripheral objects; `restored` retains the array for the duration of the borrow.
             let peripherals: &NSArray<CBPeripheral> =
                 unsafe { &*(Retained::as_ptr(&restored) as *const NSArray<CBPeripheral>) };
+            diagnostics::emit(
+                Family::Restoration,
+                format_args!(
+                    "stage=restoration category=callback peripherals={} radio_enabled={}",
+                    peripherals.len(),
+                    self.ivars().radio_enabled.load(Ordering::Acquire)
+                ),
+            );
             if !self.ivars().radio_enabled.load(Ordering::Acquire) {
                 for peripheral in peripherals.iter() {
                     let peer_id = core_bluetooth_peer_id(&peripheral);
@@ -1269,6 +1290,10 @@ define_class!(
             rssi: &NSNumber,
         ) {
             if !self.ivars().radio_enabled.load(Ordering::Acquire) {
+                diagnostics::emit(
+                    Family::Discovery,
+                    format_args!("stage=discovery category=callback_radio_disabled"),
+                );
                 return;
             }
             self.ivars().scan_activity.store(true, Ordering::Relaxed);
@@ -1303,12 +1328,13 @@ define_class!(
             } else {
                 StaleCancellation::Idle
             };
-            let recovery = if cfg!(target_os = "macos") {
-                StaleLinkRecovery::Enabled
-            } else {
-                StaleLinkRecovery::Disabled
-            };
+            let recovery = link_recovery();
             let disposition = discover_disposition(state, session, cancellation, recovery);
+            diagnostics::emit(Family::Discovery, format_args!(
+                "stage=discovery category=decision state={} local_owner={} cancellation_pending={} recovery_enabled={} disposition={}",
+                diagnostics::state_name(state), session == SessionPresence::Present,
+                cancellation == StaleCancellation::InFlight, recovery == StaleLinkRecovery::Enabled,
+                diagnostics::disposition_name(disposition)));
             match disposition {
                 DiscoverDisposition::IgnoreOwned | DiscoverDisposition::WaitForDisconnect => {
                     return;
@@ -1341,13 +1367,22 @@ define_class!(
                 rssi,
             );
             if !observed {
+                diagnostics::emit(
+                    Family::Discovery,
+                    format_args!("stage=discovery category=registry_rejected"),
+                );
                 return;
             }
+            diagnostics::emit(
+                Family::Discovery,
+                format_args!("stage=discovery category=sighting_admitted"),
+            );
             let _ = self.ivars().sighting_wake.try_send(());
         }
 
         #[unsafe(method(centralManager:didConnectPeripheral:))]
         fn did_connect(&self, central: &CBCentralManager, peripheral: &CBPeripheral) {
+            diagnostics::emit(Family::Gatt, format_args!("stage=gatt category=connected"));
             if !self.ivars().radio_enabled.load(Ordering::Acquire) {
                 // A connect completion can race the queued logical shutdown. Remove the exact
                 // registry owner before cancelling so the later drain cannot cancel it twice; if
@@ -1379,6 +1414,13 @@ define_class!(
             peripheral: &CBPeripheral,
             error: Option<&NSError>,
         ) {
+            diagnostics::emit(
+                Family::Gatt,
+                format_args!(
+                    "stage=gatt category=connect_failed error_present={}",
+                    error.is_some()
+                ),
+            );
             crate::diagnostic_log::warn!("bluetooth: dial connect FAILED: {error:?}");
             self.disconnect_peer(core_bluetooth_peer_id(peripheral));
         }
@@ -1390,6 +1432,13 @@ define_class!(
             peripheral: &CBPeripheral,
             error: Option<&NSError>,
         ) {
+            diagnostics::emit(
+                Family::Gatt,
+                format_args!(
+                    "stage=gatt category=disconnected error_present={}",
+                    error.is_some()
+                ),
+            );
             let peer_id = core_bluetooth_peer_id(peripheral);
             self.ivars()
                 .discovery_guard
@@ -1408,6 +1457,10 @@ define_class!(
             };
             match action {
                 RestorationDisconnectAction::Reconnect => {
+                    diagnostics::emit(
+                        Family::Recovery,
+                        format_args!("stage=recovery category=local_reconnect_after_disconnect"),
+                    );
                     // Keep the exact registry owner and original dial completion. This
                     // is one continuation, not another sighting, retry timer, or dial.
                     // CoreBluetooth only guarantees a local disconnect; another app
@@ -1430,6 +1483,13 @@ define_class!(
     unsafe impl CBPeripheralDelegate for CentralDelegate {
         #[unsafe(method(peripheral:didDiscoverServices:))]
         fn did_discover_services(&self, peripheral: &CBPeripheral, error: Option<&NSError>) {
+            diagnostics::emit(
+                Family::Gatt,
+                format_args!(
+                    "stage=gatt category=services_callback error_present={}",
+                    error.is_some()
+                ),
+            );
             let peer_id = core_bluetooth_peer_id(peripheral);
             let expected = self
                 .ivars()
@@ -1480,6 +1540,13 @@ define_class!(
             service: &CBService,
             error: Option<&NSError>,
         ) {
+            diagnostics::emit(
+                Family::Gatt,
+                format_args!(
+                    "stage=gatt category=characteristics_callback error_present={}",
+                    error.is_some()
+                ),
+            );
             let peer_id = core_bluetooth_peer_id(peripheral);
             let expected = self
                 .ivars()
@@ -1636,6 +1703,13 @@ define_class!(
             characteristic: &CBCharacteristic,
             error: Option<&NSError>,
         ) {
+            diagnostics::emit(
+                Family::Gatt,
+                format_args!(
+                    "stage=gatt category=subscription_callback error_present={}",
+                    error.is_some()
+                ),
+            );
             let peer_id = core_bluetooth_peer_id(peripheral);
             let expected = self
                 .ivars()
@@ -1865,6 +1939,76 @@ define_class!(
 );
 
 impl CentralDelegate {
+    /// A connected peripheral need not advertise and an ordinary launch need not receive
+    /// willRestoreState. Retrieving service matches is read-only: it creates advisory sightings
+    /// only. Normal host capacity/backoff and local/inbound ownership checks still precede dial.
+    pub(super) fn observe_system_connections(&self, central: &CBCentralManager) {
+        if !self.ivars().radio_enabled.load(Ordering::Acquire) {
+            return;
+        }
+        // SAFETY: callers use the live manager on its serial queue. No query is attempted
+        // before CoreBluetooth is powered on or after logical shutdown.
+        if unsafe { central.state() } != CBManagerState::PoweredOn {
+            return;
+        }
+        self.reap_closed_sessions(central);
+        let uuid = service_uuid();
+        let services = NSArray::from_slice(&[&*uuid]);
+        // SAFETY: the service array and manager are retained for this synchronous queue-confined
+        // query. Returned objects belong to the system; this query does not acquire a connection.
+        let peripherals = unsafe { central.retrieveConnectedPeripheralsWithServices(&services) };
+        let limit = self.ivars().registry.borrow().peripheral_capacity;
+        let mut admitted = 0;
+        for peripheral in peripherals.iter().take(limit) {
+            let peer_id = core_bluetooth_peer_id(&peripheral);
+            let session = if self.has_session(peer_id) {
+                SessionPresence::Present
+            } else {
+                SessionPresence::Absent
+            };
+            let cancellation = if self
+                .ivars()
+                .discovery_guard
+                .borrow_mut()
+                .cancellation_recent(peer_id, Instant::now())
+            {
+                StaleCancellation::InFlight
+            } else {
+                StaleCancellation::Idle
+            };
+            // SAFETY: this retained query result is inspected on the manager's serial queue.
+            let state = PeripheralLinkState::from(unsafe { peripheral.state() });
+            if discover_disposition(
+                state,
+                session,
+                cancellation,
+                StaleLinkRecovery::AcquireLocal,
+            ) != DiscoverDisposition::Adopt
+            {
+                continue;
+            }
+            if self.ivars().registry.borrow_mut().observe(
+                peer_id,
+                SendPeripheral(peripheral.retain()),
+                None,
+            ) {
+                admitted += 1;
+            }
+        }
+        diagnostics::emit(
+            Family::Recovery,
+            format_args!(
+                "stage=recovery category=system_connections found={} inspected={} admitted={}",
+                peripherals.len(),
+                peripherals.len().min(limit),
+                admitted,
+            ),
+        );
+        if admitted != 0 {
+            let _ = self.ivars().sighting_wake.try_send(());
+        }
+    }
+
     fn subscribe_native(&self, peripheral: &CBPeripheral, peer_id: CoreBluetoothPeerId) {
         let subscriptions = self
             .ivars()
@@ -1899,6 +2043,10 @@ impl CentralDelegate {
         match action {
             Some(Ok(RestorationProfileAction::Continue)) => true,
             Some(Ok(RestorationProfileAction::Disconnect)) => {
+                diagnostics::emit(
+                    Family::Recovery,
+                    format_args!("stage=recovery category=native_profile_local_disconnect"),
+                );
                 let central = self
                     .ivars()
                     .manager

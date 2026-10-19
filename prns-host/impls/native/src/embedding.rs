@@ -41,12 +41,21 @@ pub enum ApplicationEventDispatch {
     NativeCallback,
 }
 
+/// Native-only, opt-in diagnostic callbacks. No payloads or key material are
+/// supplied; exporters must redact interface identifiers and bound their sink.
+#[derive(Clone, Copy)]
+pub struct NativeLinkDiagnostics {
+    pub core: personal_rns::engine::LinkHandshakeObserver,
+    pub egress: personal_rns::runtime::EgressHandshakeObserver,
+}
+
 pub struct NativeEmbedding {
     pub remote_control: RemoteControlService<'static>,
     pub remote_control_config: Option<crate::remote_control_service::NativeRemoteControlConfig>,
     pub plan_context: Option<PlanRuntimeContext>,
     pub on_event: Option<NativeEventCallback>,
     pub accepted_announces: Option<NativeAnnounceObserver>,
+    pub link_diagnostics: Option<NativeLinkDiagnostics>,
     pub prepare_interfaces: Option<NativeInterfacePreparation>,
     pub application_events: ApplicationEventDispatch,
 }
@@ -59,6 +68,7 @@ impl Default for NativeEmbedding {
             plan_context: None,
             on_event: None,
             accepted_announces: None,
+            link_diagnostics: None,
             prepare_interfaces: None,
             application_events: ApplicationEventDispatch::Queue,
         }

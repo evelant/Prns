@@ -26,6 +26,7 @@ use prns_core::interfaces::bluetooth_auto::{
 
 use super::backend::central_peripheral_capacity;
 use super::data_plane::{close_l2cap, l2cap_peer_id, wire_l2cap, DataPlane, PendingL2cap};
+use super::diagnostics::{self, Family};
 use super::gatt_arbitration::GattWriteGate;
 use super::gatt_link::{
     ControlPlane, GattInboundReceiver, GattLink, GATT_INBOUND_BUDGET_BYTES, GATT_WRITE_TIMEOUT,
@@ -370,6 +371,10 @@ define_class!(
             // SAFETY: CoreBluetooth supplied this live manager to its delegate on the configured
             // serial dispatch queue.
             let state = unsafe { peripheral.state() };
+            diagnostics::emit(
+                Family::Manager,
+                format_args!("stage=manager category=peripheral_state state={}", state.0),
+            );
             self.ivars().manager_signals.peripheral_state_changed(state);
             self.ivars().notification_ready.send_replace(());
             if state == CBManagerState::PoweredOn {
@@ -568,6 +573,13 @@ define_class!(
             _peripheral: &CBPeripheralManager,
             error: Option<&NSError>,
         ) {
+            diagnostics::emit(
+                Family::Scan,
+                format_args!(
+                    "stage=scan category=advertising_callback succeeded={}",
+                    error.is_none()
+                ),
+            );
             if let Some(error) = error {
                 crate::diagnostic_log::error!("bluetooth: advertising FAILED to start: {error:?}");
             } else {

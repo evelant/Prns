@@ -344,6 +344,7 @@ pub fn link_proof_signature_valid(owed: &LinkProofVerifyOwed) -> bool {
 }
 
 pub struct LinkProofSignOwed {
+    pub source_generation: u32,
     pub request: LinkRequest,
     pub identity: IdentityHash,
     pub proof_strategy: ProofStrategy,

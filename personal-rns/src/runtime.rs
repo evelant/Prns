@@ -90,6 +90,12 @@ pub use prns_runtime_tokio::runtime::{
     TokioHandleEntropy, TunnelSeedReport, AUTO_COMPRESS_MAX_LEN,
 };
 
+#[cfg(feature = "tokio-host")]
+pub use prns_runtime_tokio::runtime::{
+    EgressHandshakeEvent, EgressHandshakeObserver, EgressHandshakePacket, EgressHandshakePhase,
+    EgressHandshakeSnapshot,
+};
+
 #[cfg(all(feature = "tokio-host", feature = "scheduler-tuning"))]
 pub use prns_runtime_tokio::runtime::{
     SchedulerPolicy, SchedulerPolicyError, SchedulerPolicyInput,

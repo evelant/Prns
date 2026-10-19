@@ -21,7 +21,7 @@ class GenerateHostContractTests(unittest.TestCase):
     def test_native_extension_inventory_accounts_for_native_and_foreign_boundaries(self):
         inventory = GENERATOR.native_extensions(ROOT)
         extensions = {item["name"]: item for item in inventory["extensions"]}
-        self.assertEqual(set(extensions), {"destinationPublicKey", "authenticatedAnnounces", "preparedInterfaceAttachments"})
+        self.assertEqual(set(extensions), {"destinationPublicKey", "authenticatedAnnounces", "preparedInterfaceAttachments", "linkHandshakeDiagnostics"})
         self.assertEqual(extensions["destinationPublicKey"]["targets"]["uniffi"]["status"], "supported")
         self.assertEqual(extensions["authenticatedAnnounces"]["targets"]["uniffi"]["status"], "unsupported")
         for extension in extensions.values():
