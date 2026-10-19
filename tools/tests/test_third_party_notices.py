@@ -32,12 +32,17 @@ class ThirdPartyNoticeTests(unittest.TestCase):
         self.assertEqual(graphs["Group MLS adapter"], ("prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertNotIn("Group MLS adapter", notices.GRAPH_FEATURES)
 
+    def test_group_headless_peer_graph_selects_its_consumer_features(self) -> None:
+        graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
+        self.assertEqual(graphs["Group headless peer"], ("prns-groups/runner/native/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertEqual(notices.GRAPH_FEATURES["Group headless peer"], ("headless",))
+
     def test_app_graphs_add_only_the_platform_product_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
         self.assertEqual(len(graphs), len(notices.GRAPHS))
         self.assertEqual(
             notices.GRAPH_FEATURES,
-            {"Prns app Android": ("android",), "Prns app iOS": ("apple",), "Group secure storage": ("prns-groups-store/secure",)},
+            {"Group headless peer": ("headless",), "Prns app Android": ("android",), "Prns app iOS": ("apple",), "Group secure storage": ("prns-groups-store/secure",)},
         )
         app_manifest = "applications/prns/native-composition/Cargo.toml"
         self.assertEqual(graphs["Prns app Android"], (app_manifest, "aarch64-linux-android"))

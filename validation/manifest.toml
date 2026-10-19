@@ -229,6 +229,18 @@ inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core"
 artifacts = "validation-artifacts/results/group-communication-tests"
 
 [[suite]]
+id = "group-headless-process"
+domain = "native"
+group = "group-communication"
+tiers = ["pr"]
+platform = "any"
+toolchain = "stable"
+timeout_seconds = 1200
+command = ["cargo", "test", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "-p", "prns-groups-runner-native", "--features", "headless", "--test", "headless_process"]
+inputs = ["prns-groups", "prns-host", "personal-rns", "prns-interfaces", "prns-runtime"]
+artifacts = "validation-artifacts/results/group-headless-process"
+
+[[suite]]
 id = "group-communication-clippy"
 domain = "native"
 group = "group-communication"
@@ -236,7 +248,7 @@ tiers = ["pr"]
 platform = "any"
 toolchain = "stable"
 timeout_seconds = 1200
-command = ["cargo", "clippy", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--all-targets", "--features", "prns-groups-store/secure", "--", "-D", "warnings"]
+command = ["cargo", "clippy", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--all-targets", "--features", "prns-groups-store/secure,prns-groups-runner-native/headless", "--", "-D", "warnings"]
 inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store", "prns-groups/service", "prns-groups/transport/reticulum", "prns-groups/profiles/text", "prns-groups/runner/native", "prns-groups/security/mls-rs"]
 artifacts = "validation-artifacts/results/group-communication-clippy"
 

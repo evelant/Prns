@@ -9,6 +9,9 @@ use std::{
     thread,
 };
 
+#[path = "../../../../transport/reticulum/tests/support/wire.rs"]
+pub mod wire;
+
 pub const NOW: u64 = 1_792_000_000;
 pub fn endpoint(peer: usize) -> Endpoint {
     Endpoint {

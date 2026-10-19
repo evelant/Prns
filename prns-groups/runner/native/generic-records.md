@@ -1,7 +1,7 @@
 # Generic native records
 
 `Client` publishes application-defined inline records on the same serialized
-storage lane and MLS transaction used by text messages. It
+storage lane, MLS transaction and Reticulum runner used by text messages. It
 creates no node, database or executor. `SendText` remains a convenience profile;
 its encoding and retained request IDs are unchanged.
 
@@ -77,16 +77,40 @@ Continue polling the feed after a successful refresh: no live read is a promise
 of permanent retention. This contract does not provide an atomic historical
 snapshot, individual deletion events, or exactly-once external effects.
 
-## Offline projection and recovery evidence
+## Telemetry example and recovery evidence
 
-`examples/support/telemetry_projection.rs` is a reusable bounded application
-projection over the record API. It stages a replacement map and cursor, captures
-the feed head before paging, and retries invalidated rebuilds at most three times.
-Each pass is limited to 32 pages of 16 items and at most 256 retained readings.
-An incomplete refresh preserves the old map and cursor.
+Run from the repository root:
 
-`generic_records` tests dropped mutation replies, database reopen, exact request
-replay, scoped cursors, maintenance invalidation and concurrent pagination.
-The owner also proves durable publication across abrupt process exit.
-Incoming-record, receipt and sync-cursor checkpoints arrive with their network
-consumers and the telemetry synchronization example in the next slice.
+```sh
+CARGO_INCREMENTAL=0 cargo run --locked --manifest-path prns-groups/Cargo.toml \
+  -p prns-groups-runner-native --example telemetry
+```
+
+The example encodes an eight-byte sensor reading, publishes it through the
+generic API, consumes the durable change feed at a second independently
+credentialed endpoint, and waits for its authenticated receipt. Its in-process
+controlled carrier still traverses real Reticulum nodes, Links, requests and
+Resources. Fixture enrollment and temporary plaintext native stores are demo
+setup, not production provisioning or protected storage.
+
+Its small `examples/support/telemetry_projection.rs` consumer stages a replacement
+map and cursor, captures the feed head before paging, and retries invalidated
+rebuilds at most three times. Each pass is limited to 32 pages of 16 items and a
+caller-selected cache capacity capped at 256 readings. Exhausting a bound returns
+`Incomplete` and keeps the previous map and cursor; errors also leave them intact.
+This helper is native application code, not an allocation requirement on the core.
+The demo also runs expiry maintenance and verifies that the consumer removes the
+expired reading after observing the durable invalidation.
+
+`generic_records` tests lost-result admission, database reopen before delivery,
+exact retry/conflict checks, scoped/pruned change cursors, mixed telemetry/text
+pagination and receipt convergence between independent Reticulum nodes. They also
+cover caught-up consumers after a lost maintenance result and database reopen,
+unchanged cache/cursor on incomplete refresh, and deterministic insertion or
+retirement between record paging and feed replay, including exhausted rebuild
+attempts under repeated retirement. Service `maintenance_recovery`
+tests prove that deletion and the invalidation gap survive the same crash cuts,
+and exact maintenance replay does not advance the head twice. Existing
+`lane_recovery` and session checkpoint tests also exercise abrupt process exit
+at durable send/receive/receipt boundaries. These establish host recovery, not
+phone suspension, physical power-loss behavior or protected at-rest storage.
