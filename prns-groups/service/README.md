@@ -1,0 +1,254 @@
+# Group service foundation
+
+`prns-groups-service` joins immutable application records, delivery evidence and
+MLS state in one recoverable transaction. It accepts opaque application bytes:
+chat and telemetry use the same service with different namespace/schema IDs.
+The crate is `no_std + alloc`; `prns-groups` remains allocation-free. Storage,
+identity, entropy, scheduling and transport belong to the caller.
+
+This is an initial record-service slice. It consumes an already enrolled MLS
+adapter and a caller-authenticated descriptor. `new` preserves the original fixed
+membership contract. `new_managed` pins group/local identity/limits while accepting
+a descriptor advanced by an external authenticated control transaction. The caller must
+ensure that the descriptor matches the actual MLS enrollment; the service does
+not bootstrap or verify that correspondence. It rejects incoming MLS control
+changes. The private `PGS` encoding is a testable provisional format, not the
+published interoperable group protocol.
+
+## Using it
+
+1. Open one exclusively owned endpoint coordinator and MLS adapter. On a native
+   host, [`NativeStoreOwner`](../store/native/README.md) borrows the application's
+   existing database; the library creates no separate runtime or database.
+2. Construct `GroupService` with the authenticated fixed reader set and explicit
+   limits. Reader and delivery target sets must be sorted and unique. Configuration
+   is persisted on the first operation and must match on reopen. For managed
+   enrollment, commit membership and MLS together first, then open `new_managed`
+   with that committed descriptor; unverified network manifests are never valid
+   constructor input.
+3. Allocate an operation ticket from the coordinator's current head. `publish`
+   commits the record, pending delivery evidence, change event, crypto changes,
+   retained-envelope inventory and exact ciphertext together. Save the operation
+   ID before dispatch.
+4. Fetch `outgoing(operation)` only after success. After a lost result, recover
+   the operation with `coordinator().recover(operation)` before any other work,
+   then retry the same request/operation. This returns the original ciphertext;
+   changed request data produces `IdempotencyConflict`.
+5. Feed incoming ciphertext to `receive`. Acceptance commits the body and a
+   pending receipt intent, exact incoming envelope and consumed receive keys.
+   Call `emit_receipt` in a separate transaction, then send its exact durable output
+   to interested peers.
+6. Resume `changes(cursor, page_size)` after restart or a missed notification.
+   `Published` and `ReceiptQueued` include their operation IDs for recovering
+   dispatch work; `Received` identifies records with pending receipt intents.
+   `progress(record, clock)` reports authenticated device receipts separately
+   from pending, expired and time-uncertain obligations.
+
+An exact duplicate envelope returns its previous outcome without consuming a
+new ticket. Always derive the next ticket from the coordinator's current head;
+do not advance a private counter merely because `receive` returned success.
+Callers serialize service access and must not mutate its reserved application
+records through another adapter.
+
+`snapshot()` returns `None` until the first durable application operation, then a
+persisted inventory generation and frozen head. Page with
+`inventory(snapshot, after, kind, recipient, scan_limit)`; it scans at most the
+specified number of entries, so a filtered page may be empty before reaching its
+head. Each returned entry carries its own position. Advance to `page.next` only
+after every returned item is handled, or checkpoint the last handled entry when
+stopping partway through a page. New arrivals do not alter the frozen snapshot.
+Restart/reinitialization of the underlying store invalidates a previous
+generation with `RestartInventory`. Expiry maintenance also changes the generation,
+so a peer restarts its snapshot after retirement. Positions remain monotonic and
+can have gaps; page sizes bound live entries examined, not the numerical cursor
+distance. Change queries likewise skip deleted positions while preserving every
+retained record's publication/acceptance entry.
+
+Scan records before receipts using the same snapshot. `envelope(id)` supplies the
+original MLS ciphertext, including envelopes accepted from a different author;
+no re-encryption is required for a surviving peer to repair an offline endpoint.
+`envelope_id(bytes)` verifies an offered ID. `envelope_info(id)` supplies
+authoritative local kind/record/size facts for checking a known envelope against
+remote inventory hints before skipping a redundant fetch. `has_envelope(id)` is
+also available for simple presence queries. Echoes of one's own records/receipts are recognized before MLS processing.
+Inventory items and transfer success never establish remote durable receipt.
+
+The caller authenticates the transport peer and binds it to an enrolled endpoint
+before exposing inventory or fetched bytes. Inventory filters records and receipts
+to the original author or selected delivery targets for scheduling. This is not a
+confidentiality boundary: every enrolled MLS reader can decrypt every publication.
+No blind-relay admission or unauthenticated inventory is provided.
+
+A missing record for an incoming **legacy v1** receipt returns `MissingRecord`; uncertain
+local time returns `TimeUncertain`. Both abort the transaction and leave the
+ciphertext retryable. The transport must retain/reoffer that input after the
+record or trusted clock becomes available. Authenticated invalid or expired
+content is durably rejected. An authenticated, otherwise valid expired record
+also leaves a group-scoped tombstone for its canonical record ID. After reopen,
+a receipt depending on that terminal record is durably rejected as
+`UnknownRecord`, so a records-first synchronization cursor can continue. An
+inventory claim, missing record, untrusted clock or unauthenticated bytes cannot
+create that tombstone. No receipt/progress evidence is created by either rejection.
+New v2 receipts carry their original record deadline inside the authenticated MLS
+body. It must match a retained record's deadline; an unknown receipt whose own
+deadline has definitely expired is rejected without inventing delivery evidence.
+This allows synchronization to continue after the dependency and its modern
+tombstone have been reclaimed. Existing v1 tombstones remain grandfathered. Their
+count is bounded by the pre-upgrade `max_changes` because each required an event
+in the old, never-pruned feed; new code creates only reclaimable v2 tombstones.
+Expiry rejections committed by earlier development versions did
+not retain the authenticated record ID and cannot be safely backfilled from an
+inventory hint; use fresh enrollment for qualifying this behavior. Authentication
+failures, capacity failures and
+storage failures produce no durable acceptance. An uncertain commit requires
+recovery before further processing.
+
+**Development compatibility:** the new decoder accepts v1 records and receipts,
+but older implementations cannot decode v2 receipts. After a modern record and
+its tombstone are reclaimed, a delayed v1 receipt can remain `MissingRecord` if
+its dependency is no longer available. Coordinated participant upgrades are
+required for this development protocol; there is no negotiated capability or
+indefinite legacy receipt guarantee.
+
+## Bounded expiry maintenance
+
+Call `maintenance_plan(trusted_clock, max_records, max_operations)`, skip empty
+plans, then `maintain(new_operation, &plan)` on the exclusively owned service.
+The planner scans only live indexes and the bounded MLS output list. It selects
+definitely expired records oldest first, prioritizing the record behind the
+earliest retained service output so a coordinator recovery fence can advance.
+Only outputs belonging to this group are eligible, even when groups share an
+adapter and coordinator.
+Pending records remain intact until their deadline. The plan binds the current state, and a stale plan fails before
+deletion. A typical native pass selects one record and four operations.
+
+One atomic transaction removes selected bodies, receipt intents/evidence and
+publication entries, retires selected exact MLS outputs and operation facts, and
+updates quotas, live indexes and a monotonic expiry floor. A retained record's
+deadline is not extended by retry. Deletion is not delivery: no missing receipt
+becomes a received receipt. `expiry_floor()` lets a caller apply the same persisted
+clock floor to its own request-retention policy; a clock rollback cannot resurrect
+expired content. Application history follows this expiry policy in this initial
+implementation, independently of physical secret erasure.
+
+Many repeated ciphertexts may refer to one expired record. Its body and forwarding
+eligibility end in the first batch; later bounded passes remove remaining
+envelopes, receipt events and operation facts. An operation remains in
+`pending_operations()` until its output and service fact retire together. This
+service does not retire enrollment/control outputs or coordinator receipts; the
+caller retains their recovery dependencies and advances its receipt fence only
+when safe. Legacy service rejection facts without timestamps get one full
+`maximum_window` of retention from their first maintenance observation.
+
+Versioned live-position indexes migrate atomically on the first mutation without
+changing persisted `Limits`. Monotonic heads continue advancing beyond capacity;
+only live entries consume their quota. Maintenance advances the change head even
+when it produces no event, so history projections notice deletions. Lost maintenance
+results can replay the last exact plan/operation; older pruned evidence fails
+closed. The caller must recover an uncertain commit before proceeding. Empty
+polls do not write clock floors or consume operation receipts.
+
+MLS output reservations include all service groups in the adapter's bounded
+group catalog, read within the same transaction. When an existing group lacks
+its legacy reservation counter, other groups fail admission closed. A bounded
+maintenance pass reconstructs that group's counter without creating MLS output;
+run it for each affected group before resuming normal traffic. This migration
+does not repeat after the counter is present.
+
+## Guarantees and limits
+
+- A receipt means the selected endpoint incarnation durably accepted the record
+  and inline body. Local publication, transport success and receipt encryption
+  do not prove remote receipt, application execution or human read state.
+- All enrolled MLS readers can decrypt a publication. Selecting fewer delivery
+  targets does not restrict its encryption audience. Receipt sender, record,
+  group and original target incarnation are checked before evidence changes.
+- Logical record IDs bind canonical metadata, targets, nonce and body. Operation
+  IDs bind immutable requests; exact-envelope deduplication prevents ratchet
+  replay and duplicate change events. No automatic re-encryption/repair exists.
+- Limits bound body/target decoding, retained record count, feed length, retained
+  envelope count and total exact ciphertext bytes. MLS/provider/backend limits also
+  apply. An envelope is retained in the same transaction as admission; capacity
+  exhaustion aborts without consuming receive keys or advancing inventory. Each
+  accepted/published record reserves one envelope, one change entry and
+  `MAX_RECEIPT_WIRE_BYTES` (1024) ciphertext bytes per original target, including
+  the local target when present. Only that target's first authenticated receipt
+  consumes its reservation; new records and rejection events cannot consume it.
+  The fixed unpadded MLS profile emits smaller receipt envelopes and enforces this
+  receipt wire bound. Admission also reserves MLS output slots for those pending
+  receipts plus two spare outputs, checked after staging each operation. Duplicate
+  and rejected traffic cannot consume those reserved slots. These are logical
+  service/MLS quotas, not physical-space or backend-object reservations. Callers
+  still size those independent limits.
+  Earlier development stores reconstruct the versioned counter atomically from
+  retained records and receipt flags on their next committed operation; this
+  cannot create capacity already exhausted under the earlier policy.
+  Expiry maintenance reclaims history/feed entries; exhaustion before expiry
+  rejects further work instead of dropping live obligations.
+  Operation facts and envelope deduplication consume backend object/byte capacity.
+- Do not retire coordinator receipts or MLS outputs while the application still
+  needs their recovery/dispatch evidence. This slice does not own that retirement
+  policy; prematurely pruned evidence yields an error, never permission to resend
+  under a consumed operation ID. Fetching locally generated retained ciphertext
+  rechecks its original MLS output and authorization-era fence; a copied envelope
+  cannot bypass output retirement.
+- Trusted time and monotonic clock persistence remain caller responsibilities.
+  The service does not establish a trustworthy clock across reboot. Retained
+  plaintext application history has its own deletion/privacy policy, independent
+  of MLS ratchet key retirement. The native backend currently stores plaintext
+  and is for development/conformance, not protected mobile secret storage.
+
+## Evidence and next gate
+
+[`tests/native_flow.rs`](tests/native_flow.rs) exchanges real MLS bytes among
+three independently enrolled endpoints, reopening their native databases between
+operations. It covers chat/telemetry, receipts, lost results, duplicates, ordering,
+author/receipt forgery and ciphertext tampering. Inventory tests cover relay with
+the author closed, exact self echoes, frozen scans and filters, durable reopen,
+quota aborts and refusal to export a retired local MLS output. Receipt-reserve
+tests reopen pending state at envelope, byte and change quotas, finish both local
+and remote receipts, reserve MLS output capacity, and check migration rollback.
+Expiry tests reject dependent receipts after reopen and deletion without inventing
+delivery evidence. [`tests/maintenance_recovery.rs`](tests/maintenance_recovery.rs)
+exercises four real-file crash cuts, lost-result replay, bounded staging failure,
+stale plans, clock rollback, shared-adapter group isolation and receipt reservations,
+two-group legacy migration, and 1,024 records through unchanged four-record/eight-
+envelope ceilings. This fixture isolates service state; native receipt-floor
+retirement has separate tests. Codec tests cover exact
+framing, canonical identity and malformed lengths. The MLS adapter separately tests aborts,
+uncertain commits and atomic application/crypto publication. Native storage tests
+kill a process before and after commit and receipt-retirement boundaries.
+
+These are host library tests, not Reticulum network, React Native lifecycle,
+physical flash-erasure or firmware resource qualifications. Reticulum transport,
+automatic peer scheduling and native authenticated enrollment are following
+integrations. Each needs its own tests; application bindings and mobile
+protected storage remain separate work. Canonical versioned wire/capability
+contracts also remain a qualification gate.
+A richer receive disposition
+should expose duplicate/no-commit versus newly committed acceptance before the
+mobile API is frozen.
+
+```sh
+cargo test --locked --manifest-path prns-groups/Cargo.toml -p prns-groups-service
+cargo test --locked --manifest-path prns-groups/Cargo.toml -p prns-groups-store-native
+```
+
+## Authorization barriers in managed groups
+
+An era change preserves local plaintext and real receipt evidence, but inventory
+skips old-era records/receipts and `envelope` does not release them. Old receipt
+intents stop emitting; the next operation reconstructs logical reservations for
+the new era. `in_current_era` lets application projections label unfinished old
+messages as interrupted without manufacturing delivery evidence. This does not
+repair delivery across an Add or remove historical bytes from physical storage.
+A native enrollment consumer is a following integration.
+
+`has_pending_authored_deliveries(clock)` checks bounded live publication facts and
+receipt flags before a caller changes membership. It considers this endpoint's
+current-era authored records only; missing receipts block until definite expiry,
+including when clock uncertainty prevents a definite decision. Received records
+and retained old-era history do not block. The query uses durable evidence rather
+than disposable network work or cached conversation state. Serialize the check
+with the membership transaction; it is local evidence, not coordination with every
+sender. A native enrollment adapter must defer Add while this query is true.

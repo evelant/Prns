@@ -218,13 +218,20 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
         "group-mls-adapter": [
           "alloc",
           "getrandom",
           "rand_core"
         ],
         "group-secure-storage": [
-          "alloc"
+          "alloc",
+          "getrandom",
+          "rand_core"
         ]
       },
       "name": "aead",
@@ -259,7 +266,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -285,7 +294,23 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "aes",
+          "alloc",
+          "default",
+          "getrandom",
+          "rand_core",
+          "zeroize"
+        ],
         "group-mls-adapter": [
+          "aes",
+          "alloc",
+          "default",
+          "getrandom",
+          "rand_core",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "aes",
           "alloc",
           "default",
@@ -805,7 +830,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ]
       },
@@ -1014,7 +1045,13 @@
         "expo-ios": [
           "alloc"
         ],
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ],
         "halow-appliance-manager": [
@@ -1442,6 +1479,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
         "halow-appliance-manager": [],
@@ -2831,6 +2869,9 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "zeroize"
         ],
@@ -2851,13 +2892,20 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
         "group-mls-adapter": [
           "alloc",
           "getrandom",
           "rand_core"
         ],
         "group-secure-storage": [
-          "alloc"
+          "alloc",
+          "getrandom",
+          "rand_core"
         ]
       },
       "name": "chacha20poly1305",
@@ -2929,6 +2977,9 @@
         ],
         "expo-ios": [
           "block-padding"
+        ],
+        "group-libraries": [
+          "zeroize"
         ],
         "group-mls-adapter": [
           "zeroize"
@@ -3379,7 +3430,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -3404,7 +3457,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "const-oid",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -3663,6 +3718,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
         "host-c-linux": [],
@@ -3932,7 +3988,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -4262,7 +4320,17 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "generic-array",
+          "rand_core",
+          "zeroize"
+        ],
         "group-mls-adapter": [
+          "generic-array",
+          "rand_core",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "generic-array",
           "rand_core",
           "zeroize"
@@ -4316,11 +4384,18 @@
         "expo-ios": [
           "std"
         ],
+        "group-libraries": [
+          "getrandom",
+          "rand_core"
+        ],
         "group-mls-adapter": [
           "getrandom",
           "rand_core"
         ],
-        "group-secure-storage": [],
+        "group-secure-storage": [
+          "getrandom",
+          "rand_core"
+        ],
         "halow-appliance-manager": [
           "std"
         ],
@@ -4464,7 +4539,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "ctr",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -4547,7 +4624,17 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "digest",
+          "zeroize"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "digest",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "alloc",
           "digest",
           "zeroize"
@@ -4794,7 +4881,9 @@
         "desktop-windows": [],
         "engine": [],
         "expo-host-linux": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-windows": [],
         "sdk-native-linux": []
@@ -5012,7 +5101,15 @@
           "default",
           "suggestions"
         ],
+        "group-libraries": [
+          "default",
+          "suggestions"
+        ],
         "group-mls-adapter": [
+          "default",
+          "suggestions"
+        ],
+        "group-secure-storage": [
           "default",
           "suggestions"
         ]
@@ -5192,7 +5289,15 @@
           "strsim",
           "suggestions"
         ],
+        "group-libraries": [
+          "strsim",
+          "suggestions"
+        ],
         "group-mls-adapter": [
+          "strsim",
+          "suggestions"
+        ],
+        "group-secure-storage": [
           "strsim",
           "suggestions"
         ]
@@ -5288,7 +5393,9 @@
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
         "esp32-s3-tbeam": [],
         "esp32-s3-xiao-esp32s3-wio-sx1262": [],
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "darling_macro",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -5539,7 +5646,19 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "oid",
+          "pem",
+          "zeroize"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "oid",
+          "pem",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "alloc",
           "oid",
           "pem",
@@ -5713,7 +5832,15 @@
           "oid",
           "zeroize"
         ],
+        "group-libraries": [
+          "alloc",
+          "oid"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "oid"
+        ],
+        "group-secure-storage": [
           "alloc",
           "oid"
         ],
@@ -5839,6 +5966,15 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "block-buffer",
+          "const-oid",
+          "core-api",
+          "default",
+          "mac",
+          "oid",
+          "subtle"
+        ],
         "group-mls-adapter": [
           "block-buffer",
           "const-oid",
@@ -5850,8 +5986,12 @@
         ],
         "group-secure-storage": [
           "block-buffer",
+          "const-oid",
           "core-api",
-          "default"
+          "default",
+          "mac",
+          "oid",
+          "subtle"
         ],
         "halow-appliance-manager": [
           "alloc",
@@ -6550,7 +6690,33 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "arithmetic",
+          "der",
+          "digest",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "rfc6979",
+          "signing",
+          "spki",
+          "verifying"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "arithmetic",
+          "der",
+          "digest",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "rfc6979",
+          "signing",
+          "spki",
+          "verifying"
+        ],
+        "group-secure-storage": [
           "alloc",
           "arithmetic",
           "der",
@@ -6577,7 +6743,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ]
       },
@@ -6696,7 +6868,17 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "rand_core",
+          "zeroize"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "rand_core",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "alloc",
           "rand_core",
           "zeroize"
@@ -7091,7 +7273,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "either",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -7106,7 +7290,31 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ff",
+          "group",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "sec1"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ff",
+          "group",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "sec1"
+        ],
+        "group-secure-storage": [
           "alloc",
           "arithmetic",
           "digest",
@@ -10672,7 +10880,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ]
       },
@@ -13064,12 +13278,17 @@
         "expo-ios": [
           "more_lengths"
         ],
+        "group-libraries": [
+          "more_lengths",
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "more_lengths",
           "zeroize"
         ],
         "group-secure-storage": [
-          "more_lengths"
+          "more_lengths",
+          "zeroize"
         ],
         "halow-appliance-manager": [
           "more_lengths"
@@ -13151,7 +13370,19 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [
+          "custom",
+          "js",
+          "js-sys",
+          "wasm-bindgen"
+        ],
         "group-mls-adapter": [
+          "custom",
+          "js",
+          "js-sys",
+          "wasm-bindgen"
+        ],
+        "group-secure-storage": [
           "custom",
           "js",
           "js-sys",
@@ -13304,7 +13535,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "ghash",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -13319,7 +13552,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ]
       },
@@ -13656,7 +13895,13 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ],
         "halow-appliance-manager": [
@@ -13703,7 +13948,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "hkdf",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -13762,7 +14009,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "reset"
+        ],
         "group-mls-adapter": [
+          "reset"
+        ],
+        "group-secure-storage": [
           "reset"
         ]
       },
@@ -14509,7 +14762,9 @@
         "esp32-s3-tbeam": [],
         "esp32-s3-xiao-esp32s3-wio-sx1262": [],
         "expo-host-linux": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "host-c-linux": [],
         "nrf52840": [],
         "sdk-native-linux": []
@@ -14855,6 +15110,7 @@
         "expo-ios": [
           "block-padding"
         ],
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
         "halow-appliance-manager": [
@@ -15105,7 +15361,13 @@
           "use_alloc",
           "use_std"
         ],
+        "group-libraries": [
+          "use_alloc"
+        ],
         "group-mls-adapter": [
+          "use_alloc"
+        ],
+        "group-secure-storage": [
           "use_alloc"
         ],
         "host-c-linux": [
@@ -16693,7 +16955,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "default"
+        ],
         "group-mls-adapter": [
+          "default"
+        ],
+        "group-secure-storage": [
           "default"
         ]
       },
@@ -17291,7 +17559,21 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "by_ref_proposal",
+          "fast_serialize",
+          "out_of_order",
+          "prior_epoch",
+          "private_message"
+        ],
         "group-mls-adapter": [
+          "by_ref_proposal",
+          "fast_serialize",
+          "out_of_order",
+          "prior_epoch",
+          "private_message"
+        ],
+        "group-secure-storage": [
           "by_ref_proposal",
           "fast_serialize",
           "out_of_order",
@@ -17312,7 +17594,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "preallocate"
+        ],
         "group-mls-adapter": [
+          "preallocate"
+        ],
+        "group-secure-storage": [
           "preallocate"
         ]
       },
@@ -17329,7 +17617,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "mls-rs-codec-derive",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -17344,7 +17634,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "fast_serialize"
+        ],
         "group-mls-adapter": [
+          "fast_serialize"
+        ],
+        "group-secure-storage": [
           "fast_serialize"
         ]
       },
@@ -17361,7 +17657,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "mls-rs-crypto-hpke",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -17376,7 +17674,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "mls-rs-crypto-rustcrypto",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -17391,7 +17691,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "mls-rs-crypto-traits",
       "source": "git+https://github.com/awslabs/mls-rs?rev=d4c5b19f4bbf8a931face27fc9e30f2db33ce83e#d4c5b19f4bbf8a931face27fc9e30f2db33ce83e",
@@ -20967,6 +21269,7 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
       },
@@ -21070,7 +21373,31 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha256"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha256"
+        ],
+        "group-secure-storage": [
           "alloc",
           "arithmetic",
           "digest",
@@ -21096,7 +21423,31 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha384"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha384"
+        ],
+        "group-secure-storage": [
           "alloc",
           "arithmetic",
           "digest",
@@ -21225,7 +21576,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ]
       },
@@ -22242,7 +22599,15 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "pem"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "pem"
+        ],
+        "group-secure-storage": [
           "alloc",
           "pem"
         ]
@@ -22440,6 +22805,7 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
       },
@@ -22456,7 +22822,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "polyval",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -22665,7 +23033,15 @@
           "fallback",
           "std"
         ],
+        "group-libraries": [
+          "critical-section",
+          "require-cas"
+        ],
         "group-mls-adapter": [
+          "critical-section",
+          "require-cas"
+        ],
+        "group-secure-storage": [
           "critical-section",
           "require-cas"
         ],
@@ -22880,7 +23256,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "primeorder",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -23487,6 +23865,22 @@
     {
       "graphs": {
         "group-libraries": [],
+        "group-secure-storage": []
+      },
+      "name": "prns-group-text",
+      "source": "prns-groups/profiles/text",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
       },
@@ -23503,7 +23897,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "prns-groups-mls",
       "source": "prns-groups/security/mls-rs",
@@ -23513,6 +23909,22 @@
         "functions": 0,
         "impls": 0,
         "tokens": 1
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
+      "name": "prns-groups-service",
+      "source": "prns-groups/service",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
       },
       "version": "0.1.0"
     },
@@ -25229,7 +25641,15 @@
           "default",
           "proc-macro"
         ],
+        "group-libraries": [
+          "default",
+          "proc-macro"
+        ],
         "group-mls-adapter": [
+          "default",
+          "proc-macro"
+        ],
+        "group-secure-storage": [
           "default",
           "proc-macro"
         ],
@@ -25539,7 +25959,15 @@
           "default",
           "proc-macro"
         ],
+        "group-libraries": [
+          "default",
+          "proc-macro"
+        ],
         "group-mls-adapter": [
+          "default",
+          "proc-macro"
+        ],
+        "group-secure-storage": [
           "default",
           "proc-macro"
         ],
@@ -25884,7 +26312,15 @@
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
         "esp32-s3-tbeam": [],
         "esp32-s3-xiao-esp32s3-wio-sx1262": [],
+        "group-libraries": [
+          "alloc",
+          "getrandom"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "getrandom"
+        ],
+        "group-secure-storage": [
           "alloc",
           "getrandom"
         ],
@@ -26282,7 +26718,9 @@
     },
     {
       "graphs": {
-        "group-mls-adapter": []
+        "group-libraries": [],
+        "group-mls-adapter": [],
+        "group-secure-storage": []
       },
       "name": "rfc6979",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -26686,7 +27124,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -27378,7 +27818,27 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "default",
+          "der",
+          "pem",
+          "pkcs8",
+          "point",
+          "subtle",
+          "zeroize"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "default",
+          "der",
+          "pem",
+          "pkcs8",
+          "point",
+          "subtle",
+          "zeroize"
+        ],
+        "group-secure-storage": [
           "alloc",
           "default",
           "der",
@@ -27402,7 +27862,13 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc"
+        ],
         "group-mls-adapter": [
+          "alloc"
+        ],
+        "group-secure-storage": [
           "alloc"
         ]
       },
@@ -27592,7 +28058,15 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "default",
+          "std"
+        ],
         "group-mls-adapter": [
+          "default",
+          "std"
+        ],
+        "group-secure-storage": [
           "default",
           "std"
         ],
@@ -27837,7 +28311,17 @@
           "serde_derive",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "derive",
+          "serde_derive"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "derive",
+          "serde_derive"
+        ],
+        "group-secure-storage": [
           "alloc",
           "derive",
           "serde_derive"
@@ -28066,7 +28550,15 @@
           "result",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "result"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "result"
+        ],
+        "group-secure-storage": [
           "alloc",
           "result"
         ],
@@ -28199,7 +28691,13 @@
         "expo-ios": [
           "default"
         ],
+        "group-libraries": [
+          "default"
+        ],
         "group-mls-adapter": [
+          "default"
+        ],
+        "group-secure-storage": [
           "default"
         ],
         "host-c-linux": [
@@ -28586,6 +29084,7 @@
           "default",
           "std"
         ],
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
         "halow-appliance-manager": [
@@ -28900,7 +29399,17 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "digest",
+          "rand_core"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "digest",
+          "rand_core"
+        ],
+        "group-secure-storage": [
           "alloc",
           "digest",
           "rand_core"
@@ -29853,7 +30362,19 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "mutex",
+          "portable-atomic",
+          "portable_atomic",
+          "spin_mutex"
+        ],
         "group-mls-adapter": [
+          "mutex",
+          "portable-atomic",
+          "portable_atomic",
+          "spin_mutex"
+        ],
+        "group-secure-storage": [
           "mutex",
           "portable-atomic",
           "portable_atomic",
@@ -29932,7 +30453,15 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "pem"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "pem"
+        ],
+        "group-secure-storage": [
           "alloc",
           "pem"
         ]
@@ -30370,7 +30899,9 @@
         "esp32-s3-tbeam": [],
         "esp32-s3-xiao-esp32s3-wio-sx1262": [],
         "expo-host-linux": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -30578,10 +31109,15 @@
         "expo-ios": [
           "const-generics"
         ],
+        "group-libraries": [
+          "i128"
+        ],
         "group-mls-adapter": [
           "i128"
         ],
-        "group-secure-storage": [],
+        "group-secure-storage": [
+          "i128"
+        ],
         "halow-appliance-manager": [
           "const-generics"
         ],
@@ -31114,7 +31650,31 @@
           "visit",
           "visit-mut"
         ],
+        "group-libraries": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit",
+          "visit-mut"
+        ],
         "group-mls-adapter": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit",
+          "visit-mut"
+        ],
+        "group-secure-storage": [
           "clone-impls",
           "default",
           "derive",
@@ -31406,7 +31966,25 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "clone-impls",
+          "derive",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit-mut"
+        ],
         "group-mls-adapter": [
+          "clone-impls",
+          "derive",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit-mut"
+        ],
+        "group-secure-storage": [
           "clone-impls",
           "derive",
           "full",
@@ -34140,6 +34718,7 @@
         "expo-ios": [
           "const-generics"
         ],
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
         "halow-headless": [
@@ -34304,7 +34883,9 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "halow-headless": []
       },
       "name": "unicode-ident",
@@ -34539,6 +35120,7 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
       },
@@ -35060,6 +35642,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
         "halow-appliance-manager": [],
@@ -36176,7 +36759,15 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "static_secrets"
+        ],
         "group-mls-adapter": [
+          "alloc",
+          "static_secrets"
+        ],
+        "group-secure-storage": [
           "alloc",
           "static_secrets"
         ]
@@ -36990,14 +37581,16 @@
     {
       "graphs": {
         "group-libraries": [
-          "alloc"
+          "alloc",
+          "zeroize_derive"
         ],
         "group-mls-adapter": [
           "alloc",
           "zeroize_derive"
         ],
         "group-secure-storage": [
-          "alloc"
+          "alloc",
+          "zeroize_derive"
         ]
       },
       "name": "zeroize",
@@ -37049,7 +37642,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "group-mls-adapter": [],
+        "group-secure-storage": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
