@@ -200,6 +200,18 @@ where
         }
 
         match command {
+            HostCommand::ServiceLifecycle(command) => Self {
+                engine,
+                host,
+                topology,
+                wire_scratch,
+                journal,
+                crypto_pool,
+                owed_work,
+                #[cfg(feature = "runtime-metrics")]
+                manifold_metrics,
+            }
+            .service_lifecycle(command, now),
             HostCommand::Engine(issued) => {
                 CommandEffect::Delta(engine.ingest_command_into_with_work(
                     issued,

@@ -343,3 +343,141 @@ fn administrative_off_settles_pending_once_and_late_verified_proof_cannot_activa
     assert!(!initiator.links.has_local_link(&dispatch.link_id));
     assert_eq!(initiator.link_deadlines_wake(), WakeSchedule::Idle);
 }
+
+#[test]
+fn destination_retirement_fences_deferred_proof_across_resume_without_fencing_other_destinations() {
+    let mut initiator = neighbor_with_a_route();
+    let descriptors = arrival_interfaces();
+    let interfaces = AttachedInterfaces::new(&descriptors);
+    let mut request = [0u8; BROADCAST_MTU];
+    let dispatch = initiator
+        .write_commanded_link_request(
+            CommandId(911),
+            &establish(),
+            InstantMillis(1_000),
+            vector_establish_entropy(),
+            interfaces,
+            &mut request,
+        )
+        .dispatched();
+    let mut responder = personal_node_announcer();
+    let owed = take_sign_work(&mut responder, &request[..dispatch.wire_bytes], interfaces);
+    let generation = owed.destination_generation;
+    let destination = owed.request.destination;
+    let identity = owed.identity;
+    // Registering another service must not invalidate this destination's crypto.
+    let other = responder
+        .register_single_destination(
+            &identity,
+            "unrelated",
+            &["service"],
+            b"",
+            ProofStrategy::ProveNone,
+            LinkRequestPolicy::AcceptAll,
+            crate::crypto::ratchets::RatchetPolicy::NoRatchets,
+        )
+        .unwrap();
+    let _ =
+        responder.retire_destination(&other, interfaces, &mut |bytes| bytes.fill(1), &mut |_| {});
+    assert_eq!(
+        responder
+            .upstream_app_destinations
+            .lookup_single(&destination)
+            .unwrap()
+            .registration_generation,
+        generation
+    );
+    let (encryption, shared, signature) = sign_parts(&owed);
+    let mut output = [0; BROADCAST_MTU];
+    assert!(
+        responder
+            .write_owed_link_proof_with_parts(
+                &owed,
+                &encryption,
+                &shared,
+                &signature,
+                interfaces,
+                &mut output
+            )
+            .is_ok(),
+        "another destination's retirement must preserve this proof"
+    );
+    let _ = responder.retire_destination(
+        &destination,
+        interfaces,
+        &mut |bytes| bytes.fill(1),
+        &mut |_| {},
+    );
+    let replacement = responder
+        .register_single_destination(
+            &identity,
+            "personal",
+            &["node"],
+            b"",
+            ProofStrategy::ProveNone,
+            LinkRequestPolicy::AcceptAll,
+            crate::crypto::ratchets::RatchetPolicy::NoRatchets,
+        )
+        .unwrap();
+    assert_eq!(replacement, destination);
+    assert_ne!(
+        responder
+            .upstream_app_destinations
+            .lookup_single(&destination)
+            .unwrap()
+            .registration_generation,
+        generation
+    );
+    let (encryption, shared, signature) = sign_parts(&owed);
+    let mut output = [0; BROADCAST_MTU];
+    assert_eq!(
+        responder.write_owed_link_proof_with_parts(
+            &owed,
+            &encryption,
+            &shared,
+            &signature,
+            interfaces,
+            &mut output
+        ),
+        Err(WriteLinkProofError::DestinationRetired)
+    );
+    responder.resume_link_proof_sign(owed, encryption, shared, signature, interfaces, &mut |_| {
+        panic!("retired generation must not recreate a responder")
+    });
+    assert!(!responder.links.has_local_link(&dispatch.link_id));
+}
+
+#[test]
+fn staged_service_refuses_link_handshakes() {
+    let mut initiator = neighbor_with_a_route();
+    let descriptors = arrival_interfaces();
+    let interfaces = AttachedInterfaces::new(&descriptors);
+    let mut request = [0u8; BROADCAST_MTU];
+    let dispatch = initiator
+        .write_commanded_link_request(
+            CommandId(912),
+            &establish(),
+            InstantMillis(1000),
+            vector_establish_entropy(),
+            interfaces,
+            &mut request,
+        )
+        .dispatched();
+    let mut responder = personal_node_announcer();
+    assert!(responder.set_single_ingress_enabled(
+        &crate::engine::test_support::personal_node_destination(),
+        false
+    ));
+    assert_eq!(
+        responder.ingest_for_test(
+            InboundPacket {
+                arrived_at: InstantMillis(1100),
+                source_interface: arrival(),
+                bytes: &mut request[..dispatch.wire_bytes]
+            },
+            interfaces
+        ),
+        IngestPacketOutcome::Ignored(IgnoreReason::LinkRequestsRefused)
+    );
+    assert!(!responder.links.has_local_link(&dispatch.link_id));
+}

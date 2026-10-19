@@ -28,6 +28,14 @@ the directory.
 
 ## Event ownership
 
+Native services sharing a host can use `service_scope::NativeServiceScope` to
+bind destination/Link access, bounded admission and actual-operation drainage to
+one local identity generation. Feed it lifecycle events even after fencing new
+work. The node's `ServiceEndpoint` API stages registration with ingress closed,
+then supports explicit activation and retryable scoped retirement. These are
+trusted native integration primitives, not caller authentication or a substitute
+for catalog admission.
+
 Each event lane has one active `NativeEventStream`. Await `ready` without
 consuming, then call `try_next` for a bounded synchronous drain. Cancelling
 readiness cannot strand an event in a dead promise. `close` invalidates the

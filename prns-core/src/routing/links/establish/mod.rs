@@ -149,6 +149,7 @@ pub enum EstablishLinkWriteOutcome {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum WriteLinkProofError {
+    DestinationRetired,
     InterfaceUnavailable,
     IdentityNotHeld,
     Serialize,
@@ -485,6 +486,17 @@ impl<S: StorageLayout> EngineState<S> {
         signature: &Ed25519Signature,
         buf: &mut [u8],
     ) -> Result<usize, WriteLinkProofError> {
+        if !self
+            .upstream_app_destinations
+            .lookup_single(&owed.request.destination)
+            .is_some_and(|row| {
+                row.registration_generation == owed.destination_generation
+                    && row.identity == owed.identity
+                    && row.proof_strategy == owed.proof_strategy
+            })
+        {
+            return Err(WriteLinkProofError::DestinationRetired);
+        }
         let key = LinkKey::derive(&owed.request.link_id, shared);
         let written = write_link_proof_from_parts(
             &owed.request.link_id,
