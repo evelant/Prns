@@ -51,6 +51,7 @@ cargo_lock_workspaces = [
     "prns-config",
     "prns-ffi",
     "prns-groups",
+    "prns-groups/security/mls-rs/vendor/mls-rs/validation",
     "prns-host/abi/c",
     "prns-host/bindings/uniffi",
     "prns-host/bindings/uniffi/image",
@@ -124,6 +125,8 @@ cargo_manifests = [
     "prns-flash-manifest/Cargo.toml",
     "prns-groups/Cargo.toml",
     "prns-groups/core/Cargo.toml",
+    "prns-groups/security/mls-rs/vendor/mls-rs/Cargo.toml",
+    "prns-groups/security/mls-rs/vendor/mls-rs/validation/Cargo.toml",
     "prns-groups/store/Cargo.toml",
     "prns-groups/store/native/Cargo.toml",
     "prns-host/abi/c/Cargo.toml",
@@ -229,6 +232,18 @@ timeout_seconds = 1200
 command = ["cargo", "clippy", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--all-targets", "--features", "prns-groups-store/secure", "--", "-D", "warnings"]
 inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store"]
 artifacts = "validation-artifacts/results/group-communication-clippy"
+
+[[suite]]
+id = "group-mls-bounds-tests"
+domain = "native"
+group = "group-communication"
+tiers = ["pr"]
+platform = "any"
+toolchain = "stable"
+timeout_seconds = 1200
+command = ["cargo", "test", "--locked", "--manifest-path", "prns-groups/security/mls-rs/vendor/mls-rs/validation/Cargo.toml"]
+inputs = ["prns-groups/security/mls-rs/vendor/mls-rs"]
+artifacts = "validation-artifacts/results/group-mls-bounds-tests"
 
 [[suite]]
 id = "cargo-locks"
