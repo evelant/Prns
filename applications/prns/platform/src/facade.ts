@@ -31,6 +31,8 @@ export class NativeStoragePreparationError extends Error {
 type IdentityApi = Pick<
   Bindings.NamedIdentityClient,
   | "readMessagingProfile"
+  | "exportContactCard"
+  | "importContactCard"
   | "setMessagingName"
   | "saveObservedDestination"
   | "createManualContact"
@@ -188,6 +190,11 @@ export function createDevelopmentRuntime(
         namedCall((api) => api.markIdentityActivitySeen(input)),
       readMessagingProfile: () =>
         domainCall((api) => api.readMessagingProfile(), undefined, "storage"),
+      exportContactCard: (input: Bindings.ExportContactCardInput, signal?: AbortSignal) =>
+        domainCall((api) => api.exportContactCard(input, asyncOptions(signal)), signal, "storage"),
+      previewContactCard: (uri: string) => call((api) => api.previewContactCard(uri)),
+      importContactCard: (input: Bindings.ImportContactCardInput, signal?: AbortSignal) =>
+        domainCall((api) => api.importContactCard(input, asyncOptions(signal)), signal, "storage"),
       setMessagingName: (name: string) =>
         domainCall((api) => api.setMessagingName(name), undefined, "storage"),
       saveObservedDestination: (destination: Uint8Array, signal?: AbortSignal) =>

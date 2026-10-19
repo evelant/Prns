@@ -139,6 +139,13 @@ async fn bound_operations_pause_history_and_restart_remain_isolated() {
         a.acknowledge_group_action(action_reference).await,
         GroupActionAcknowledgeOutcome::Removed
     );
+    assert!(matches!(
+        a.export_contact_card(ExportContactCardInput {
+            expected_local_identity: second.public_hash
+        })
+        .await,
+        ContactCardExportOutcome::IdentityChanged
+    ));
 
     assert!(
         matches!(a.list_group_conversations().await,GroupConversationListOutcome::Ready{conversations} if conversations.len()==1)
@@ -151,6 +158,13 @@ async fn bound_operations_pause_history_and_restart_remain_isolated() {
         })
         .await,
         GroupMessageListOutcome::Ready { .. }
+    ));
+    assert!(matches!(
+        a.export_contact_card(ExportContactCardInput {
+            expected_local_identity: first.public_hash
+        })
+        .await,
+        ContactCardExportOutcome::Ready { .. }
     ));
     assert!(matches!(
         a.set_messaging_name("Paused personal".into()).await,

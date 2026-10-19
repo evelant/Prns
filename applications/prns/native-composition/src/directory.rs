@@ -165,6 +165,59 @@ fn create_manual(
     Ok(DirectoryResponse::Mutation(outcome))
 }
 
+/// Persist a verified offline service claim without inventing an announce or
+/// replacing local contact preferences. The read/conflict/write is one transaction.
+pub(crate) fn import_contact_card(
+    database: &Database,
+    destination: [u8; 16],
+    identity: [u8; 16],
+    alias: Option<String>,
+) -> StoreReply {
+    let write = begin_write(database, "import contact card")?;
+    let outcome;
+    let mut changed = false;
+    {
+        let mut table = open_contacts_write(&write)?;
+        if let Some(encoded) = read_encoded(&table, &destination)? {
+            let mut existing = decode_contact(&destination, &encoded)?;
+            outcome = match existing.identity {
+                None => {
+                    existing.identity = Some(identity);
+                    existing.is_messaging =
+                        crate::messaging_profile::messaging_destination(identity)
+                            == Some(destination);
+                    insert_record(&mut table, &destination, &ContactRecord::from(&existing))?;
+                    changed = true;
+                    ContactMutationOutcome::Updated { contact: existing }
+                }
+                Some(saved) if saved == identity => {
+                    ContactMutationOutcome::Existing { contact: existing }
+                }
+                Some(saved) => ContactMutationOutcome::IdentityConflict {
+                    existing: saved,
+                    attempted: identity,
+                },
+            };
+        } else {
+            let record = ContactRecord {
+                alias: normalize_alias(alias),
+                announced_name: None,
+                identity: Some(identity),
+                pinned: false,
+            };
+            insert_record(&mut table, &destination, &record)?;
+            changed = true;
+            outcome = ContactMutationOutcome::Saved {
+                contact: contact(destination, record),
+            };
+        }
+    }
+    if changed {
+        commit(write, "import contact card")?;
+    }
+    Ok(DirectoryResponse::Mutation(outcome))
+}
+
 fn save_observed(
     database: &Database,
     destination: [u8; 16],

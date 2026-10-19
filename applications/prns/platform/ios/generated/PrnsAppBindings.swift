@@ -634,7 +634,11 @@ public protocol NamedIdentityClientProtocol: AnyObject, Sendable {
 
     func executeGroupAction(input: GroupActionReference) async  -> GroupActionOutcome
 
+    func exportContactCard(input: ExportContactCardInput) async  -> ContactCardExportOutcome
+
     func getContact(input: ContactDestinationInput) async  -> ContactLookupOutcome
+
+    func importContactCard(input: ImportContactCardInput) async  -> ContactCardImportOutcome
 
     func inviteToGroup(input: InviteToGroupInput) async  -> InviteToGroupOutcome
 
@@ -984,6 +988,24 @@ open func executeGroupAction(input: GroupActionReference)async  -> GroupActionOu
         )
 }
 
+open func exportContactCard(input: ExportContactCardInput)async  -> ContactCardExportOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_export_contact_card(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeExportContactCardInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactCardExportOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
 open func getContact(input: ContactDestinationInput)async  -> ContactLookupOutcome  {
     return
         try!  await uniffiRustCallAsync(
@@ -997,6 +1019,24 @@ open func getContact(input: ContactDestinationInput)async  -> ContactLookupOutco
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeContactLookupOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+open func importContactCard(input: ImportContactCardInput)async  -> ContactCardImportOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_import_contact_card(
+                    self.uniffiCloneHandle(),
+                    FfiConverterTypeImportContactCardInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactCardImportOutcome_lift,
             errorHandler: nil
 
         )
@@ -1813,6 +1853,75 @@ public func FfiConverterTypeContact_lower(_ value: Contact) -> RustBuffer {
 }
 
 
+/**
+ * A signature-checked service claim, not a verified person or observed network route.
+ */
+public struct ContactCard: Equatable, Hashable {
+    public var uri: String
+    public var displayName: String
+    public var identity: Bytes16
+    public var destination: Bytes16
+    public var serviceNameHash: Bytes10
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(uri: String, displayName: String, identity: Bytes16, destination: Bytes16, serviceNameHash: Bytes10) {
+        self.uri = uri
+        self.displayName = displayName
+        self.identity = identity
+        self.destination = destination
+        self.serviceNameHash = serviceNameHash
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ContactCard: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeContactCard: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ContactCard {
+        return
+            try ContactCard(
+                uri: FfiConverterString.read(from: &buf),
+                displayName: FfiConverterString.read(from: &buf),
+                identity: FfiConverterTypeBytes16.read(from: &buf),
+                destination: FfiConverterTypeBytes16.read(from: &buf),
+                serviceNameHash: FfiConverterTypeBytes10.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ContactCard, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.uri, into: &buf)
+        FfiConverterString.write(value.displayName, into: &buf)
+        FfiConverterTypeBytes16.write(value.identity, into: &buf)
+        FfiConverterTypeBytes16.write(value.destination, into: &buf)
+        FfiConverterTypeBytes10.write(value.serviceNameHash, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCard_lift(_ buf: RustBuffer) throws -> ContactCard {
+    return try FfiConverterTypeContactCard.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCard_lower(_ value: ContactCard) -> RustBuffer {
+    return FfiConverterTypeContactCard.lower(value)
+}
+
+
 public struct ContactDestinationInput: Equatable, Hashable {
     public var destination: Bytes16
 
@@ -2356,6 +2465,56 @@ public func FfiConverterTypeDevelopmentNodeStartInput_lift(_ buf: RustBuffer) th
 #endif
 public func FfiConverterTypeDevelopmentNodeStartInput_lower(_ value: DevelopmentNodeStartInput) -> RustBuffer {
     return FfiConverterTypeDevelopmentNodeStartInput.lower(value)
+}
+
+
+public struct ExportContactCardInput: Equatable, Hashable {
+    public var expectedLocalIdentity: Bytes16
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(expectedLocalIdentity: Bytes16) {
+        self.expectedLocalIdentity = expectedLocalIdentity
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ExportContactCardInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeExportContactCardInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ExportContactCardInput {
+        return
+            try ExportContactCardInput(
+                expectedLocalIdentity: FfiConverterTypeBytes16.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ExportContactCardInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes16.write(value.expectedLocalIdentity, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeExportContactCardInput_lift(_ buf: RustBuffer) throws -> ExportContactCardInput {
+    return try FfiConverterTypeExportContactCardInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeExportContactCardInput_lower(_ value: ExportContactCardInput) -> RustBuffer {
+    return FfiConverterTypeExportContactCardInput.lower(value)
 }
 
 
@@ -3212,6 +3371,64 @@ public func FfiConverterTypeIdentityConversationActivity_lift(_ buf: RustBuffer)
 #endif
 public func FfiConverterTypeIdentityConversationActivity_lower(_ value: IdentityConversationActivity) -> RustBuffer {
     return FfiConverterTypeIdentityConversationActivity.lower(value)
+}
+
+
+public struct ImportContactCardInput: Equatable, Hashable {
+    public var uri: String
+    public var expectedLocalIdentity: Bytes16
+    public var alias: String?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(uri: String, expectedLocalIdentity: Bytes16, alias: String?) {
+        self.uri = uri
+        self.expectedLocalIdentity = expectedLocalIdentity
+        self.alias = alias
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ImportContactCardInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeImportContactCardInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ImportContactCardInput {
+        return
+            try ImportContactCardInput(
+                uri: FfiConverterString.read(from: &buf),
+                expectedLocalIdentity: FfiConverterTypeBytes16.read(from: &buf),
+                alias: FfiConverterOptionString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ImportContactCardInput, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.uri, into: &buf)
+        FfiConverterTypeBytes16.write(value.expectedLocalIdentity, into: &buf)
+        FfiConverterOptionString.write(value.alias, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeImportContactCardInput_lift(_ buf: RustBuffer) throws -> ImportContactCardInput {
+    return try FfiConverterTypeImportContactCardInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeImportContactCardInput_lower(_ value: ImportContactCardInput) -> RustBuffer {
+    return FfiConverterTypeImportContactCardInput.lower(value)
 }
 
 
@@ -6686,6 +6903,342 @@ public func FfiConverterTypeClearNetworkActivityOutcome_lift(_ buf: RustBuffer) 
 #endif
 public func FfiConverterTypeClearNetworkActivityOutcome_lower(_ value: ClearNetworkActivityOutcome) -> RustBuffer {
     return FfiConverterTypeClearNetworkActivityOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum ContactCardExportOutcome: Equatable, Hashable {
+
+    case ready(card: ContactCard
+    )
+    case identityChanged
+    case missingIdentity
+    case busy
+    case unavailable(detail: String
+    )
+    case developmentResetRequired(reason: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ContactCardExportOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeContactCardExportOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = ContactCardExportOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ContactCardExportOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(card: try FfiConverterTypeContactCard.read(from: &buf)
+        )
+
+        case 2: return .identityChanged
+
+        case 3: return .missingIdentity
+
+        case 4: return .busy
+
+        case 5: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 6: return .developmentResetRequired(reason: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ContactCardExportOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(card):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeContactCard.write(card, into: &buf)
+
+
+        case .identityChanged:
+            writeInt(&buf, Int32(2))
+
+
+        case .missingIdentity:
+            writeInt(&buf, Int32(3))
+
+
+        case .busy:
+            writeInt(&buf, Int32(4))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(5))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case let .developmentResetRequired(reason):
+            writeInt(&buf, Int32(6))
+            FfiConverterString.write(reason, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCardExportOutcome_lift(_ buf: RustBuffer) throws -> ContactCardExportOutcome {
+    return try FfiConverterTypeContactCardExportOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCardExportOutcome_lower(_ value: ContactCardExportOutcome) -> RustBuffer {
+    return FfiConverterTypeContactCardExportOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum ContactCardImportOutcome: Equatable, Hashable {
+
+    case saved(contact: Contact
+    )
+    case updated(contact: Contact
+    )
+    case existing(contact: Contact
+    )
+    case identityConflict(existing: Bytes16, attempted: Bytes16
+    )
+    case identityChanged
+    case missingIdentity
+    case invalid(detail: String
+    )
+    case unsupportedService
+    case busy
+    case unavailable(detail: String
+    )
+    case developmentResetRequired(reason: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ContactCardImportOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeContactCardImportOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = ContactCardImportOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ContactCardImportOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .saved(contact: try FfiConverterTypeContact.read(from: &buf)
+        )
+
+        case 2: return .updated(contact: try FfiConverterTypeContact.read(from: &buf)
+        )
+
+        case 3: return .existing(contact: try FfiConverterTypeContact.read(from: &buf)
+        )
+
+        case 4: return .identityConflict(existing: try FfiConverterTypeBytes16.read(from: &buf), attempted: try FfiConverterTypeBytes16.read(from: &buf)
+        )
+
+        case 5: return .identityChanged
+
+        case 6: return .missingIdentity
+
+        case 7: return .invalid(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 8: return .unsupportedService
+
+        case 9: return .busy
+
+        case 10: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 11: return .developmentResetRequired(reason: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ContactCardImportOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .saved(contact):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeContact.write(contact, into: &buf)
+
+
+        case let .updated(contact):
+            writeInt(&buf, Int32(2))
+            FfiConverterTypeContact.write(contact, into: &buf)
+
+
+        case let .existing(contact):
+            writeInt(&buf, Int32(3))
+            FfiConverterTypeContact.write(contact, into: &buf)
+
+
+        case let .identityConflict(existing,attempted):
+            writeInt(&buf, Int32(4))
+            FfiConverterTypeBytes16.write(existing, into: &buf)
+            FfiConverterTypeBytes16.write(attempted, into: &buf)
+
+
+        case .identityChanged:
+            writeInt(&buf, Int32(5))
+
+
+        case .missingIdentity:
+            writeInt(&buf, Int32(6))
+
+
+        case let .invalid(detail):
+            writeInt(&buf, Int32(7))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case .unsupportedService:
+            writeInt(&buf, Int32(8))
+
+
+        case .busy:
+            writeInt(&buf, Int32(9))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(10))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case let .developmentResetRequired(reason):
+            writeInt(&buf, Int32(11))
+            FfiConverterString.write(reason, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCardImportOutcome_lift(_ buf: RustBuffer) throws -> ContactCardImportOutcome {
+    return try FfiConverterTypeContactCardImportOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCardImportOutcome_lower(_ value: ContactCardImportOutcome) -> RustBuffer {
+    return FfiConverterTypeContactCardImportOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum ContactCardPreviewOutcome: Equatable, Hashable {
+
+    case valid(card: ContactCard
+    )
+    case invalid(detail: String
+    )
+    case unsupportedService
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ContactCardPreviewOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeContactCardPreviewOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = ContactCardPreviewOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ContactCardPreviewOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .valid(card: try FfiConverterTypeContactCard.read(from: &buf)
+        )
+
+        case 2: return .invalid(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 3: return .unsupportedService
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ContactCardPreviewOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .valid(card):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeContactCard.write(card, into: &buf)
+
+
+        case let .invalid(detail):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case .unsupportedService:
+            writeInt(&buf, Int32(3))
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCardPreviewOutcome_lift(_ buf: RustBuffer) throws -> ContactCardPreviewOutcome {
+    return try FfiConverterTypeContactCardPreviewOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeContactCardPreviewOutcome_lower(_ value: ContactCardPreviewOutcome) -> RustBuffer {
+    return FfiConverterTypeContactCardPreviewOutcome.lower(value)
 }
 
 
@@ -16970,6 +17523,24 @@ public func executeGroupAction(reference: GroupActionReference)async  -> GroupAc
 
         )
 }
+/**
+ * Sign public contact information using the native identity owner, including offline.
+ */
+public func exportContactCard(input: ExportContactCardInput)async  -> ContactCardExportOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_export_contact_card(FfiConverterTypeExportContactCardInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactCardExportOutcome_lift,
+            errorHandler: nil
+
+        )
+}
 public func finishRemoteWifiTrial(input: FinishRemoteWifiTrialInput)async  -> RemoteWifiCommandOutcome  {
     return
         try!  await uniffiRustCallAsync(
@@ -17011,6 +17582,24 @@ public func getGroupAnnounceSettings()async  -> GroupAnnounceSettingsOutcome  {
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeGroupAnnounceSettingsOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+/**
+ * Call only after explicit confirmation. Native validation is repeated at import.
+ */
+public func importContactCard(input: ImportContactCardInput)async  -> ContactCardImportOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_import_contact_card(FfiConverterTypeImportContactCardInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeContactCardImportOutcome_lift,
             errorHandler: nil
 
         )
@@ -17312,6 +17901,16 @@ public func prepareGroupAction(input: PrepareGroupActionInput)async  -> GroupAct
             errorHandler: nil
 
         )
+}
+/**
+ * Bounded local validation; never imports a contact, authorizes a peer or contacts the network.
+ */
+public func previewContactCard(uri: String) -> ContactCardPreviewOutcome  {
+    return try!  FfiConverterTypeContactCardPreviewOutcome_lift(try! rustCall() {
+    uniffi_prns_app_fn_func_preview_contact_card(
+        FfiConverterString.lower(uri),$0
+    )
+})
 }
 /**
  * Bounded local validation; no storage or native lifecycle admission.
@@ -17730,6 +18329,9 @@ private let initializationResult: InitializationResult = {
     if (uniffi_prns_app_checksum_func_execute_group_action() != 3415) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_prns_app_checksum_func_export_contact_card() != 60936) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_prns_app_checksum_func_finish_remote_wifi_trial() != 11313) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -17737,6 +18339,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_get_group_announce_settings() != 25903) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_import_contact_card() != 33960) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_initiate_pairing() != 58991) {
@@ -17803,6 +18408,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_prepare_group_action() != 9779) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_preview_contact_card() != 35770) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_preview_identity_import() != 31445) {
@@ -17919,7 +18527,13 @@ private let initializationResult: InitializationResult = {
     if (uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action() != 10060) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_export_contact_card() != 3384) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_prns_app_checksum_method_namedidentityclient_get_contact() != 53127) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_import_contact_card() != 47145) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group() != 53768) {

@@ -683,11 +683,15 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_execute_group_action(
     ): Int
+    external fun uniffi_prns_app_checksum_func_export_contact_card(
+    ): Int
     external fun uniffi_prns_app_checksum_func_finish_remote_wifi_trial(
     ): Int
     external fun uniffi_prns_app_checksum_func_get_contact(
     ): Int
     external fun uniffi_prns_app_checksum_func_get_group_announce_settings(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_import_contact_card(
     ): Int
     external fun uniffi_prns_app_checksum_func_initiate_pairing(
     ): Int
@@ -732,6 +736,8 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_prns_app_checksum_func_native_stop(
     ): Int
     external fun uniffi_prns_app_checksum_func_prepare_group_action(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_preview_contact_card(
     ): Int
     external fun uniffi_prns_app_checksum_func_preview_identity_import(
     ): Int
@@ -809,7 +815,11 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action(
     ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_export_contact_card(
+    ): Int
     external fun uniffi_prns_app_checksum_method_namedidentityclient_get_contact(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_import_contact_card(
     ): Int
     external fun uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group(
     ): Int
@@ -904,7 +914,11 @@ external fun uniffi_prns_app_fn_method_namedidentityclient_discard_expired_group
 ): Long
 external fun uniffi_prns_app_fn_method_namedidentityclient_execute_group_action(`ptr`: Long,`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_export_contact_card(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_method_namedidentityclient_get_contact(`ptr`: Long,`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_import_contact_card(`ptr`: Long,`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_method_namedidentityclient_invite_to_group(`ptr`: Long,`input`: RustBuffer.ByValue,
 ): Long
@@ -982,11 +996,15 @@ external fun uniffi_prns_app_fn_func_discard_expired_group_action(`reference`: R
 ): Long
 external fun uniffi_prns_app_fn_func_execute_group_action(`reference`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_export_contact_card(`input`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_func_finish_remote_wifi_trial(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_get_contact(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_get_group_announce_settings(
+): Long
+external fun uniffi_prns_app_fn_func_import_contact_card(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_initiate_pairing(`input`: RustBuffer.ByValue,
 ): Long
@@ -1032,6 +1050,8 @@ external fun uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallS
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_prepare_group_action(`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_preview_contact_card(`uri`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
+): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_preview_identity_import(`identity`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_read_bluetooth_settings(
@@ -1250,6 +1270,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_execute_group_action() != 3415) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_export_contact_card() != 60936) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_finish_remote_wifi_trial() != 11313) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1257,6 +1280,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_get_group_announce_settings() != 25903) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_import_contact_card() != 33960) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_initiate_pairing() != 58991) {
@@ -1323,6 +1349,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_prepare_group_action() != 9779) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_preview_contact_card() != 35770) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_preview_identity_import() != 31445) {
@@ -1439,7 +1468,13 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_method_namedidentityclient_execute_group_action() != 10060) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_export_contact_card() != 3384) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_method_namedidentityclient_get_contact() != 53127) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_import_contact_card() != 47145) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_method_namedidentityclient_invite_to_group() != 53768) {
@@ -2073,7 +2108,11 @@ public interface NamedIdentityClientInterface {
 
     suspend fun `executeGroupAction`(`input`: GroupActionReference): GroupActionOutcome
 
+    suspend fun `exportContactCard`(`input`: ExportContactCardInput): ContactCardExportOutcome
+
     suspend fun `getContact`(`input`: ContactDestinationInput): ContactLookupOutcome
+
+    suspend fun `importContactCard`(`input`: ImportContactCardInput): ContactCardImportOutcome
 
     suspend fun `inviteToGroup`(`input`: InviteToGroupInput): InviteToGroupOutcome
 
@@ -2498,6 +2537,26 @@ open class NamedIdentityClient: Disposable, AutoCloseable, NamedIdentityClientIn
 
 
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `exportContactCard`(`input`: ExportContactCardInput) : ContactCardExportOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_export_contact_card(
+                uniffiHandle,
+                FfiConverterTypeExportContactCardInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactCardExportOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
     override suspend fun `getContact`(`input`: ContactDestinationInput) : ContactLookupOutcome {
         return uniffiRustCallAsync(
         callWithHandle { uniffiHandle ->
@@ -2511,6 +2570,26 @@ open class NamedIdentityClient: Disposable, AutoCloseable, NamedIdentityClientIn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeContactLookupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `importContactCard`(`input`: ImportContactCardInput) : ContactCardImportOutcome {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_import_contact_card(
+                uniffiHandle,
+                FfiConverterTypeImportContactCardInput.lower(`input`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactCardImportOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -3250,6 +3329,62 @@ public object FfiConverterTypeContact: FfiConverterRustBuffer<Contact> {
 
 
 
+/**
+ * A signature-checked service claim, not a verified person or observed network route.
+ */
+data class ContactCard (
+    var `uri`: kotlin.String
+    ,
+    var `displayName`: kotlin.String
+    ,
+    var `identity`: Bytes16
+    ,
+    var `destination`: Bytes16
+    ,
+    var `serviceNameHash`: Bytes10
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeContactCard: FfiConverterRustBuffer<ContactCard> {
+    override fun read(buf: ByteBuffer): ContactCard {
+        return ContactCard(
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeBytes10.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ContactCard) = (
+            FfiConverterString.allocationSize(value.`uri`) +
+            FfiConverterString.allocationSize(value.`displayName`) +
+            FfiConverterTypeBytes16.allocationSize(value.`identity`) +
+            FfiConverterTypeBytes16.allocationSize(value.`destination`) +
+            FfiConverterTypeBytes10.allocationSize(value.`serviceNameHash`)
+    )
+
+    override fun write(value: ContactCard, buf: ByteBuffer) {
+            FfiConverterString.write(value.`uri`, buf)
+            FfiConverterString.write(value.`displayName`, buf)
+            FfiConverterTypeBytes16.write(value.`identity`, buf)
+            FfiConverterTypeBytes16.write(value.`destination`, buf)
+            FfiConverterTypeBytes10.write(value.`serviceNameHash`, buf)
+    }
+}
+
+
+
 data class ContactDestinationInput (
     var `destination`: Bytes16
 
@@ -3662,6 +3797,39 @@ public object FfiConverterTypeDevelopmentNodeStartInput: FfiConverterRustBuffer<
 
     override fun write(value: DevelopmentNodeStartInput, buf: ByteBuffer) {
             FfiConverterOptionalString.write(value.`developmentTcpTarget`, buf)
+    }
+}
+
+
+
+data class ExportContactCardInput (
+    var `expectedLocalIdentity`: Bytes16
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeExportContactCardInput: FfiConverterRustBuffer<ExportContactCardInput> {
+    override fun read(buf: ByteBuffer): ExportContactCardInput {
+        return ExportContactCardInput(
+            FfiConverterTypeBytes16.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ExportContactCardInput) = (
+            FfiConverterTypeBytes16.allocationSize(value.`expectedLocalIdentity`)
+    )
+
+    override fun write(value: ExportContactCardInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes16.write(value.`expectedLocalIdentity`, buf)
     }
 }
 
@@ -4339,6 +4507,49 @@ public object FfiConverterTypeIdentityConversationActivity: FfiConverterRustBuff
             FfiConverterTypeIdentityActivityScope.write(value.`scope`, buf)
             FfiConverterUInt.write(value.`unreadCount`, buf)
             FfiConverterULong.write(value.`throughSequence`, buf)
+    }
+}
+
+
+
+data class ImportContactCardInput (
+    var `uri`: kotlin.String
+    ,
+    var `expectedLocalIdentity`: Bytes16
+    ,
+    var `alias`: kotlin.String?
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeImportContactCardInput: FfiConverterRustBuffer<ImportContactCardInput> {
+    override fun read(buf: ByteBuffer): ImportContactCardInput {
+        return ImportContactCardInput(
+            FfiConverterString.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterOptionalString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ImportContactCardInput) = (
+            FfiConverterString.allocationSize(value.`uri`) +
+            FfiConverterTypeBytes16.allocationSize(value.`expectedLocalIdentity`) +
+            FfiConverterOptionalString.allocationSize(value.`alias`)
+    )
+
+    override fun write(value: ImportContactCardInput, buf: ByteBuffer) {
+            FfiConverterString.write(value.`uri`, buf)
+            FfiConverterTypeBytes16.write(value.`expectedLocalIdentity`, buf)
+            FfiConverterOptionalString.write(value.`alias`, buf)
     }
 }
 
@@ -7121,6 +7332,515 @@ public object FfiConverterTypeClearNetworkActivityOutcome : FfiConverterRustBuff
             }
             is ClearNetworkActivityOutcome.Busy -> {
                 buf.putInt(4)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class ContactCardExportOutcome {
+
+    data class Ready(
+        val `card`: rs.reticulum.prns.app.bindings.ContactCard) : ContactCardExportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object IdentityChanged : ContactCardExportOutcome()
+
+
+    object MissingIdentity : ContactCardExportOutcome()
+
+
+    object Busy : ContactCardExportOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : ContactCardExportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class DevelopmentResetRequired(
+        val `reason`: kotlin.String) : ContactCardExportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeContactCardExportOutcome : FfiConverterRustBuffer<ContactCardExportOutcome>{
+    override fun read(buf: ByteBuffer): ContactCardExportOutcome {
+        return when(buf.getInt()) {
+            1 -> ContactCardExportOutcome.Ready(
+                FfiConverterTypeContactCard.read(buf),
+                )
+            2 -> ContactCardExportOutcome.IdentityChanged
+            3 -> ContactCardExportOutcome.MissingIdentity
+            4 -> ContactCardExportOutcome.Busy
+            5 -> ContactCardExportOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            6 -> ContactCardExportOutcome.DevelopmentResetRequired(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: ContactCardExportOutcome) = when(value) {
+        is ContactCardExportOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeContactCard.allocationSize(value.`card`)
+            )
+        }
+        is ContactCardExportOutcome.IdentityChanged -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ContactCardExportOutcome.MissingIdentity -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ContactCardExportOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ContactCardExportOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is ContactCardExportOutcome.DevelopmentResetRequired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`reason`)
+            )
+        }
+    }
+
+    override fun write(value: ContactCardExportOutcome, buf: ByteBuffer) {
+        when(value) {
+            is ContactCardExportOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeContactCard.write(value.`card`, buf)
+                Unit
+            }
+            is ContactCardExportOutcome.IdentityChanged -> {
+                buf.putInt(2)
+                Unit
+            }
+            is ContactCardExportOutcome.MissingIdentity -> {
+                buf.putInt(3)
+                Unit
+            }
+            is ContactCardExportOutcome.Busy -> {
+                buf.putInt(4)
+                Unit
+            }
+            is ContactCardExportOutcome.Unavailable -> {
+                buf.putInt(5)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is ContactCardExportOutcome.DevelopmentResetRequired -> {
+                buf.putInt(6)
+                FfiConverterString.write(value.`reason`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class ContactCardImportOutcome {
+
+    data class Saved(
+        val `contact`: rs.reticulum.prns.app.bindings.Contact) : ContactCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Updated(
+        val `contact`: rs.reticulum.prns.app.bindings.Contact) : ContactCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Existing(
+        val `contact`: rs.reticulum.prns.app.bindings.Contact) : ContactCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class IdentityConflict(
+        val `existing`: rs.reticulum.prns.app.bindings.Bytes16,
+        val `attempted`: rs.reticulum.prns.app.bindings.Bytes16) : ContactCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object IdentityChanged : ContactCardImportOutcome()
+
+
+    object MissingIdentity : ContactCardImportOutcome()
+
+
+    data class Invalid(
+        val `detail`: kotlin.String) : ContactCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object UnsupportedService : ContactCardImportOutcome()
+
+
+    object Busy : ContactCardImportOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : ContactCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class DevelopmentResetRequired(
+        val `reason`: kotlin.String) : ContactCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeContactCardImportOutcome : FfiConverterRustBuffer<ContactCardImportOutcome>{
+    override fun read(buf: ByteBuffer): ContactCardImportOutcome {
+        return when(buf.getInt()) {
+            1 -> ContactCardImportOutcome.Saved(
+                FfiConverterTypeContact.read(buf),
+                )
+            2 -> ContactCardImportOutcome.Updated(
+                FfiConverterTypeContact.read(buf),
+                )
+            3 -> ContactCardImportOutcome.Existing(
+                FfiConverterTypeContact.read(buf),
+                )
+            4 -> ContactCardImportOutcome.IdentityConflict(
+                FfiConverterTypeBytes16.read(buf),
+                FfiConverterTypeBytes16.read(buf),
+                )
+            5 -> ContactCardImportOutcome.IdentityChanged
+            6 -> ContactCardImportOutcome.MissingIdentity
+            7 -> ContactCardImportOutcome.Invalid(
+                FfiConverterString.read(buf),
+                )
+            8 -> ContactCardImportOutcome.UnsupportedService
+            9 -> ContactCardImportOutcome.Busy
+            10 -> ContactCardImportOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            11 -> ContactCardImportOutcome.DevelopmentResetRequired(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: ContactCardImportOutcome) = when(value) {
+        is ContactCardImportOutcome.Saved -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeContact.allocationSize(value.`contact`)
+            )
+        }
+        is ContactCardImportOutcome.Updated -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeContact.allocationSize(value.`contact`)
+            )
+        }
+        is ContactCardImportOutcome.Existing -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeContact.allocationSize(value.`contact`)
+            )
+        }
+        is ContactCardImportOutcome.IdentityConflict -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes16.allocationSize(value.`existing`)
+                + FfiConverterTypeBytes16.allocationSize(value.`attempted`)
+            )
+        }
+        is ContactCardImportOutcome.IdentityChanged -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ContactCardImportOutcome.MissingIdentity -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ContactCardImportOutcome.Invalid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is ContactCardImportOutcome.UnsupportedService -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ContactCardImportOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ContactCardImportOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is ContactCardImportOutcome.DevelopmentResetRequired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`reason`)
+            )
+        }
+    }
+
+    override fun write(value: ContactCardImportOutcome, buf: ByteBuffer) {
+        when(value) {
+            is ContactCardImportOutcome.Saved -> {
+                buf.putInt(1)
+                FfiConverterTypeContact.write(value.`contact`, buf)
+                Unit
+            }
+            is ContactCardImportOutcome.Updated -> {
+                buf.putInt(2)
+                FfiConverterTypeContact.write(value.`contact`, buf)
+                Unit
+            }
+            is ContactCardImportOutcome.Existing -> {
+                buf.putInt(3)
+                FfiConverterTypeContact.write(value.`contact`, buf)
+                Unit
+            }
+            is ContactCardImportOutcome.IdentityConflict -> {
+                buf.putInt(4)
+                FfiConverterTypeBytes16.write(value.`existing`, buf)
+                FfiConverterTypeBytes16.write(value.`attempted`, buf)
+                Unit
+            }
+            is ContactCardImportOutcome.IdentityChanged -> {
+                buf.putInt(5)
+                Unit
+            }
+            is ContactCardImportOutcome.MissingIdentity -> {
+                buf.putInt(6)
+                Unit
+            }
+            is ContactCardImportOutcome.Invalid -> {
+                buf.putInt(7)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is ContactCardImportOutcome.UnsupportedService -> {
+                buf.putInt(8)
+                Unit
+            }
+            is ContactCardImportOutcome.Busy -> {
+                buf.putInt(9)
+                Unit
+            }
+            is ContactCardImportOutcome.Unavailable -> {
+                buf.putInt(10)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is ContactCardImportOutcome.DevelopmentResetRequired -> {
+                buf.putInt(11)
+                FfiConverterString.write(value.`reason`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class ContactCardPreviewOutcome {
+
+    data class Valid(
+        val `card`: rs.reticulum.prns.app.bindings.ContactCard) : ContactCardPreviewOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Invalid(
+        val `detail`: kotlin.String) : ContactCardPreviewOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object UnsupportedService : ContactCardPreviewOutcome()
+
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeContactCardPreviewOutcome : FfiConverterRustBuffer<ContactCardPreviewOutcome>{
+    override fun read(buf: ByteBuffer): ContactCardPreviewOutcome {
+        return when(buf.getInt()) {
+            1 -> ContactCardPreviewOutcome.Valid(
+                FfiConverterTypeContactCard.read(buf),
+                )
+            2 -> ContactCardPreviewOutcome.Invalid(
+                FfiConverterString.read(buf),
+                )
+            3 -> ContactCardPreviewOutcome.UnsupportedService
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: ContactCardPreviewOutcome) = when(value) {
+        is ContactCardPreviewOutcome.Valid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeContactCard.allocationSize(value.`card`)
+            )
+        }
+        is ContactCardPreviewOutcome.Invalid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is ContactCardPreviewOutcome.UnsupportedService -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+    }
+
+    override fun write(value: ContactCardPreviewOutcome, buf: ByteBuffer) {
+        when(value) {
+            is ContactCardPreviewOutcome.Valid -> {
+                buf.putInt(1)
+                FfiConverterTypeContactCard.write(value.`card`, buf)
+                Unit
+            }
+            is ContactCardPreviewOutcome.Invalid -> {
+                buf.putInt(2)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is ContactCardPreviewOutcome.UnsupportedService -> {
+                buf.putInt(3)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
@@ -17763,6 +18483,23 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     )
     }
 
+        /**
+         * Sign public contact information using the native identity owner, including offline.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `exportContactCard`(`input`: ExportContactCardInput) : ContactCardExportOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_export_contact_card(FfiConverterTypeExportContactCardInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactCardExportOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `finishRemoteWifiTrial`(`input`: FinishRemoteWifiTrialInput) : RemoteWifiCommandOutcome {
         return uniffiRustCallAsync(
@@ -17800,6 +18537,23 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeGroupAnnounceSettingsOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+        /**
+         * Call only after explicit confirmation. Native validation is repeated at import.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `importContactCard`(`input`: ImportContactCardInput) : ContactCardImportOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_import_contact_card(FfiConverterTypeImportContactCardInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeContactCardImportOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -18110,6 +18864,19 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         UniffiNullRustCallStatusErrorHandler,
     )
     }
+
+        /**
+         * Bounded local validation; never imports a contact, authorizes a peer or contacts the network.
+         */ fun `previewContactCard`(`uri`: kotlin.String): ContactCardPreviewOutcome {
+            return FfiConverterTypeContactCardPreviewOutcome.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.uniffi_prns_app_fn_func_preview_contact_card(
+
+        FfiConverterString.lower(`uri`),_status)
+}
+    )
+    }
+
 
         /**
          * Bounded local validation; no storage or native lifecycle admission.

@@ -75,6 +75,24 @@ pub async fn read_messaging_profile() -> LocalMessagingProfileOutcome {
     crate::lifecycle::profile::messaging_profile(None).await
 }
 
+/// Sign public contact information using the native identity owner, including offline.
+#[uniffi::export]
+pub async fn export_contact_card(input: ExportContactCardInput) -> ContactCardExportOutcome {
+    crate::lifecycle::contact_cards::export(input).await
+}
+
+/// Bounded local validation; never imports a contact, authorizes a peer or contacts the network.
+#[uniffi::export]
+pub fn preview_contact_card(uri: String) -> ContactCardPreviewOutcome {
+    crate::contact_cards::preview(&uri)
+}
+
+/// Call only after explicit confirmation. Native validation is repeated at import.
+#[uniffi::export]
+pub async fn import_contact_card(input: ImportContactCardInput) -> ContactCardImportOutcome {
+    crate::lifecycle::contact_cards::import(input).await
+}
+
 #[uniffi::export]
 pub async fn set_messaging_name(name: String) -> LocalMessagingProfileOutcome {
     crate::lifecycle::profile::messaging_profile(Some(name)).await

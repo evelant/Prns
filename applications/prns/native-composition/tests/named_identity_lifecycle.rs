@@ -59,10 +59,18 @@ async fn groups(client: &identities::NamedIdentityClient) -> Vec<GroupConversati
         other => panic!("groups unavailable: {other:?}"),
     }
 }
-async fn profile(client: &identities::NamedIdentityClient) -> LocalMessagingProfile {
-    match client.read_messaging_profile().await {
-        LocalMessagingProfileOutcome::Ready { profile } => profile,
-        other => panic!("profile unavailable: {other:?}"),
+async fn card(
+    client: &identities::NamedIdentityClient,
+    owner: &NamedIdentityReference,
+) -> ContactCard {
+    match client
+        .export_contact_card(ExportContactCardInput {
+            expected_local_identity: owner.public_hash,
+        })
+        .await
+    {
+        ContactCardExportOutcome::Ready { card } => card,
+        other => panic!("card unavailable: {other:?}"),
     }
 }
 
@@ -84,7 +92,7 @@ async fn production_node_keeps_captured_owners_paused_history_and_restart_state(
     assert_eq!(first.selected, Some(personal.clone()));
     assert_eq!(first.identities[0].state, NamedIdentityState::Enabled);
     let personal_client = identities::open_named_identity(personal.clone());
-    let original_card = profile(&personal_client).await;
+    let original_card = card(&personal_client, &personal).await;
     assert!(
         original_card.display_name.is_empty(),
         "private labels are never published automatically"
@@ -110,8 +118,8 @@ async fn production_node_keeps_captured_owners_paused_history_and_restart_state(
         "create retry must reuse its exact key"
     );
     let work_client = identities::open_named_identity(work.clone());
-    let work_card = profile(&work_client).await;
-    assert_ne!(personal.public_hash, work.public_hash);
+    let work_card = card(&work_client, &work).await;
+    assert_ne!(original_card.identity, work_card.identity);
     assert_ne!(original_card.destination, work_card.destination);
     assert!(work_card.display_name.is_empty());
     change(&work, NamedIdentityChange::Select).await;
@@ -119,13 +127,13 @@ async fn production_node_keeps_captured_owners_paused_history_and_restart_state(
     // A client captured before selection changed must still mutate Personal.
     assert!(matches!(
         personal_client
-            .create_manual_contact(CreateManualContactInput {
-                destination: work_card.destination.expect("work destination"),
-                identity: Some(work.public_hash),
+            .import_contact_card(ImportContactCardInput {
+                uri: work_card.uri.clone(),
+                expected_local_identity: personal.public_hash,
                 alias: Some("Work seen only by Personal".into()),
             })
             .await,
-        ContactMutationOutcome::Saved { .. }
+        ContactCardImportOutcome::Saved { .. }
     ));
     assert_eq!(contacts(&personal_client).await.len(), 1);
     assert!(contacts(&work_client).await.is_empty());
@@ -179,7 +187,7 @@ async fn production_node_keeps_captured_owners_paused_history_and_restart_state(
     assert!(matches!(
         personal_client
             .set_contact_alias(SetContactAliasInput {
-                destination: work_card.destination.expect("work destination"),
+                destination: work_card.destination,
                 alias: Some("Edited while paused".into())
             })
             .await,
@@ -192,7 +200,7 @@ async fn production_node_keeps_captured_owners_paused_history_and_restart_state(
         LocalMessagingProfileOutcome::Ready { .. }
     ));
     assert_eq!(
-        profile(&personal_client).await.display_name,
+        card(&personal_client, &personal).await.display_name,
         "Published name"
     );
     assert!(matches!(
@@ -208,7 +216,7 @@ async fn production_node_keeps_captured_owners_paused_history_and_restart_state(
     assert!(matches!(
         personal_client
             .send_direct_text(SendDirectTextInput {
-                destination: work_card.destination.expect("work destination"),
+                destination: work_card.destination,
                 title: String::new(),
                 content: "Forbidden while paused".into()
             })
@@ -264,8 +272,8 @@ async fn production_node_keeps_captured_owners_paused_history_and_restart_state(
     assert_eq!(groups(&personal_client).await[0].group_id, group);
     assert!(groups(&work_client).await.is_empty());
     assert_eq!(
-        profile(&personal_client).await.destination,
-        original_card.destination
+        card(&personal_client, &personal).await.identity,
+        personal.public_hash
     );
     let enabled = change(&personal, NamedIdentityChange::Resume).await;
     assert!(enabled.identities.iter().all(|entry| entry.ready));

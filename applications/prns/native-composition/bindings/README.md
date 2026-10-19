@@ -47,7 +47,8 @@ The execution boundary is:
 
 - Product snapshots, pairing/management workflows, contact operations and LXMF
   operations call generated async bindings. `previewIdentityImport` is a bounded synchronous
-  parse of exactly 64 bytes; `bindingContract` reads immutable identifiers.
+  parse of exactly 64 bytes; `previewContactCard` is bounded, signature-checked
+  offline parsing of the portable card URI; `bindingContract` reads immutable identifiers.
 - Seven Expo methods retain platform-owned storage, identity and lifecycle
   admission: `prepareStorage`, `inspectIdentity`, `createGeneratedIdentity`,
   `createImportedIdentity`, `start`, `stop` and `reset`. Inputs and results cross
@@ -82,6 +83,9 @@ if (result.tag === "Ready" && result.inner.catalog.selected !== undefined) {
   const reference = result.inner.catalog.selected;
   const identity = developmentRuntime.forIdentity(reference);
   const contacts = await identity.listContacts();
+  const card = await identity.exportContactCard({
+    expectedLocalIdentity: reference.publicHash,
+  });
 }
 ```
 
@@ -90,12 +94,12 @@ generated `openNamedIdentity(reference)` / `NamedIdentityClient`. Keep that
 client with the screen, request or recovery record. Changing the selected default
 never retargets an existing client or admitted operation. Native code verifies
 the catalog incarnation, sequence and public hash on every dispatch, including
-deferred requests. Contacts, direct messages, groups, recovery actions and
+deferred requests. Contacts, cards, direct messages, groups, recovery actions and
 announce preferences use that identity's storage.
 
 `state` is the durable desired state; `transitioning` means activation or drainage
 is unfinished. A successful Pause reply confirms completed drainage. Paused
-identities retain history, local contact/profile edits and completed
+identities retain history, local contact/profile edits, card signing and completed
 action recovery, while fresh sends, group mutations and announces are rejected.
 Other identities keep running. These local operations require the shared native
 owner to remain started; stopping the entire node makes named clients unavailable
@@ -151,6 +155,34 @@ contract requires. Generated tagged enum variants use `.tag` and, for payloads,
 `.inner`. Fixed 16/32-byte inputs validate during lifting. Contact normalization,
 identity and pin rules, mailbox pagination and other input bounds remain shared
 Rust semantic checks; TypeScript types alone do not validate foreign inputs.
+
+## Signed contact cards
+
+The bound client's `exportContactCard({expectedLocalIdentity})` reads that
+identity's saved public messaging name and signs its `lxmf.delivery` card. The portable
+`rns-contact://v1/` format and its no_std, allocation-free validation live in
+[`prns-contact-card`](../../../services/contact-card/README.md); this app supports
+only the LXMF delivery service. Other applications may use other service hashes.
+Private identity material never enters the card or JavaScript.
+
+`previewContactCard(uri)` checks bounded canonical encoding, public identity,
+signature and the supported service, then returns the identity and derived
+destination. Preview performs no storage or network work. A self-signature proves
+the key signed the name/service claim, not the person's name, proximity,
+reachability, group membership or an observed announce.
+
+After explicit confirmation, call
+`importContactCard({uri, expectedLocalIdentity, alias})`. Native code verifies
+the card again and checks the persisted local identity on the existing drained
+database lane before committing. The initial private alias is the supplied alias
+or signed name. Reimports preserve existing aliases, announced names and pins;
+they fill a previously unknown identity or report an identity conflict without
+overwriting it. Import neither pins the identity nor creates a route, announce
+or live public-key observation. Named export and import work while the identity
+is paused, with the shared native owner started. Stopped-node access through
+unbound globals belongs to the legacy storage path.
+Caller cancellation after admission does not undo a committed import; retrying
+the same card returns `Existing` safely.
 
 ## Cancellation and ownership
 
