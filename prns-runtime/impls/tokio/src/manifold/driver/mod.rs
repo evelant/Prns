@@ -34,9 +34,10 @@ mod owed_work;
 #[cfg(feature = "runtime-metrics")]
 mod scheduling_metrics;
 mod scheduling_policy;
+mod service_lifecycle;
 
 pub use super::grant_lane::{
-    tokio_grant_lane, HeapFrameSlot, TokioGrantConsumer, TokioGrantProducer,
+    tokio_grant_lane, FrameDrainFence, HeapFrameSlot, TokioGrantConsumer, TokioGrantProducer,
 };
 pub(crate) use crate::runtime::TokioEntropy;
 #[cfg(feature = "simulation-control")]

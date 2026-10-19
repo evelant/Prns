@@ -10,6 +10,10 @@ mod remote_control;
 mod request_response;
 mod resource_admission;
 mod resource_transfer;
+pub(crate) mod service_lifecycle;
+pub use service_lifecycle::{
+    ServiceEndpoint, ServiceLifecycleError, ServicePause, ServiceRegistration,
+};
 
 use portable_atomic::AtomicU64;
 use std::cell::{Cell, RefCell};

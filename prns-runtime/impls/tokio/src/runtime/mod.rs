@@ -4,7 +4,7 @@ mod identity_blackhole_commands;
 mod identity_bootstrap;
 mod interface_store;
 mod interface_watch;
-mod node_facade;
+pub(crate) mod node_facade;
 pub mod node_introspection;
 #[cfg(feature = "rnx")]
 mod process_commands;
@@ -65,8 +65,9 @@ pub use node_facade::{
     ResourceAdmissionPeer, ResourceOfferAdmission, ResourceOfferMonitor, ResourceProgress,
     ResourceReceipt, ResourceReceiveError, ResourceSendError, ResponseSendError, RouteSeedProgress,
     RouteSeedReport, RuntimeRequestHandlerError, SaveOnLearn, SaveOnLearnWiring,
-    SegmentCompression, SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError,
-    TunnelSeedReport, AUTO_COMPRESS_MAX_LEN,
+    SegmentCompression, ServiceEndpoint, ServiceLifecycleError, ServicePause, ServiceRegistration,
+    SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError, TunnelSeedReport,
+    AUTO_COMPRESS_MAX_LEN,
 };
 #[cfg(feature = "rnx")]
 pub use process_commands::ProcessCommands;

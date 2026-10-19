@@ -8,6 +8,7 @@ use super::EgressQueue;
 struct PendingEgress {
     bytes: std::vec::Vec<u8>,
     handshake: Option<PendingHandshake>,
+    completion: crate::manifold::grant_lane::FrameCompletion,
 }
 
 pub(super) struct PendingEgressQueue {
@@ -38,8 +39,13 @@ impl PendingEgressQueue {
         queue: EgressQueue,
         bytes: std::vec::Vec<u8>,
         handshake: Option<PendingHandshake>,
+        completion: crate::manifold::grant_lane::FrameCompletion,
     ) {
-        let pending = PendingEgress { bytes, handshake };
+        let pending = PendingEgress {
+            bytes,
+            handshake,
+            completion,
+        };
         match queue {
             EgressQueue::Expedited => self.expedited.push_back(pending),
             EgressQueue::Bulk => self.bulk.push_back(pending),
@@ -48,20 +54,40 @@ impl PendingEgressQueue {
 
     pub(super) fn pop(
         &mut self,
-    ) -> Option<(EgressQueue, std::vec::Vec<u8>, Option<PendingHandshake>)> {
+    ) -> Option<(
+        EgressQueue,
+        std::vec::Vec<u8>,
+        Option<PendingHandshake>,
+        crate::manifold::grant_lane::FrameCompletion,
+    )> {
         if self.expedited_streak < EXPEDITED_BURST {
             if let Some(pending) = self.expedited.pop_front() {
                 self.expedited_streak += 1;
-                return Some((EgressQueue::Expedited, pending.bytes, pending.handshake));
+                return Some((
+                    EgressQueue::Expedited,
+                    pending.bytes,
+                    pending.handshake,
+                    pending.completion,
+                ));
             }
         }
         if let Some(pending) = self.bulk.pop_front() {
             self.expedited_streak = 0;
-            return Some((EgressQueue::Bulk, pending.bytes, pending.handshake));
+            return Some((
+                EgressQueue::Bulk,
+                pending.bytes,
+                pending.handshake,
+                pending.completion,
+            ));
         }
         let pending = self.expedited.pop_front()?;
         self.expedited_streak = EXPEDITED_BURST;
-        Some((EgressQueue::Expedited, pending.bytes, pending.handshake))
+        Some((
+            EgressQueue::Expedited,
+            pending.bytes,
+            pending.handshake,
+            pending.completion,
+        ))
     }
 
     pub(super) fn clear_observed(&mut self, mut observe: impl FnMut(PendingHandshake)) -> usize {
