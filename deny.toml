@@ -107,4 +107,7 @@ allow-registry = ["https://github.com/rust-lang/crates.io-index"]
 allow-git = [
     "https://github.com/embassy-rs/bt-hci",
     "https://github.com/embassy-rs/nrf-softdevice",
+    # cargo-deny matches repositories, not revisions. The dependency gate also
+    # enforces the reviewed MLS manifest/lock pin and vendor provenance.
+    "https://github.com/awslabs/mls-rs",
 ]

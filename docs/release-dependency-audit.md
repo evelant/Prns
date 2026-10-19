@@ -29,6 +29,27 @@ MPL-2.0. That narrow hardware boundary is shipped with its source/license notice
 accepted generally. The SoftDevice source remains restricted to revision
 `47d6121c6e823120e8b883a7ac75f44ce7daa3aa`.
 
+## MLS source pin
+
+The MLS adapter uses a narrowly patched `mls-rs` 0.56.0 vendor plus sibling crates from
+`https://github.com/awslabs/mls-rs` at commit
+`d4c5b19f4bbf8a931face27fc9e30f2db33ce83e`. The upstream MIT/Apache-2.0 licenses are
+preserved. [Vendor provenance](../prns-groups/security/mls-rs/vendor/mls-rs/PRNS-VENDOR.md)
+records the copied paths, local patch and reproducible reconstruction check. This is a local
+fork with focused tests, not an upstream-reviewed security release.
+
+`cargo-deny` 0.19.8 compares source host/path; adding a revision query to `allow-git` would
+not enforce that revision. The dependency gate therefore runs
+`validation/security/mls-source-policy.py` before the graph audit. It checks MLS dependency
+declarations, requested and resolved lockfile revisions, and vendor provenance/patch hash
+against the reviewed pin. The complete post-reconstruction vendor file inventory and hashes
+reject direct source edits, added/deleted files, and symlink substitutions. Only the dedicated
+`validation/target` build-output directory is excluded; validation source remains checked. Other git repositories remain denied unless separately reviewed.
+Changing vendored source requires rerunning reconstruction and reviewing the updated patch
+and complete `vendored_files_sha256` inventory in `PROVENANCE.json`. Changing the MLS revision
+also requires updating this policy and reviewing the vendor provenance;
+no advisory exception or MLS dependency upgrade is included.
+
 ## Unsafe enforcement
 
 The [unsafe audit](../validation/security/unsafe-audit.py) owns the reviewed

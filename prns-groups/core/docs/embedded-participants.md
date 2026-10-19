@@ -16,7 +16,7 @@ only after measurement. Keep Reticulum's core wire protocol unchanged.
 | Enrolled member with retained replicas | Independent endpoint/MLS credential, group control state, records, exact ciphertext, receipts and recovery fences. | Its own durable acceptance; it can serve retained authorized ciphertext to another member. |
 | Blind custodian | No MLS decryption keys; bounded opaque object store and authenticated storage authorization. | A separate custody promise, if implemented. It cannot issue an MLS recipient receipt or validate application plaintext. |
 
-Build the **enrolled member** first. This applies the planned record service semantics and
+Build the **enrolled member** first. This reuses current service semantics and
 gives capable embedded nodes the same protocol role as a phone. Owner operations
 are a separately qualified workload, not a permanent phone-only requirement.
 Phones may initiate a board's invite approval through authenticated device
@@ -42,7 +42,7 @@ and implementation gates.
 ## Reuse and missing seams
 
 The reusable service (separate integration),
-MLS adapter (separate integration) and
+[MLS adapter](../../security/mls-rs/README.md) and
 [coordinator/secure store](../../store/docs/secure-flash.md) are designed around
 `no_std` with bounded allocation; the service is a separate integration. The [core](../README.md) is allocation-free; the text codec is a separate
 integration. A complete firmware member must compose the service, authenticated enrollment
