@@ -220,11 +220,14 @@ uncertain commits and atomic application/crypto publication. Native storage test
 kill a process before and after commit and receipt-retirement boundaries.
 
 These are host library tests, not Reticulum network, React Native lifecycle,
-physical flash-erasure or firmware resource qualifications. The [Reticulum adapter](../transport/reticulum/README.md) now consumes the
-inventory through identified Links. Automatic peer scheduling and native
-authenticated enrollment are following integrations. Each needs its own tests; application bindings and mobile
-protected storage remain separate work. Canonical versioned wire/capability
-contracts also remain a qualification gate.
+physical flash-erasure or firmware resource qualifications. The
+[Reticulum adapter](../transport/reticulum/README.md) consumes this inventory using
+the caller's existing node and authenticated Links; its network tests supply a
+separate evidence boundary. The [native runner](../runner/native/README.md) adds
+automatic peer scheduling and reusable text-profile access. Generated app
+bindings are a following application integration.
+Next: canonical versioned wire/capability contracts and mobile protected storage.
+Authenticated enrollment/control catch-up is implemented by the native consumer.
 A richer receive disposition
 should expose duplicate/no-commit versus newly committed acceptance before the
 mobile API is frozen.
@@ -242,7 +245,7 @@ intents stop emitting; the next operation reconstructs logical reservations for
 the new era. `in_current_era` lets application projections label unfinished old
 messages as interrupted without manufacturing delivery evidence. This does not
 repair delivery across an Add or remove historical bytes from physical storage.
-A native enrollment consumer is a following integration.
+See [native enrollment](../runner/native/enrollment.md) for the first consumer.
 
 `has_pending_authored_deliveries(clock)` checks bounded live publication facts and
 receipt flags before a caller changes membership. It considers this endpoint's
@@ -251,4 +254,4 @@ including when clock uncertainty prevents a definite decision. Received records
 and retained old-era history do not block. The query uses durable evidence rather
 than disposable network work or cached conversation state. Serialize the check
 with the membership transaction; it is local evidence, not coordination with every
-sender. A native enrollment adapter must defer Add while this query is true.
+sender. The native enrollment adapter defers Add while this query is true.

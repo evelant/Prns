@@ -65,7 +65,7 @@ The fixed-size local `PGC` checkpoint is now version two (173 bytes), including
 the common lower bound for both passes. Version-one partial cursors decode with
 base zero. This changes local storage only; snapshot/inventory/fetch wire frames
 remain version one. Bind persisted coverage to enrollment and store incarnation;
-a native runner must preserve that binding in its storage adapter. A checkpoint cannot replace
+the native runner does this in its storage adapter. A checkpoint cannot replace
 the corresponding accepted records/receipts or be restored independently of them.
 Lost cursors or results are safe to rescan because accepted envelopes and exact
 receipt output are durable and deduplicated. Link loss or cancellation never
@@ -84,7 +84,7 @@ emission. Network callbacks do no storage work. `SyncStorage`, `serve_storage` a
 `reconcile_storage` split storage calls from network waits so a shared database
 lane can serve incoming work during an outgoing pull. The original direct
 `GroupService` helpers remain available for caller-driven tests.
-The following native runner integration supplies scheduling and backoff
+The [native runner](../../runner/native/README.md) supplies scheduling and backoff
 without a shared service lock across reciprocal pulls.
 
 ## Prompt delivery and same-Link receipts
@@ -123,7 +123,7 @@ An explicit old-peer `InvalidRequest`, or expiry of the read-only capability
 probe (including the core request timer), reports unsupported and permits legacy
 pull. A silent legacy group dispatcher may incur one bounded probe timeout.
 Malformed capability responses, authentication failures and other transport
-errors are not acceptance. Native runners may temporarily cache unsupported
+errors are not acceptance. The native runner temporarily caches unsupported
 observations per enrolled peer/configuration; `Network::with_push_enabled(false)`
 suppresses probes during that cooldown. Polling remains the recovery path when
 push is unsupported, offline, interrupted, or budget limited. Submit has 77 bytes of
@@ -172,10 +172,10 @@ safely repeats deduplicated work. Arbitrary eviction of live accepted records
 would require a separate repair/reset policy; the current authenticated-expiry
 maintenance does not require restoring expired content.
 
-Destination announcements are separate from synchronization. Consumers should
-announce the two fixed service destinations independently of group count and
-coalesce scheduled and manual requests. Cold identified connections use ordinary
-path requests; they need not wait for a periodic refresh. See
+Destination announcements are separate from synchronization. The native
+multi-group runner announces two fixed service destinations at startup and every
+six hours plus jitter, regardless of group count. Cold identified connections
+use ordinary path requests; they need not wait for the periodic refresh. See
 the [announce strategy and reference comparison](docs/announce-strategy.md).
 
 ## Enrollment carrier
@@ -269,9 +269,9 @@ reciprocal calls, rejection of unidentified requests, pre-network oversize refus
 and cancellation without stopping the host. These test carrier authentication
 and bounds, not invitation authorization, MLS enrollment or replay durability.
 
-Synchronization requires explicitly enrolled peer mappings. The following native runner integration handles invitation/control exchanges
-separately and reconstructs each group's sync network from its current
-authenticated configuration. Third-party blind custodians and protected mobile storage remain work. The service
+Synchronization requires explicitly enrolled peer mappings. The native runner
+handles invitation/control exchanges separately and reconstructs each group's
+sync network from its current authenticated configuration. Third-party blind custodians and protected mobile storage remain work. The service
 now provides bounded expiry maintenance for inventory, history and exact outputs.
 Record admission reserves logical service envelope/byte/change and MLS output
 capacity for each target's first receipt; independent backend limits still apply.
