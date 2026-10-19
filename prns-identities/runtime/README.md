@@ -167,13 +167,17 @@ activation and cleanup acknowledgements. They use a recording driver, not live
 Reticulum teardown. Native composition tests additionally exercise the real
 filesystem/key adapter with that recording driver.
 
-A live messaging composition is a following integration. It must implement
-scoped operations and durable stores, stage registrations with ingress closed,
-and wait for admitted work and retained buffers before releasing owned keys.
-Recording-driver tests cannot qualify those concrete barriers, physical radio
-drain or phone lifecycle behavior. The portable resource reservation contract
-does not enforce quotas inside a service or Reticulum engine; the concrete
-adapter must account separately for incoming and outgoing work.
+The native [messaging composition](../../applications/prns/native-composition/src/identity_services/README.md)
+now implements a live driver, scoped host operations and durable application
+stores. Its host tests cover dynamic registration, pause/restart and
+identity isolation. It supplements the recording-driver tests above; it does not
+qualify physical radio drain or phone lifecycle behavior. Registrations stage
+with ingress closed; pause retires owned endpoints and waits for admitted work
+and retained buffers before releasing registered key ownership.
 
+The concrete native plan bounds owned registrations and outgoing work. Inbound
+Links still share global engine capacity, so that adapter does not yet provide
+per-identity resource protection against hostile peers. The portable reservation
+contract does not itself enforce quotas inside a service or Reticulum engine.
 Setting `Capabilities::QUALIFIED` is an adapter assertion about the completion
 barriers; it cannot establish physical delivery or secure key erasure.

@@ -69,6 +69,24 @@ and physical lifecycle journeys remain separate qualification. For the Debug
 simulator install and runtime smoke, use `native:ios:client`; for a physical
 Debug install, follow the [device instructions](#physical-ios-development-client).
 
+### Expo framework cache after an Xcode SDK update
+
+After an Xcode SDK update, a cached ExpoModulesJSI slice can be incompatible even
+when the Swift compiler version has not changed. If an `__ObjC::expo`
+Swift-interface import failure points to that mismatch, rebuild the disposable
+framework with Expo's own script:
+
+```sh
+PODS_ROOT="$PWD/applications/prns/app/ios/Pods" PLATFORM_NAME=iphoneos \
+  bash applications/node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh --clean
+```
+
+Also remove the copied ExpoModulesJSI intermediate and embedded framework from
+the selected Xcode build products before rebuilding, so CocoaPods copies the
+fresh slice. Keep application data and the Rust framework. Use
+`PLATFORM_NAME=iphonesimulator` for a simulator build. A successful rebuild still
+needs the normal package and device checks.
+
 ## iOS native lifetime and Bluetooth restoration
 
 The implemented direct-LXMF slice retains one native node for the iOS process,
@@ -150,7 +168,7 @@ limits the ASK-specific exception to user force-quit and Control Center Bluetoot
 toggle cases. Ordinary background event delivery and state restoration remain
 available without ASK. The app accepts losing those additional ASK recovery
 cases to support automatic, unpaired phone networking. Qualify ordinary CoreBluetooth on the actual packaged build, separately from
-any earlier ASK-based installation. The [app guide](../prns/app/README.md)
+any earlier ASK-based installation. The [maintainer quickstart](group-maintainer-alpha.md)
 covers foreground messaging; long idle, natural suspension, process restoration,
 system-radio recovery and permission changes need separate physical checks.
 Source, simulator and foreground results do not establish those lifecycle cases.
@@ -299,3 +317,34 @@ xcrun devicectl device process launch \
 Use that restart only for launch troubleshooting. During a same-process
 background/resume check, preserve the running process and foreground the app
 normally without a terminating launch command.
+
+### Standalone development build
+
+To qualify startup without Metro, use the physical Release mode. It retains the
+same development bundle identifier and installs over the existing app; it does
+not uninstall the app or clear its identity, messages or pairings:
+
+```sh
+env -u EXPO_PUBLIC_PRNS_LXMF_TCP_TARGET \
+  PRNS_IOS_EXPECTED_PROVISIONING_PROFILE_UUID=<profile-uuid> \
+  PRNS_IOS_DEVICE_UDID=<device-udid> \
+  PRNS_IOS_DEVELOPMENT_TEAM=<team-id> \
+  npm --prefix applications run native:ios:client -- --device-standalone
+```
+
+This builds the Rust framework and app in Release mode, validates a nonempty
+`main.jsbundle` and the compiled metadata, verifies the code signature, then
+installs only on the selected phone. It uses
+`applications/target/ios-standalone-device` unless `PRNS_IOS_DERIVED_DATA` is set.
+The existing profile check remains available; omitting it permits automatic
+signing with developer-portal updates. This is a locally signed development
+build, not a production-distribution build.
+
+Release uses the embedded JavaScript and does not use the Debug-only development
+TCP peer. Qualify startup with Metro stopped and no inspector attached. Preserve
+and compare the public identity, contacts, pairings and existing group histories
+before and after installation; then exercise a synthetic group exchange, device
+receipts and a process restart. Record the actual transport used separately:
+successful standalone startup does not establish Bluetooth delivery or background
+execution. Never clear app data or replace an enrollment fixture to make a
+retained-data qualification pass.

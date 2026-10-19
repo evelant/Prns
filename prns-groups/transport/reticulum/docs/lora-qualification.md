@@ -1,10 +1,5 @@
 # Isolating a phone–LoRa–phone trial
 
-This is an acceptance procedure for the following phone integration. This
-carrier boundary provides the Reticulum transport, not the group app or its
-phone controls. Use consumers implementing the controls and diagnostics below;
-a carrier test alone does not qualify this physical journey.
-
 The desired path is phone A → Bluetooth → board A → LoRa → board B → Bluetooth → phone B. A successful receipt alone does not prove this path: nearby phones and boards can form shorter Bluetooth routes, and ESP-NOW, Wi-Fi, TCP or USB may also carry traffic.
 
 ## Existing isolation mechanism
@@ -23,9 +18,9 @@ connection.replace_interface_discovery_groups(
 ).await?;
 ```
 
-The phone consumer's remote interface card exposes the same operation as **Discovery groups (one per line)**. Read the actual Bluetooth supervisor ID from interface inventory. The board management layer persists this change and attempts to restore both prior durable and runtime state after a failed apply. Verify runtime readback after replacement and restart; successful host tests do not establish the applied settings on a particular board.
+The app's remote interface card exposes the same operation as **Discovery groups (one per line)**. Read the actual Bluetooth supervisor ID from interface inventory. The board management layer persists this change and attempts to restore both prior durable and runtime state after a failed apply. Verify runtime readback after replacement and restart; successful host tests do not establish the applied settings on a particular board.
 
-**Required phone controls:** Connections → Advanced Bluetooth discovery → Change discovery groups
+**Phone controls:** Connections → Advanced Bluetooth discovery → Change discovery groups
 now exposes a persisted set of one to four names and an explicit Restore default
 action. The default remains `reticulum`. Saving confirms the connection change;
 the UI reports durable saved names separately from currently applied names.
@@ -55,7 +50,7 @@ headroom. Record the tested binary and configuration with the physical trial.
 
 ## Observation limits
 
-The downstream phone composition exposes selected routes, aggregate active Links and interface
+The current app exposes selected routes, aggregate active Links and interface
 byte counters. Opt-in native diagnostics (`PRNS_GROUP_DIAGNOSTICS=1`) now add
 inbound/outbound synchronization start, phase and completion events, elapsed
 time, and opaque group/peer tags. Tags use a random process-local salt and cannot

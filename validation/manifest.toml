@@ -2947,3 +2947,14 @@ name = "radio_status_prefix_preserves_capability_and_operating_state_tags"
 source = "prns-core/src/remote_control/radio.rs"
 group = "remote-control"
 tiers = ["release", "scheduled"]
+
+[[suite]]
+id = "applications-group-provisioning"
+domain = "integration"
+tiers = ["pr", "release", "scheduled"]
+platform = "macos"
+toolchain = "python"
+timeout_seconds = 60
+command = ["__RUNNER_PYTHON__", "-m", "unittest", "discover", "--start-directory", "applications/tools/group-provisioning", "--pattern", "test_*.py", "--verbose"]
+inputs = ["applications/tools/group-provisioning", "tools/device/groups-provision.py", "tools/tasks.toml"]
+artifacts = "validation-artifacts/results/applications-group-provisioning"

@@ -224,8 +224,7 @@ physical flash-erasure or firmware resource qualifications. The
 [Reticulum adapter](../transport/reticulum/README.md) consumes this inventory using
 the caller's existing node and authenticated Links; its network tests supply a
 separate evidence boundary. The [native runner](../runner/native/README.md) adds
-automatic peer scheduling and reusable text-profile access. Generated app
-bindings are a following application integration.
+automatic peer scheduling, a reusable text profile and generated app bindings.
 Next: canonical versioned wire/capability contracts and mobile protected storage.
 Authenticated enrollment/control catch-up is implemented by the native consumer.
 A richer receive disposition

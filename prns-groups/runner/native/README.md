@@ -83,9 +83,10 @@ announce immediately. `announce().await` requests both existing destinations
 through the same bounded scheduler and returns local admission, cooldown, busy
 or unavailable status. Startup, periodic and manual attempts share a 60-second
 cooldown, including failed/uncertain attempts. The caller owns preference
-persistence and its chosen interval. The cooldown is per runner lifetime and is
-not a durable restart-storm fence. Shared scheduling across several local
-identities is a separate composition responsibility.
+persistence; the app chooses one hour by default. The cooldown is per runner
+lifetime and is not a durable restart-storm fence. The named-identity app disables
+these per-runner timers and uses the [durable shared scheduler](../../../prns-identities/runtime/README.md#shared-announce-scheduling)
+across its service sets; it is a separate composition responsibility.
 
 Both runners share prompt delivery over negotiated group Submit requests. A
 bounded scan of durable authored-record obligations selects exact retained MLS
@@ -157,7 +158,7 @@ refresh projections; they are not the only record of changes. Delivery targets
 exclude the publishing endpoint. All members remain MLS readers.
 
 Legacy fixed-membership fixtures and the headless regression peer are documented
-in [development tools](development.md). Normal consumer enrollment uses authenticated
+in [development tools](development.md). Normal app enrollment uses authenticated
 creation, invitations and joining; it requires no fixture transfer.
 
 ## Remaining limits
@@ -195,7 +196,7 @@ Manual results distinguish local `Requested`, `Throttled`, `Busy`, and
 batches share a 60-second cooldown, and configuration changes emit no traffic.
 The existing `run_multi`/`run_multi_with_policy` APIs retain automatic announces
 and the six-hour generic default. See the [announcement policy](../../transport/reticulum/docs/announce-strategy.md)
-for the standalone policy and consumer scheduling responsibilities.
+for the mobile app's persisted one-hour default and optional intervals.
 
 ## Bounded retry acceleration
 
@@ -245,10 +246,12 @@ Resource failure categories remain distinct.
 
 Native embeddings can instead call `enable_metadata_diagnostics()` before
 starting the runner and install a logger accepting the exact group targets. The
-consumer owns launch-time opt-in and its bounded log sink; phone-specific launch
-flags and projections belong to the following application integration. Producer
-and sink limits are independent. A filtered or capped log is not complete
-evidence; verify a readiness heartbeat around the measured interval.
+app supports explicit iOS launch environment flags and Android startup property
+`debug.prns.groups=1`, with bounded stderr/logcat sinks. Default launches remain
+silent. Producer stage limits and general, delivery and schedule sink limits are
+independent; restarting the node does not reset a process's budgets. A third-party
+logger can filter events, so a heartbeat/readiness check is required before
+claiming complete observations.
 
 The separate `prns.groups.delivery` target carries observed local send results,
 push attempts and durable record/receipt transitions. Send results have a
@@ -256,8 +259,8 @@ push attempts and durable record/receipt transitions. Send results have a
 budgets, so idle discovery and inventory setup cannot exhaust them. Their group,
 record and peer correlation uses process-salted opaque tags matching the existing
 local-send diagnostic; no original identifier, ciphertext or application content
-is logged. Consumers should reserve a separate bounded sink for this exact target so setup
-traffic cannot exhaust delivery observations. The sink still requires opt-in.
+is logged. The app reserves 1024 sink lines for this exact target separately from
+the general diagnostic cap. The sink still requires opt-in.
 
 The independent `prns.groups.schedule` target emits completed attempts,
 shortened deadlines, admissions and recovery-hint dispositions, capped at 1024
@@ -288,9 +291,9 @@ attempt, whose completion determines the next schedule.
 Sequence assignment and emission are serialized. The nonlogging
 `metadata_schedule_snapshot()` returns the last emitted sequence and producer
 health, which becomes false on exhaustion, entropy failure or poisoned ordering.
-A consumer can include this watermark/readiness in an opt-in trial heartbeat
-and reserve sink capacity for the startup probe, events and cap marker.
-A complete scheduling window requires the
+The app exposes this watermark/readiness in its opt-in trial heartbeat; its
+independent `prns.schedule` sink reserves 1026 lines for the startup probe, 1024
+events and the producer cap marker. A complete scheduling window requires the
 capture to match surrounding heartbeat watermarks, including both record stages,
 with no relevant producer or
 sink cap, missing sequence, logger failure or heartbeat gap. Delivery evidence
