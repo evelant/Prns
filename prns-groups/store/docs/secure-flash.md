@@ -279,7 +279,7 @@ zeroize them, and audit transient MLS/PSRAM copies and crash logging.
 
 Host coverage lives in the [secure backend tests](../src/secure/tests.rs),
 [independent API checks](../tests/secure_boundary.rs) and
-real MLS recovery tests (separate integration).
+[real MLS recovery tests](../../security/mls-rs/tests/secure_recovery.rs).
 These exercise real AEAD with test-only wrapping keys and simulated NOR, not
 qualified hardware or a cryptographic audit. Surviving-key reachability is a
 stronger check than searching flash for plaintext patterns; whole-image rollback
@@ -314,6 +314,6 @@ Remaining gates:
 
 Source anchors: [current NOR journal](../src/flash.rs),
 [coordinator/recovery contract](../src/lib.rs),
-MLS provider versions (separate integration),
-MLS transitions (separate integration),
+[MLS provider versions](../../security/mls-rs/src/provider.rs),
+[MLS transitions](../../security/mls-rs/src/adapter/operations.rs),
 [E290 raw flash driver](../../../personal-hopspot/embedded/esp32/src/flash.rs).

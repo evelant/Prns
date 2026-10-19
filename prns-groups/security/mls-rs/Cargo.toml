@@ -1,0 +1,33 @@
+[package]
+name = "prns-groups-mls"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.90"
+license = "MIT OR Apache-2.0"
+publish = false
+description = "Bounded MLS operations with recoverable group transactions"
+[workspace]
+exclude = ["vendor/mls-rs"]
+[dependencies]
+prns-groups = { path = "../../core" }
+prns-groups-store = { path = "../../store" }
+mls-rs = { path = "vendor/mls-rs", default-features = false, features = ["private_message", "prior_epoch", "out_of_order", "by_ref_proposal", "fast_serialize"] }
+mls-rs-core = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false }
+mls-rs-codec = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false }
+mls-rs-crypto-rustcrypto = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false }
+getrandom = { version = "=0.2.17", default-features = false, features = ["custom"] }
+zeroize = { version = "1", default-features = false, features = ["alloc"] }
+spin = { version = "0.10", default-features = false, features = ["mutex", "spin_mutex"] }
+[dev-dependencies]
+embedded-storage = { version = "0.3.2", default-features = false }
+prns-groups-store = { path = "../../store", features = ["secure"] }
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
+[lints.rust]
+unsafe_code = "forbid"
+[lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"

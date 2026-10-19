@@ -33,6 +33,7 @@ BASELINE = ROOT / "audits" / "unsafe-snapshot.json"
 GRAPHS = (
     ("group-libraries", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("group-secure-storage", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
+    ("group-mls-adapter", "prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("engine", "Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("host-c-linux", "prns-host/abi/c/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("host-c-macos", "prns-host/abi/c/Cargo.toml", "aarch64-apple-darwin"),
