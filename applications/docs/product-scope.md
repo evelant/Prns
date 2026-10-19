@@ -8,9 +8,9 @@ promise of radio-network or wire interoperability.
 
 This checkout's app boundary provides direct LXMF messaging, a local identity,
 contacts, node controls and network inspection. Group messaging and named
-identity UI are not integrated here. Group libraries, named identities and their app integration are separate
-work. This boundary does not establish an app group journey or a board acting
-as a complete group participant.
+identity UI are not integrated here. Separate group crates provide bounded
+foundation, storage and MLS mechanisms; their presence does not establish an
+app group journey or a board acting as a complete group participant.
 
 The [app guide](../prns/app/README.md) describes existing behavior,
 [roadmap](roadmap.md) prioritizes remaining integration, and
@@ -49,7 +49,7 @@ shared state, files and commands. App policy must not become a dependency of the
 generic mechanisms.
 
 Direct messages retain LXMF and its interoperability checks. The
-group design (separate integration) defines application-layer
+[group design](../../prns-groups/core/docs/design.md) defines application-layer
 security and synchronization over existing Reticulum primitives. Preserve core
 Python Reticulum compatibility; a core extension needs a concrete reason and
 compatibility evidence. Group profile support is not ordinary LXMF interoperability.

@@ -9,6 +9,9 @@ use crate::{
     ReservationId, ReservationPoolId, RuntimeReservation,
 };
 
+mod mls_qualification;
+pub use mls_qualification::{HELTEC_E290_MLS_PARTITION_TABLE, HELTEC_E290_MLS_QUALIFICATION};
+
 #[cfg(feature = "linker-addresses")]
 pub(super) mod linker;
 

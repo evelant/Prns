@@ -17,7 +17,7 @@ It does not include group enrollment or named-identity app APIs/UI.
 
 The group mechanisms already present in this tree do not establish the missing
 app journey. Coordinate group, identity and synchronization choices through the
-group design (following library integration); shared keys or copied
+[group design](../../prns-groups/core/docs/design.md); shared keys or copied
 databases do not provide authenticated device linking.
 
 ## Reliability and handoff

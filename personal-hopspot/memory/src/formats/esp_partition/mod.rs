@@ -197,6 +197,7 @@ const fn partition_kind_matches_region(kind: EspPartitionKind, role: RegionRole)
                 | RegionRole::RadioProfile
                 | RegionRole::WifiConfiguration
                 | RegionRole::Journal
+                | RegionRole::GroupState
         ),
     }
 }

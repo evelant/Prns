@@ -7,8 +7,8 @@ Reticulum routing and the group application protocol remain separate: a board ca
 forward group traffic without joining or holding MLS keys.
 
 ESP32-S3 with PSRAM is the first full-member integration target. A complete
-networked embedded member is still planned; a separate E290 storage-fixture integration exercises
-local MLS and recovery building blocks. It is not part of this boundary. Neither library compilation nor a normal
+networked embedded member is still planned; the E290 storage fixture exercises
+local MLS and recovery building blocks. Neither library compilation nor a normal
 hotspot resource report qualifies the combined group workload.
 
 ## Support and ownership
@@ -16,7 +16,7 @@ hotspot resource report qualifies the combined group workload.
 | Target or role | Current boundary |
 | --- | --- |
 | Native host | Separate native integration supplies record service, enrollment, transport and runner. The native storage backend here is plaintext; protected phone storage is separate work. |
-| ESP32-S3 with PSRAM | First embedded MLS target. E290 storage fixtures are a separate integration; portable enrollment, network synchronization and a full-member resource contract remain. |
+| ESP32-S3 with PSRAM | First embedded MLS target. Local E290 storage fixtures exist; portable enrollment, network synchronization and a full-member resource contract remain. |
 | ESP32-S3 without PSRAM | Conditional expansion after measuring the complete workload; no group-member support promise. |
 | ESP32-C6 | Routing is supported independently of groups. Group membership needs a separate memory, stack and single-core scheduling qualification. |
 | nRF52840 | No initial MLS-member promise. Current hotspot profiles already have tight RAM/flash budgets; removing SoftDevice does not automatically reclaim its reserved layout. |
@@ -86,7 +86,8 @@ Dated captures are historical evidence, not a supported member profile.
 The secure fixture stores its test wrapping key in plaintext. It therefore does
 not qualify confidentiality against flash extraction, protected provisioning,
 physical key retirement or rollback resistance. The firmware integration carries
-its own reproduction guide and compiler configuration; no fixture partition is
+the [firmware reproduction guide](../../../personal-hopspot/embedded/esp32/docs/mls-qualification.md)
+and compiler configuration; no fixture partition is
 implicitly available to the shipping record service.
 
 ## Release gates

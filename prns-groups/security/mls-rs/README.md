@@ -137,9 +137,9 @@ member/count validation, and serialization still makes temporary copies. This is
 not a proven total heap/stack bound or a recoverable-OOM guarantee. Backend indexes,
 receipt retention, compaction and allocator fragmentation need separate budgets.
 A production backend must enforce those; the file fixture intentionally serves
-only host tests. The separate [E290 qualification integration](../../core/docs/embedded.md#e290-storage-fixture)
-selects dedicated flash partitions and measures the shared allocator; it is not
-a production allocation or erasure guarantee.
+only host tests. The [E290 qualification build](../../core/docs/embedded.md#e290-storage-fixture) now selects dedicated
+flash partitions and measures the shared allocator; it is not a production
+allocation or erasure guarantee.
 
 ## Deliberately incomplete integration
 
