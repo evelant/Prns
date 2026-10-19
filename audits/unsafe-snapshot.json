@@ -25438,6 +25438,22 @@
         "group-libraries": [],
         "group-secure-storage": []
       },
+      "name": "prns-groups-runner-native",
+      "source": "prns-groups/runner/native",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": [],
+        "group-secure-storage": []
+      },
       "name": "prns-groups-service",
       "source": "prns-groups/service",
       "unsafe": {

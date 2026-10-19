@@ -2360,6 +2360,30 @@ dependencies = [
 ]
 
 [[package]]
+name = "prns-groups-runner-native"
+version = "0.1.0"
+dependencies = [
+ "base64",
+ "futures-util",
+ "getrandom 0.2.17",
+ "prns-group-text",
+ "prns-groups",
+ "prns-groups-mls",
+ "prns-groups-reticulum",
+ "prns-groups-service",
+ "prns-groups-store",
+ "prns-groups-store-native",
+ "prns-host",
+ "redb",
+ "serde",
+ "serde_json",
+ "sha2 0.10.9",
+ "tempfile",
+ "tokio",
+ "zeroize",
+]
+
+[[package]]
 name = "prns-groups-service"
 version = "0.1.0"
 dependencies = [

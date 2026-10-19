@@ -1,0 +1,36 @@
+[package]
+name = "prns-groups-runner-native"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Caller-owned durable group records and authenticated enrollment over a borrowed database"
+
+[dependencies]
+prns-group-text = { path = "../../profiles/text" }
+prns-groups = { path = "../../core" }
+prns-groups-service = { path = "../../service" }
+prns-groups-store = { path = "../../store" }
+prns-groups-store-native = { path = "../../store/native" }
+prns-groups-mls = { path = "../../security/mls-rs" }
+prns-groups-reticulum = { path = "../../transport/reticulum" }
+prns-host = { path = "../../../prns-host/core" }
+redb = "=4.2.0"
+sha2 = { version = "0.10", default-features = false }
+tokio = { version = "1", default-features = false, features = ["sync", "time", "macros"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+getrandom = "0.2.17"
+zeroize = "1"
+futures-util = { version = "0.3", default-features = false, features = ["alloc", "std"] }
+
+[dev-dependencies]
+tempfile = "3"
+tokio = { version = "1", default-features = false, features = ["macros", "rt-multi-thread", "sync", "time", "test-util"] }
+
+[lints]
+workspace = true
