@@ -144,6 +144,7 @@ mod tests {
             state
                 .links
                 .track_responding(RespondingLink {
+                    attached_interface: crate::interfaces::InterfaceId::new([0xEE; 8]),
                     link_id,
                     key: LinkKey::derive(&link_id, &shared),
                     requested_at: InstantMillis(1_000),

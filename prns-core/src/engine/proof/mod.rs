@@ -59,6 +59,12 @@ impl<S: StorageLayout> EngineState<S> {
         now: InstantMillis,
         sink: &mut impl FnMut(EngineReaction<'_>),
     ) {
+        if !matches!(
+            self.links.phase_for(&completed.link_id),
+            Some(LinkPhase::Active { .. })
+        ) {
+            return;
+        }
         let mut proof = [0u8; LINK_PROOF_WIRE_LEN];
         let Ok(written) = write_link_proof_wire_packet(
             &completed.link_id,

@@ -365,6 +365,7 @@ impl RemoteControlPairingPersistenceSender {
                 }
             }
             Journaled::AnnounceHeldDropped { .. }
+            | Journaled::PathDiscovery(_)
             | Journaled::Delivered(_)
             | Journaled::CommandSettled { .. }
             | Journaled::PersistenceFlushed { .. }

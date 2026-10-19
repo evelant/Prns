@@ -46,7 +46,10 @@ pub use crypto_pool::{
     CryptoWorkBoundary,
 };
 pub use crypto_pool::{CryptoPoolConfig, CryptoWorkerPlacement, PoolWorkers};
-pub use egress::Egress;
+pub use egress::{
+    Egress, EgressHandshakeEvent, EgressHandshakeObserver, EgressHandshakePacket,
+    EgressHandshakePhase, EgressHandshakeSnapshot, EGRESS_HANDSHAKE_EVENT_LIMIT,
+};
 pub use host::{TokioClock, TokioHost};
 pub use host_protocol::{
     AddInterfaceCommand, HostCommand, HostResourceMetadata, HostResourcePayload,

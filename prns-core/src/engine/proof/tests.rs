@@ -277,6 +277,7 @@ fn an_initiator_channel_ack_is_signed_by_the_link_key() {
     state
         .links
         .track_initiated(InitiatedLink {
+            attached_interface: crate::interfaces::InterfaceId::new([0xEE; 8]),
             link_id,
             destination: DestinationHash::new([0x77; 16]),
             route_evidence: crate::routing::routes::RouteEvidenceHandle::new(
@@ -351,6 +352,7 @@ fn a_responder_channel_ack_is_signed_by_the_held_identity() {
     state
         .links
         .track_responding(RespondingLink {
+            attached_interface: crate::interfaces::InterfaceId::new([0xEE; 8]),
             link_id,
             key: LinkKey::derive(&link_id, &shared),
             requested_at: InstantMillis(0),
@@ -419,4 +421,19 @@ fn a_channel_ack_completion_for_a_retired_link_emits_nothing() {
 
     assert_eq!(outcome, ResumeChannelAckSignOutcome::LinkNoLongerActive);
     assert!(!emitted);
+}
+
+#[test]
+fn closed_link_receipt_completion_emits_nothing() {
+    let mut state: EngineState<TestStorageLayout> = EngineState::default();
+    state.resume_link_receipt_sign(
+        LinkReceiptSignCompleted {
+            target: InterfaceId::new([0xEE; 8]),
+            link_id: crate::routing::links::LinkId::new([1; 16]),
+            packet_hash: PacketHash::new([0xA5; PACKET_HASH_LEN]),
+            signature: Ed25519Signature([0x5A; 64]),
+        },
+        InstantMillis(2000),
+        &mut |_| panic!("a closed Link must not emit a late receipt"),
+    );
 }

@@ -20781,11 +20781,11 @@
       "name": "personal-hopspot-esp32",
       "source": "personal-hopspot/embedded/esp32",
       "unsafe": {
-        "blocks": 1014,
+        "blocks": 1013,
         "externs": 779,
         "functions": 123,
         "impls": 39,
-        "tokens": 2088
+        "tokens": 2087
       },
       "version": "0.1.0"
     },
@@ -21380,6 +21380,7 @@
         ],
         "wasm": [
           "alloc",
+          "crypto-precomputed",
           "flash",
           "resource-work-offload"
         ]
@@ -22117,6 +22118,7 @@
       "graphs": {
         "android": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22131,6 +22133,7 @@
         ],
         "daemon-linux": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22150,6 +22153,7 @@
         ],
         "daemon-macos": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22169,6 +22173,7 @@
         ],
         "daemon-windows": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22188,6 +22193,7 @@
         ],
         "desktop-linux": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22202,6 +22208,7 @@
         ],
         "desktop-macos": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22216,6 +22223,7 @@
         ],
         "desktop-windows": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22230,6 +22238,7 @@
         ],
         "engine": [
           "alloc",
+          "crypto-precomputed",
           "default",
           "ed25519-batch",
           "embassy-host",
@@ -22245,6 +22254,7 @@
         ],
         "esp32-c6": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22257,6 +22267,7 @@
         ],
         "esp32-s3-heltec": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22269,6 +22280,7 @@
         ],
         "esp32-s3-heltec-e290": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22281,6 +22293,7 @@
         ],
         "esp32-s3-heltec-r8": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22293,6 +22306,7 @@
         ],
         "esp32-s3-heltec-v3": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22305,6 +22319,7 @@
         ],
         "esp32-s3-heltec-wireless-stick-lite-v3": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22317,6 +22332,7 @@
         ],
         "esp32-s3-tbeam": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22329,6 +22345,7 @@
         ],
         "esp32-s3-xiao-esp32s3-wio-sx1262": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "external-alloc",
@@ -22341,6 +22358,7 @@
         ],
         "expo-android": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22356,6 +22374,7 @@
         ],
         "expo-host-linux": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22371,6 +22390,7 @@
         ],
         "expo-ios": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22386,6 +22406,7 @@
         ],
         "halow-appliance-manager": [
           "alloc",
+          "crypto-precomputed",
           "default",
           "ed25519-batch",
           "embassy-host",
@@ -22401,6 +22422,7 @@
         ],
         "halow-headless": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22412,6 +22434,7 @@
         ],
         "host-c-linux": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22427,6 +22450,7 @@
         ],
         "host-c-macos": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22442,6 +22466,7 @@
         ],
         "host-c-windows": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22457,6 +22482,7 @@
         ],
         "ios": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22470,6 +22496,7 @@
         ],
         "nrf52840": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22481,6 +22508,7 @@
         ],
         "prns-app-android": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22496,6 +22524,7 @@
         ],
         "prns-app-ios": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22511,6 +22540,7 @@
         ],
         "sdk-native-linux": [
           "alloc",
+          "crypto-precomputed",
           "ed25519-batch",
           "embassy-host",
           "flash",
@@ -22526,6 +22556,7 @@
         ],
         "wasm": [
           "alloc",
+          "crypto-precomputed",
           "flash",
           "resource-work-offload",
           "rns-management-wire",
@@ -22601,11 +22632,11 @@
       "name": "prns-ffi",
       "source": "prns-ffi",
       "unsafe": {
-        "blocks": 190,
+        "blocks": 193,
         "externs": 7,
         "functions": 0,
         "impls": 21,
-        "tokens": 251
+        "tokens": 254
       },
       "version": "0.3.8"
     },
@@ -23798,11 +23829,11 @@
       "name": "prns-runtime",
       "source": "prns-runtime/core",
       "unsafe": {
-        "blocks": 2,
+        "blocks": 5,
         "externs": 0,
         "functions": 0,
         "impls": 0,
-        "tokens": 2
+        "tokens": 5
       },
       "version": "0.3.8"
     },

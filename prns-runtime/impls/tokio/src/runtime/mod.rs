@@ -25,7 +25,11 @@ pub use crate::manifold::driver::{
     ControlledCryptoStep, ControlledJobId, ControlledWorkKind, ControlledWorkerId,
     CryptoWorkBoundary,
 };
-pub use crate::manifold::driver::{CryptoPoolConfig, CryptoWorkerPlacement, PoolWorkers};
+pub use crate::manifold::driver::{
+    CryptoPoolConfig, CryptoWorkerPlacement, EgressHandshakeEvent, EgressHandshakeObserver,
+    EgressHandshakePacket, EgressHandshakePhase, EgressHandshakeSnapshot, PoolWorkers,
+    EGRESS_HANDSHAKE_EVENT_LIMIT,
+};
 #[cfg(feature = "scheduler-tuning")]
 pub use crate::manifold::driver::{SchedulerPolicy, SchedulerPolicyError, SchedulerPolicyInput};
 pub(crate) use destination_identity_retention::{

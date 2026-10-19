@@ -133,6 +133,8 @@ pub enum Message<'a> {
 
 #[derive(Debug)]
 pub enum Diagnostic<'a> {
+    /// Opt-in path discovery evidence; sinks control identifier redaction and budgets.
+    PathDiscovery(crate::engine::PathDiscoveryEvent),
     /// An announce just minted a fresh self-ratchet: flush this destination's record to the
     /// vault now — a secret peers may already encrypt toward must never exist only in memory.
     SelfRatchetRotated {
@@ -444,6 +446,9 @@ impl<'a> From<Journaled<'a>> for PrnsEvent<'a> {
                 original_hash,
                 total_size_bytes,
             }),
+            Journaled::PathDiscovery(event) => {
+                PrnsEvent::Diagnostic(Diagnostic::PathDiscovery(event))
+            }
             Journaled::RouteRemoved { destination, cause } => {
                 PrnsEvent::Diagnostic(Diagnostic::RouteRemoved { destination, cause })
             }
