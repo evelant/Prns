@@ -1,3 +1,4 @@
+#![forbid(unsafe_code)]
 #![deny(rustdoc::broken_intra_doc_links)]
 
 #[cfg(all(feature = "android", target_os = "android"))]
