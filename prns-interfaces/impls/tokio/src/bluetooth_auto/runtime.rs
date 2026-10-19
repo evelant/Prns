@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+mod diagnostics;
 use std::future::Future;
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -779,7 +780,6 @@ where
         }
         let configured_capabilities = local.capabilities;
         let mut local = local;
-        let mut discovery_groups = status.discovery_groups();
         while let Some(generation) = status.disabled_request() {
             let advertising_stopped = backend.set_advertising(AdvertisingMode::Off).await.is_ok();
             let scanning_stopped = backend.set_scanning(ScanningMode::Off).await.is_ok();
@@ -789,9 +789,11 @@ where
                 status.acknowledge_disabled(generation);
             }
             status.wait_for_enabled_change(generation).await;
-            discovery_groups = status.discovery_groups();
-            local.discovery_groups = discovery_groups.hashes();
         }
+        // Status can change after construction, including while the supervisor is disabled.
+        // Install the desired hashes before an inbound event can start a handshake.
+        let mut discovery_groups = status.discovery_groups();
+        local.discovery_groups = discovery_groups.hashes();
         prepare_radio::<B, MAX_PEERS>(&mut backend, &mut local, configured_capabilities).await;
         let started = Instant::now();
         let mut manager = ConnectionPolicy::<MAX_PEERS, DIAL_TRACK>::new(local);
@@ -802,6 +804,7 @@ where
         status.mark_up();
         manager.start(&mut |action| pending.push(action));
         apply_radio::<B, MAX_PEERS>(&mut pending, &mut members, &mut backend).await;
+        status.acknowledge_discovery_groups(discovery_groups);
         loop {
             if let Some(generation) = status.disabled_request() {
                 let advertising_stopped =
@@ -822,11 +825,14 @@ where
                 if !status.is_enabled() {
                     continue;
                 }
+                discovery_groups = status.discovery_groups();
+                local.discovery_groups = discovery_groups.hashes();
                 prepare_radio::<B, MAX_PEERS>(&mut backend, &mut local, configured_capabilities)
                     .await;
                 manager = ConnectionPolicy::<MAX_PEERS, DIAL_TRACK>::new(local);
                 manager.start(&mut |action| pending.push(action));
                 apply_radio::<B, MAX_PEERS>(&mut pending, &mut members, &mut backend).await;
+                status.acknowledge_discovery_groups(discovery_groups);
                 continue;
             }
             let step = event_selector
@@ -1122,6 +1128,7 @@ async fn apply_settle<B, const MAX_PEERS: usize>(
                 ..
             } => {
                 if let Some(mut held) = link.take() {
+                    diagnostics::emit(format_args!("stage=supervisor category=policy_admit"));
                     arm_fast_lane(&mut held, &lane).await;
                     let BleLinkParts {
                         source,
@@ -1144,6 +1151,7 @@ async fn apply_settle<B, const MAX_PEERS: usize>(
                 }
             }
             PolicyAction::Reject { address, .. } => {
+                diagnostics::emit(format_args!("stage=supervisor category=policy_reject"));
                 link = None;
                 backend.on_link_closed(address).await;
             }
@@ -1160,9 +1168,26 @@ async fn run_handshake_task<L: BleLink>(
     origin: Origin,
     measured_rssi: Option<i8>,
 ) -> HandshakeDone<L> {
+    diagnostics::emit(format_args!(
+        "stage=handshake category=started role={}",
+        if role == HandshakeRole::Dialer {
+            "dialer"
+        } else {
+            "listener"
+        }
+    ));
     let outcome = drive_handshake(&mut link, role, local, measured_rssi)
         .await
         .map(|established| (established, link));
+    diagnostics::emit(format_args!(
+        "stage=handshake category={} role={}",
+        diagnostics::handshake_category(&outcome),
+        if role == HandshakeRole::Dialer {
+            "dialer"
+        } else {
+            "listener"
+        }
+    ));
     HandshakeDone {
         address,
         origin,
@@ -1182,6 +1207,7 @@ async fn drive_handshake<L: BleLink>(
                 .discovery_groups
                 .contains(&DEFAULT_DISCOVERY_GROUP_HASH)
             {
+                diagnostics::columba_policy_rejection(role);
                 return Err(HandshakeFailure::Aborted(CloseReason::Incompatible));
             }
             let identity = link
@@ -1216,6 +1242,7 @@ async fn drive_handshake<L: BleLink>(
                     .await
                     .map_err(|_| HandshakeFailure::ReplySend)?;
             }
+            diagnostics::native_rejection(role, &msg, reaction.reply.as_ref(), &reaction.outcome);
             match reaction.outcome {
                 HandshakeOutcome::Settled(established) => return Ok(established),
                 HandshakeOutcome::Aborted(reason) => return Err(HandshakeFailure::Aborted(reason)),
@@ -2296,6 +2323,7 @@ mod tests {
     }
 
     mod control_completion;
+    mod discovery_groups;
     mod settled_control;
 
     #[tokio::test]

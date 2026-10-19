@@ -24,6 +24,11 @@ use crate::wire::{
     wire_hop_count_is_valid, DestinationHash, PropagationType, TransportId, WirePacketHeader,
 };
 
+mod deadline_reference;
+mod diagnostics;
+mod interface_retirement;
+mod route_recovery;
+
 impl EstablishLinkWriteOutcome {
     #[track_caller]
     fn dispatched(self) -> LinkRequestDispatch {
