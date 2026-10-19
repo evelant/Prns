@@ -4,20 +4,13 @@ The reusable SDK lives below app services and policy. The app composes the share
 host and SDK in one native image, using app-owned package staging. This is a
 development implementation, not a release-qualified distribution.
 
-The [product scope](product-scope.md) separately requires an app-independent Rust
-messaging crate/library for use by any application that needs messaging over
-Reticulum. The Expo host SDK supplies runtime and platform mechanics; it does
-not fulfill that messaging-library requirement. The existing LXMF service is
-reusable groundwork, while the broader direct/group messaging boundary and
-multi-device model remain design work. Protocol choices follow the product
-scope; this guide describes the implementation that exists today.
+The [product scope](product-scope.md) separates the host SDK from application
+services. This app composition exposes direct LXMF messaging. The separate
+group crates provide bounded foundation, storage and MLS mechanisms; group
+transport, enrollment and app integration are outside this app boundary. The
+SDK supplies host/runtime and platform mechanics rather than messaging policy.
 
-The [SDK adoption checkpoint](../checkpoints/2026-09-24-sdk-adoption.md) records
-independent SDK integration and retained-data app builds. The completed
-[investigation, migration plan and cutover receipts](../checkpoints/react-native-sdk/README.md)
-are design history, not additional active implementation plans.
-
-## Ownership delivered
+## Ownership
 
 | Owner | Responsibility |
 | --- | --- |
@@ -64,7 +57,7 @@ JavaScript loss. Received resources retain their bytes independently of the
 event stream. Persisted host directories remain locked until runtime shutdown
 has joined.
 
-The app retains the current PRNS/BLE identity and database layout. LXMF consumes
+The app owns its local identity, contacts and mailbox storage. LXMF consumes
 authenticated announce facts and routes link deliveries by local destination;
 its signer stays in Rust. General RemoteControl exchanges, pairing and access
 operations project the existing protocol types, while combined app queries,
@@ -121,21 +114,18 @@ npm --prefix prns-react-native run pack:check -- --aggregate \
 Keep recorded-release qualification distinct from explicit current-working-tree
 export checks: a release source pin must identify an actual matching commit.
 
-## Current qualification
+## Qualification boundaries
 
-The default SDK and app aggregate have separate evidence:
+The default SDK and app aggregate need separate checks. Standalone
+`prns_host_mobile` sessions are JavaScript-owned and reopen after reload; the
+`prns_app` composition retains a native service owner through JavaScript loss.
+Passing either ownership scenario does not establish the other.
 
-| Provider | Completed evidence | Remaining boundary |
-| --- | --- | --- |
-| Standalone `prns_host_mobile` | Detached npm installation and strict TypeScript on Android/iOS, Android SDK compilation, complete unsigned iOS simulator consumer build, and physical Android/iOS Hermes ownership/reload checks. Android also passed standalone Release startup; direct TCP exchange between the two platforms passed. | JS-owned sessions reopen after reload; this does not prove retained native-owner continuity. Public-registry distribution, extended background operation, radio/permission transitions and OS restoration remain open. |
-| App aggregate `prns_app` | Packed aggregate TypeScript and Android compilation, all 23 current-source detached checks, physical Android/iOS native-owner continuity across Hermes replacement, and final standalone Release cold starts with retained data. | The aggregate detached check did not compile an external iOS consumer. Current-source qualification has `releaseQualified: false`; it does not promote the recorded release or establish production distribution. |
-
-See the [standalone SDK qualification](../../prns-react-native/docs/qualification.md)
-and [app adoption checkpoint](../checkpoints/2026-09-24-sdk-adoption.md) for source,
-artifact and platform-specific scope. The adoption run did not repeat the earlier
-BLE messaging or board/firmware trials in the
-[mobile checkpoint](../checkpoints/2026-09-23-sdk-mobile.md). Bounded physical
-success does not complete the plan's broader lifecycle or distribution criteria.
+Use the [SDK qualification guide](../../prns-react-native/docs/qualification.md)
+for detached consumer and platform coverage, and [app validation](validation.md)
+for packaged-build and physical acceptance. Current-source export records
+`releaseQualified: false`; it does not promote the recorded release contract.
+Record results against the exact source, package and native provider tested.
 
 ## Remaining qualification
 
@@ -144,8 +134,8 @@ success does not complete the plan's broader lifecycle or distribution criteria.
   on the relevant default or aggregate build. Earlier bounded checks cover only
   their recorded cases.
 - Compile the complete detached aggregate iOS consumer and qualify public package
-  distribution. The standalone SDK's packaged iOS consumer build has passed;
-  it does not substitute for the aggregate build or qualify public distribution.
+  distribution. A standalone SDK consumer build does not substitute for the
+  aggregate build or qualify public distribution.
 - After the SDK lands, promote the app's historical compatibility record to a
   reviewed containing commit with matching artifacts, then run recorded-release
   qualification. Current-source extraction and development-signed Release app

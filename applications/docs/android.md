@@ -112,27 +112,12 @@ This also interrupts any TCP connections. Live capability refresh belongs in
 the shared Bluetooth backend; this restart is a temporary recovery boundary,
 not a claim of seamless radio-toggle recovery.
 
-### Physical evidence before the generated-binding cutover
+### Physical qualification
 
-The September 8–9 Galaxy S9+/Android 10 trials used the previous bridge.
-They do not qualify the current generated-binding build. The later
-[September 23 SDK checkpoint](../checkpoints/2026-09-23-sdk-mobile.md) records
-current-image retained-data lifecycle checks, real Hermes replacement and
-proof-backed phone-to-phone messaging. Fresh pairing, longer idle and newer
-Android permission/service behavior remain separate qualification; see
-[current validation and limits](validation.md).
-
-The historical clean combined APK/firmware passed twenty-two radio off/on
-cycles with successful first checks, plus bounded Stop/Start, contact retention,
-two-way messaging, node-address sharing and offline retry/cancel checks.
-Earlier failed comparisons, helper limitations and the later copy-only
-installation smoke remain in the [dated checkpoint](../checkpoints/2026-09-09-validation.md#clean-combined-checkpoint--september-9).
-Those trials cover one phone and board, not newer Android permission/service
-behavior, deep Doze, prolonged idle or power-loss durability.
-
-Generated-binding emulator and isolated native tests cover a different scope:
-typed identity/import/lifecycle values, React reload and offline contact
-retention. They do not replace interactive device acceptance.
+Run the [acceptance sequence](#acceptance-sequence) on the actual packaged build
+and supported Android versions. Generated-binding, emulator and native tests do
+not establish permission/service behavior, prolonged idle, deep Doze, radio
+recovery or power-loss durability. See [validation and limits](validation.md).
 
 ### Connection readiness and bounded requests
 
