@@ -60,6 +60,7 @@ cargo_lock_workspaces = [
     "prns-host/impls/native",
     "prns-host/impls/snapshot",
     "prns-host/impls/tokio",
+    "prns-identities",
     "prns-interfaces/impls/embassy",
     "prns-interfaces/impls/tokio",
     "prns-napi",
@@ -143,6 +144,10 @@ cargo_manifests = [
     "prns-host/impls/native/Cargo.toml",
     "prns-host/impls/snapshot/Cargo.toml",
     "prns-host/impls/tokio/Cargo.toml",
+    "prns-identities/Cargo.toml",
+    "prns-identities/codec/Cargo.toml",
+    "prns-identities/core/Cargo.toml",
+    "prns-identities/runtime/Cargo.toml",
     "prns-interfaces/impls/embassy/Cargo.toml",
     "prns-interfaces/impls/tokio/Cargo.toml",
     "prns-macros/Cargo.toml",
@@ -185,6 +190,7 @@ format_manifests = [
     "prns-host/bindings/uniffi/image/Cargo.toml",
     "prns-host/impls/native/Cargo.toml",
     "prns-host/impls/snapshot/Cargo.toml",
+    "prns-identities/Cargo.toml",
     "prns-interfaces/impls/embassy/Cargo.toml",
     "prns-interfaces/impls/tokio/Cargo.toml",
     "prns-napi/Cargo.toml",
@@ -200,6 +206,7 @@ format_manifests = [
 ]
 
 [registry.format_package_overrides]
+"prns-identities/Cargo.toml" = ["prns-identities-core", "prns-identities-codec", "prns-identities-runtime"]
 "personal-hopspot/embedded/nrf52840/Cargo.toml" = ["t-echo"]
 
 [[registry.cargo_check_delegations]]
@@ -215,6 +222,18 @@ reason = "The complete Nordic board and SoftDevice matrix is compiled for thumbv
 [[registry.asset_exemptions]]
 path = "prns-wasm/smoke/smoke.ts"
 reason = "Interactive browser-and-device smoke page; the automatable TypeScript smokes are registered suites."
+
+[[suite]]
+id = "identity-portable-tests"
+domain = "native"
+group = "named-identities"
+tiers = ["pr"]
+platform = "any"
+toolchain = "stable"
+timeout_seconds = 300
+command = ["cargo", "test", "--locked", "--manifest-path", "prns-identities/Cargo.toml", "--all-targets", "--no-default-features"]
+inputs = ["prns-identities"]
+artifacts = "validation-artifacts/results/identity-portable-tests"
 
 [[suite]]
 id = "group-communication-tests"
