@@ -842,6 +842,10 @@ impl<S: StorageLayout> EngineState<S> {
                         let responder_signing = held.signing_public_key();
                         sink(EngineReaction::Directive(Directive::Fulfill(
                             OwedWork::Crypto(CryptoOwed::LinkProofSign(LinkProofSignOwed {
+                                destination_generation: self
+                                    .upstream_app_destinations
+                                    .lookup_single(&accepted.request.destination)
+                                    .map_or(0, |row| row.registration_generation),
                                 source_generation,
                                 request: accepted.request,
                                 identity: accepted.identity,

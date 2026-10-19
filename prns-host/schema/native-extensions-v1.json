@@ -50,6 +50,30 @@
         "napi": {"status": "unsupported", "reason": "Controlled diagnostics are native embedding callbacks, not a foreign application event API."},
         "cooperative": {"status": "unsupported", "reason": "Controlled diagnostics are native embedding callbacks, not a foreign application event API."}
       }
+    },
+    {
+      "name": "scopedServiceOperations",
+      "summary": "Bind native service work to one local identity generation.",
+      "semantics": "NativeServiceScope bounds admitted operations and outgoing Links, rejects foreign local destinations and Links, and retains ownership across canceled waiters. It does not replace catalog admission, provide inbound resource quotas or authorize an untrusted API caller.",
+      "targets": {
+        "native": {"status": "supported", "declarations": [{"path": "prns-host/impls/native/src/service_scope.rs", "kind": "type", "name": "NativeServiceScope"}]},
+        "uniffi": {"status": "unsupported", "reason": "Scoped service ownership is a native Rust integration; generated lifecycle APIs remain separate work."},
+        "c": {"status": "unsupported", "reason": "The portable C contract does not expose scoped native service ownership."},
+        "napi": {"status": "unsupported", "reason": "The N-API host does not expose scoped native service ownership."},
+        "cooperative": {"status": "unsupported", "reason": "The cooperative/browser host needs its own scoped runtime adapter."}
+      }
+    },
+    {
+      "name": "scopedServiceLifecycle",
+      "summary": "Stage and retire dynamic Reticulum service destinations on a shared native node.",
+      "semantics": "ServiceEndpoint stages closed ingress until explicit activation, snapshots receive ratchets and retires owned destinations, Links and announces. Completion measures retained interface-buffer release, not physical transmission, remote receipt or secure secret erasure. Callers must fence and drain service producers and persist receive state.",
+      "targets": {
+        "native": {"status": "supported", "declarations": [{"path": "prns-runtime/impls/tokio/src/runtime/node_facade/service_lifecycle.rs", "kind": "type", "name": "ServiceEndpoint"}, {"path": "prns-runtime/impls/tokio/src/runtime/node_facade/service_lifecycle.rs", "kind": "type", "name": "ServicePause"}]},
+        "uniffi": {"status": "unsupported", "reason": "Scoped service ownership is a native Rust integration; generated lifecycle APIs remain separate work."},
+        "c": {"status": "unsupported", "reason": "The portable C contract does not expose scoped native service ownership."},
+        "napi": {"status": "unsupported", "reason": "The N-API host does not expose scoped native service ownership."},
+        "cooperative": {"status": "unsupported", "reason": "The cooperative/browser host needs its own scoped runtime adapter."}
+      }
     }
   ]
 }

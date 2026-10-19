@@ -67,6 +67,8 @@ pub enum DirectAnnounceFailure {
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum DirectServiceStopError {
     JoinTimedOut,
+    /// Callback processing exited unexpectedly; queue drainage is unproven.
+    WorkerFailed,
 }
 
 /// Narrow network operations required by the direct engine.
@@ -110,12 +112,80 @@ pub trait DirectNetwork: Send + Sync + 'static {
 #[derive(Clone)]
 pub struct PrnsDirectNetwork {
     host: HostClient,
+    scope: Option<prns_host_native::service_scope::NativeServiceScope>,
+}
+
+// Ownership starts before admission: an overloaded or fenced operation lane must
+// also close an already-acquired Link. The host retains this guard through the
+// actual send even if its caller abandons the waiter.
+struct ScopedLinkCleanup {
+    host: HostClient,
+    link: prns_host::LinkId,
+}
+impl Drop for ScopedLinkCleanup {
+    fn drop(&mut self) {
+        if let Ok(services) = self.host.native_services() {
+            let _queued =
+                services
+                    .protocols()
+                    .close_link(personal_rns::routing::links::LinkId::new(
+                        self.link.into_bytes(),
+                    ));
+        }
+    }
 }
 
 impl PrnsDirectNetwork {
     #[must_use]
     pub fn new(host: HostClient) -> Self {
-        Self { host }
+        Self { host, scope: None }
+    }
+
+    /// Bind initiator Links and network admission to one local identity generation.
+    /// The embedding forwards lifecycle events, fences this scope, retires the
+    /// destination ingress, and drains the durable service before acknowledging
+    /// pause. Keep accepted receive callbacks alive until ingress retires.
+    pub fn scoped(scope: prns_host_native::service_scope::NativeServiceScope) -> Self {
+        Self {
+            host: scope.host().clone(),
+            scope: Some(scope),
+        }
+    }
+
+    async fn execute(
+        &self,
+        command: HostCommand,
+    ) -> Result<Result<CommandOutcome, CommandFailure>, SessionError> {
+        match &self.scope {
+            Some(scope) => {
+                use prns_host_native::service_scope::NativeServiceScopeError;
+                let result = if let HostCommand::SendLinkPacket { link_id, .. } = &command {
+                    let cleanup = scope.owns_link(*link_id).then(|| ScopedLinkCleanup {
+                        host: scope.host().clone(),
+                        link: *link_id,
+                    });
+                    let scoped = scope.clone();
+                    // The host-owned operation keeps this cleanup alive if the
+                    // send waiter is cancelled. Closure submission alone never
+                    // releases the scope's tracked Link slot.
+                    scope
+                        .protocol_operation(move |_| async move {
+                            let _cleanup = cleanup;
+                            scoped.execute(command).await
+                        })
+                        .await
+                        .and_then(|result| result)
+                } else {
+                    scope.execute(command).await
+                };
+                result.map_err(|error| match error {
+                    NativeServiceScopeError::Session(error) => error,
+                    NativeServiceScopeError::Capacity => SessionError::Busy,
+                    _ => SessionError::Stopped,
+                })
+            }
+            None => self.host.execute(command).await,
+        }
     }
 }
 
@@ -137,7 +207,6 @@ impl DirectNetwork for PrnsDirectNetwork {
     ) -> DirectNetworkFuture<'_, Result<(), DirectSendFailure>> {
         Box::pin(async move {
             match self
-                .host
                 .execute(HostCommand::RequestPath {
                     destination: prns_host::DestinationHash::new(destination),
                 })
@@ -158,7 +227,6 @@ impl DirectNetwork for PrnsDirectNetwork {
     ) -> DirectNetworkFuture<'_, Result<[u8; 16], DirectSendFailure>> {
         Box::pin(async move {
             match self
-                .host
                 .execute(HostCommand::EstablishLink {
                     destination: prns_host::DestinationHash::new(destination),
                 })
@@ -179,7 +247,6 @@ impl DirectNetwork for PrnsDirectNetwork {
     ) -> DirectNetworkFuture<'_, Result<DirectDeliveryReceipt, DirectSendFailure>> {
         Box::pin(async move {
             match self
-                .host
                 .execute(HostCommand::SendLinkPacket {
                     link_id: prns_host::LinkId::new(link),
                     payload: complete_wire,
@@ -234,7 +301,6 @@ impl DirectNetwork for PrnsDirectNetwork {
     ) -> DirectNetworkFuture<'_, Result<(), DirectAnnounceFailure>> {
         Box::pin(async move {
             match self
-                .host
                 .execute(HostCommand::Announce {
                     destination: prns_host::DestinationHash::new(destination),
                     interface: None,
@@ -940,8 +1006,12 @@ pub(crate) async fn run_single_attempt(
         network.request_path(destination).await?;
     }
     let link = network.establish_link(destination).await?;
+    // Transfer the Link to the guarded send without yielding to unrelated
+    // bookkeeping after establishment. Cancellation cannot strand it between
+    // these two operations.
+    let result = network.send_link_packet(link, exact_wire).await;
     mark_authenticated_key_used(network, destination).await;
-    network.send_link_packet(link, exact_wire).await
+    result
 }
 
 async fn mark_authenticated_key_used(network: &dyn DirectNetwork, destination: [u8; 16]) {

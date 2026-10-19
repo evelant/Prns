@@ -30,6 +30,7 @@ use prns_runtime::runtime::{PersistedStateSnapshot, SelfRatchetSnapshot, SelfRat
 
 #[allow(clippy::large_enum_variant)]
 pub enum HostCommand {
+    ServiceLifecycle(crate::runtime::node_facade::service_lifecycle::ServiceCommand),
     Engine(IssuedCommand),
     EngineWithTiming {
         issued: IssuedCommand,

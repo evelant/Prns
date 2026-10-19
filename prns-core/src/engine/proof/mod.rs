@@ -39,6 +39,15 @@ impl<S: StorageLayout> EngineState<S> {
         completed: ProofSignCompleted,
         sink: &mut impl FnMut(EngineReaction<'_>),
     ) {
+        if !self
+            .upstream_app_destinations
+            .lookup_single(&completed.destination)
+            .is_some_and(|registered| {
+                registered.registration_generation == completed.destination_generation
+            })
+        {
+            return;
+        }
         let mut proof = [0u8; EXPLICIT_PROOF_WIRE_LEN];
         let Ok(written) =
             self.write_signed_proof(&completed.packet_hash, &completed.signature, &mut proof)

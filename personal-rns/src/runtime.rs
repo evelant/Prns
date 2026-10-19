@@ -86,6 +86,7 @@ pub use prns_runtime_tokio::runtime::{
     ResourceOfferMonitor, ResourceProgress, ResourceReceipt, ResourceReceiveError,
     ResourceSendError, ResponseSendError, RouteSeedProgress, RouteSeedReport,
     RuntimeRequestHandlerError, SaveOnLearn, SaveOnLearnWiring, SegmentCompression,
+    ServiceEndpoint, ServiceLifecycleError, ServicePause, ServiceRegistration,
     SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError, Subscription,
     TokioHandleEntropy, TunnelSeedReport, AUTO_COMPRESS_MAX_LEN,
 };

@@ -143,6 +143,134 @@ async fn wait_for_key(network: &PrnsDirectNetwork, destination: [u8; 16], public
     .expect("a real authenticated announce supplies the key and route");
 }
 
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn scoped_send_closes_its_link_on_capacity_or_fence_without_closing_foreign_links() {
+    use prns_host_native::{service_scope::NativeServiceScope, ApplicationEventDispatch};
+    use prns_lxmf::direct::DirectSendFailure;
+    use std::sync::{Arc, OnceLock};
+
+    let (local, local_destination) =
+        prepare_local_lxmf_destination(personal_rns::identity::Zeroizing::new([0x61; 64]), &[])
+            .unwrap();
+    let (remote, remote_destination) =
+        prepare_local_lxmf_destination(personal_rns::identity::Zeroizing::new([0x62; 64]), &[])
+            .unwrap();
+    let (sender_interface, receiver_interface) = interface_pair();
+    let scope_events = Arc::new(OnceLock::<NativeServiceScope>::new());
+    let callback = scope_events.clone();
+    let mut sender_embedding = embedding(sender_interface);
+    sender_embedding.application_events = ApplicationEventDispatch::NativeCallback;
+    sender_embedding.on_event = Some(Box::new(move |event| {
+        if let Some(scope) = callback.get() {
+            scope.on_event_ref(&event);
+        }
+    }));
+    let sender =
+        OwnedSession::open_with_embedding(config(vec![local_destination], None), sender_embedding)
+            .await
+            .unwrap();
+    let receiver = OwnedSession::open_with_embedding(
+        config(vec![remote_destination], None),
+        embedding(receiver_interface),
+    )
+    .await
+    .unwrap();
+    let identity = personal_rns::identity::PublicIdentityMaterial::from_bytes(local.public_key())
+        .identity_hash();
+    let scope = NativeServiceScope::new(
+        sender.client(),
+        prns_host::IdentityHash::new(*identity.as_bytes()),
+        vec![prns_host::DestinationHash::new(local.destination())],
+        2,
+        1,
+    )
+    .unwrap();
+    assert!(scope_events.set(scope.clone()).is_ok());
+    let network = PrnsDirectNetwork::scoped(scope.clone());
+    let peer = PrnsDirectNetwork::new(receiver.client());
+    peer.announce(remote.destination()).await.unwrap();
+    wait_for_key(&network, remote.destination(), remote.public_key()).await;
+
+    let link = network.establish_link(remote.destination()).await.unwrap();
+    let mut release = Vec::new();
+    let mut tasks = Vec::new();
+    for _ in 0..2 {
+        let (entered, ready) = tokio::sync::oneshot::channel();
+        let (finish, wait) = tokio::sync::oneshot::channel();
+        let actor = scope.clone();
+        tasks.push(tokio::spawn(async move {
+            actor
+                .protocol_operation(move |_| async move {
+                    let _ = entered.send(());
+                    let _ = wait.await;
+                })
+                .await
+                .unwrap();
+        }));
+        ready.await.unwrap();
+        release.push(finish);
+    }
+    assert!(network.send_link_packet(link, vec![1]).await.is_err());
+    tokio::time::timeout(WAIT, async {
+        while scope.owns_link(prns_host::LinkId::new(link)) {
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .expect("admission failure still closes the acquired Link");
+    for finish in release {
+        finish.send(()).unwrap();
+    }
+    for task in tasks {
+        task.await.unwrap();
+    }
+
+    let link = network.establish_link(remote.destination()).await.unwrap();
+    assert!(network.send_link_packet(link, vec![2]).await.is_ok());
+    tokio::time::timeout(WAIT, async {
+        while scope.owns_link(prns_host::LinkId::new(link)) {
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .expect("successful proof also releases the scoped Link");
+
+    let foreign = PrnsDirectNetwork::new(sender.client());
+    let link = foreign.establish_link(remote.destination()).await.unwrap();
+    assert!(network.send_link_packet(link, vec![3]).await.is_err());
+    assert_eq!(
+        sender.client().snapshot().await.unwrap().active_link_count,
+        1,
+        "scope rejection must never close another owner's Link"
+    );
+    sender
+        .client()
+        .execute(prns_host::HostCommand::CloseLink {
+            link_id: prns_host::LinkId::new(link),
+        })
+        .await
+        .unwrap()
+        .unwrap();
+
+    let link = network.establish_link(remote.destination()).await.unwrap();
+    scope.fence();
+    assert_eq!(
+        network.send_link_packet(link, vec![4]).await,
+        Err(DirectSendFailure::LocalNodeStopped)
+    );
+    scope.wait_drained().await;
+    tokio::time::timeout(WAIT, async {
+        while !scope.outgoing_links().unwrap().is_empty() {
+            tokio::time::sleep(Duration::from_millis(10)).await;
+        }
+    })
+    .await
+    .expect("fenced admission still closes the acquired Link");
+    assert!(sender.client().snapshot().await.unwrap().runtime.running);
+    sender.stop().await.unwrap();
+    receiver.stop().await.unwrap();
+}
+
 #[tokio::test(flavor = "current_thread")]
 async fn production_key_use_is_bounded_persisted_and_restored_without_a_route() {
     let directory = tempfile::tempdir().unwrap();

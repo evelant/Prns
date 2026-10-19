@@ -1019,6 +1019,9 @@ impl<S: StorageLayout> EngineState<S> {
         else {
             return self.ingest_transported_link_request(header, &request, arrival);
         };
+        if !registered.ingress_enabled {
+            return IngestPacketOutcome::Ignored(IgnoreReason::LinkRequestsRefused);
+        }
         match registered.link_request_policy {
             LinkRequestPolicy::AcceptNone => {
                 return IngestPacketOutcome::Ignored(IgnoreReason::LinkRequestsRefused)

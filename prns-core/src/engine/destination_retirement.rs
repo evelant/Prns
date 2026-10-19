@@ -26,6 +26,43 @@ pub enum RetireDestinationOutcome {
 }
 
 impl<S: StorageLayout> EngineState<S> {
+    /// Close one caller-owned Link without minting a command settlement. Service
+    /// adapters supply initiator ownership after fencing their asynchronous workers.
+    pub fn retire_service_link<F: FnMut(&mut [u8])>(
+        &mut self,
+        link_id: &LinkId,
+        interfaces: AttachedInterfaces<'_>,
+        fill_random: &mut F,
+        sink: &mut impl FnMut(EngineReaction<'_>),
+    ) {
+        if matches!(
+            self.links.phase_for(link_id),
+            Some(LinkPhase::Active { .. })
+        ) {
+            let mut iv = [0u8; ENCRYPTION_IV_LEN];
+            fill_random(&mut iv);
+            let mut buf = [0u8; BROADCAST_MTU];
+            if let Ok(dispatch) = self.write_owed_link_close(
+                link_id,
+                LinkClosedReason::LocallyClosed,
+                &iv,
+                &mut buf,
+                sink,
+            ) {
+                if let Some(target) = dispatch.fire_on {
+                    if interfaces.is_egress_eligible(target, Egress::Transmit) {
+                        sink(EngineReaction::Directive(Directive::Send {
+                            target,
+                            bytes: &buf[..dispatch.wire_bytes],
+                        }));
+                    }
+                }
+            }
+        } else {
+            self.retire_link(link_id, LinkClosedReason::LocallyClosed, sink);
+        }
+    }
+
     pub fn retire_destination<F>(
         &mut self,
         destination: &DestinationHash,

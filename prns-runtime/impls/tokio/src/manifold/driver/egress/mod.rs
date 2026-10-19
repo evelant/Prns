@@ -155,6 +155,12 @@ fn egress_queue(frame: &[u8]) -> EgressQueue {
 }
 
 impl Egress {
+    pub(super) fn drain_fences(&mut self) -> Vec<crate::manifold::grant_lane::FrameDrainFence> {
+        (0..self.lanes.len())
+            .map(|index| self.lanes.row_mut(index).producer.drain_fence())
+            .collect()
+    }
+
     #[must_use]
     pub fn new(lanes: std::vec::Vec<(InterfaceId, TokioGrantProducer)>) -> Self {
         let lanes = lanes
@@ -349,8 +355,12 @@ impl Egress {
         if lane.pending.len() >= TOKIO_EGRESS_PENDING_DEPTH {
             return EgressEnqueueOutcome::DroppedFull;
         }
-        lane.pending
-            .push(queue, bytes.to_vec(), handshake.map(PendingHandshake::new));
+        lane.pending.push(
+            queue,
+            bytes.to_vec(),
+            handshake.map(PendingHandshake::new),
+            lane.producer.reserve_completion(),
+        );
         self.pending_frames += 1;
         lane.producer.arm_release_wake();
         #[cfg(feature = "runtime-metrics")]
@@ -399,13 +409,14 @@ impl Egress {
                 visits_without_progress += 1;
                 continue;
             };
-            let Some((queue, bytes, handshake)) = pending_frames.pop() else {
+            let Some((queue, bytes, handshake, completion)) = pending_frames.pop() else {
                 producer.disarm_release_wake();
                 visits_without_progress += 1;
                 continue;
             };
             self.pending_frames -= 1;
             slot.fill(&bytes);
+            slot.completion = Some(completion);
             match queue {
                 EgressQueue::Expedited => producer.commit_expedited(),
                 EgressQueue::Bulk => producer.commit(),

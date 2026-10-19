@@ -9,6 +9,8 @@ The authoritative [extension inventory](schema/native-extensions-v1.json) record
 | authenticatedAnnounces | supported | unsupported | unsupported | unsupported | unsupported |
 | preparedInterfaceAttachments | supported | unsupported | unsupported | unsupported | unsupported |
 | linkHandshakeDiagnostics | supported | unsupported | unsupported | unsupported | unsupported |
+| scopedServiceOperations | supported | unsupported | unsupported | unsupported | unsupported |
+| scopedServiceLifecycle | supported | unsupported | unsupported | unsupported | unsupported |
 
 ## destinationPublicKey
 
@@ -57,5 +59,29 @@ Explicit opt-in function callbacks receive fixed metadata only. Core and egress 
 - C: unsupported. Controlled diagnostics are native embedding callbacks, not a foreign application event API.
 - N-API: unsupported. Controlled diagnostics are native embedding callbacks, not a foreign application event API.
 - Browser/cooperative: unsupported. Controlled diagnostics are native embedding callbacks, not a foreign application event API.
+
+## scopedServiceOperations
+
+Bind native service work to one local identity generation.
+
+NativeServiceScope bounds admitted operations and outgoing Links, rejects foreign local destinations and Links, and retains ownership across canceled waiters. It does not replace catalog admission, provide inbound resource quotas or authorize an untrusted API caller.
+
+- Native Rust: supported through [`NativeServiceScope`](impls/native/src/service_scope.rs).
+- Native UniFFI: unsupported. Scoped service ownership is a native Rust integration; generated lifecycle APIs remain separate work.
+- C: unsupported. The portable C contract does not expose scoped native service ownership.
+- N-API: unsupported. The N-API host does not expose scoped native service ownership.
+- Browser/cooperative: unsupported. The cooperative/browser host needs its own scoped runtime adapter.
+
+## scopedServiceLifecycle
+
+Stage and retire dynamic Reticulum service destinations on a shared native node.
+
+ServiceEndpoint stages closed ingress until explicit activation, snapshots receive ratchets and retires owned destinations, Links and announces. Completion measures retained interface-buffer release, not physical transmission, remote receipt or secure secret erasure. Callers must fence and drain service producers and persist receive state.
+
+- Native Rust: supported through [`ServiceEndpoint`](../prns-runtime/impls/tokio/src/runtime/node_facade/service_lifecycle.rs), [`ServicePause`](../prns-runtime/impls/tokio/src/runtime/node_facade/service_lifecycle.rs).
+- Native UniFFI: unsupported. Scoped service ownership is a native Rust integration; generated lifecycle APIs remain separate work.
+- C: unsupported. The portable C contract does not expose scoped native service ownership.
+- N-API: unsupported. The N-API host does not expose scoped native service ownership.
+- Browser/cooperative: unsupported. The cooperative/browser host needs its own scoped runtime adapter.
 
 Remote Control has a separate [declaration-generated protocol inventory](schema/remote-control-v1.generated.json), including its target availability. Authenticated announce observation parity across foreign targets remains unimplemented; diagnostics must not be substituted for authenticated native service input.

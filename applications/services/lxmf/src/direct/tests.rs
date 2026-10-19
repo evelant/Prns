@@ -524,8 +524,8 @@ async fn direct_send_is_single_attempt_and_delivered_only_after_proof_result() {
         vec![
             Call::HasRoute,
             Call::EstablishLink,
-            Call::MarkDestinationUsed,
             Call::SendLinkPacket,
+            Call::MarkDestinationUsed,
         ]
     );
     assert_eq!(
@@ -618,8 +618,8 @@ async fn direct_send_retains_typed_single_attempt_failures() {
         vec![
             Call::HasRoute,
             Call::EstablishLink,
-            Call::MarkDestinationUsed,
             Call::SendLinkPacket,
+            Call::MarkDestinationUsed,
         ],
     )
     .await;
@@ -633,8 +633,8 @@ async fn direct_send_retains_typed_single_attempt_failures() {
         vec![
             Call::HasRoute,
             Call::EstablishLink,
-            Call::MarkDestinationUsed,
             Call::SendLinkPacket,
+            Call::MarkDestinationUsed,
         ],
     )
     .await;
@@ -918,6 +918,25 @@ async fn inbound_messages_retain_verification_exact_wire_and_logical_dedup() {
         .iter()
         .all(|message| message.exact_wire != stamped));
     service.stop().await.expect("service tasks stop promptly");
+}
+
+#[tokio::test(start_paused = true)]
+async fn cancellation_reaches_guarded_send_before_retention_can_suspend() {
+    let fake = Arc::new(FakeNetwork::default());
+    fake.block_retention.store(true, Ordering::Release);
+    fake.block_send.store(true, Ordering::Release);
+    let sender = fake.clone();
+    let task =
+        tokio::spawn(async move { run_single_attempt(sender.as_ref(), [9; 16], vec![3]).await });
+    fake.send_entered.notified().await;
+    assert_eq!(
+        fake.calls(),
+        vec![Call::HasRoute, Call::EstablishLink, Call::SendLinkPacket]
+    );
+    task.abort();
+    assert!(task.await.unwrap_err().is_cancelled());
+    assert!(fake.send_future_dropped.load(Ordering::Acquire));
+    assert!(fake.used_destinations.lock().unwrap().is_empty());
 }
 
 #[tokio::test(start_paused = true)]

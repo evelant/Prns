@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+pub mod service_scope;
+
 use std::collections::BTreeMap;
 use std::future::Future;
 use std::path::{Path, PathBuf};
