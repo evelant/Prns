@@ -15,13 +15,13 @@ the core does not depend on this tree.
 - [React Native SDK ownership and implementation](docs/react-native-sdk-implementation.md)
 - [Implementation roadmap](docs/roadmap.md)
 - [Expanded remote-control plan](docs/remote-control-expansion.md)
-- [Two-phone local-node demo plan and progress](docs/phone-node-demo.md)
 
 This guide owns setup and workspace commands. The product scope owns the agreed
 direction, the roadmap owns sequencing, and the validation index owns evidence
 and limits. The binding and platform guides own their narrower boundaries;
-dated checkpoints preserve historical evidence, not current setup instructions.
-The original scratch plans are design history.
+per-run source/artifact evidence belongs with CI, release artifacts or external
+trial records. This app boundary provides direct LXMF messaging; group and
+named-identity app integration are not present here.
 
 ## Ownership
 
@@ -49,6 +49,29 @@ application protocol may diverge where the agreed design requires it.
 Start with the [binding boundary](prns/native-composition/bindings/README.md) for
 generated values, cancellation and native ownership. Edit Rust declarations and
 generator inputs, then regenerate; do not edit generated language bindings.
+
+## Connection and delivery contracts
+
+Automatic Bluetooth is network access, not contact authentication or a node-control
+grant. Use the shared peer/session policy, bounded queues and backoff; do not add
+an app-owned transport or periodic radio reset. Announcements are requested
+through native scheduling, never from screen renders. Acceptance for fan-out is
+not RF transmission or remote discovery. See [Bluetooth recovery](../docs/bluetooth-session-recovery.md)
+and the platform guides for ownership and lifecycle constraints.
+
+Discovery and Network history are bounded, session-local observations. Clearing
+them preserves saved contacts, authenticated recipient metadata and queued work.
+Fresh sends resolve missing recipient metadata before durable acceptance; never
+silently replace a pinned identity. A verified repeat of a received message can
+upgrade that saved record, but learning a sender key alone does not reverify old
+history. Delivery proof and sender verification are separate facts.
+
+Network observations come from the native capture and monotonic clock. A route
+or interface snapshot is not the path of an earlier message; persist per-attempt
+evidence if the UI needs it after restart, otherwise label it unavailable. An
+inspection failure is not an empty network. Keep physical peer counts, routes,
+Links and contacts distinct, and retain generation/revision fencing when clearing
+observations so stale snapshots cannot restore cleared rows.
 
 ## Setup
 

@@ -6,19 +6,12 @@ while making full supported control and detail available on demand. This plan
 records the existing management work and its remaining acceptance; the
 [roadmap](roadmap.md) sets its priority alongside messaging work.
 
-Implementation status and remaining plan against upstream `8c211827b`, including
-[PR #232](https://github.com/KenAKAFrosty/Prns/pull/232) and discovery-group
-read/write support. The app names all 30 request kinds and implements its first
-expanded read/write slice: node overview, interfaces, configuration, peers,
-discovery groups and 13 typed ordinary/disruptive changes. Guided Wi-Fi trials
-and controller inventory/removal are now implemented. Authorizing another
-controller and the separately advertised legacy Wi-Fi setter remain planned.
-
-The [September 21 checkpoint](../checkpoints/2026-09-21-remote-control-management.md)
-records the initial validation. The later
-[settings checkpoint](../checkpoints/2026-09-21-remote-settings-workflows.md)
-separates host checks from the actual Galaxy/E290 trials. That evidence does not
-qualify every control, firmware variant or iOS build.
+The app exposes capability-driven overview, interfaces, configuration, peers,
+discovery groups and typed ordinary/disruptive changes. Guided Wi-Fi trials and
+controller inventory/removal are implemented. Authorizing another controller and
+the separately advertised legacy Wi-Fi setter remain planned. The
+[app management guide](../prns/app/README.md#reading-and-changing-a-paired-node) describes the user flow;
+[validation](validation.md) separates source checks from physical acceptance.
 
 ## Ownership and product rules
 
@@ -44,12 +37,12 @@ devices can be reset and paired again. Live capability and authorization checks
 remain necessary for different boards and changing access, not for preserving
 older development pairings.
 
-## Delivery sequence
+## Implemented workflows and remaining work
 
 ### 1. Upstream integration and full-control pairing — implemented
 
-The app branch is rebased on upstream `8c211827b`. New board pairing uses the
-Administrator/full-supported-control preset, and confirmation explains the
+New board pairing uses the Administrator/full-supported-control preset, and
+confirmation explains the
 access being granted. The app consumes generated request and authority types;
 it does not duplicate upstream authorization.
 
@@ -176,9 +169,9 @@ Rebuild and test Android/Galaxy S9+ and iOS/MetalbeardMobile separately; old bin
 evidence does not qualify this rebase. Run the configured firmware/resource
 matrix; physical Nordic behavior remains unqualified without matching hardware.
 
-Update the user guide, current roadmap and validation record as slices land.
-Preserve dated historical checkpoints. Keep the observed board-menu freeze as a
-separate unresolved issue, not an assumed consequence or fix of this expansion.
+Update the user guide and roadmap when behavior changes. Keep exact source,
+artifact and device evidence with each qualification run; old results do not
+qualify a different firmware or app build.
 
 ## Complete command coverage
 

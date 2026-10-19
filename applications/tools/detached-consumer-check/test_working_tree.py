@@ -56,6 +56,36 @@ class WorkingTreeTests(unittest.TestCase):
             self.assertEqual(receipt['kind'], 'working-tree-source')
             self.assertEqual(len(receipt['snapshotSha256']), 64)
 
+    def test_snapshot_keeps_exact_vendor_build_sources_and_excludes_generated_outputs(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary) / 'repository'; root.mkdir()
+            included = {
+                'vendor/object-0.39.1/src/build/module.rs',
+                'vendor/object-0.39.1/tests/build/module.rs',
+            }
+            excluded = {
+                'applications/build/cache',
+                'vendor/other/src/build/module.rs',
+                'vendor/object-0.39.1/build/cache',
+                'vendor/object-0.39.1/src/build/target/cache',
+                'vendor/object-0.39.1/src/build/build/cache',
+            }
+            for relative in included | excluded:
+                path = root / relative; path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(relative)
+            subprocess.run(['git', 'init', '--quiet', root], check=True)
+            subprocess.run(['git', '-C', root, 'add', '-f', '.'], check=True)
+            subprocess.run(['git', '-C', root, '-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                            'commit', '--quiet', '-m', 'fixture'], check=True)
+            work = Path(temporary) / 'output'; work.mkdir()
+            export, receipt = working_tree.snapshot(root, work, {'sourceRoots': [
+                'applications', 'vendor/object-0.39.1', 'vendor/other']})
+            self.assertEqual(set(receipt['files']), included)
+            for relative in included:
+                self.assertEqual((export / relative).read_text(), relative)
+            for relative in excluded:
+                self.assertFalse((export / relative).exists())
+
     def test_current_snapshot_rejects_symlinks(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
@@ -75,6 +105,46 @@ class WorkingTreeTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'escapes source snapshot'):
                 working_tree.validate_dependencies(root, {'sourceRoots':['applications'],
                     'cargoEntrypoints':['applications/Cargo.toml'],'npmPackages':{}}, mobility)
+
+    def test_root_local_patch_requires_exact_reviewed_source_root(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            apps = root / 'applications'; apps.mkdir()
+            vendor = root / 'vendor/object-0.39.1'; vendor.mkdir(parents=True)
+            (apps / 'Cargo.toml').write_text('[package]\nname="app"\nversion="0.1.0"\n')
+            (vendor / 'Cargo.toml').write_text('[package]\nname="object"\nversion="0.39.1"\n')
+            (root / 'Cargo.toml').write_text('[workspace]\nmembers=["unrelated-firmware"]\n'
+                '[patch.crates-io]\nobject={path="vendor/object-0.39.1"}\n')
+            policy = {'sourceRoots': ['Cargo.toml', 'applications'],
+                      'cargoEntrypoints': ['applications/Cargo.toml'], 'npmPackages': {}}
+            with self.assertRaisesRegex(ValueError, 'Cargo dependency object escapes source snapshot'):
+                working_tree.validate_dependencies(root, policy, mobility)
+            policy['sourceRoots'].append('vendor/object-0.39.1')
+            packages = working_tree.validate_dependencies(root, policy, mobility)
+            self.assertEqual(packages['object'], 'vendor/object-0.39.1/Cargo.toml')
+            self.assertNotIn('unrelated-firmware', packages)
+            # Reviewing one vendor does not implicitly admit other vendor roots.
+            other = root / 'vendor/unreviewed'; other.mkdir()
+            (other / 'Cargo.toml').write_text('[package]\nname="other"\nversion="0.1.0"\n')
+            (vendor / 'Cargo.toml').write_text('[package]\nname="object"\nversion="0.39.1"\n'
+                '[dependencies]\nother={path="../unreviewed"}\n')
+            with self.assertRaisesRegex(ValueError, 'Cargo dependency other escapes source snapshot'):
+                working_tree.validate_dependencies(root, policy, mobility)
+
+    def test_entrypoint_patch_alias_is_identity_checked(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            apps = root / 'applications'; apps.mkdir()
+            vendor = root / 'vendor/object-0.39.1'; vendor.mkdir(parents=True)
+            (vendor / 'Cargo.toml').write_text('[package]\nname="object"\nversion="0.39.1"\n')
+            (apps / 'Cargo.toml').write_text('[package]\nname="app"\nversion="0.1.0"\n'
+                '[patch.crates-io]\naliased={package="object",path="../vendor/object-0.39.1"}\n')
+            policy = {'sourceRoots': ['applications', 'vendor/object-0.39.1'],
+                      'cargoEntrypoints': ['applications/Cargo.toml'], 'npmPackages': {}}
+            self.assertIn('object', working_tree.validate_dependencies(root, policy, mobility))
+            (vendor / 'Cargo.toml').write_text('[package]\nname="substitute"\nversion="0.39.1"\n')
+            with self.assertRaisesRegex(ValueError, 'Cargo dependency identity mismatch: aliased'):
+                working_tree.validate_dependencies(root, policy, mobility)
 
     def test_sdk_jni_core_dependencies_use_same_recorded_git_source(self):
         with tempfile.TemporaryDirectory() as temporary:
@@ -119,6 +189,8 @@ version = "0.3.7"
 unsafe_code = "forbid"
 [profile.release]
 lto = true
+[patch.crates-io]
+object = { path = "vendor/object-0.39.1" }
 ''')
             receipt = {}
             working_tree.project_workspace(root, {'personal-rns': 'personal-rns/Cargo.toml'}, receipt)
@@ -127,6 +199,7 @@ lto = true
             self.assertEqual(result['workspace']['default-members'], ['personal-rns'])
             self.assertEqual(result['workspace']['lints']['rust']['unsafe_code'], 'forbid')
             self.assertTrue(result['profile']['release']['lto'])
+            self.assertEqual(result['patch']['crates-io']['object'], {'path': 'vendor/object-0.39.1'})
             self.assertEqual(receipt['workspaceProjection']['omitted']['members'], ['unrelated-firmware'])
             self.assertNotEqual(receipt['workspaceProjection']['sourceSha256'], receipt['workspaceProjection']['projectedSha256'])
 
