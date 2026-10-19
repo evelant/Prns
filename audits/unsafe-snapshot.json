@@ -3,6 +3,14 @@
   "graphs": [
     {
       "features": [
+        "redb-store"
+      ],
+      "manifest": "prns-identities/native/Cargo.toml",
+      "name": "identity-native",
+      "target": "x86_64-unknown-linux-gnu"
+    },
+    {
+      "features": [
         "headless"
       ],
       "manifest": "prns-groups/runner/native/Cargo.toml",
@@ -288,6 +296,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -1641,6 +1650,9 @@
         "host-c-windows": [
           "zeroize"
         ],
+        "identity-native": [
+          "zeroize"
+        ],
         "ios": [
           "zeroize"
         ],
@@ -1700,6 +1712,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -2237,6 +2250,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -2659,6 +2673,9 @@
         "host-c-windows": [
           "block-padding"
         ],
+        "identity-native": [
+          "block-padding"
+        ],
         "ios": [
           "block-padding"
         ],
@@ -2850,7 +2867,8 @@
         "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
-        "halow-headless": []
+        "halow-headless": [],
+        "identity-native": []
       },
       "name": "cfg-if",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -3010,6 +3028,10 @@
           "zeroize"
         ],
         "host-c-windows": [
+          "rng",
+          "zeroize"
+        ],
+        "identity-native": [
           "rng",
           "zeroize"
         ],
@@ -3196,6 +3218,9 @@
           "block-padding"
         ],
         "host-c-windows": [
+          "block-padding"
+        ],
+        "identity-native": [
           "block-padding"
         ],
         "ios": [
@@ -3482,6 +3507,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -3926,6 +3952,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "prns-app-android": [],
         "prns-app-ios": [],
@@ -3977,6 +4004,7 @@
         "group-headless-peer": [],
         "group-libraries": [],
         "group-secure-storage": [],
+        "identity-native": [],
         "prns-app-android": [],
         "prns-app-ios": []
       },
@@ -4719,6 +4747,7 @@
         "host-c-windows": [
           "std"
         ],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [
@@ -4826,6 +4855,7 @@
         "host-c-windows": [
           "rand_core"
         ],
+        "identity-native": [],
         "ios": [
           "rand_core"
         ],
@@ -4893,9 +4923,6 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
-        "group-headless-peer": [],
-        "group-libraries": [],
-        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
@@ -4917,7 +4944,25 @@
         "impls": 0,
         "tokens": 0
       },
-      "version": "0.4.4"
+      "version": "0.4.2"
+    },
+    {
+      "graphs": {
+        "group-headless-peer": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
+        "identity-native": []
+      },
+      "name": "ctutils",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.4.3"
     },
     {
       "graphs": {
@@ -5168,6 +5213,11 @@
           "rand_core",
           "zeroize"
         ],
+        "identity-native": [
+          "digest",
+          "precomputed-tables",
+          "zeroize"
+        ],
         "ios": [
           "alloc",
           "digest",
@@ -5234,6 +5284,7 @@
         "group-secure-storage": [],
         "host-c-linux": [],
         "host-c-windows": [],
+        "identity-native": [],
         "sdk-native-linux": []
       },
       "name": "curve25519-dalek-derive",
@@ -6716,6 +6767,12 @@
           "rand_core",
           "zeroize"
         ],
+        "identity-native": [
+          "block-api",
+          "default",
+          "mac",
+          "zeroize"
+        ],
         "ios": [
           "block-api",
           "default",
@@ -7365,6 +7422,7 @@
         "host-c-windows": [
           "alloc"
         ],
+        "identity-native": [],
         "ios": [
           "alloc"
         ],
@@ -7670,6 +7728,10 @@
           "rand_core",
           "signature",
           "strobe-rs",
+          "zeroize"
+        ],
+        "identity-native": [
+          "fast",
           "zeroize"
         ],
         "ios": [
@@ -14165,6 +14227,9 @@
         "host-c-windows": [
           "more_lengths"
         ],
+        "identity-native": [
+          "more_lengths"
+        ],
         "ios": [
           "more_lengths"
         ],
@@ -14322,6 +14387,7 @@
         "host-c-windows": [
           "std"
         ],
+        "identity-native": [],
         "prns-app-android": [
           "std"
         ],
@@ -14497,6 +14563,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -14655,6 +14722,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -14903,6 +14971,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -15028,6 +15097,9 @@
           "zeroize"
         ],
         "host-c-windows": [
+          "zeroize"
+        ],
+        "identity-native": [
           "zeroize"
         ],
         "ios": [
@@ -15534,6 +15606,9 @@
           "zeroize"
         ],
         "halow-headless": [
+          "zeroize"
+        ],
+        "identity-native": [
           "zeroize"
         ]
       },
@@ -16099,6 +16174,9 @@
           "block-padding"
         ],
         "host-c-windows": [
+          "block-padding"
+        ],
+        "identity-native": [
           "block-padding"
         ],
         "ios": [
@@ -17024,6 +17102,10 @@
         "group-secure-storage": [
           "default",
           "extra_traits",
+          "std"
+        ],
+        "identity-native": [
+          "default",
           "std"
         ]
       },
@@ -25165,6 +25247,9 @@
           "std",
           "tokio-host"
         ],
+        "identity-native": [
+          "crypto-precomputed"
+        ],
         "ios": [
           "alloc",
           "crypto-precomputed",
@@ -25693,6 +25778,69 @@
         "tokens": 0
       },
       "version": "0.3.8"
+    },
+    {
+      "graphs": {
+        "identity-native": []
+      },
+      "name": "prns-identities-codec",
+      "source": "prns-identities/codec",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "identity-native": []
+      },
+      "name": "prns-identities-core",
+      "source": "prns-identities/core",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "identity-native": [
+          "default",
+          "redb-store"
+        ]
+      },
+      "name": "prns-identities-native",
+      "source": "prns-identities/native",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "identity-native": []
+      },
+      "name": "prns-identities-runtime",
+      "source": "prns-identities/runtime",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
     },
     {
       "graphs": {
@@ -26506,6 +26654,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -27364,6 +27513,10 @@
           "default",
           "proc-macro"
         ],
+        "identity-native": [
+          "default",
+          "proc-macro"
+        ],
         "prns-app-android": [
           "default",
           "proc-macro"
@@ -27683,6 +27836,10 @@
           "proc-macro"
         ],
         "host-c-windows": [
+          "default",
+          "proc-macro"
+        ],
+        "identity-native": [
           "default",
           "proc-macro"
         ],
@@ -28011,6 +28168,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -28269,6 +28427,10 @@
           "std"
         ],
         "group-secure-storage": [
+          "default",
+          "std"
+        ],
+        "identity-native": [
           "default",
           "std"
         ],
@@ -28922,6 +29084,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -29963,6 +30126,10 @@
           "std"
         ],
         "host-c-windows": [
+          "default",
+          "std"
+        ],
+        "identity-native": [
           "default",
           "std"
         ],
@@ -31123,6 +31290,9 @@
         "host-c-windows": [
           "zeroize"
         ],
+        "identity-native": [
+          "zeroize"
+        ],
         "ios": [
           "zeroize"
         ],
@@ -31508,6 +31678,7 @@
           "alloc",
           "rand_core"
         ],
+        "identity-native": [],
         "ios": [
           "alloc",
           "rand_core"
@@ -32766,6 +32937,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -33266,6 +33438,9 @@
           "const-generics"
         ],
         "host-c-windows": [
+          "const-generics"
+        ],
+        "identity-native": [
           "const-generics"
         ],
         "ios": [
@@ -33879,6 +34054,17 @@
           "proc-macro",
           "visit",
           "visit-mut"
+        ],
+        "identity-native": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit"
         ],
         "prns-app-android": [
           "clone-impls",
@@ -37100,6 +37286,9 @@
         "host-c-windows": [
           "const-generics"
         ],
+        "identity-native": [
+          "const-generics"
+        ],
         "ios": [
           "const-generics"
         ],
@@ -37254,7 +37443,8 @@
         "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
-        "halow-headless": []
+        "halow-headless": [],
+        "identity-native": []
       },
       "name": "unicode-ident",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -38044,6 +38234,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -39294,6 +39485,10 @@
           "precomputed-tables",
           "static_secrets"
         ],
+        "identity-native": [
+          "precomputed-tables",
+          "static_secrets"
+        ],
         "ios": [
           "precomputed-tables",
           "static_secrets"
@@ -40040,6 +40235,10 @@
           "default",
           "derive",
           "zeroize_derive"
+        ],
+        "identity-native": [
+          "derive",
+          "zeroize_derive"
         ]
       },
       "name": "zeroize",
@@ -40099,6 +40298,7 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "prns-app-android": [],
         "prns-app-ios": [],
         "sdk-native-linux": [],

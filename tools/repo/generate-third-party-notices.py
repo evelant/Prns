@@ -20,6 +20,7 @@ ROOT = Path(__file__).resolve().parents[2]
 OUTPUT = ROOT / "THIRD_PARTY_NOTICES.md"
 ABOUT = ROOT / "about.toml"
 GRAPHS = (
+    ("Identity native storage", "prns-identities/native/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("Group headless peer", "prns-groups/runner/native/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("Group libraries", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("Group secure storage", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
@@ -130,6 +131,7 @@ GRAPHS = (
 # the other release graphs unchanged, and exclude the app's binding-generator
 # tooling rather than enabling every feature in its workspace.
 GRAPH_FEATURES = {
+    "Identity native storage": ("redb-store",),
     "Group headless peer": ("headless",),
     "Group secure storage": ("prns-groups-store/secure",),
     "Prns app Android": ("android",),

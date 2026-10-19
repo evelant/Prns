@@ -1,0 +1,28 @@
+[package]
+name = "prns-identities-native"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Durable native filesystem catalog and Reticulum identity vault"
+
+[features]
+default = []
+redb-store = ["dep:redb"]
+# Process-crash injection for the isolated integration tests; never enable in a
+# shipping application. The normal library does not inspect crash-control env.
+fault-injection = []
+
+[dependencies]
+prns-identities-core = { path = "../core" }
+prns-identities-codec = { path = "../codec" }
+prns-identities-runtime = { path = "../runtime" }
+prns-core = { path = "../../prns-core", default-features = false, features = ["crypto-precomputed"] }
+getrandom = "0.3"
+redb = { version = "=4.2.0", optional = true }
+
+[lints]
+workspace = true
