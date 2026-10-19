@@ -2,6 +2,11 @@
   "generator": "validation/security/unsafe-audit.py",
   "graphs": [
     {
+      "manifest": "prns-groups/Cargo.toml",
+      "name": "group-libraries",
+      "target": "x86_64-unknown-linux-gnu"
+    },
+    {
       "manifest": "Cargo.toml",
       "name": "engine",
       "target": "x86_64-unknown-linux-gnu"
@@ -1322,6 +1327,9 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "std"
+        ],
         "halow-headless": [
           "std"
         ]
@@ -2551,6 +2559,7 @@
     },
     {
       "graphs": {
+        "group-libraries": [],
         "halow-headless": []
       },
       "name": "cfg-if",
@@ -8596,6 +8605,9 @@
           "default",
           "std"
         ],
+        "group-libraries": [
+          "std"
+        ],
         "halow-appliance-manager": [
           "std"
         ],
@@ -10206,6 +10218,11 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "group-libraries": [
           "alloc",
           "default",
           "std"
@@ -12859,6 +12876,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-libraries": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
@@ -15241,6 +15259,24 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "default",
+          "std"
+        ]
+      },
+      "name": "libc",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 160,
+        "externs": 210,
+        "functions": 412,
+        "impls": 10,
+        "tokens": 800
+      },
+      "version": "0.2.190"
+    },
+    {
+      "graphs": {
         "daemon-linux": [
           "cc",
           "default",
@@ -15407,6 +15443,14 @@
           "no_std",
           "std",
           "xdp"
+        ],
+        "group-libraries": [
+          "auxvec",
+          "elf",
+          "errno",
+          "general",
+          "ioctl",
+          "no_std"
         ],
         "halow-appliance-manager": [
           "auxvec",
@@ -20200,6 +20244,11 @@
           "race",
           "std"
         ],
+        "group-libraries": [
+          "alloc",
+          "race",
+          "std"
+        ],
         "halow-appliance-manager": [
           "alloc",
           "default",
@@ -22646,6 +22695,53 @@
       },
       "name": "prns-flash-manifest",
       "source": "prns-flash-manifest",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": []
+      },
+      "name": "prns-groups",
+      "source": "prns-groups/core",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": [
+          "default"
+        ]
+      },
+      "name": "prns-groups-store",
+      "source": "prns-groups/store",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": []
+      },
+      "name": "prns-groups-store-native",
+      "source": "prns-groups/store/native",
       "unsafe": {
         "blocks": 0,
         "externs": 0,
@@ -25150,6 +25246,10 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "default",
+          "std"
+        ],
         "prns-app-android": [
           "default",
           "std"
@@ -25929,6 +26029,12 @@
     },
     {
       "graphs": {
+        "group-libraries": [
+          "alloc",
+          "default",
+          "fs",
+          "std"
+        ],
         "halow-headless": [
           "alloc",
           "default",
@@ -28857,6 +28963,10 @@
           "once",
           "rwlock",
           "spin_mutex"
+        ],
+        "group-libraries": [
+          "mutex",
+          "spin_mutex"
         ]
       },
       "name": "spin",
@@ -30401,6 +30511,10 @@
           "getrandom"
         ],
         "expo-ios": [
+          "default",
+          "getrandom"
+        ],
+        "group-libraries": [
           "default",
           "getrandom"
         ],
@@ -35821,6 +35935,23 @@
         "tokens": 38
       },
       "version": "1.9.0"
+    },
+    {
+      "graphs": {
+        "group-libraries": [
+          "alloc"
+        ]
+      },
+      "name": "zeroize",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 33,
+        "externs": 0,
+        "functions": 4,
+        "impls": 1,
+        "tokens": 38
+      },
+      "version": "1.9.1"
     },
     {
       "graphs": {

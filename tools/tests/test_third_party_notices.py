@@ -23,6 +23,11 @@ SPEC.loader.exec_module(notices)
 
 
 class ThirdPartyNoticeTests(unittest.TestCase):
+    def test_group_library_graphs_cover_their_owned_workspaces(self) -> None:
+        graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
+        self.assertEqual(graphs["Group libraries"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertNotIn("Group libraries", notices.GRAPH_FEATURES)
+
     def test_app_graphs_add_only_the_platform_product_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
         self.assertEqual(len(graphs), len(notices.GRAPHS))

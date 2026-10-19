@@ -15,6 +15,7 @@ fi
 python3 "$root/validation/security/license-policy-parity.py"
 
 graphs=(
+    "group-libraries|prns-groups/Cargo.toml|x86_64-unknown-linux-gnu"
     "engine|Cargo.toml|x86_64-unknown-linux-gnu"
     "daemon-linux|prnsd/Cargo.toml|x86_64-unknown-linux-gnu"
     "daemon-macos|prnsd/Cargo.toml|aarch64-apple-darwin"
