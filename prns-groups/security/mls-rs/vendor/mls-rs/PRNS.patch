@@ -1,0 +1,813 @@
+--- a/Cargo.toml
++++ b/Cargo.toml
+@@ -56,10 +56,10 @@
+ fuzz_util = ["test_util", "default", "dep:once_cell", "dep:mls-rs-crypto-openssl"]
+ 
+ [dependencies]
+-mls-rs-core = { path = "../mls-rs-core", default-features = false, version = "0.27.0" }
+-mls-rs-identity-x509 = { path = "../mls-rs-identity-x509", default-features = false, version = "0.21.0", optional = true }
++mls-rs-core = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false, version = "0.27.0" }
++mls-rs-identity-x509 = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false, version = "0.21.0", optional = true }
+ zeroize = { version = "1", default-features = false, features = ["alloc", "zeroize_derive"] }
+-mls-rs-codec = { version = "0.7", path = "../mls-rs-codec", default-features = false}
++mls-rs-codec = { version = "0.7", git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false}
+ thiserror = { version = "2", optional = true }
+ itertools = { version = "0.14.0", default-features = false, features = ["use_alloc"]}
+ cfg-if = "1"
+@@ -69,8 +69,8 @@
+ subtle = { version = "2.6.1", default-features = false, features = ["i128"] }
+ 
+ # Optional dependencies
+-mls-rs-provider-sqlite = { path = "../mls-rs-provider-sqlite", version = "0.23.0", default-features = false, optional = true }
+-mls-rs-crypto-openssl = { path = "../mls-rs-crypto-openssl", optional = true, version = "0.21.0" }
++mls-rs-provider-sqlite = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", version = "0.23.0", default-features = false, optional = true }
++mls-rs-crypto-openssl = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", optional = true, version = "0.21.0" }
+ 
+ # TODO: https://github.com/GoogleChromeLabs/wasm-bindgen-rayon
+ rayon = { version = "1", optional = true }
+@@ -80,7 +80,7 @@
+ hex = { version = "^0.4.3", default-features = false, features = ["serde", "alloc"], optional = true }
+ 
+ # Only for benchmarks
+-mls-rs-crypto-awslc = { path = "../mls-rs-crypto-awslc", optional = true, version = "0.25" }
++mls-rs-crypto-awslc = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", optional = true, version = "0.25" }
+ 
+ # Async mode dependencies
+ [target.'cfg(mls_build_async)'.dependencies]
+@@ -110,11 +110,11 @@
+ 
+ [target.'cfg(target_arch = "wasm32")'.dev-dependencies]
+ wasm-bindgen-test = { version = "0.3" }
+-mls-rs-crypto-webcrypto = { path = "../mls-rs-crypto-webcrypto", version = "0.15.0" }
++mls-rs-crypto-webcrypto = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", version = "0.15.0" }
+ criterion = { version = "0.8", default-features = false, features = ["plotters", "cargo_bench_support", "async_futures", "html_reports"] }
+ getrandom = { version = "0.3", features = ["wasm_js"] }
+ [target.'cfg(not(target_arch = "wasm32"))'.dev-dependencies]
+-mls-rs-crypto-openssl = { path = "../mls-rs-crypto-openssl", version = "0.21.0"}
++mls-rs-crypto-openssl = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", version = "0.21.0"}
+ criterion = { version = "0.8", features = ["async_futures", "html_reports"] }
+ 
+ [lints.rust]
+@@ -168,3 +168,6 @@
+ [[test]]
+ name = "client_tests"
+ required-features = ["test_util"]
++
++# This vendored crate is an independent manifest owner.
++[workspace]
+--- a/src/client.rs
++++ b/src/client.rs
+@@ -183,6 +183,8 @@
+         error("requested generation {0} is too far ahead of current generation")
+     )]
+     InvalidFutureGeneration(u32),
++    #[cfg_attr(feature = "std", error("receive ratchet policy exceeded: {0:?}"))]
++    ReceiveRatchetLimitExceeded(crate::group::ReceiveRatchetLimitError),
+     #[cfg_attr(feature = "std", error("leaf node has no children"))]
+     LeafNodeNoChildren,
+     #[cfg_attr(feature = "std", error("root node has no parent"))]
+@@ -715,7 +717,14 @@
+             .map_err(|e| MlsError::GroupStorageError(e.into_any_error()))?
+             .ok_or(MlsError::GroupNotFound)?;
+ 
+-        let snapshot = Snapshot::mls_decode(&mut &**snapshot)?;
++        let mut reader = &**snapshot;
++        let snapshot = Snapshot::mls_decode(&mut reader)?;
++        if !reader.is_empty() {
++            return Err(mls_rs_codec::Error::InvalidContent.into());
++        }
++        if snapshot.state.context.group_id != group_id {
++            return Err(MlsError::GroupIdMismatch);
++        }
+ 
+         Group::from_snapshot(self.config.clone(), snapshot).await
+     }
+@@ -739,7 +748,14 @@
+             .map_err(|e| MlsError::GroupStorageError(e.into_any_error()))?
+             .ok_or(MlsError::GroupNotFound)?;
+ 
+-        let mut snapshot = Snapshot::mls_decode(&mut &**snapshot)?;
++        let mut reader = &**snapshot;
++        let mut snapshot = Snapshot::mls_decode(&mut reader)?;
++        if !reader.is_empty() {
++            return Err(mls_rs_codec::Error::InvalidContent.into());
++        }
++        if snapshot.state.context.group_id != group_id {
++            return Err(MlsError::GroupIdMismatch);
++        }
+         snapshot.state.public_tree.nodes = tree_data.0.into_owned();
+ 
+         Group::from_snapshot(self.config.clone(), snapshot).await
+--- a/src/group/builder.rs
++++ b/src/group/builder.rs
+@@ -245,6 +245,8 @@
+             pending_updates: Default::default(),
+             pending_commit: Default::default(),
+             epoch_secrets: key_schedule_result.epoch_secrets,
++            #[cfg(feature = "private_message")]
++            receive_ratchet_limits: None,
+             state_repo,
+             cipher_suite_provider,
+             #[cfg(feature = "psk")]
+--- a/src/group/ciphertext_processor.rs
++++ b/src/group/ciphertext_processor.rs
+@@ -48,6 +48,7 @@
+ {
+     group_state: &'a mut GS,
+     cipher_suite_provider: CP,
++    receive_limits: Option<super::ReceiveRatchetLimits>,
+ }
+ 
+ impl<'a, GS, CP> CiphertextProcessor<'a, GS, CP>
+@@ -62,7 +63,16 @@
+         Self {
+             group_state,
+             cipher_suite_provider,
+-        }
++            receive_limits: None,
++        }
++    }
++
++    pub(crate) fn with_receive_limits(
++        mut self,
++        limits: Option<super::ReceiveRatchetLimits>,
++    ) -> Self {
++        self.receive_limits = limits;
++        self
+     }
+ 
+     #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
+@@ -88,11 +98,28 @@
+     ) -> Result<MessageKeyData, MlsError> {
+         let sender = NodeIndex::from(sender);
+ 
+-        self.group_state
+-            .epoch_secrets_mut()
+-            .secret_tree
+-            .message_key_generation(&self.cipher_suite_provider, sender, key_type, generation)
+-            .await
++        let tree = &mut self.group_state.epoch_secrets_mut().secret_tree;
++        match self.receive_limits {
++            Some(limits) => {
++                tree.message_key_generation_with_receive_limits(
++                    &self.cipher_suite_provider,
++                    sender,
++                    key_type,
++                    generation,
++                    Some(limits),
++                )
++                .await
++            }
++            None => {
++                tree.message_key_generation(
++                    &self.cipher_suite_provider,
++                    sender,
++                    key_type,
++                    generation,
++                )
++                .await
++            }
++        }
+     }
+ 
+     #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
+--- a/src/group/message_processor.rs
++++ b/src/group/message_processor.rs
+@@ -686,6 +686,10 @@
+         #[cfg(not(any(feature = "private_message", feature = "by_ref_proposal")))]
+         let Content::Commit(commit) = auth_content.content.content;
+ 
++        if self.mls_rules().require_receive_update_path() && commit.path.is_none() {
++            return Err(MlsError::CommitMissingPath);
++        }
++
+         let group_state = self.group_state();
+         let id_provider = self.identity_provider();
+ 
+--- a/src/group/mls_rules.rs
++++ b/src/group/mls_rules.rs
+@@ -193,6 +193,12 @@
+         current_roster: &Roster,
+         current_context: &GroupContext,
+     ) -> Result<EncryptionOptions, Self::Error>;
++
++    /// Require an UpdatePath on every received commit, including add-only commits.
++    /// This complements `CommitOptions::path_required`, which controls local creation.
++    fn require_receive_update_path(&self) -> bool {
++        false
++    }
+ 
+     /// Returns whether a commit containing a custom proposal of the given type must include an
+     /// update path.
+@@ -252,6 +258,10 @@
+                 (**self).encryption_options(roster, context)
+             }
+ 
++            fn require_receive_update_path(&self) -> bool {
++                (**self).require_receive_update_path()
++            }
++
+             #[cfg(feature = "custom_proposal")]
+             fn custom_proposal_requires_update_path(&self, proposal: &CustomProposal) -> bool {
+                 (**self).custom_proposal_requires_update_path(proposal)
+--- a/src/group/mod.rs
++++ b/src/group/mod.rs
+@@ -99,6 +99,8 @@
+ pub use commit::*;
+ pub use mls_rs_core::group::GroupContext;
+ pub use roster::*;
++mod receive_ratchet;
++pub use receive_ratchet::{ReceiveRatchetLimitError, ReceiveRatchetLimits, ReceiveRatchetUsage};
+ 
+ pub(crate) use mls_rs_core::group::ConfirmedTranscriptHash;
+ pub(crate) use util::*;
+@@ -266,6 +268,8 @@
+     state_repo: GroupStateRepository<C::GroupStateStorage, C::KeyPackageRepository>,
+     pub(crate) state: GroupState,
+     epoch_secrets: EpochSecrets,
++    #[cfg(feature = "private_message")]
++    receive_ratchet_limits: Option<ReceiveRatchetLimits>,
+     private_tree: TreeKemPrivate,
+     key_schedule: KeySchedule,
+     #[cfg(feature = "by_ref_proposal")]
+@@ -463,6 +467,8 @@
+             #[cfg(test)]
+             commit_modifiers: Default::default(),
+             epoch_secrets,
++            #[cfg(feature = "private_message")]
++            receive_ratchet_limits: None,
+             state_repo,
+             cipher_suite_provider: cs,
+             #[cfg(feature = "psk")]
+@@ -1454,9 +1460,11 @@
+         message: &PrivateMessage,
+     ) -> Result<AuthenticatedContent, MlsError> {
+         let epoch_id = message.epoch;
++        let receive_limits = self.receive_ratchet_limits;
+ 
+         let auth_content = if epoch_id == self.context().epoch {
+             let content = CiphertextProcessor::new(self, self.cipher_suite_provider.clone())
++                .with_receive_limits(receive_limits)
+                 .open(message)
+                 .await?;
+ 
+@@ -1481,6 +1489,7 @@
+                     .ok_or(MlsError::EpochNotFound)?;
+ 
+                 let content = CiphertextProcessor::new(epoch, self.cipher_suite_provider.clone())
++                    .with_receive_limits(receive_limits)
+                     .open(message)
+                     .await?;
+ 
+@@ -1589,6 +1598,12 @@
+     #[cfg(feature = "by_ref_proposal")]
+     pub fn commit_required(&self) -> bool {
+         !self.state.proposals.is_empty()
++    }
++
++    /// Number of cached by-reference proposals, without cloning proposal content.
++    #[cfg(feature = "by_ref_proposal")]
++    pub fn cached_proposal_count(&self) -> usize {
++        self.state.proposals.proposals.len()
+     }
+ 
+     /// Returns all by-reference proposals that have been cached for this group.
+--- a/src/group/proposal_filter/filtering.rs
++++ b/src/group/proposal_filter/filtering.rs
+@@ -16,10 +16,12 @@
+     tree_kem::{
+         leaf_node_validator::{LeafNodeValidator, ValidationContext},
+         node::LeafIndex,
+-        TreeKemPublic,
+     },
+     CipherSuiteProvider, ExtensionList,
+ };
++
++#[cfg(feature = "custom_proposal")]
++use crate::tree_kem::TreeKemPublic;
+
+ use super::{
+     filtering_common::{filter_out_invalid_psks, ApplyProposalsOutput, ProposalApplier},
+--- a/src/group/proposal_filter/filtering_common.rs
++++ b/src/group/proposal_filter/filtering_common.rs
+@@ -41,8 +41,11 @@
+ #[cfg(all(feature = "std", feature = "psk"))]
+ use std::collections::HashSet;
+
++#[cfg(all(feature = "by_ref_proposal", feature = "psk"))]
++use super::filtering::apply_strategy;
++
+ #[cfg(feature = "by_ref_proposal")]
+-use super::filtering::{apply_strategy, filter_out_invalid_proposers, FilterStrategy};
++use super::filtering::{filter_out_invalid_proposers, FilterStrategy};
+
+ #[cfg(feature = "custom_proposal")]
+ use super::filtering::filter_out_unsupported_custom_proposals;
+--- /dev/null
++++ b/src/group/receive_ratchet.rs
+@@ -0,0 +1,136 @@
++// Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
++// Copyright by contributors to this project.
++// SPDX-License-Identifier: (Apache-2.0 OR MIT)
++
++/// Local receive policy. These values are not MLS wire fields or snapshot data.
++///
++/// Applications must install their policy after creating, joining or loading a
++/// group. Limits apply to each epoch's secret tree, across application and
++/// handshake ratchets. Bound retained epochs/groups separately in the adapter.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct ReceiveRatchetLimits {
++    /// Maximum skipped generations derived while processing one message.
++    pub max_forward_distance: u32,
++    /// Maximum retained skipped keys for one sender and key type.
++    pub max_skipped_keys_per_ratchet: usize,
++    /// Maximum retained skipped keys across all senders and key types in an epoch.
++    pub max_skipped_keys_per_epoch: usize,
++}
++
++/// Retained skipped-key counts; does not count chain secrets or tree nodes.
++#[derive(Clone, Copy, Debug, PartialEq, Eq)]
++pub struct ReceiveRatchetUsage {
++    pub skipped_keys: usize,
++    pub max_skipped_keys_in_ratchet: usize,
++}
++
++/// A policy failure detected before advancing a receive ratchet.
++#[derive(Clone, Debug, PartialEq, Eq)]
++pub enum ReceiveRatchetLimitError {
++    ForwardDistance { requested: u32, limit: u32 },
++    PerRatchetSkippedKeys { requested: usize, limit: usize },
++    PerEpochSkippedKeys { requested: usize, limit: usize },
++    GenerationExhausted,
++    CounterOverflow,
++}
++
++impl ReceiveRatchetLimits {
++    /// Validate forward work without advancing state. Historical generations have
++    /// zero forward distance; availability still depends on retained keys.
++    pub fn forward_distance(
++        self,
++        next_generation: u32,
++        requested_generation: u32,
++    ) -> Result<u32, ReceiveRatchetLimitError> {
++        requested_generation
++            .checked_add(1)
++            .ok_or(ReceiveRatchetLimitError::GenerationExhausted)?;
++        let distance = requested_generation.saturating_sub(next_generation);
++        if distance > self.max_forward_distance {
++            return Err(ReceiveRatchetLimitError::ForwardDistance {
++                requested: distance,
++                limit: self.max_forward_distance,
++            });
++        }
++        Ok(distance)
++    }
++}
++
++impl ReceiveRatchetUsage {
++    pub(crate) fn validate(
++        self,
++        limits: ReceiveRatchetLimits,
++    ) -> Result<(), ReceiveRatchetLimitError> {
++        if self.max_skipped_keys_in_ratchet > limits.max_skipped_keys_per_ratchet {
++            return Err(ReceiveRatchetLimitError::PerRatchetSkippedKeys {
++                requested: self.max_skipped_keys_in_ratchet,
++                limit: limits.max_skipped_keys_per_ratchet,
++            });
++        }
++        if self.skipped_keys > limits.max_skipped_keys_per_epoch {
++            return Err(ReceiveRatchetLimitError::PerEpochSkippedKeys {
++                requested: self.skipped_keys,
++                limit: limits.max_skipped_keys_per_epoch,
++            });
++        }
++        Ok(())
++    }
++}
++
++#[cfg(feature = "private_message")]
++impl<C> super::Group<C>
++where
++    C: crate::client_config::ClientConfig + Clone,
++{
++    /// Install a local policy after creation/join/load, validating current and
++    /// already loaded prior epochs. An error leaves the previous policy unchanged.
++    ///
++    /// Snapshots intentionally do not contain this policy. Lazy-loaded prior
++    /// epochs are validated again before receiving a message or returning usage.
++    /// Decoding a stored snapshot precedes this check; bound stored record bytes
++    /// before calling the upstream decoder. This is not a fallible allocator API.
++    pub fn set_receive_ratchet_limits(
++        &mut self,
++        limits: ReceiveRatchetLimits,
++    ) -> Result<(), crate::client::MlsError> {
++        self.receive_ratchet_usage()?
++            .validate(limits)
++            .map_err(crate::client::MlsError::ReceiveRatchetLimitExceeded)?;
++        #[cfg(feature = "prior_epoch")]
++        self.state_repo
++            .validate_pending_receive_ratchet_limits(limits)?;
++        self.receive_ratchet_limits = Some(limits);
++        Ok(())
++    }
++
++    /// Installed local policy, or `None` for upstream-compatible unrestricted
++    /// skipped-key retention. PRNS adapters must not process in the latter state.
++    pub fn receive_ratchet_limits(&self) -> Option<ReceiveRatchetLimits> {
++        self.receive_ratchet_limits
++    }
++
++    pub fn receive_ratchet_usage(&self) -> Result<ReceiveRatchetUsage, crate::client::MlsError> {
++        self.epoch_secrets.secret_tree.receive_ratchet_usage()
++    }
++
++    /// Load and validate a retained epoch using the installed local policy.
++    /// Returns `None` when the storage provider no longer retains that epoch.
++    #[cfg(feature = "prior_epoch")]
++    #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
++    pub async fn prior_epoch_receive_ratchet_usage(
++        &mut self,
++        epoch_id: u64,
++    ) -> Result<Option<ReceiveRatchetUsage>, crate::client::MlsError> {
++        let limits = self.receive_ratchet_limits;
++        let Some(epoch) = self.state_repo.get_epoch_mut(epoch_id).await? else {
++            return Ok(None);
++        };
++        let usage = epoch.secrets.secret_tree.receive_ratchet_usage()?;
++        if let Some(limits) = limits {
++            usage
++                .validate(limits)
++                .map_err(crate::client::MlsError::ReceiveRatchetLimitExceeded)?;
++        }
++        Ok(Some(usage))
++    }
++}
+--- a/src/group/secret_tree.rs
++++ b/src/group/secret_tree.rs
+@@ -16,6 +16,7 @@
+ use mls_rs_core::error::IntoAnyError;
+ 
+ use super::key_schedule::kdf_expand_with_label;
++use super::{ReceiveRatchetLimitError, ReceiveRatchetLimits, ReceiveRatchetUsage};
+ 
+ pub(crate) const MAX_RATCHET_BACK_HISTORY: u32 = 1024;
+ 
+@@ -107,6 +108,80 @@
+ }
+ 
+ impl<T: TreeIndex> SecretTree<T> {
++    pub(crate) fn receive_ratchet_usage(&self) -> Result<ReceiveRatchetUsage, MlsError> {
++        let mut usage = ReceiveRatchetUsage {
++            skipped_keys: 0,
++            max_skipped_keys_in_ratchet: 0,
++        };
++        for node in self.known_secrets.inner.values() {
++            if let SecretTreeNode::Ratchet(ratchets) = node {
++                for ratchet in [&ratchets.application, &ratchets.handshake] {
++                    let count = ratchet.retained_skipped_keys();
++                    usage.skipped_keys = usage.skipped_keys.checked_add(count).ok_or(
++                        MlsError::ReceiveRatchetLimitExceeded(
++                            ReceiveRatchetLimitError::CounterOverflow,
++                        ),
++                    )?;
++                    usage.max_skipped_keys_in_ratchet =
++                        usage.max_skipped_keys_in_ratchet.max(count);
++                }
++            }
++        }
++        Ok(usage)
++    }
++
++    fn check_receive_limits(
++        &self,
++        leaf_index: &T,
++        key_type: KeyType,
++        generation: u32,
++        limits: ReceiveRatchetLimits,
++    ) -> Result<(), MlsError> {
++        let usage = self.receive_ratchet_usage()?;
++        usage
++            .validate(limits)
++            .map_err(MlsError::ReceiveRatchetLimitExceeded)?;
++        // Check before consuming any tree node or deriving sender/ratchet keys.
++        let (next_generation, retained) = match self.known_secrets.inner.get(leaf_index) {
++            Some(SecretTreeNode::Ratchet(ratchets)) => {
++                let ratchet = match key_type {
++                    KeyType::Application => &ratchets.application,
++                    KeyType::Handshake => &ratchets.handshake,
++                };
++                (ratchet.generation, ratchet.retained_skipped_keys())
++            }
++            _ => (0, 0),
++        };
++        let _distance = limits
++            .forward_distance(next_generation, generation)
++            .map_err(MlsError::ReceiveRatchetLimitExceeded)?;
++        #[cfg(feature = "out_of_order")]
++        let added = usize::try_from(_distance).map_err(|_| {
++            MlsError::ReceiveRatchetLimitExceeded(ReceiveRatchetLimitError::CounterOverflow)
++        })?;
++        #[cfg(not(feature = "out_of_order"))]
++        let added = 0;
++        let requested_ratchet =
++            retained
++                .checked_add(added)
++                .ok_or(MlsError::ReceiveRatchetLimitExceeded(
++                    ReceiveRatchetLimitError::CounterOverflow,
++                ))?;
++        let requested_epoch =
++            usage
++                .skipped_keys
++                .checked_add(added)
++                .ok_or(MlsError::ReceiveRatchetLimitExceeded(
++                    ReceiveRatchetLimitError::CounterOverflow,
++                ))?;
++        ReceiveRatchetUsage {
++            skipped_keys: requested_epoch,
++            max_skipped_keys_in_ratchet: usage.max_skipped_keys_in_ratchet.max(requested_ratchet),
++        }
++        .validate(limits)
++        .map_err(MlsError::ReceiveRatchetLimitExceeded)
++    }
++
+     pub(crate) fn empty() -> SecretTree<T> {
+         SecretTree {
+             known_secrets: Default::default(),
+@@ -267,11 +342,52 @@
+         key_type: KeyType,
+         generation: u32,
+     ) -> Result<MessageKeyData, MlsError> {
++        self.message_key_generation_with_receive_limits(
++            cipher_suite,
++            leaf_index,
++            key_type,
++            generation,
++            None,
++        )
++        .await
++    }
++
++    #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
++    pub(crate) async fn message_key_generation_with_receive_limits<P: CipherSuiteProvider>(
++        &mut self,
++        cipher_suite: &P,
++        leaf_index: T,
++        key_type: KeyType,
++        generation: u32,
++        limits: Option<ReceiveRatchetLimits>,
++    ) -> Result<MessageKeyData, MlsError> {
++        if let Some(limits) = limits {
++            self.check_receive_limits(&leaf_index, key_type, generation, limits)?;
++        }
+         let mut ratchet = self.take_leaf_ratchet(cipher_suite, &leaf_index).await?;
+-
+-        let res = ratchet
+-            .message_key_generation(cipher_suite, generation, key_type)
+-            .await;
++        let max_forward = limits
++            .map(|limits| limits.max_forward_distance)
++            .unwrap_or(MAX_RATCHET_BACK_HISTORY);
++        let res = if limits.is_some() {
++            match key_type {
++                KeyType::Application => {
++                    ratchet
++                        .application
++                        .get_message_key_with_forward_limit(cipher_suite, generation, max_forward)
++                        .await
++                }
++                KeyType::Handshake => {
++                    ratchet
++                        .handshake
++                        .get_message_key_with_forward_limit(cipher_suite, generation, max_forward)
++                        .await
++                }
++            }
++        } else {
++            ratchet
++                .message_key_generation(cipher_suite, generation, key_type)
++                .await
++        };
+ 
+         self.known_secrets
+             .set_node(leaf_index, SecretTreeNode::Ratchet(ratchet));
+@@ -412,6 +528,13 @@
+ }
+ 
+ impl SecretKeyRatchet {
++    fn retained_skipped_keys(&self) -> usize {
++        #[cfg(feature = "out_of_order")]
++        return self.history.len();
++        #[cfg(not(feature = "out_of_order"))]
++        0
++    }
++
+     #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
+     async fn new<P: CipherSuiteProvider>(
+         cipher_suite_provider: &P,
+@@ -441,6 +564,21 @@
+         cipher_suite_provider: &P,
+         generation: u32,
+     ) -> Result<MessageKeyData, MlsError> {
++        self.get_message_key_with_forward_limit(
++            cipher_suite_provider,
++            generation,
++            MAX_RATCHET_BACK_HISTORY,
++        )
++        .await
++    }
++
++    #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
++    async fn get_message_key_with_forward_limit<P: CipherSuiteProvider>(
++        &mut self,
++        cipher_suite_provider: &P,
++        generation: u32,
++        max_forward_distance: u32,
++    ) -> Result<MessageKeyData, MlsError> {
+         #[cfg(feature = "out_of_order")]
+         if generation < self.generation {
+             return self
+@@ -455,9 +593,7 @@
+             return Err(MlsError::KeyMissing(generation));
+         }
+ 
+-        let max_generation_allowed = self.generation + MAX_RATCHET_BACK_HISTORY;
+-
+-        if generation > max_generation_allowed {
++        if generation.saturating_sub(self.generation) > max_forward_distance {
+             return Err(MlsError::InvalidFutureGeneration(generation));
+         }
+ 
+@@ -481,6 +617,12 @@
+         cipher_suite_provider: &P,
+     ) -> Result<MessageKeyData, MlsError> {
+         let generation = self.generation;
++        let next_generation =
++            generation
++                .checked_add(1)
++                .ok_or(MlsError::ReceiveRatchetLimitExceeded(
++                    ReceiveRatchetLimitError::GenerationExhausted,
++                ))?;
+ 
+         let key = MessageKeyData {
+             nonce: self
+@@ -509,7 +651,7 @@
+             .await?
+             .into();
+ 
+-        self.generation = generation + 1;
++        self.generation = next_generation;
+ 
+         Ok(key)
+     }
+--- a/src/group/snapshot.rs
++++ b/src/group/snapshot.rs
+@@ -262,6 +262,8 @@
+             #[cfg(test)]
+             commit_modifiers: Default::default(),
+             epoch_secrets: snapshot.epoch_secrets,
++            #[cfg(feature = "private_message")]
++            receive_ratchet_limits: None,
+             state_repo,
+             cipher_suite_provider,
+             #[cfg(feature = "psk")]
+--- a/src/group/state_repo.rs
++++ b/src/group/state_repo.rs
+@@ -84,6 +84,27 @@
+         })
+     }
+ 
++    #[cfg(feature = "private_message")]
++    pub(crate) fn validate_pending_receive_ratchet_limits(
++        &self,
++        limits: super::ReceiveRatchetLimits,
++    ) -> Result<(), MlsError> {
++        for epoch in self
++            .pending_commit
++            .inserts
++            .iter()
++            .chain(self.pending_commit.updates.iter())
++        {
++            epoch
++                .secrets
++                .secret_tree
++                .receive_ratchet_usage()?
++                .validate(limits)
++                .map_err(MlsError::ReceiveRatchetLimitExceeded)?;
++        }
++        Ok(())
++    }
++
+     #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
+     async fn find_max_id(&self) -> Result<Option<u64>, MlsError> {
+         if let Some(max) = self.pending_commit.inserts.back().map(|e| e.epoch_id()) {
+@@ -143,33 +164,37 @@
+         // Search the local inserts cache
+         if let Some(min) = self.pending_commit.inserts.front().map(|e| e.epoch_id()) {
+             if epoch_id >= min {
+-                return Ok(self
+-                    .pending_commit
+-                    .inserts
+-                    .get_mut((epoch_id - min) as usize));
++                return Ok(usize::try_from(epoch_id - min)
++                    .ok()
++                    .and_then(|index| self.pending_commit.inserts.get_mut(index)));
+             }
+         }
+ 
+-        // Look in the cached updates map, and if not found look in disk storage
+-        // and insert into the updates map for future caching
+-        match self.find_pending(epoch_id) {
+-            Some(i) => self.pending_commit.updates.get_mut(i).map(Ok),
+-            None => self
+-                .storage
+-                .epoch(&self.group_id, epoch_id)
+-                .await
+-                .map_err(|e| MlsError::GroupStorageError(e.into_any_error()))?
+-                .and_then(|epoch| {
+-                    PriorEpoch::mls_decode(&mut &**epoch)
+-                        .map(|epoch| {
+-                            self.pending_commit.updates.push(epoch);
+-                            self.pending_commit.updates.last_mut()
+-                        })
+-                        .transpose()
+-                }),
+-        }
+-        .transpose()
+-        .map_err(Into::into)
++        if let Some(i) = self.find_pending(epoch_id) {
++            return Ok(self.pending_commit.updates.get_mut(i));
++        }
++
++        let Some(encoded) = self
++            .storage
++            .epoch(&self.group_id, epoch_id)
++            .await
++            .map_err(|e| MlsError::GroupStorageError(e.into_any_error()))?
++        else {
++            return Ok(None);
++        };
++        let mut reader = &**encoded;
++        let epoch = PriorEpoch::mls_decode(&mut reader)?;
++        if !reader.is_empty() {
++            return Err(mls_rs_codec::Error::InvalidContent.into());
++        }
++        if epoch.group_id() != self.group_id {
++            return Err(MlsError::GroupIdMismatch);
++        }
++        if epoch.epoch_id() != epoch_id {
++            return Err(MlsError::InvalidEpoch);
++        }
++        self.pending_commit.updates.push(epoch);
++        Ok(self.pending_commit.updates.last_mut())
+     }
+ 
+     #[cfg_attr(not(mls_build_async), maybe_async::must_be_sync)]
+--- a/src/map.rs
++++ b/src/map.rs
+@@ -31,8 +31,6 @@
+     use core::hash::Hash;
+
+     use alloc::collections::{btree_map::Entry, BTreeMap};
+-    #[cfg(feature = "by_ref_proposal")]
+-    use itertools::Itertools;
+
+     #[cfg(feature = "by_ref_proposal")]
+     #[derive(Clone, Debug, PartialEq, Eq)]
+@@ -50,14 +48,10 @@
+         }
+
+         pub fn insert(&mut self, key: K, value: V) {
+-            match self.0.iter_mut().find(|(k, _)| (k == &key)) {
++            match self.0.iter_mut().find(|(k, _)| k == &key) {
+                 Some((_, v)) => *v = value,
+                 None => self.0.push((key, value)),
+             }
+-        }
+-
+-        pub fn remove(&mut self, key: &K) -> Option<V> {
+-            self.find(key).map(|i| self.0.remove(i).1)
+         }
+
+         fn find(&self, key: &K) -> Option<usize> {
+--- a/src/tree_kem/mod.rs
++++ b/src/tree_kem/mod.rs
+@@ -422,8 +422,8 @@
+         p_index: usize,
+         is_by_value: bool,
+         proposal_bundle: &mut ProposalBundle,
+-        extensions: &ExtensionList,
+-        id_provider: &I,
++        _extensions: &ExtensionList,
++        _id_provider: &I,
+         filter: bool,
+     ) -> Result<(), MlsError>
+     where
+@@ -440,7 +440,7 @@
+         #[cfg(feature = "tree_index")]
+         if let Ok(old_leaf) = &res {
+             // If this fails, it's not because the proposal is bad.
+-            let identity = identity(&old_leaf.signing_identity, id_provider, extensions).await?;
++            let identity = identity(&old_leaf.signing_identity, _id_provider, _extensions).await?;
+
+             self.index.remove(old_leaf, &identity);
+         }

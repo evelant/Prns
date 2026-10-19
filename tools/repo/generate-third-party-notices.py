@@ -175,6 +175,15 @@ VENDORED = (
 # Path-patched crates have no registry checksum in Cargo.lock. Keep their
 # manifest/license/provenance inputs explicit without duplicating cargo-about's
 # graph-derived notices or scanning unrelated vendor checkouts.
+MLS_VENDOR = "prns-groups/security/mls-rs/vendor/mls-rs"
+MLS_NOTICE_INPUTS = (
+    "Cargo.toml",
+    "LICENSE-apache",
+    "LICENSE-mit",
+    "PROVENANCE.json",
+    "validation/Cargo.toml",
+    "validation/Cargo.lock",
+)
 OBJECT_VENDOR = "vendor/object-0.39.1"
 OBJECT_NOTICE_INPUTS = (
     "Cargo.toml", "Cargo.toml.orig", "LICENSE-APACHE", "LICENSE-MIT",
@@ -236,6 +245,7 @@ def notice_input_paths() -> tuple[Path, ...]:
     )
     paths.update(ROOT / relative for _, _, relative, _ in VENDORED)
     paths.update(ROOT / OBJECT_VENDOR / relative for relative in OBJECT_NOTICE_INPUTS)
+    paths.update(ROOT / MLS_VENDOR / relative for relative in MLS_NOTICE_INPUTS)
     tracked = subprocess.run(
         ["git", "ls-files", "--cached", "--full-name", "-z"],
         cwd=ROOT,

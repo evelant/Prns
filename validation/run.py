@@ -336,12 +336,19 @@ def source_cargo_manifests() -> set[str]:
 
 
 def source_cargo_lock_workspaces() -> set[str]:
+    # This is our independent test workspace inside a vendored source tree,
+    # not an upstream archival lock. All other vendor locks remain excluded.
+    first_party_vendor_workspaces = {
+        "prns-groups/security/mls-rs/vendor/mls-rs/validation",
+    }
     workspaces = set()
     for path in tracked_or_untracked_sources():
         relative = path.relative_to(ROOT)
-        if path.name != "Cargo.lock" or "vendor" in relative.parts:
+        if path.name != "Cargo.lock":
             continue
         parent = relative.parent.as_posix()
+        if "vendor" in relative.parts and parent not in first_party_vendor_workspaces:
+            continue
         workspaces.add("." if parent == "." else parent)
     return workspaces
 
