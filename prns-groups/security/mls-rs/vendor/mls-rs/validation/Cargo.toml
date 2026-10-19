@@ -1,0 +1,12 @@
+[package]
+name = "prns-mls-rs-vendor-validation"
+version = "0.0.0"
+edition = "2021"
+license = "MIT OR Apache-2.0"
+publish = false
+[workspace]
+[dependencies]
+mls-rs = { path = "..", default-features = false, features = ["private_message", "prior_epoch", "out_of_order", "by_ref_proposal", "fast_serialize"] }
+mls-rs-core = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false }
+mls-rs-crypto-rustcrypto = { git = "https://github.com/awslabs/mls-rs", rev = "d4c5b19f4bbf8a931face27fc9e30f2db33ce83e", default-features = false }
+getrandom = { version = "=0.2.17", default-features = false, features = ["custom"] }
