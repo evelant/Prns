@@ -1,0 +1,21 @@
+[package]
+name = "prns-groups-store"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+description = "Bounded transactional coordinator for group crypto and application state"
+publish = false
+
+[features]
+default = []
+
+[dependencies]
+prns-groups = { path = "../core" }
+spin = { version = "0.9.8", default-features = false, features = ["mutex", "spin_mutex"] }
+zeroize = { version = "1.8", default-features = false, features = ["alloc"] }
+
+[lints]
+workspace = true

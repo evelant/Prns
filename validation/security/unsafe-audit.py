@@ -31,6 +31,7 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = ROOT / "audits" / "unsafe-snapshot.json"
 GRAPHS = (
+    ("group-libraries", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("engine", "Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("host-c-linux", "prns-host/abi/c/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("host-c-macos", "prns-host/abi/c/Cargo.toml", "aarch64-apple-darwin"),

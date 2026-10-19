@@ -18,6 +18,11 @@ SPEC.loader.exec_module(audit)
 
 
 class UnsafeAuditTests(unittest.TestCase):
+    def test_group_library_graphs_cover_their_owned_workspaces(self) -> None:
+        graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
+        self.assertEqual(graphs["group-libraries"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertNotIn("group-libraries", audit.GRAPH_FEATURES)
+
     def test_app_graphs_audit_the_shipped_platform_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
         self.assertEqual(len(graphs), len(audit.GRAPHS))
