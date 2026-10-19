@@ -72,6 +72,22 @@
       "target": "aarch64-apple-ios"
     },
     {
+      "features": [
+        "android"
+      ],
+      "manifest": "applications/prns/native-composition/Cargo.toml",
+      "name": "prns-app-android",
+      "target": "aarch64-linux-android"
+    },
+    {
+      "features": [
+        "apple"
+      ],
+      "manifest": "applications/prns/native-composition/Cargo.toml",
+      "name": "prns-app-ios",
+      "target": "aarch64-apple-ios"
+    },
+    {
       "manifest": "prns-host/impls/native/Cargo.toml",
       "name": "sdk-native-linux",
       "target": "x86_64-unknown-linux-gnu"
@@ -210,6 +226,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -526,6 +544,14 @@
         "expo-ios": [
           "default",
           "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
         ]
       },
       "name": "anyhow",
@@ -611,7 +637,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "async-trait",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -651,6 +679,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "autocfg",
@@ -818,6 +848,16 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -913,6 +953,12 @@
           "alloc"
         ],
         "nrf52840": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ],
         "sdk-native-linux": [
@@ -1103,6 +1149,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "bitflags",
@@ -1251,6 +1299,12 @@
         "host-c-windows": [
           "std"
         ],
+        "prns-app-android": [
+          "std"
+        ],
+        "prns-app-ios": [
+          "std"
+        ],
         "sdk-native-linux": [
           "std"
         ]
@@ -1304,6 +1358,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "block-buffer",
@@ -1397,6 +1453,12 @@
         "nrf52840": [
           "zeroize"
         ],
+        "prns-app-android": [
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "zeroize"
+        ],
         "sdk-native-linux": [
           "zeroize"
         ],
@@ -1443,6 +1505,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -1469,6 +1533,10 @@
           "std"
         ],
         "host-c-macos": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "std"
         ]
@@ -1507,6 +1575,11 @@
           "std"
         ],
         "ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "default",
           "std"
@@ -1722,6 +1795,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "btleplug",
@@ -1916,6 +1991,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -2086,6 +2163,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -2179,6 +2264,12 @@
         "nrf52840": [
           "default"
         ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
+        ],
         "sdk-native-linux": [
           "default"
         ],
@@ -2201,7 +2292,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "camino",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -2294,6 +2387,12 @@
         "nrf52840": [
           "block-padding"
         ],
+        "prns-app-android": [
+          "block-padding"
+        ],
+        "prns-app-ios": [
+          "block-padding"
+        ],
         "sdk-native-linux": [
           "block-padding"
         ],
@@ -2374,7 +2473,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "cc",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -2390,7 +2491,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "cesu8",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -2431,6 +2533,8 @@
         "ios": [],
         "nrf-dfu-browser": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -2603,6 +2707,14 @@
           "rng",
           "zeroize"
         ],
+        "prns-app-android": [
+          "rng",
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "rng",
+          "zeroize"
+        ],
         "sdk-native-linux": [
           "rng",
           "zeroize"
@@ -2701,6 +2813,12 @@
           "block-padding"
         ],
         "nrf52840": [
+          "block-padding"
+        ],
+        "prns-app-android": [
+          "block-padding"
+        ],
+        "prns-app-ios": [
           "block-padding"
         ],
         "sdk-native-linux": [
@@ -2974,6 +3092,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -3030,6 +3150,12 @@
     {
       "graphs": {
         "expo-android": [
+          "alloc",
+          "bytes",
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
           "alloc",
           "bytes",
           "default",
@@ -3118,6 +3244,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "const-oid",
@@ -3381,6 +3509,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "cpufeatures",
@@ -3425,7 +3555,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "cpufeatures",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -3561,6 +3693,14 @@
         "expo-ios": [
           "default",
           "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
         ]
       },
       "name": "crc32fast",
@@ -3640,6 +3780,8 @@
         "nrf52840": [
           "restore-state-bool"
         ],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "critical-section",
@@ -3755,6 +3897,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -3826,6 +3976,14 @@
           "std"
         ],
         "ios": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "std"
         ],
@@ -3917,6 +4075,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -3987,6 +4153,12 @@
         ],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [
+          "std"
+        ],
+        "prns-app-ios": [
+          "std"
+        ],
         "sdk-native-linux": [
           "std"
         ],
@@ -4083,6 +4255,12 @@
         "nrf52840": [
           "rand_core"
         ],
+        "prns-app-android": [
+          "rand_core"
+        ],
+        "prns-app-ios": [
+          "rand_core"
+        ],
         "sdk-native-linux": [
           "rand_core"
         ],
@@ -4127,6 +4305,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -4343,6 +4523,20 @@
           "zeroize"
         ],
         "nrf52840": [
+          "alloc",
+          "digest",
+          "precomputed-tables",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "digest",
+          "precomputed-tables",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-ios": [
           "alloc",
           "digest",
           "precomputed-tables",
@@ -4889,6 +5083,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "dashmap",
@@ -4969,6 +5165,16 @@
           "std"
         ],
         "halow-headless": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "default",
           "std"
@@ -5214,6 +5420,16 @@
           "oid",
           "zeroize"
         ],
+        "prns-app-android": [
+          "alloc",
+          "oid",
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "oid",
+          "zeroize"
+        ],
         "sdk-native-linux": [
           "alloc",
           "oid",
@@ -5399,6 +5615,20 @@
           "std"
         ],
         "host-c-windows": [
+          "alloc",
+          "block-buffer",
+          "core-api",
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "block-buffer",
+          "core-api",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "block-buffer",
           "core-api",
@@ -5612,6 +5842,20 @@
           "rand_core",
           "zeroize"
         ],
+        "prns-app-android": [
+          "block-api",
+          "default",
+          "mac",
+          "rand_core",
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "block-api",
+          "default",
+          "mac",
+          "rand_core",
+          "zeroize"
+        ],
         "sdk-native-linux": [
           "block-api",
           "default",
@@ -5687,6 +5931,14 @@
           "std"
         ],
         "ios": [
+          "alloc",
+          "block2",
+          "default",
+          "libc",
+          "objc2",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "block2",
           "default",
@@ -5843,7 +6095,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "dlopen2",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -5977,6 +6230,12 @@
         "nrf52840": [
           "default"
         ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
+        ],
         "sdk-native-linux": [
           "default"
         ]
@@ -6100,6 +6359,12 @@
           "alloc"
         ],
         "nrf52840": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ],
         "sdk-native-linux": [
@@ -6354,6 +6619,26 @@
           "strobe-rs",
           "zeroize"
         ],
+        "prns-app-android": [
+          "alloc",
+          "batch",
+          "fast",
+          "hazmat",
+          "rand_core",
+          "signature",
+          "strobe-rs",
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "batch",
+          "fast",
+          "hazmat",
+          "rand_core",
+          "signature",
+          "strobe-rs",
+          "zeroize"
+        ],
         "sdk-native-linux": [
           "alloc",
           "batch",
@@ -6451,6 +6736,14 @@
           "use_std"
         ],
         "expo-ios": [
+          "std",
+          "use_std"
+        ],
+        "prns-app-android": [
+          "std",
+          "use_std"
+        ],
+        "prns-app-ios": [
           "std",
           "use_std"
         ]
@@ -6613,6 +6906,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-futures",
@@ -6875,6 +7170,22 @@
           "tcp",
           "udp"
         ],
+        "prns-app-android": [
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "tcp",
+          "udp"
+        ],
+        "prns-app-ios": [
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "tcp",
+          "udp"
+        ],
         "sdk-native-linux": [
           "medium-ethernet",
           "multicast",
@@ -6922,6 +7233,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-net-driver",
@@ -6959,6 +7272,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-net-driver-channel",
@@ -7076,6 +7391,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-sync",
@@ -7119,6 +7436,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-time",
@@ -7179,6 +7498,8 @@
         "nrf52840": [
           "tick-hz-32_768"
         ],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-time-driver",
@@ -7246,6 +7567,8 @@
           "default",
           "usbd-hid"
         ],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-usb",
@@ -7283,6 +7606,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embassy-usb-driver",
@@ -7551,6 +7876,8 @@
         "nrf52840": [
           "unproven"
         ],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-hal",
@@ -7591,6 +7918,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-hal",
@@ -7631,6 +7960,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-hal-async",
@@ -7706,6 +8037,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-io",
@@ -7746,6 +8079,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-io",
@@ -7783,6 +8118,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-io-async",
@@ -7823,6 +8160,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-io-async",
@@ -7862,6 +8201,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-nal",
@@ -7901,6 +8242,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "embedded-nal-async",
@@ -7941,6 +8284,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -7997,6 +8342,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -8197,7 +8544,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
-        "host-c-macos": []
+        "host-c-macos": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "equivalent",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -8263,6 +8612,14 @@
           "std"
         ],
         "ios": [
+          "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
           "std"
         ],
         "sdk-native-linux": [
@@ -9878,6 +10235,16 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -9917,7 +10284,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "find-msvc-tools",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -10313,7 +10682,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "fs-err",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -10577,6 +10948,22 @@
           "executor",
           "futures-executor",
           "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "async-await",
+          "default",
+          "executor",
+          "futures-executor",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "async-await",
+          "default",
+          "executor",
+          "futures-executor",
+          "std"
         ]
       },
       "name": "futures",
@@ -10787,6 +11174,20 @@
           "futures-sink",
           "sink",
           "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "futures-sink",
+          "sink",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "futures-sink",
+          "sink",
+          "std"
         ]
       },
       "name": "futures-channel",
@@ -10962,6 +11363,16 @@
         "halow-headless": [
           "alloc",
           "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "std"
         ]
       },
       "name": "futures-core",
@@ -11076,6 +11487,12 @@
           "std"
         ],
         "expo-ios": [
+          "std"
+        ],
+        "prns-app-android": [
+          "std"
+        ],
+        "prns-app-ios": [
           "std"
         ]
       },
@@ -11230,6 +11647,12 @@
         ],
         "expo-ios": [
           "std"
+        ],
+        "prns-app-android": [
+          "std"
+        ],
+        "prns-app-ios": [
+          "std"
         ]
       },
       "name": "futures-io",
@@ -11325,7 +11748,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "futures-macro",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -11476,7 +11901,17 @@
           "default",
           "std"
         ],
-        "halow-headless": []
+        "halow-headless": [],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "std"
+        ]
       },
       "name": "futures-sink",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -11626,6 +12061,14 @@
         "halow-headless": [
           "alloc",
           "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "std"
         ]
       },
       "name": "futures-task",
@@ -11656,6 +12099,22 @@
         "tokens": 8
       },
       "version": "0.3.32"
+    },
+    {
+      "graphs": {
+        "prns-app-android": [],
+        "prns-app-ios": []
+      },
+      "name": "futures-timer",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 11,
+        "externs": 0,
+        "functions": 1,
+        "impls": 2,
+        "tokens": 14
+      },
+      "version": "3.0.3"
     },
     {
       "graphs": {
@@ -12074,6 +12533,36 @@
           "sink",
           "slab",
           "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "async-await",
+          "async-await-macro",
+          "channel",
+          "futures-channel",
+          "futures-io",
+          "futures-macro",
+          "futures-sink",
+          "io",
+          "memchr",
+          "sink",
+          "slab",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "async-await",
+          "async-await-macro",
+          "channel",
+          "futures-channel",
+          "futures-io",
+          "futures-macro",
+          "futures-sink",
+          "io",
+          "memchr",
+          "sink",
+          "slab",
+          "std"
         ]
       },
       "name": "futures-util",
@@ -12189,6 +12678,12 @@
         "nrf52840": [
           "more_lengths"
         ],
+        "prns-app-android": [
+          "more_lengths"
+        ],
+        "prns-app-ios": [
+          "more_lengths"
+        ],
         "sdk-native-linux": [
           "more_lengths"
         ],
@@ -12248,6 +12743,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "getrandom",
@@ -12297,6 +12794,12 @@
           "std"
         ],
         "host-c-windows": [
+          "std"
+        ],
+        "prns-app-android": [
+          "std"
+        ],
+        "prns-app-ios": [
           "std"
         ],
         "sdk-native-linux": [
@@ -12362,6 +12865,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "getrandom",
@@ -12418,6 +12923,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -12480,6 +12987,12 @@
         "host-c-windows": [
           "raw"
         ],
+        "prns-app-android": [
+          "raw"
+        ],
+        "prns-app-ios": [
+          "raw"
+        ],
         "sdk-native-linux": [
           "raw"
         ]
@@ -12513,7 +13026,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
-        "host-c-macos": []
+        "host-c-macos": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "hashbrown",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -12554,6 +13069,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -12595,6 +13112,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "heapless",
@@ -12651,6 +13170,8 @@
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "heck",
@@ -12692,6 +13213,16 @@
           "std"
         ],
         "host-c-linux": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "default",
           "std"
@@ -12741,6 +13272,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -12835,6 +13368,12 @@
         "nrf52840": [
           "zeroize"
         ],
+        "prns-app-android": [
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "zeroize"
+        ],
         "sdk-native-linux": [
           "zeroize"
         ],
@@ -12864,6 +13403,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "home",
@@ -13067,6 +13608,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -13122,6 +13671,14 @@
           "std"
         ],
         "host-c-windows": [
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "default",
           "std"
         ],
@@ -13250,6 +13807,12 @@
           "zeroize"
         ],
         "expo-ios": [
+          "zeroize"
+        ],
+        "prns-app-android": [
+          "zeroize"
+        ],
+        "prns-app-ios": [
           "zeroize"
         ]
       },
@@ -13556,6 +14119,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "if-addrs",
@@ -13698,6 +14263,14 @@
         "expo-ios": [
           "default",
           "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
         ]
       },
       "name": "indexmap",
@@ -13811,6 +14384,12 @@
           "block-padding"
         ],
         "nrf52840": [
+          "block-padding"
+        ],
+        "prns-app-android": [
+          "block-padding"
+        ],
+        "prns-app-ios": [
           "block-padding"
         ],
         "sdk-native-linux": [
@@ -13952,6 +14531,10 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -14075,6 +14658,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "itoa",
@@ -14138,6 +14723,9 @@
       "graphs": {
         "expo-android": [
           "default"
+        ],
+        "prns-app-android": [
+          "default"
         ]
       },
       "name": "jni",
@@ -14157,6 +14745,9 @@
           "default"
         ],
         "expo-android": [
+          "default"
+        ],
+        "prns-app-android": [
           "default"
         ]
       },
@@ -14178,6 +14769,9 @@
         ],
         "expo-android": [
           "default"
+        ],
+        "prns-app-android": [
+          "default"
         ]
       },
       "name": "jni-sys",
@@ -14194,7 +14788,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "jni-sys",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -14210,7 +14805,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "jni-sys-macros",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -14287,6 +14883,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "keccak",
@@ -14459,6 +15057,12 @@
         "nrf52840": [
           "rust-allocator"
         ],
+        "prns-app-android": [
+          "rust-allocator"
+        ],
+        "prns-app-ios": [
+          "rust-allocator"
+        ],
         "sdk-native-linux": [
           "rust-allocator"
         ],
@@ -14604,6 +15208,16 @@
           "std"
         ],
         "host-c-macos": [
+          "default",
+          "extra_traits",
+          "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "extra_traits",
+          "std"
+        ],
+        "prns-app-ios": [
           "default",
           "extra_traits",
           "std"
@@ -14830,6 +15444,20 @@
           "std",
           "xdp"
         ],
+        "prns-app-android": [
+          "auxvec",
+          "default",
+          "elf",
+          "errno",
+          "general",
+          "if_ether",
+          "ioctl",
+          "net",
+          "netlink",
+          "no_std",
+          "std",
+          "xdp"
+        ],
         "sdk-native-linux": [
           "auxvec",
           "default",
@@ -14901,6 +15529,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "litrs",
@@ -14997,6 +15627,14 @@
           "default"
         ],
         "host-c-windows": [
+          "atomic_usize",
+          "default"
+        ],
+        "prns-app-android": [
+          "atomic_usize",
+          "default"
+        ],
+        "prns-app-ios": [
           "atomic_usize",
           "default"
         ],
@@ -15140,7 +15778,15 @@
           "alloc",
           "std"
         ],
-        "halow-headless": []
+        "halow-headless": [],
+        "prns-app-android": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "std"
+        ]
       },
       "name": "log",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -15232,6 +15878,10 @@
           "std"
         ],
         "host-c-windows": [
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
           "default",
           "std"
         ],
@@ -15380,6 +16030,12 @@
           "map"
         ],
         "ios": [
+          "map"
+        ],
+        "prns-app-android": [
+          "map"
+        ],
+        "prns-app-ios": [
           "map"
         ],
         "sdk-native-linux": [
@@ -15776,6 +16432,16 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -16049,6 +16715,16 @@
           "net",
           "os-ext",
           "os-poll"
+        ],
+        "prns-app-android": [
+          "net",
+          "os-ext",
+          "os-poll"
+        ],
+        "prns-app-ios": [
+          "net",
+          "os-ext",
+          "os-poll"
         ]
       },
       "name": "mio",
@@ -16187,6 +16863,8 @@
         "nrf52840": [
           "unstable"
         ],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "nb",
@@ -16227,6 +16905,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "nb",
@@ -16243,7 +16923,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "ndk-context",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -16378,6 +17059,12 @@
           "default",
           "gateway"
         ],
+        "prns-app-android": [
+          "android-extra",
+          "apple-system-configuration-extra",
+          "default",
+          "gateway"
+        ],
         "sdk-native-linux": [
           "android-extra",
           "apple-system-configuration-extra",
@@ -16404,6 +17091,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "host-c-linux": [],
+        "prns-app-android": [],
         "sdk-native-linux": []
       },
       "name": "netlink-packet-core",
@@ -16425,6 +17113,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "host-c-linux": [],
+        "prns-app-android": [],
         "sdk-native-linux": []
       },
       "name": "netlink-packet-route",
@@ -16456,6 +17145,9 @@
           "default"
         ],
         "host-c-linux": [
+          "default"
+        ],
+        "prns-app-android": [
           "default"
         ],
         "sdk-native-linux": [
@@ -16910,6 +17602,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -17046,6 +17746,10 @@
         "host-c-macos": [
           "alloc",
           "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "std"
         ]
       },
       "name": "objc-sys",
@@ -17073,6 +17777,11 @@
           "std"
         ],
         "host-c-macos": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "default",
           "std"
@@ -17112,6 +17821,11 @@
           "std"
         ],
         "ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "default",
           "std"
@@ -17281,6 +17995,22 @@
           "alloc",
           "bitflags",
           "std"
+        ],
+        "prns-app-ios": [
+          "CBAdvertisementData",
+          "CBAttribute",
+          "CBCentralManager",
+          "CBCentralManagerConstants",
+          "CBCharacteristic",
+          "CBDescriptor",
+          "CBManager",
+          "CBPeer",
+          "CBPeripheral",
+          "CBService",
+          "CBUUID",
+          "alloc",
+          "bitflags",
+          "std"
         ]
       },
       "name": "objc2-core-bluetooth",
@@ -17401,6 +18131,32 @@
           "std"
         ],
         "ios": [
+          "CBATTRequest",
+          "CBAdvertisementData",
+          "CBAttribute",
+          "CBCentral",
+          "CBCentralManager",
+          "CBCentralManagerConstants",
+          "CBCharacteristic",
+          "CBDefines",
+          "CBDescriptor",
+          "CBError",
+          "CBL2CAPChannel",
+          "CBManager",
+          "CBPeer",
+          "CBPeripheral",
+          "CBPeripheralManager",
+          "CBPeripheralManagerConstants",
+          "CBService",
+          "CBUUID",
+          "alloc",
+          "bitflags",
+          "default",
+          "dispatch2",
+          "objc2-core-foundation",
+          "std"
+        ],
+        "prns-app-ios": [
           "CBATTRequest",
           "CBAdvertisementData",
           "CBAttribute",
@@ -17733,6 +18489,61 @@
           "libc",
           "objc2",
           "std"
+        ],
+        "prns-app-ios": [
+          "CFArray",
+          "CFAttributedString",
+          "CFAvailability",
+          "CFBag",
+          "CFBinaryHeap",
+          "CFBitVector",
+          "CFBundle",
+          "CFByteOrder",
+          "CFCGTypes",
+          "CFCalendar",
+          "CFCharacterSet",
+          "CFData",
+          "CFDate",
+          "CFDateFormatter",
+          "CFDictionary",
+          "CFError",
+          "CFFileDescriptor",
+          "CFFileSecurity",
+          "CFLocale",
+          "CFMachPort",
+          "CFMessagePort",
+          "CFNotificationCenter",
+          "CFNumber",
+          "CFNumberFormatter",
+          "CFPlugIn",
+          "CFPlugInCOM",
+          "CFPreferences",
+          "CFPropertyList",
+          "CFRunLoop",
+          "CFSet",
+          "CFSocket",
+          "CFStream",
+          "CFString",
+          "CFStringEncodingExt",
+          "CFStringTokenizer",
+          "CFTimeZone",
+          "CFTree",
+          "CFURL",
+          "CFURLAccess",
+          "CFURLEnumerator",
+          "CFUUID",
+          "CFUserNotification",
+          "CFUtilities",
+          "CFXMLNode",
+          "CFXMLParser",
+          "alloc",
+          "bitflags",
+          "block2",
+          "default",
+          "dispatch2",
+          "libc",
+          "objc2",
+          "std"
         ]
       },
       "name": "objc2-core-foundation",
@@ -17882,6 +18693,10 @@
         "ios": [
           "alloc",
           "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "std"
         ]
       },
       "name": "objc2-encode",
@@ -17960,6 +18775,21 @@
           "std"
         ],
         "host-c-macos": [
+          "NSArray",
+          "NSData",
+          "NSDictionary",
+          "NSEnumerator",
+          "NSError",
+          "NSObject",
+          "NSString",
+          "NSUUID",
+          "NSValue",
+          "alloc",
+          "bitflags",
+          "block2",
+          "std"
+        ],
+        "prns-app-ios": [
           "NSArray",
           "NSData",
           "NSDictionary",
@@ -18882,6 +19712,185 @@
           "libc",
           "objc2-core-foundation",
           "std"
+        ],
+        "prns-app-ios": [
+          "FoundationErrors",
+          "FoundationLegacySwiftCompatibility",
+          "NSAffineTransform",
+          "NSAppleEventDescriptor",
+          "NSAppleEventManager",
+          "NSAppleScript",
+          "NSArchiver",
+          "NSArray",
+          "NSAttributedString",
+          "NSAutoreleasePool",
+          "NSBackgroundActivityScheduler",
+          "NSBundle",
+          "NSByteCountFormatter",
+          "NSByteOrder",
+          "NSCache",
+          "NSCalendar",
+          "NSCalendarDate",
+          "NSCharacterSet",
+          "NSClassDescription",
+          "NSCoder",
+          "NSComparisonPredicate",
+          "NSCompoundPredicate",
+          "NSConnection",
+          "NSData",
+          "NSDate",
+          "NSDateComponentsFormatter",
+          "NSDateFormatter",
+          "NSDateInterval",
+          "NSDateIntervalFormatter",
+          "NSDebug",
+          "NSDecimal",
+          "NSDecimalNumber",
+          "NSDictionary",
+          "NSDistantObject",
+          "NSDistributedLock",
+          "NSDistributedNotificationCenter",
+          "NSEnergyFormatter",
+          "NSEnumerator",
+          "NSError",
+          "NSException",
+          "NSExpression",
+          "NSExtensionContext",
+          "NSExtensionItem",
+          "NSExtensionRequestHandling",
+          "NSFileCoordinator",
+          "NSFileHandle",
+          "NSFileManager",
+          "NSFilePresenter",
+          "NSFileVersion",
+          "NSFileWrapper",
+          "NSFormatter",
+          "NSGarbageCollector",
+          "NSGeometry",
+          "NSHFSFileTypes",
+          "NSHTTPCookie",
+          "NSHTTPCookieStorage",
+          "NSHashTable",
+          "NSHost",
+          "NSISO8601DateFormatter",
+          "NSIndexPath",
+          "NSIndexSet",
+          "NSInflectionRule",
+          "NSInvocation",
+          "NSItemProvider",
+          "NSJSONSerialization",
+          "NSKeyValueCoding",
+          "NSKeyValueObserving",
+          "NSKeyValueSharedObservers",
+          "NSKeyedArchiver",
+          "NSLengthFormatter",
+          "NSLinguisticTagger",
+          "NSListFormatter",
+          "NSLocale",
+          "NSLocalizedNumberFormatRule",
+          "NSLock",
+          "NSMapTable",
+          "NSMassFormatter",
+          "NSMeasurement",
+          "NSMeasurementFormatter",
+          "NSMetadata",
+          "NSMetadataAttributes",
+          "NSMethodSignature",
+          "NSMorphology",
+          "NSNetServices",
+          "NSNotification",
+          "NSNotificationQueue",
+          "NSNull",
+          "NSNumberFormatter",
+          "NSObjCRuntime",
+          "NSObject",
+          "NSObjectScripting",
+          "NSOperation",
+          "NSOrderedCollectionChange",
+          "NSOrderedCollectionDifference",
+          "NSOrderedSet",
+          "NSOrthography",
+          "NSPathUtilities",
+          "NSPersonNameComponents",
+          "NSPersonNameComponentsFormatter",
+          "NSPointerArray",
+          "NSPointerFunctions",
+          "NSPort",
+          "NSPortCoder",
+          "NSPortMessage",
+          "NSPortNameServer",
+          "NSPredicate",
+          "NSProcessInfo",
+          "NSProgress",
+          "NSPropertyList",
+          "NSProtocolChecker",
+          "NSProxy",
+          "NSRange",
+          "NSRegularExpression",
+          "NSRelativeDateTimeFormatter",
+          "NSRunLoop",
+          "NSScanner",
+          "NSScriptClassDescription",
+          "NSScriptCoercionHandler",
+          "NSScriptCommand",
+          "NSScriptCommandDescription",
+          "NSScriptExecutionContext",
+          "NSScriptKeyValueCoding",
+          "NSScriptObjectSpecifiers",
+          "NSScriptStandardSuiteCommands",
+          "NSScriptSuiteRegistry",
+          "NSScriptWhoseTests",
+          "NSSet",
+          "NSSortDescriptor",
+          "NSSpellServer",
+          "NSStream",
+          "NSString",
+          "NSTask",
+          "NSTermOfAddress",
+          "NSTextCheckingResult",
+          "NSThread",
+          "NSTimeZone",
+          "NSTimer",
+          "NSURL",
+          "NSURLAuthenticationChallenge",
+          "NSURLCache",
+          "NSURLConnection",
+          "NSURLCredential",
+          "NSURLCredentialStorage",
+          "NSURLDownload",
+          "NSURLError",
+          "NSURLHandle",
+          "NSURLProtectionSpace",
+          "NSURLProtocol",
+          "NSURLRequest",
+          "NSURLResponse",
+          "NSURLSession",
+          "NSUUID",
+          "NSUbiquitousKeyValueStore",
+          "NSUndoManager",
+          "NSUnit",
+          "NSUserActivity",
+          "NSUserDefaults",
+          "NSUserNotification",
+          "NSUserScriptTask",
+          "NSValue",
+          "NSValueTransformer",
+          "NSXMLDTD",
+          "NSXMLDTDNode",
+          "NSXMLDocument",
+          "NSXMLElement",
+          "NSXMLNode",
+          "NSXMLNodeOptions",
+          "NSXMLParser",
+          "NSXPCConnection",
+          "NSZone",
+          "alloc",
+          "bitflags",
+          "block2",
+          "default",
+          "libc",
+          "objc2-core-foundation",
+          "std"
         ]
       },
       "name": "objc2-foundation",
@@ -18922,6 +19931,12 @@
           "std"
         ],
         "ios": [
+          "alloc",
+          "libc",
+          "serial",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "libc",
           "serial",
@@ -19226,6 +20241,18 @@
           "race",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "race",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "race",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -19269,6 +20296,8 @@
         "expo-host-linux": [],
         "expo-ios": [],
         "host-c-linux": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "openssl-probe",
@@ -19389,6 +20418,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "parking_lot_core",
@@ -19418,6 +20449,7 @@
         "expo-android": [],
         "expo-host-linux": [],
         "host-c-linux": [],
+        "prns-app-android": [],
         "sdk-native-linux": []
       },
       "name": "paste",
@@ -20274,6 +21306,54 @@
           "lora",
           "usb"
         ],
+        "prns-app-android": [
+          "alloc",
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "pipe",
+          "rnode",
+          "serial",
+          "std",
+          "tcp",
+          "tokio-host",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "pipe",
+          "rnode",
+          "serial",
+          "std",
+          "tcp",
+          "tokio-host",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
         "sdk-native-linux": [
           "alloc",
           "ax25",
@@ -20382,6 +21462,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -20474,6 +21556,12 @@
           "alloc"
         ],
         "nrf52840": [
+          "alloc"
+        ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
           "alloc"
         ],
         "sdk-native-linux": [
@@ -20771,6 +21859,18 @@
           "default",
           "fallback",
           "std"
+        ],
+        "prns-app-android": [
+          "critical-section",
+          "default",
+          "fallback",
+          "std"
+        ],
+        "prns-app-ios": [
+          "critical-section",
+          "default",
+          "fallback",
+          "std"
         ]
       },
       "name": "portable-atomic",
@@ -20939,6 +22039,14 @@
           "simd",
           "std"
         ],
+        "prns-app-android": [
+          "simd",
+          "std"
+        ],
+        "prns-app-ios": [
+          "simd",
+          "std"
+        ],
         "sdk-native-linux": [
           "simd",
           "std"
@@ -20957,6 +22065,30 @@
     },
     {
       "graphs": {
+        "prns-app-android": [
+          "android",
+          "default",
+          "uniffi-bindings"
+        ],
+        "prns-app-ios": [
+          "apple",
+          "default",
+          "uniffi-bindings"
+        ]
+      },
+      "name": "prns-app-native",
+      "source": "applications/prns/native-composition",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
         "daemon-linux": [],
         "daemon-macos": [],
         "daemon-windows": [],
@@ -20966,6 +22098,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "prns-config",
@@ -21345,6 +22479,36 @@
           "std",
           "tokio-host"
         ],
+        "prns-app-android": [
+          "alloc",
+          "ed25519-batch",
+          "embassy-host",
+          "flash",
+          "i2p",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "resource-work-offload",
+          "rns-management-wire",
+          "std",
+          "tokio-host"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "ed25519-batch",
+          "embassy-host",
+          "flash",
+          "i2p",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "parallel-persistence",
+          "parallel-resource-hash",
+          "resource-work-offload",
+          "rns-management-wire",
+          "std",
+          "tokio-host"
+        ],
         "sdk-native-linux": [
           "alloc",
           "ed25519-batch",
@@ -21381,7 +22545,8 @@
     },
     {
       "graphs": {
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "prns-expo-android",
       "source": "prns-react-native/platform/android",
@@ -21429,6 +22594,8 @@
         "ios": [
           "default"
         ],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "prns-ffi",
@@ -21465,6 +22632,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -21534,6 +22703,13 @@
         "host-c-windows": [
           "default"
         ],
+        "prns-app-android": [
+          "android-platform",
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
+        ],
         "sdk-native-linux": [
           "default"
         ]
@@ -21557,6 +22733,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "prns-host-snapshot",
@@ -21574,7 +22752,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "prns-host-uniffi",
       "source": "prns-host/bindings/uniffi",
@@ -21795,6 +22975,18 @@
           "bluetooth-auto",
           "lora",
           "usb"
+        ],
+        "prns-app-android": [
+          "bluetooth-auto",
+          "tcp",
+          "usb",
+          "wifi-auto"
+        ],
+        "prns-app-ios": [
+          "bluetooth-auto",
+          "tcp",
+          "usb",
+          "wifi-auto"
         ],
         "sdk-native-linux": [
           "bluetooth-auto",
@@ -22175,6 +23367,48 @@
           "tcp",
           "usb"
         ],
+        "prns-app-android": [
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "bluetooth-auto-runtime",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "network-device-selection",
+          "pipe",
+          "rnode",
+          "serial",
+          "tcp",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
+        "prns-app-ios": [
+          "ax25",
+          "backbone",
+          "bluetooth-auto",
+          "bluetooth-auto-runtime",
+          "config",
+          "i2p",
+          "interface-discovery",
+          "kiss",
+          "network-device-selection",
+          "pipe",
+          "rnode",
+          "serial",
+          "tcp",
+          "udp",
+          "usb",
+          "weave",
+          "websocket",
+          "websocket-server",
+          "wifi-auto"
+        ],
         "sdk-native-linux": [
           "ax25",
           "backbone",
@@ -22210,6 +23444,50 @@
     },
     {
       "graphs": {
+        "prns-app-android": [
+          "default",
+          "redb-mailbox",
+          "tokio-host"
+        ],
+        "prns-app-ios": [
+          "default",
+          "redb-mailbox",
+          "tokio-host"
+        ]
+      },
+      "name": "prns-lxmf",
+      "source": "applications/services/lxmf",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
+        ]
+      },
+      "name": "prns-lxmf-wire",
+      "source": "applications/services/lxmf-wire",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.1.0"
+    },
+    {
+      "graphs": {
         "android": [],
         "daemon-linux": [],
         "daemon-macos": [],
@@ -22236,6 +23514,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -22485,6 +23765,22 @@
           "resource-bzip2",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "remote-control-wifi-host",
+          "resource-bzip2",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "interface-discovery",
+          "movable-frame-forwarding",
+          "remote-control-wifi-host",
+          "resource-bzip2",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "interface-discovery",
@@ -22583,6 +23879,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "prns-runtime-embassy",
@@ -22690,6 +23988,16 @@
           "parallel-resource-hash"
         ],
         "nrf52840": [],
+        "prns-app-android": [
+          "interface-discovery",
+          "parallel-persistence",
+          "parallel-resource-hash"
+        ],
+        "prns-app-ios": [
+          "interface-discovery",
+          "parallel-persistence",
+          "parallel-resource-hash"
+        ],
         "sdk-native-linux": [
           "interface-discovery",
           "parallel-persistence",
@@ -23004,6 +24312,14 @@
           "default",
           "proc-macro"
         ],
+        "prns-app-android": [
+          "default",
+          "proc-macro"
+        ],
+        "prns-app-ios": [
+          "default",
+          "proc-macro"
+        ],
         "sdk-native-linux": [
           "default",
           "proc-macro"
@@ -23302,6 +24618,14 @@
           "default",
           "proc-macro"
         ],
+        "prns-app-android": [
+          "default",
+          "proc-macro"
+        ],
+        "prns-app-ios": [
+          "default",
+          "proc-macro"
+        ],
         "sdk-native-linux": [
           "default",
           "proc-macro"
@@ -23456,6 +24780,24 @@
           "std_rng",
           "thread_rng"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "os_rng",
+          "small_rng",
+          "std",
+          "std_rng",
+          "thread_rng"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "os_rng",
+          "small_rng",
+          "std",
+          "std_rng",
+          "thread_rng"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -23515,6 +24857,12 @@
         "host-c-windows": [
           "std"
         ],
+        "prns-app-android": [
+          "std"
+        ],
+        "prns-app-ios": [
+          "std"
+        ],
         "sdk-native-linux": [
           "std"
         ]
@@ -23558,6 +24906,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -23665,6 +25015,14 @@
           "std"
         ],
         "nrf52840": [],
+        "prns-app-android": [
+          "os_rng",
+          "std"
+        ],
+        "prns-app-ios": [
+          "os_rng",
+          "std"
+        ],
         "sdk-native-linux": [
           "os_rng",
           "std"
@@ -23713,6 +25071,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "rayon",
@@ -23742,6 +25102,8 @@
         "host-c-macos": [],
         "host-c-windows": [],
         "ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "rayon-core",
@@ -23754,6 +25116,28 @@
         "tokens": 87
       },
       "version": "1.13.0"
+    },
+    {
+      "graphs": {
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ]
+      },
+      "name": "redb",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 24,
+        "externs": 0,
+        "functions": 18,
+        "impls": 5,
+        "tokens": 47
+      },
+      "version": "4.2.0"
     },
     {
       "graphs": {
@@ -23990,6 +25374,16 @@
           "default",
           "dev_urandom_fallback"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "dev_urandom_fallback"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "dev_urandom_fallback"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -24171,6 +25565,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "rmp",
@@ -24228,6 +25624,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -24269,6 +25667,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "rtrb",
@@ -24325,6 +25725,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -24452,6 +25854,26 @@
           "fs",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "event",
+          "fs",
+          "mm",
+          "net",
+          "std",
+          "time"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "event",
+          "fs",
+          "mm",
+          "net",
+          "std",
+          "time"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -24532,6 +25954,14 @@
           "ring",
           "std"
         ],
+        "prns-app-android": [
+          "ring",
+          "std"
+        ],
+        "prns-app-ios": [
+          "ring",
+          "std"
+        ],
         "sdk-native-linux": [
           "ring",
           "std"
@@ -24559,6 +25989,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "rustls-native-certs",
@@ -24633,6 +26065,16 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -24693,6 +26135,16 @@
           "std"
         ],
         "host-c-windows": [
+          "alloc",
+          "ring",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "ring",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "ring",
           "std"
@@ -24805,7 +26257,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "same-file",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -24857,6 +26310,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "scopeguard",
@@ -25143,6 +26598,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -25372,6 +26835,20 @@
           "serde_derive",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "derive",
+          "serde_derive",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "derive",
+          "serde_derive",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -25578,6 +27055,16 @@
           "result",
           "std"
         ],
+        "prns-app-android": [
+          "alloc",
+          "result",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "result",
+          "std"
+        ],
         "sdk-native-linux": [
           "alloc",
           "result",
@@ -25686,6 +27173,12 @@
         "host-c-windows": [
           "default"
         ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
+        ],
         "sdk-native-linux": [
           "default"
         ]
@@ -25753,6 +27246,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -25813,6 +27314,16 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "serde",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "serde",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "serde",
           "std"
@@ -25889,7 +27400,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "serial2",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -25940,7 +27453,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "serial2-tokio",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -25992,6 +27507,14 @@
           "std"
         ],
         "host-c-windows": [
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "default",
           "std"
         ],
@@ -26127,6 +27650,12 @@
         "nrf52840": [
           "zeroize"
         ],
+        "prns-app-android": [
+          "zeroize"
+        ],
+        "prns-app-ios": [
+          "zeroize"
+        ],
         "sdk-native-linux": [
           "zeroize"
         ],
@@ -26203,6 +27732,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -26269,6 +27806,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -26298,6 +27843,8 @@
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "signal-hook-registry",
@@ -26417,6 +27964,14 @@
           "alloc",
           "rand_core"
         ],
+        "prns-app-android": [
+          "alloc",
+          "rand_core"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "rand_core"
+        ],
         "sdk-native-linux": [
           "alloc",
           "rand_core"
@@ -26494,6 +28049,14 @@
           "std"
         ],
         "expo-ios": [
+          "default",
+          "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
           "default",
           "std"
         ]
@@ -26609,6 +28172,14 @@
           "default",
           "std"
         ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
+        ],
         "sdk-native-linux": [
           "default",
           "std"
@@ -26697,7 +28268,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "smallvec",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -27004,6 +28577,26 @@
           "socket-tcp",
           "socket-udp"
         ],
+        "prns-app-android": [
+          "async",
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "socket",
+          "socket-tcp",
+          "socket-udp"
+        ],
+        "prns-app-ios": [
+          "async",
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "socket",
+          "socket-tcp",
+          "socket-udp"
+        ],
         "sdk-native-linux": [
           "async",
           "medium-ethernet",
@@ -27132,6 +28725,12 @@
           "all"
         ],
         "host-c-windows": [
+          "all"
+        ],
+        "prns-app-android": [
+          "all"
+        ],
+        "prns-app-ios": [
           "all"
         ],
         "sdk-native-linux": [
@@ -27320,6 +28919,12 @@
         "nrf52840": [
           "alloc"
         ],
+        "prns-app-android": [
+          "alloc"
+        ],
+        "prns-app-ios": [
+          "alloc"
+        ],
         "sdk-native-linux": [
           "alloc"
         ]
@@ -27433,6 +29038,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -27463,6 +29070,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "static_assertions",
@@ -27503,6 +29112,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "static_cell",
@@ -27594,6 +29205,12 @@
           "default"
         ],
         "nrf52840": [
+          "default"
+        ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
           "default"
         ],
         "sdk-native-linux": [
@@ -27870,6 +29487,12 @@
           "const-generics"
         ],
         "nrf52840": [
+          "const-generics"
+        ],
+        "prns-app-android": [
+          "const-generics"
+        ],
+        "prns-app-ios": [
           "const-generics"
         ],
         "sdk-native-linux": [
@@ -28424,6 +30047,30 @@
           "visit",
           "visit-mut"
         ],
+        "prns-app-android": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit",
+          "visit-mut"
+        ],
+        "prns-app-ios": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit",
+          "visit-mut"
+        ],
         "sdk-native-linux": [
           "clone-impls",
           "default",
@@ -28523,6 +30170,26 @@
     {
       "graphs": {
         "desktop-linux": [
+          "clone-impls",
+          "default",
+          "derive",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit-mut"
+        ],
+        "prns-app-android": [
+          "clone-impls",
+          "default",
+          "derive",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit-mut"
+        ],
+        "prns-app-ios": [
           "clone-impls",
           "default",
           "derive",
@@ -28730,6 +30397,14 @@
           "default",
           "getrandom"
         ],
+        "prns-app-android": [
+          "default",
+          "getrandom"
+        ],
+        "prns-app-ios": [
+          "default",
+          "getrandom"
+        ],
         "sdk-native-linux": [
           "default",
           "getrandom"
@@ -28771,7 +30446,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "thiserror",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -28873,6 +30549,14 @@
         "halow-headless": [
           "default",
           "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "std"
+        ],
+        "prns-app-ios": [
+          "default",
+          "std"
         ]
       },
       "name": "thiserror",
@@ -28889,7 +30573,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "thiserror-impl",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -28946,7 +30631,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
-        "halow-headless": []
+        "halow-headless": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "thiserror-impl",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -29639,6 +31326,46 @@
           "tokio-macros",
           "windows-sys"
         ],
+        "prns-app-android": [
+          "bytes",
+          "default",
+          "fs",
+          "io-util",
+          "libc",
+          "macros",
+          "mio",
+          "net",
+          "process",
+          "rt",
+          "rt-multi-thread",
+          "signal-hook-registry",
+          "socket2",
+          "sync",
+          "test-util",
+          "time",
+          "tokio-macros",
+          "windows-sys"
+        ],
+        "prns-app-ios": [
+          "bytes",
+          "default",
+          "fs",
+          "io-util",
+          "libc",
+          "macros",
+          "mio",
+          "net",
+          "process",
+          "rt",
+          "rt-multi-thread",
+          "signal-hook-registry",
+          "socket2",
+          "sync",
+          "test-util",
+          "time",
+          "tokio-macros",
+          "windows-sys"
+        ],
         "sdk-native-linux": [
           "bytes",
           "default",
@@ -29725,7 +31452,9 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
-        "halow-headless": []
+        "halow-headless": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "tokio-macros",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -29749,6 +31478,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "tokio-rustls",
@@ -29831,6 +31562,18 @@
           "tokio-util"
         ],
         "host-c-windows": [
+          "default",
+          "sync",
+          "time",
+          "tokio-util"
+        ],
+        "prns-app-android": [
+          "default",
+          "sync",
+          "time",
+          "tokio-util"
+        ],
+        "prns-app-ios": [
           "default",
           "sync",
           "time",
@@ -29960,6 +31703,28 @@
           "stream",
           "tokio-rustls"
         ],
+        "prns-app-android": [
+          "__rustls-tls",
+          "connect",
+          "handshake",
+          "rustls",
+          "rustls-native-certs",
+          "rustls-pki-types",
+          "rustls-tls-native-roots",
+          "stream",
+          "tokio-rustls"
+        ],
+        "prns-app-ios": [
+          "__rustls-tls",
+          "connect",
+          "handshake",
+          "rustls",
+          "rustls-native-certs",
+          "rustls-pki-types",
+          "rustls-tls-native-roots",
+          "stream",
+          "tokio-rustls"
+        ],
         "sdk-native-linux": [
           "__rustls-tls",
           "connect",
@@ -30041,6 +31806,12 @@
         "host-c-windows": [
           "default"
         ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
+        ],
         "sdk-native-linux": [
           "default"
         ]
@@ -30073,6 +31844,20 @@
           "std"
         ],
         "expo-ios": [
+          "default",
+          "display",
+          "parse",
+          "serde",
+          "std"
+        ],
+        "prns-app-android": [
+          "default",
+          "display",
+          "parse",
+          "serde",
+          "std"
+        ],
+        "prns-app-ios": [
           "default",
           "display",
           "parse",
@@ -30139,6 +31924,16 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "serde",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "serde",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "serde",
           "std"
@@ -30363,6 +32158,14 @@
         "expo-ios": [
           "alloc",
           "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "std"
         ]
       },
       "name": "toml_parser",
@@ -30399,6 +32202,14 @@
           "std"
         ],
         "expo-ios": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-android": [
+          "alloc",
+          "std"
+        ],
+        "prns-app-ios": [
           "alloc",
           "std"
         ]
@@ -31054,6 +32865,26 @@
           "rustls-pki-types",
           "sha1"
         ],
+        "prns-app-android": [
+          "__rustls-tls",
+          "data-encoding",
+          "handshake",
+          "http",
+          "httparse",
+          "rustls",
+          "rustls-pki-types",
+          "sha1"
+        ],
+        "prns-app-ios": [
+          "__rustls-tls",
+          "data-encoding",
+          "handshake",
+          "http",
+          "httparse",
+          "rustls",
+          "rustls-pki-types",
+          "sha1"
+        ],
         "sdk-native-linux": [
           "__rustls-tls",
           "data-encoding",
@@ -31168,6 +32999,12 @@
           "const-generics"
         ],
         "nrf52840": [
+          "const-generics"
+        ],
+        "prns-app-android": [
+          "const-generics"
+        ],
+        "prns-app-ios": [
           "const-generics"
         ],
         "sdk-native-linux": [
@@ -31290,6 +33127,8 @@
         "ios": [],
         "nrf-dfu-browser": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -31398,7 +33237,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "uniffi",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -31420,6 +33261,12 @@
           "default"
         ],
         "expo-ios": [
+          "default"
+        ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
           "default"
         ]
       },
@@ -31444,6 +33291,12 @@
         ],
         "expo-ios": [
           "default"
+        ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
         ]
       },
       "name": "uniffi_internal_macros",
@@ -31467,6 +33320,12 @@
         ],
         "expo-ios": [
           "default"
+        ],
+        "prns-app-android": [
+          "default"
+        ],
+        "prns-app-ios": [
+          "default"
         ]
       },
       "name": "uniffi_macros",
@@ -31484,7 +33343,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "uniffi_meta",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -31501,7 +33362,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "uniffi_pipeline",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -31547,6 +33410,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "untrusted",
@@ -31670,6 +33535,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "utf-8",
@@ -31931,6 +33798,18 @@
           "rng",
           "std",
           "v4"
+        ],
+        "prns-app-android": [
+          "default",
+          "rng",
+          "std",
+          "v4"
+        ],
+        "prns-app-ios": [
+          "default",
+          "rng",
+          "std",
+          "v4"
         ]
       },
       "name": "uuid",
@@ -32012,6 +33891,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -32053,6 +33934,8 @@
         "host-c-windows": [],
         "ios": [],
         "nrf52840": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "void",
@@ -32100,7 +33983,8 @@
     {
       "graphs": {
         "android": [],
-        "expo-android": []
+        "expo-android": [],
+        "prns-app-android": []
       },
       "name": "walkdir",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -32950,7 +34834,9 @@
       "graphs": {
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "winnow",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -33077,7 +34963,9 @@
         ],
         "expo-android": [],
         "expo-host-linux": [],
-        "expo-ios": []
+        "expo-ios": [],
+        "prns-app-android": [],
+        "prns-app-ios": []
       },
       "name": "winnow",
       "source": "registry+https://github.com/rust-lang/crates.io-index",
@@ -33211,6 +35099,14 @@
           "static_secrets"
         ],
         "nrf52840": [
+          "precomputed-tables",
+          "static_secrets"
+        ],
+        "prns-app-android": [
+          "precomputed-tables",
+          "static_secrets"
+        ],
+        "prns-app-ios": [
           "precomputed-tables",
           "static_secrets"
         ],
@@ -33593,6 +35489,12 @@
         ],
         "expo-ios": [
           "simd"
+        ],
+        "prns-app-android": [
+          "simd"
+        ],
+        "prns-app-ios": [
+          "simd"
         ]
       },
       "name": "zerocopy",
@@ -33854,6 +35756,18 @@
           "derive",
           "zeroize_derive"
         ],
+        "prns-app-android": [
+          "alloc",
+          "default",
+          "derive",
+          "zeroize_derive"
+        ],
+        "prns-app-ios": [
+          "alloc",
+          "default",
+          "derive",
+          "zeroize_derive"
+        ],
         "sdk-native-linux": [
           "alloc",
           "default",
@@ -33919,6 +35833,8 @@
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": [],
         "wasm": []
       },
@@ -34036,6 +35952,8 @@
         "expo-host-linux": [],
         "halow-headless": [],
         "host-c-linux": [],
+        "prns-app-android": [],
+        "prns-app-ios": [],
         "sdk-native-linux": []
       },
       "name": "zmij",
