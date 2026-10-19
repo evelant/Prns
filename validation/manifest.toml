@@ -214,7 +214,7 @@ tiers = ["pr"]
 platform = "any"
 toolchain = "stable"
 timeout_seconds = 1200
-command = ["cargo", "test", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace"]
+command = ["cargo", "test", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--features", "prns-groups-store/secure"]
 inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store"]
 artifacts = "validation-artifacts/results/group-communication-tests"
 
@@ -226,7 +226,7 @@ tiers = ["pr"]
 platform = "any"
 toolchain = "stable"
 timeout_seconds = 1200
-command = ["cargo", "clippy", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--all-targets", "--", "-D", "warnings"]
+command = ["cargo", "clippy", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--all-targets", "--features", "prns-groups-store/secure", "--", "-D", "warnings"]
 inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store"]
 artifacts = "validation-artifacts/results/group-communication-clippy"
 

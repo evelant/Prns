@@ -20,6 +20,9 @@ pub use prns_groups::{
     StoreIncarnation, TicketError,
 };
 
+pub mod flash;
+#[cfg(feature = "secure")]
+pub mod secure;
 
 /// Limits for one transaction and one returned value. Zero permits no usage.
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

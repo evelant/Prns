@@ -2,13 +2,14 @@
 
 This checked bundle covers the shipped and qualification Rust, JavaScript, and Android product graphs.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:67fc5db7671d1f046967b4e645c41263a4986ca1180d3bafc47c7d47a12e5606`.
+Notice input fingerprint: `sha256:a6756b996a8b6bea41edb995083e017258ca1f4863630564627c4bd86e9ea2ef`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by SPDX identifier and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
 ## Release graphs
 
 - Group libraries: `prns-groups/Cargo.toml` (`x86_64-unknown-linux-gnu`, locked resolution)
+- Group secure storage: `prns-groups/Cargo.toml` (`x86_64-unknown-linux-gnu`, locked resolution, default features plus `prns-groups-store/secure`)
 - engine: `Cargo.toml` (`x86_64-unknown-linux-gnu`, locked resolution)
 - daemon Linux: `prnsd/Cargo.toml` (`x86_64-unknown-linux-gnu`, locked resolution)
 - daemon macOS: `prnsd/Cargo.toml` (`aarch64-apple-darwin`, locked resolution)
@@ -1958,7 +1959,7 @@ License: BSD 3-Clause "New" or "Revised" License
 
 Used by: `subtle 2.6.1`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 Copyright (c) 2016-2017 Isis Agora Lovecruft, Henry de Valence. All rights reserved.
@@ -2756,7 +2757,7 @@ License: MIT License
 
 Used by: `async-stream 0.3.6`, `async-stream-impl 0.3.6`, `bitfield-macros 0.19.4`, `block2 0.5.1`, `block2 0.6.2`, `bluez-async 0.8.2`, `bluez-generated 0.4.0`, `btleplug 0.12.0`, `btuuid 0.1.1`, `cesu8 1.1.0`, `const-serialize 0.7.2`, `const-serialize 0.8.0-alpha.0`, `const-serialize-macro 0.7.2`, `const-serialize-macro 0.8.0-alpha.0`, `content_disposition 0.4.0`, `cortex-m-rt 0.7.5`, `cortex-m-rt-macros 0.7.5`, `custom_debug 0.6.2`, `custom_debug_derive 0.6.2`, `deku_derive 0.18.1`, `delegate 0.13.5`, `dioxus 0.7.5`, `dioxus-asset-resolver 0.7.9`, `dioxus-cli-config 0.7.9`, `dioxus-config-macro 0.7.9`, `dioxus-config-macros 0.7.9`, `dioxus-core 0.7.9`, `dioxus-core-macro 0.7.9`, `dioxus-core-types 0.7.9`, `dioxus-devtools 0.7.9`, `dioxus-devtools-types 0.7.9`, `dioxus-document 0.7.9`, `dioxus-fullstack 0.7.9`, `dioxus-fullstack-core 0.7.9`, `dioxus-fullstack-macro 0.7.9`, `dioxus-history 0.7.9`, `dioxus-hooks 0.7.9`, `dioxus-html 0.7.9`, `dioxus-html-internal-macro 0.7.9`, `dioxus-logger 0.7.9`, `dioxus-router 0.7.9`, `dioxus-router-macro 0.7.9`, `dioxus-rsx 0.7.9`, `dioxus-signals 0.7.9`, `dioxus-stores 0.7.9`, `dioxus-stores-macro 0.7.9`, `dispatch 0.2.0`, `dispatch2 0.3.1`, `dlopen2 0.8.2`, `docs 0.1.0`, `docsplay-macros 0.1.2`, `dpi 0.1.2`, `embassy-embedded-hal 0.6.0`, `embassy-executor 0.10.0`, `embassy-executor-macros 0.8.0`, `embassy-executor-timer-queue 0.1.0`, `embassy-futures 0.1.2`, `embassy-hal-internal 0.4.0`, `embassy-hal-internal 0.5.0`, `embassy-net 0.9.1`, `embassy-net-driver 0.2.0`, `embassy-net-driver-channel 0.4.0`, `embassy-nrf 0.10.0`, `embassy-sync 0.6.2`, `embassy-sync 0.7.2`, `embassy-sync 0.8.0`, `embassy-time 0.5.1`, `embassy-time-driver 0.2.2`, `embassy-time-queue-utils 0.3.2`, `embassy-usb 0.6.0`, `embassy-usb-driver 0.2.2`, `embassy-usb-synopsys-otg 0.3.3`, `embedded-graphics-core 0.4.1`, `embedded-nal-async 0.9.0`, `embedded-storage 0.3.2`, `esp-alloc 0.10.0`, `esp-backtrace 0.19.0`, `esp-bootloader-esp-idf 0.5.0`, `esp-config 0.7.0`, `esp-hal 1.1.1`, `esp-hal-procmacros 0.22.0`, `esp-metadata-generated 0.4.0`, `esp-phy 0.2.0`, `esp-println 0.17.0`, `esp-radio-rtos-driver 0.3.0`, `esp-riscv-rt 0.14.0`, `esp-rom-sys 0.1.4`, `esp-rtos 0.3.0`, `esp-sync 0.2.1`, `esp-wifi-sys-esp32c6 0.2.0`, `esp-wifi-sys-esp32s3 0.2.0`, `esp32c6 0.23.2`, `esp32s3 0.35.2`, `fluent-langneg 0.13.1`, `generational-box 0.7.9`, `gloo-net 0.6.0`, `gloo-utils 0.2.0`, `hopspot-flash 0.3.8`, `hopspot-heltec-e290 0.1.0`, `hopspot-heltec-v3 0.1.0`, `hopspot-heltec-v4 0.1.0`, `hopspot-heltec-v4-r8 0.1.0`, `hopspot-heltec-wireless-stick-lite-v3 0.1.0`, `hopspot-t-beam-supreme 0.1.0`, `hopspot-xiao-esp32-c6 0.1.0`, `hopspot-xiao-esp32s3-wio-sx1262 0.1.0`, `intl_pluralrules 7.0.2`, `jni-sys-macros 0.4.1`, `lazy-js-bundle 0.7.9`, `macaddr 1.0.1`, `manganis 0.7.9`, `manganis-core 0.7.9`, `manganis-macro 0.7.9`, `minisign-verify 0.2.5`, `napi 3.11.0`, `napi-build 2.3.2`, `napi-derive 3.6.0`, `napi-derive-backend 6.0.0`, `napi-sys 3.3.0`, `ndk-context 0.1.1`, `netlink-packet-core 0.8.1`, `netlink-sys 0.8.8`, `nrf-softdevice 0.1.0-prns.1`, `nrf-softdevice-macro 0.1.0`, `objc-sys 0.3.5`, `objc2 0.5.2`, `objc2 0.6.4`, `objc2-app-kit 0.2.2`, `objc2-app-kit 0.3.2`, `objc2-core-bluetooth 0.2.2`, `objc2-core-bluetooth 0.3.2`, `objc2-core-foundation 0.3.2`, `objc2-core-graphics 0.3.2`, `objc2-core-wlan 0.3.2`, `objc2-encode 4.1.0`, `objc2-foundation 0.2.2`, `objc2-foundation 0.3.2`, `objc2-io-kit 0.3.2`, `objc2-security 0.3.2`, `objc2-security-foundation 0.3.2`, `objc2-system-configuration 0.3.2`, `ouroboros 0.18.5`, `ouroboros_macro 0.18.5`, `parse_int 0.9.0`, `personal-hopspot-android 0.1.0`, `personal-hopspot-appliance 0.1.0`, `personal-hopspot-assurance 0.1.0`, `personal-hopspot-assurance-kernel 0.1.0`, `personal-hopspot-builder 0.1.0`, `personal-hopspot-core 0.1.0`, `personal-hopspot-desktop 0.1.0`, `personal-hopspot-headless 0.1.0`, `personal-hopspot-ios 0.1.0`, `personal-hopspot-memory 0.1.0`, `personal-hopspot-resources 0.1.0`, `personal-hopspot-xtensa-qemu 0.1.0`, `personal-rns 0.3.8`, `portable_atomic_enum 0.3.1`, `portable_atomic_enum_macros 0.2.1`, `prns-app-native 0.1.0`, `prns-config 0.3.8`, `prns-core 0.3.8`, `prns-expo-android 0.3.8`, `prns-ffi 0.3.8`, `prns-flash-manifest 0.1.0`, `prns-groups 0.1.0`, `prns-groups-store 0.1.0`, `prns-groups-store-native 0.1.0`, `prns-host 0.3.8`, `prns-host-cooperative 0.3.8`, `prns-host-native 0.3.8`, `prns-host-snapshot 0.3.8`, `prns-host-uniffi 0.3.8`, `prns-host-uniffi-image 0.3.8`, `prns-interfaces-embassy 0.3.8`, `prns-interfaces-tokio 0.3.8`, `prns-lxmf 0.1.0`, `prns-lxmf-wire 0.1.0`, `prns-macros 0.3.8`, `prns-nrf-dfu 0.1.0`, `prns-nrf-dfu-wasm 0.1.0`, `prns-runtime 0.3.8`, `prns-runtime-embassy 0.3.8`, `prns-runtime-tokio 0.3.8`, `prns-simulation 0.3.8`, `prns-tools-command 0.1.0`, `prns-wasm 0.3.8`, `prnsd 0.3.8`, `prnsd-control 0.1.0`, `reticulum-site 0.1.0`, `riscv-macros 0.3.0`, `riscv-rt-macros 0.6.1`, `rlsf 0.2.2`, `siphasher 1.0.3`, `subsecond 0.7.9`, `subsecond-types 0.7.9`, `tokio-udev 0.9.1`, `trouble-host 0.6.0`, `trouble-host-macros 0.4.0`, `type-map 0.5.1`, `ufmt-write 0.1.0`, `usbd-hid-descriptors 0.10.0`, `usbd-hid-macros 0.10.0`, `void 1.0.2`, `warnings 0.2.1`, `warnings-macro 0.2.0`, `windows 0.58.0`, `windows 0.62.2`, `windows-collections 0.3.2`, `windows-core 0.58.0`, `windows-core 0.62.2`, `windows-future 0.3.2`, `windows-implement 0.58.0`, `windows-implement 0.60.2`, `windows-interface 0.58.0`, `windows-interface 0.59.3`, `windows-link 0.2.1`, `windows-numerics 0.3.1`, `windows-result 0.2.0`, `windows-result 0.4.1`, `windows-strings 0.1.0`, `windows-strings 0.5.1`, `windows-sys 0.52.0`, `windows-sys 0.59.0`, `windows-sys 0.61.2`, `windows-targets 0.52.6`, `windows-threading 0.2.1`, `windows_x86_64_msvc 0.52.6`, `xtensa-lx 0.13.0`, `xtensa-lx-rt 0.22.0`, `xtensa-lx-rt-proc-macros 0.5.0`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group libraries, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Nordic DFU browser core, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group libraries, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Nordic DFU browser core, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 MIT License
@@ -3520,6 +3521,42 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+```
+
+### MIT (282b5e566e85)
+
+License: MIT License
+
+Used by: `chacha20 0.9.1`
+
+Release graphs: Group secure storage
+
+```text
+Copyright (c) 2019-2023 The RustCrypto Project Developers
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
 ```
 
 ### MIT (2970d8b03b77)
@@ -4457,7 +4494,7 @@ License: MIT License
 
 Used by: `md-5 0.10.6`, `sha1 0.10.6`, `sha1 0.10.7`, `sha2 0.10.9`
 
-Release graphs: Expo Android, Expo host, Expo iOS, HaLoW appliance manager, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, website Rust/WASM
+Release graphs: Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, website Rust/WASM
 
 ```text
 Copyright (c) 2006-2009 Graydon Hoare
@@ -5532,7 +5569,7 @@ License: MIT License
 
 Used by: `block-buffer 0.10.4`, `block-padding 0.3.3`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 Copyright (c) 2018-2019 The RustCrypto Project Developers
@@ -5600,7 +5637,7 @@ License: MIT License
 
 Used by: `cpufeatures 0.2.17`, `cpufeatures 0.3.0`
 
-Release graphs: Android, Expo Android, Expo host, Expo iOS, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS
+Release graphs: Android, Expo Android, Expo host, Expo iOS, Group secure storage, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS
 
 ```text
 Copyright (c) 2020-2025 The RustCrypto Project Developers
@@ -5699,7 +5736,7 @@ License: MIT License
 
 Used by: `crypto-common 0.1.7`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 Copyright (c) 2021 RustCrypto Developers
@@ -5785,7 +5822,7 @@ License: MIT License
 
 Used by: `spin 0.9.9`
 
-Release graphs: Group libraries, Node addon Linux, Node addon Windows, Node addon macOS, daemon Linux, daemon Windows, daemon macOS, website Rust/WASM
+Release graphs: Group libraries, Group secure storage, Node addon Linux, Node addon Windows, Node addon macOS, daemon Linux, daemon Windows, daemon macOS, website Rust/WASM
 
 ```text
 The MIT License (MIT)
@@ -5947,7 +5984,7 @@ License: MIT License
 
 Used by: `inout 0.1.4`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 Copyright (c) 2022 The RustCrypto Project Developers
@@ -6183,6 +6220,42 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+### MIT (7873dbb4b866)
+
+License: MIT License
+
+Used by: `opaque-debug 0.3.1`
+
+Release graphs: Group secure storage
+
+```text
+Copyright (c) 2018-2024 The RustCrypto Project Developers
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+```
+
 ### MIT (7a8093fb4a93)
 
 License: MIT License
@@ -6229,6 +6302,42 @@ Release graphs: Expo Android, Expo host, Expo iOS, HaLoW appliance manager, Host
 
 ```text
 Copyright (c) 2015 Steven Allen
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+```
+
+### MIT (7cfd98aeed13)
+
+License: MIT License
+
+Used by: `universal-hash 0.5.1`
+
+Release graphs: Group secure storage
+
+```text
+Copyright (c) 2019-2020 RustCrypto Developers
 
 Permission is hereby granted, free of charge, to any
 person obtaining a copy of this software and associated
@@ -6571,7 +6680,7 @@ License: MIT License
 
 Used by: `keccak 0.2.2`, `zeroize 1.9.0`, `zeroize 1.9.1`
 
-Release graphs: Android, Expo Android, Expo host, Expo iOS, Group libraries, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, iOS
+Release graphs: Android, Expo Android, Expo host, Expo iOS, Group libraries, Group secure storage, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, iOS
 
 ```text
 Copyright (c) 2018-2026 The RustCrypto Project Developers
@@ -6607,7 +6716,7 @@ License: MIT License
 
 Used by: `cc 1.2.65`, `cc 1.2.67`, `cc 1.3.0`, `cc 1.4.0`, `cc 1.4.3`, `cfg-if 1.0.4`, `cfg-if 1.0.5`, `cmake 0.1.58`, `find-msvc-tools 0.1.11`, `find-msvc-tools 0.1.9`, `futures-timer 3.0.3`, `js-sys 0.3.103`, `js-sys 0.3.99`, `longest-increasing-subsequence 0.1.0`, `openssl-probe 0.2.1`, `pkg-config 0.3.33`, `pkg-config 0.3.34`, `rustc-demangle 0.1.28`, `socket2 0.6.4`, `socket2 0.6.5`, `wasm-bindgen 0.2.122`, `wasm-bindgen 0.2.126`, `wasm-bindgen-futures 0.4.72`, `wasm-bindgen-macro 0.2.122`, `wasm-bindgen-macro 0.2.126`, `wasm-bindgen-macro-support 0.2.122`, `wasm-bindgen-macro-support 0.2.126`, `wasm-bindgen-shared 0.2.122`, `wasm-bindgen-shared 0.2.126`, `web-sys 0.3.99`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Nordic DFU browser core, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Nordic DFU browser core, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 Copyright (c) 2014 Alex Crichton
@@ -6766,7 +6875,7 @@ License: MIT License
 
 Used by: `typenum 1.20.0`, `typenum 1.20.1`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 The MIT License (MIT)
@@ -7195,7 +7304,7 @@ License: MIT License
 
 Used by: `cipher 0.4.4`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 Copyright (c) 2016-2020 RustCrypto Developers
@@ -7500,7 +7609,7 @@ License: MIT License
 
 Used by: `digest 0.10.7`, `hmac 0.13.0`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 Copyright (c) 2017 Artyom Pavlov
@@ -7569,7 +7678,7 @@ License: MIT License
 
 Used by: `redb 4.2.0`
 
-Release graphs: Group libraries, Prns app Android, Prns app iOS
+Release graphs: Group libraries, Group secure storage, Prns app Android, Prns app iOS
 
 ```text
 Copyright (c) 2021 Christopher Berner
@@ -8185,7 +8294,7 @@ License: MIT License
 
 Used by: `generic-array 0.14.7`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 The MIT License (MIT)
@@ -8480,6 +8589,43 @@ FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```
+
+### MIT (b38f573d5bc8)
+
+License: MIT License
+
+Used by: `aead 0.5.2`
+
+Release graphs: Group secure storage
+
+```text
+Copyright (c) 2019 The RustCrypto Project Developers
+Copyright (c) 2019 MobileCoin, LLC
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
 ```
 
 ### MIT (b420d8add23b)
@@ -10105,6 +10251,78 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+### MIT (e827371937a1)
+
+License: MIT License
+
+Used by: `poly1305 0.8.0`
+
+Release graphs: Group secure storage
+
+```text
+Copyright (c) 2015-2019 RustCrypto Developers
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+```
+
+### MIT (e90ad0f8f6fe)
+
+License: MIT License
+
+Used by: `chacha20poly1305 0.10.1`
+
+Release graphs: Group secure storage
+
+```text
+Copyright (c) 2019 The RustCrypto Project Developers
+
+Permission is hereby granted, free of charge, to any
+person obtaining a copy of this software and associated
+documentation files (the "Software"), to deal in the
+Software without restriction, including without
+limitation the rights to use, copy, modify, merge,
+publish, distribute, sublicense, and/or sell copies of
+the Software, and to permit persons to whom the Software
+is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice
+shall be included in all copies or substantial portions
+of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT
+SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR
+IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+DEALINGS IN THE SOFTWARE.
+```
+
 ### MIT (e92f714e849a)
 
 License: MIT License
@@ -10219,7 +10437,7 @@ License: MIT License
 
 Used by: `version_check 0.9.5`
 
-Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
+Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, Expo Android, Expo host, Expo iOS, Group secure storage, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
 ```text
 The MIT License (MIT)
