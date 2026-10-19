@@ -32,6 +32,7 @@ ROOT = Path(__file__).resolve().parents[2]
 BASELINE = ROOT / "audits" / "unsafe-snapshot.json"
 GRAPHS = (
     ("group-libraries", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
+    ("group-secure-storage", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("engine", "Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("host-c-linux", "prns-host/abi/c/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("host-c-macos", "prns-host/abi/c/Cargo.toml", "aarch64-apple-darwin"),
@@ -107,6 +108,7 @@ GRAPHS = (
 # Audit the shipped product features without enabling development-only binding
 # generators or changing the default features of the other release graphs.
 GRAPH_FEATURES = {
+    "group-secure-storage": ("prns-groups-store/secure",),
     "prns-app-android": ("android",),
     "prns-app-ios": ("apple",),
 }

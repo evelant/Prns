@@ -27,13 +27,15 @@ class ThirdPartyNoticeTests(unittest.TestCase):
         graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
         self.assertEqual(graphs["Group libraries"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertNotIn("Group libraries", notices.GRAPH_FEATURES)
+        self.assertEqual(graphs["Group secure storage"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertEqual(notices.GRAPH_FEATURES["Group secure storage"], ("prns-groups-store/secure",))
 
     def test_app_graphs_add_only_the_platform_product_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
         self.assertEqual(len(graphs), len(notices.GRAPHS))
         self.assertEqual(
             notices.GRAPH_FEATURES,
-            {"Prns app Android": ("android",), "Prns app iOS": ("apple",)},
+            {"Prns app Android": ("android",), "Prns app iOS": ("apple",), "Group secure storage": ("prns-groups-store/secure",)},
         )
         app_manifest = "applications/prns/native-composition/Cargo.toml"
         self.assertEqual(graphs["Prns app Android"], (app_manifest, "aarch64-linux-android"))

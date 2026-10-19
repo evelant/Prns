@@ -7,7 +7,7 @@ a complete group engine.
 The dependency-free, allocation-free `prns-groups` core supplies IDs, scoped
 operation tickets, revisions and checked capacity accounting.
 
-The opt-in `secure` feature supplies encrypted NOR storage (separate integration)
+The opt-in `secure` feature supplies [encrypted NOR storage](docs/secure-flash.md)
 with immutable versions, erasable catalog-key capsules, strict retirement before
 result release, compaction and a bounded receipt window. This experimental format
 has host tests and an opt-in [E290 secure fixture](../core/docs/embedded.md#e290-storage-fixture),
