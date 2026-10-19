@@ -63,6 +63,10 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
     previewContactCard: async () =>
       Bindings.ContactCardPreviewOutcome.Invalid.new({ detail: "fixture" }),
     importContactCard: async () => Bindings.ContactCardImportOutcome.Busy.new(),
+    readBluetoothDiscoveryGroups: async () =>
+      Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
+    setBluetoothDiscoveryGroups: async () =>
+      Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
     readBluetoothSettings: jest.fn(async () =>
       Bindings.LocalBluetoothSettingsOutcome.Ready.new({ enabled: true }),
     ),

@@ -378,6 +378,11 @@ export function createDevelopmentRuntime(
     readBluetoothSettings: () => call((api) => api.readBluetoothSettings(), undefined, "storage"),
     setBluetoothEnabled: (enabled: boolean) =>
       call((api) => api.setBluetoothEnabled(enabled), undefined, "storage"),
+    readBluetoothDiscoveryGroups: () =>
+      call((api) => api.readBluetoothDiscoveryGroups(), undefined, "storage"),
+    setBluetoothDiscoveryGroups: (input: Bindings.SetBluetoothDiscoveryGroupsInput) =>
+      call((api) => api.setBluetoothDiscoveryGroups(input), undefined, "storage"),
+    /** Borrow the app's retained host; releasing this view cannot stop services. */
     attachHost: async () => {
       const api = await bindings();
       const host = api.sharedHost();

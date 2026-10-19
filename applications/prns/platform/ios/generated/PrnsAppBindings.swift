@@ -3850,6 +3850,88 @@ public func FfiConverterTypeLocalAnnounceActivity_lower(_ value: LocalAnnounceAc
 }
 
 
+public struct LocalBluetoothDiscoveryGroupsSettings: Equatable, Hashable {
+    /**
+     * Opaque process-local storage owner fence; reread after reconnecting to native.
+     */
+    public var ownerId: UInt64
+    public var generationId: UInt64
+    /**
+     * Durably saved, canonical names used on subsequent starts.
+     */
+    public var groups: [String]
+    /**
+     * Last settled enabled supervisor configuration. None means unconfirmed or inactive.
+     * This does not establish a peer connection or prove a traffic route.
+     */
+    public var appliedGroups: [String]?
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * Opaque process-local storage owner fence; reread after reconnecting to native.
+         */ownerId: UInt64, generationId: UInt64,
+        /**
+         * Durably saved, canonical names used on subsequent starts.
+         */groups: [String],
+        /**
+         * Last settled enabled supervisor configuration. None means unconfirmed or inactive.
+         * This does not establish a peer connection or prove a traffic route.
+         */appliedGroups: [String]?) {
+        self.ownerId = ownerId
+        self.generationId = generationId
+        self.groups = groups
+        self.appliedGroups = appliedGroups
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension LocalBluetoothDiscoveryGroupsSettings: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocalBluetoothDiscoveryGroupsSettings {
+        return
+            try LocalBluetoothDiscoveryGroupsSettings(
+                ownerId: FfiConverterUInt64.read(from: &buf),
+                generationId: FfiConverterUInt64.read(from: &buf),
+                groups: FfiConverterSequenceString.read(from: &buf),
+                appliedGroups: FfiConverterOptionSequenceString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: LocalBluetoothDiscoveryGroupsSettings, into buf: inout [UInt8]) {
+        FfiConverterUInt64.write(value.ownerId, into: &buf)
+        FfiConverterUInt64.write(value.generationId, into: &buf)
+        FfiConverterSequenceString.write(value.groups, into: &buf)
+        FfiConverterOptionSequenceString.write(value.appliedGroups, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings_lift(_ buf: RustBuffer) throws -> LocalBluetoothDiscoveryGroupsSettings {
+    return try FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings_lower(_ value: LocalBluetoothDiscoveryGroupsSettings) -> RustBuffer {
+    return FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings.lower(value)
+}
+
+
 public struct LocalBluetoothPeerSnapshot: Equatable, Hashable {
     /**
      * Opaque physical interface identifier; this is not an authenticated RNS identity.
@@ -6187,6 +6269,64 @@ public func FfiConverterTypeSendGroupTextInput_lift(_ buf: RustBuffer) throws ->
 #endif
 public func FfiConverterTypeSendGroupTextInput_lower(_ value: SendGroupTextInput) -> RustBuffer {
     return FfiConverterTypeSendGroupTextInput.lower(value)
+}
+
+
+public struct SetBluetoothDiscoveryGroupsInput: Equatable, Hashable {
+    public var ownerId: UInt64
+    public var generationId: UInt64
+    public var groups: [String]
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(ownerId: UInt64, generationId: UInt64, groups: [String]) {
+        self.ownerId = ownerId
+        self.generationId = generationId
+        self.groups = groups
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension SetBluetoothDiscoveryGroupsInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeSetBluetoothDiscoveryGroupsInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SetBluetoothDiscoveryGroupsInput {
+        return
+            try SetBluetoothDiscoveryGroupsInput(
+                ownerId: FfiConverterUInt64.read(from: &buf),
+                generationId: FfiConverterUInt64.read(from: &buf),
+                groups: FfiConverterSequenceString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: SetBluetoothDiscoveryGroupsInput, into buf: inout [UInt8]) {
+        FfiConverterUInt64.write(value.ownerId, into: &buf)
+        FfiConverterUInt64.write(value.generationId, into: &buf)
+        FfiConverterSequenceString.write(value.groups, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSetBluetoothDiscoveryGroupsInput_lift(_ buf: RustBuffer) throws -> SetBluetoothDiscoveryGroupsInput {
+    return try FfiConverterTypeSetBluetoothDiscoveryGroupsInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeSetBluetoothDiscoveryGroupsInput_lower(_ value: SetBluetoothDiscoveryGroupsInput) -> RustBuffer {
+    return FfiConverterTypeSetBluetoothDiscoveryGroupsInput.lower(value)
 }
 
 
@@ -10449,6 +10589,121 @@ public func FfiConverterTypeInviteToGroupOutcome_lift(_ buf: RustBuffer) throws 
 #endif
 public func FfiConverterTypeInviteToGroupOutcome_lower(_ value: InviteToGroupOutcome) -> RustBuffer {
     return FfiConverterTypeInviteToGroupOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum LocalBluetoothDiscoveryGroupsOutcome: Equatable, Hashable {
+
+    case ready(settings: LocalBluetoothDiscoveryGroupsSettings
+    )
+    /**
+     * Stored names are malformed; these fresh fences permit an explicit repair.
+     */
+    case invalidSaved(ownerId: UInt64, generationId: UInt64, detail: String
+    )
+    case busy
+    case generationChanged
+    case invalid(detail: String
+    )
+    /**
+     * A mutation may already be saved. Reread before proposing another change.
+     */
+    case unavailable(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension LocalBluetoothDiscoveryGroupsOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = LocalBluetoothDiscoveryGroupsOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocalBluetoothDiscoveryGroupsOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(settings: try FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings.read(from: &buf)
+        )
+
+        case 2: return .invalidSaved(ownerId: try FfiConverterUInt64.read(from: &buf), generationId: try FfiConverterUInt64.read(from: &buf), detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 3: return .busy
+
+        case 4: return .generationChanged
+
+        case 5: return .invalid(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 6: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: LocalBluetoothDiscoveryGroupsOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(settings):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeLocalBluetoothDiscoveryGroupsSettings.write(settings, into: &buf)
+
+
+        case let .invalidSaved(ownerId,generationId,detail):
+            writeInt(&buf, Int32(2))
+            FfiConverterUInt64.write(ownerId, into: &buf)
+            FfiConverterUInt64.write(generationId, into: &buf)
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case .busy:
+            writeInt(&buf, Int32(3))
+
+
+        case .generationChanged:
+            writeInt(&buf, Int32(4))
+
+
+        case let .invalid(detail):
+            writeInt(&buf, Int32(5))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(6))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome_lift(_ buf: RustBuffer) throws -> LocalBluetoothDiscoveryGroupsOutcome {
+    return try FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome_lower(_ value: LocalBluetoothDiscoveryGroupsOutcome) -> RustBuffer {
+    return FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome.lower(value)
 }
 
 
@@ -16398,6 +16653,30 @@ fileprivate struct FfiConverterOptionTypeGroupSynchronizationIssue: FfiConverter
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionSequenceString: FfiConverterRustBuffer {
+    typealias SwiftType = [String]?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterSequenceString.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterSequenceString.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeBytes16: FfiConverterRustBuffer {
     typealias SwiftType = Bytes16?
 
@@ -17922,6 +18201,24 @@ public func previewIdentityImport(identity: Data) -> IdentityImportPreviewOutcom
     )
 })
 }
+/**
+ * Read saved names and separately confirmed current supervisor configuration.
+ */
+public func readBluetoothDiscoveryGroups()async  -> LocalBluetoothDiscoveryGroupsOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_read_bluetooth_discovery_groups(
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome_lift,
+            errorHandler: nil
+
+        )
+}
 public func readBluetoothSettings()async  -> LocalBluetoothSettingsOutcome  {
     return
         try!  await uniffiRustCallAsync(
@@ -18089,6 +18386,24 @@ public func sendGroupText(input: SendGroupTextInput)async  -> GroupTextSendOutco
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeGroupTextSendOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+/**
+ * Persist first, then await old-peer teardown and replacement. Cancellation only drops the waiter.
+ */
+public func setBluetoothDiscoveryGroups(input: SetBluetoothDiscoveryGroupsInput)async  -> LocalBluetoothDiscoveryGroupsOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_set_bluetooth_discovery_groups(FfiConverterTypeSetBluetoothDiscoveryGroupsInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeLocalBluetoothDiscoveryGroupsOutcome_lift,
             errorHandler: nil
 
         )
@@ -18416,6 +18731,9 @@ private let initializationResult: InitializationResult = {
     if (uniffi_prns_app_checksum_func_preview_identity_import() != 31445) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_prns_app_checksum_func_read_bluetooth_discovery_groups() != 55143) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_prns_app_checksum_func_read_bluetooth_settings() != 48522) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -18447,6 +18765,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_send_group_text() != 51044) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_set_bluetooth_discovery_groups() != 15446) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_set_bluetooth_enabled() != 13413) {

@@ -1,4 +1,5 @@
 pub(crate) mod admission;
+pub(crate) mod bluetooth_discovery;
 pub(crate) mod contact_cards;
 pub(crate) mod group_actions;
 pub(crate) mod group_announces;
@@ -890,43 +891,52 @@ fn start_configured_with_supervisor(
             };
         }
     };
-    let (mailbox_submitter, group_client, group_health, bluetooth_enabled, messaging_name) =
-        match ensure_application_owner_locked(&mut state, &paths).and_then(|owner| {
-            owner.read_bluetooth_blocking().and_then(|enabled| {
-                owner.read_messaging_name_blocking().map(|name| {
+    let (
+        mailbox_submitter,
+        group_client,
+        group_health,
+        bluetooth_enabled,
+        bluetooth_groups,
+        messaging_name,
+    ) = match ensure_application_owner_locked(&mut state, &paths).and_then(|owner| {
+        owner.read_bluetooth_blocking().and_then(|enabled| {
+            owner.read_messaging_name_blocking().and_then(|name| {
+                owner.read_bluetooth_discovery_blocking().map(|groups| {
                     (
                         owner.mailbox_submitter(),
                         owner.group_client(),
                         owner.group_health(),
                         enabled,
+                        groups,
                         name,
                     )
                 })
             })
-        }) {
-            Ok(value) => value,
-            Err(failure) => {
-                let detail = match failure {
-                    DevelopmentStoreFailure::Unavailable(detail) => detail,
-                    DevelopmentStoreFailure::ResetRequired(reason) => {
-                        supervisor.snapshots.set_local_host(
-                            LocalHostState::DevelopmentResetRequired {
-                                reason: reason.clone(),
-                            },
-                        );
-                        reason
-                    }
-                };
-                supervisor.snapshots.fail(DevelopmentNodeFailure {
-                    stage: DevelopmentNodeFailureStage::Storage,
-                    detail: detail.clone(),
-                });
-                return DevelopmentNodeStartOutcome::Failed {
-                    stage: DevelopmentNodeFailureStage::Storage,
-                    detail,
-                };
-            }
-        };
+        })
+    }) {
+        Ok(value) => value,
+        Err(failure) => {
+            let detail = match failure {
+                DevelopmentStoreFailure::Unavailable(detail) => detail,
+                DevelopmentStoreFailure::ResetRequired(reason) => {
+                    supervisor
+                        .snapshots
+                        .set_local_host(LocalHostState::DevelopmentResetRequired {
+                            reason: reason.clone(),
+                        });
+                    reason
+                }
+            };
+            supervisor.snapshots.fail(DevelopmentNodeFailure {
+                stage: DevelopmentNodeFailureStage::Storage,
+                detail: detail.clone(),
+            });
+            return DevelopmentNodeStartOutcome::Failed {
+                stage: DevelopmentNodeFailureStage::Storage,
+                detail,
+            };
+        }
+    };
     #[cfg(all(feature = "apple", target_os = "ios"))]
     let prepared_bluetooth = match take_matching_prepared_owner(
         &mut state.pending_apple_bluetooth,
@@ -1005,6 +1015,7 @@ fn start_configured_with_supervisor(
                 worker_host,
                 worker_bluetooth,
                 bluetooth_enabled,
+                bluetooth_groups,
                 messaging_name,
                 paths,
                 primary_identity_secret,
@@ -1118,6 +1129,14 @@ async fn bluetooth_settings_with_supervisor(
                 detail: "Prepare native storage before changing Bluetooth settings.".into(),
             };
         };
+        let change = if enabled.is_some() {
+            let Some(change) = owner.start_bluetooth_change() else {
+                return LocalBluetoothSettingsOutcome::Busy;
+            };
+            Some(change)
+        } else {
+            None
+        };
         let control = state
             .worker
             .as_ref()
@@ -1126,6 +1145,7 @@ async fn bluetooth_settings_with_supervisor(
         let generation = snapshot.generation_id;
         let (reply, receive) = oneshot::channel();
         if let Err(failure) = owner.admit_bluetooth(enabled, move |result| {
+            let _change = change;
             let result = match result {
                 Ok(value) => {
                     // The database owner retains this action after foreign cancellation.
@@ -1899,6 +1919,7 @@ fn run_worker(
     published_host: Arc<OnceLock<HostClient>>,
     bluetooth_control: Arc<OnceLock<BluetoothControl>>,
     bluetooth_enabled: bool,
+    bluetooth_groups: prns_core::interfaces::DiscoveryGroupSet,
     messaging_name: String,
     paths: NodeStoragePaths,
     primary_identity_secret: IdentitySecretKey,
@@ -1928,6 +1949,7 @@ fn run_worker(
         published_host,
         bluetooth_control,
         bluetooth_enabled,
+        bluetooth_groups,
         messaging_name,
         paths,
         primary_identity_secret,
@@ -1951,6 +1973,7 @@ async fn run_generation(
     published_host: Arc<OnceLock<HostClient>>,
     bluetooth_control: Arc<OnceLock<BluetoothControl>>,
     bluetooth_enabled: bool,
+    bluetooth_groups: prns_core::interfaces::DiscoveryGroupSet,
     messaging_name: String,
     paths: NodeStoragePaths,
     primary_identity_secret: IdentitySecretKey,
@@ -2160,7 +2183,9 @@ async fn run_generation(
         all(feature = "android", target_os = "android")
     ))]
     {
-        let control = BluetoothControl::new(status);
+        // This status belongs to an unattached interface: configure it before any handshake.
+        let _ = status.replace_discovery_groups(bluetooth_groups).await;
+        let control = BluetoothControl::new(status, bluetooth_groups);
         control.set_enabled(bluetooth_enabled);
         let _ = bluetooth_control.set(control);
     }
@@ -2168,7 +2193,7 @@ async fn run_generation(
         all(feature = "apple", any(target_os = "ios", target_os = "macos")),
         all(feature = "android", target_os = "android")
     )))]
-    let _ = bluetooth_enabled;
+    let _ = (bluetooth_enabled, bluetooth_groups);
     let bluetooth_attached = cfg!(any(
         all(
             feature = "apple",

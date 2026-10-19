@@ -86,6 +86,8 @@ export const {
   measureLxmfText,
   previewIdentityImport,
   readDevelopmentNodeSnapshot,
+  readBluetoothDiscoveryGroups,
+  setBluetoothDiscoveryGroups,
   readRemoteNode,
   changeRemoteNode,
   startRemoteWifiTrial,

@@ -449,6 +449,36 @@ async fn durable_restart_describe_and_unavailable_target() {
     .await;
     approve_pairing(&target, attempt).await;
     assert_links_retired(&target).await;
+
+    // A completed attempt is retained presentation, not a stopped discovery
+    // service. A new pairing window must work without restarting the owner or
+    // erasing its already persisted authorization.
+    let paired = app_snapshot().await;
+    assert!(matches!(
+        paired.pairing,
+        RemoteControlPairingState::Paired { .. }
+    ));
+    target.close_pairing().await;
+    let next = begin_pairing(
+        &mut target,
+        RemoteControlRequestSet::all_operator(),
+        NORMAL_PAIRING_WINDOW,
+        NORMAL_ATTEMPT_TIMEOUT,
+    )
+    .await;
+    assert_eq!(app_snapshot().await.generation_id, paired.generation_id);
+    assert!(matches!(
+        app_reject(next.id).await,
+        RemoteControlPairingCommandOutcome::Accepted { .. }
+    ));
+    let rejected = app_snapshot().await;
+    assert!(matches!(
+        rejected.pairing,
+        RemoteControlPairingState::Rejected { .. }
+    ));
+    assert_eq!(rejected.paired_targets, paired.paired_targets);
+    assert_eq!(rejected.generation_id, paired.generation_id);
+    assert_links_retired(&target).await;
     stop_controller().await;
 
     let restored = start_controller(&storage.root, &target.server_address).await;
@@ -708,11 +738,18 @@ async fn begin_pairing(
         },
     )
     .await;
-    let RemoteControlPairingState::ConfirmationRequired { attempt_id, .. } =
-        confirmation_snapshot.pairing
+    let RemoteControlPairingState::ConfirmationRequired {
+        attempt_id,
+        target_identity_fingerprint,
+        ..
+    } = confirmation_snapshot.pairing
     else {
         panic!("application aggregate did not project the pairing confirmation");
     };
+    // Discovery identifies an ephemeral session; the signed confirmation is
+    // the first stable target identity the application may compare with saved
+    // pairings. Do not infer the node identity from candidate_id.
+    assert_eq!(target_identity_fingerprint, target.identity_fingerprint);
     let retained = app_snapshot().await;
     assert!(matches!(
         app_initiate(InitiateRemoteControlPairingInput {
