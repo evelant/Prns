@@ -1,54 +1,49 @@
 # Prns applications
 
-This workspace owns the Prns messaging app, its native composition and reusable
-application services. The product centers on direct and group messaging for
-people who currently use Meshtastic or MeshCore, with easy everyday flows and
-full control and detail available when wanted. It consumes public core APIs;
-the core does not depend on this tree.
+Prns is a messaging app with direct and group conversations, named identities,
+node management and network inspection. The phone works without an external
+board. The app consumes public Prns APIs; the core does not depend on this tree.
 
 ## Start here
 
-- [Agreed product scope and architecture direction](docs/product-scope.md)
-- [App behavior and routes](prns/app/README.md)
-- [iOS development](docs/ios.md) and [Android development](docs/android.md)
-- [Current validation and limits](docs/validation.md)
-- [React Native SDK ownership and implementation](docs/react-native-sdk-implementation.md)
-- [Implementation roadmap](docs/roadmap.md)
-- [Expanded remote-control plan](docs/remote-control-expansion.md)
+| I want to… | Read |
+| --- | --- |
+| Try a group demo | [Maintainer quickstart](docs/group-maintainer-alpha.md) |
+| Find a feature or setting | [App guide](prns/app/README.md) |
+| Know what has been tested | [Validation and limits](docs/validation.md) |
+| Build or change the app | Setup and commands below; [iOS](docs/ios.md) / [Android](docs/android.md) |
+| Understand the design | [Product scope](docs/product-scope.md), [named identities](docs/named-identities.md) |
+| Choose the next contribution | [Roadmap](docs/roadmap.md) |
+| Use the libraries elsewhere | [Group runner](../prns-groups/runner/native/README.md), [identity library](../prns-identities/README.md), [contact cards](services/contact-card/README.md), [Expo SDK](docs/react-native-sdk-implementation.md) |
 
-This guide owns setup and workspace commands. The product scope owns the agreed
-direction, the roadmap owns sequencing, and the validation index owns evidence
-and limits. The binding and platform guides own their narrower boundaries;
-per-run source/artifact evidence belongs with CI, release artifacts or external
-trial records. This app boundary provides direct LXMF messaging; group and
-named-identity app integration are not present here.
+Active guides describe current scope and workflows. The
+[validation index](docs/validation.md) separates recorded source checks, historical
+physical observations and qualification still required for a distribution build.
 
 ## Ownership
 
 | Path | Responsibility |
 | --- | --- |
-| `prns/app` | Expo screens, navigation and application UI |
-| `prns/native-composition/src` | Rust application policy, storage, service composition and ownership of the shared host session |
-| `prns/native-composition/bindings` | Generated product interface; imports shared host converters and borrows the SDK-selected native image |
-| `prns/platform` | App storage/startup/reset admission, notification presentation and product platform facade; delegates generic lifecycle and Bluetooth mechanics to the SDK |
-| `services` | Reusable application services; currently LXMF and its wire format, with the general messaging library boundary to be developed |
-| `../prns-host/impls/native` | Shared native runtime, queues/resources, readiness and joined shutdown used by C, UniFFI and native services |
-| `../prns-react-native` | Canonical general Expo SDK with its standalone default native image |
-| `target/react-native-sdk` | Generated app-selected SDK package, with the app aggregate native image; no separately maintained SDK sources |
-| `tools/generated-bindings` | App generation recipe using shared `../tools/uniffi` orchestration |
-| `../vendor/ubrn` | Shared pinned upstream runtime archives, patches and provenance |
+| `prns/app` | Expo screens, navigation and presentation |
+| `prns/native-composition` | App policy, durable storage, service composition and shared-host ownership |
+| `prns/native-composition/bindings` | Generated product API; shared host converters and one selected native image |
+| `prns/platform` | Product storage/startup/reset admission and platform facade |
+| `services` | Reusable LXMF services/wire format and signed contact-card codec |
+| `../prns-groups`, `../prns-identities` | App-independent group and identity mechanisms |
+| `../prns-host/impls/native` | Shared native runtime, resources and shutdown |
+| `../prns-react-native` | General Expo host SDK |
+| `target/react-native-sdk` | Generated app-selected SDK package; no separate SDK sources |
+| `tools/generated-bindings` | Product generation recipe using shared `../tools/uniffi` tooling |
 
-Messaging must be a reusable Rust crate/library that other Reticulum applications
-can compose without depending on this product. That requirement is distinct from
-the reusable Expo host SDK. The existing LXMF service is a starting point; its
-presence does not establish the full messaging and group-messaging boundary.
-The [product scope](docs/product-scope.md) records the open protocol and
-multi-device decisions. LXMF interoperability remains desirable, while the
-application protocol may diverge where the agreed design requires it.
+Rust owns protocol behavior, identity, durable work and recovery. TypeScript
+renders projections and submits commands. The generic group/identity cores and
+contact/text codecs remain allocation-free `no_std`; native adapters and bounded
+MLS implementations have different resource requirements.
 
-Start with the [binding boundary](prns/native-composition/bindings/README.md) for
-generated values, cancellation and native ownership. Edit Rust declarations and
-generator inputs, then regenerate; do not edit generated language bindings.
+Edit Rust declarations and generator inputs, then regenerate bindings. Do not
+hand-edit generated TypeScript, Kotlin or Swift. The
+[binding guide](prns/native-composition/bindings/README.md) explains cancellation,
+owner-bound clients and the native lifetime boundary.
 
 ## Connection and delivery contracts
 
@@ -75,14 +70,9 @@ observations so stale snapshots cannot restore cleared rows.
 
 ## Setup
 
-Use the Node, npm, Python and rustup toolchain recorded in
-[`release/compatibility.json`](release/compatibility.json). Install the recorded
-Rust components and targets before running the full verification gates. Linux
-native checks also require `pkg-config` and the DBus development headers
-(`libdbus-1-dev` on Ubuntu).
-
-From the repository root, build the core JavaScript contract and install the
-application workspace:
+Install Node/npm, Python and Rust using the repository's pinned toolchains.
+Linux native checks also need `pkg-config` and DBus development headers
+(`libdbus-1-dev` on Ubuntu). From the repository root:
 
 ```sh
 npm --prefix prns-js ci --ignore-scripts --no-audit --no-fund
@@ -92,21 +82,17 @@ python3 applications/tools/generated-bindings/generate.py stage
 npm --prefix applications ci --ignore-scripts --no-audit --no-fund
 ```
 
-The app consumes `target/react-native-sdk`, staged from the canonical SDK through
-its shared generator. `stage` checks the committed app bindings and writes only
-the ignored package. Run it before installing dependencies in a fresh checkout,
-and again after removing `applications/target`. The SDK's own development
-dependencies support its independent validation.
+`stage` checks committed app bindings and writes the ignored
+`applications/target/react-native-sdk` package. Run it before installing the app
+workspace in a fresh checkout and after removing `applications/target`.
 
-Staging requires the recorded Rust toolchain and host compiler. Building mobile
-images additionally requires Xcode for iOS builds and Swift tests. Android builds require
-JDK 21, the Android SDK, the pinned NDK, `cargo-ndk` and the requested Rust targets;
-see the [generation guide](tools/generated-bindings/README.md) and
-[Android setup](docs/android.md#build).
+Mobile builds additionally need Xcode/CocoaPods on macOS for iOS, or JDK 21,
+the Android SDK, pinned NDK, `cargo-ndk` and Rust targets for Android. Follow the
+platform guides rather than mixing their build outputs or native providers.
 
 ## Generate, build and check
 
-Run these commands from the repository root:
+Run from the repository root:
 
 ```sh
 npm --prefix applications run api:generate
@@ -115,51 +101,32 @@ npm --prefix applications run verify
 npm --prefix applications run mobility:verify -- --working-tree
 ```
 
-`verify` runs the portable Rust, generated-output, SDK, aggregate foreign-object
-sharing, UI and web checks.
-The canonical SDK keeps the `prns_host_mobile` provider; app generation and builds
-select `prns_app` only in the staged package. Both packages can be checked in the
-same checkout without switching providers or changing tracked SDK files.
-`mobility:verify -- --working-tree` checks an isolated export of the current
-source, including packed npm dependencies and native/Python LXMF interoperability.
-It is the app PR gate. Without `--working-tree`, the command checks the recorded
-release revision; that separate qualification requires the
-[release record](release/README.md) to be promoted to a real SDK commit.
-On macOS, also run the explicit
-Swift lifecycle and release-symbol tests:
+`verify` checks portable Rust, generated output, SDK/platform boundaries, UI and
+web export. The working-tree mobility gate checks an isolated source export,
+packed dependencies and native/Python LXMF interoperability. Neither is a phone
+or distribution result. Without `--working-tree`, mobility checks the historical
+recorded release; see [release qualification](release/README.md) before promoting
+that contract. Do not rewrite historical release digests to describe local work.
 
-```sh
-npm --prefix applications run native:ios:test
-```
-
-Build the complete app with embedded JavaScript, without installing or launching
-it:
+Build standalone apps with embedded JavaScript:
 
 ```sh
 npm --prefix applications run native:android:standalone
 npm --prefix applications run native:ios:build
 ```
 
-Android produces a locally debug-signed Release APK with the development
-identifier. iOS requires macOS, Xcode and CocoaPods; it compiles an unsigned
-Release app for a generic Apple Silicon iOS simulator. Neither command starts
-Metro or qualifies production distribution. The helpers refresh generated
-bindings and verify the single aggregate image and embedded JavaScript; iOS also
-checks scene/Bluetooth metadata.
+The default helpers produce a development-signed Android Release APK and an
+unsigned iOS simulator Release app. They do not qualify APK distribution or
+TestFlight. For signing, device installation and Metro development clients, use
+the [Android](docs/android.md) and [iOS](docs/ios.md) guides. On macOS, also run
+`npm --prefix applications run native:ios:test` for Swift lifecycle/symbol checks.
 
-The `application-mobile-build` CI matrix runs these commands as
-`application-android-build` and `application-ios-build`, then checks that app
-builds preserve the canonical SDK and committed product bindings. This is full
-app build coverage alongside the standalone SDK jobs; see CI results for the
-actual run outcome. Detached package installation and physical acceptance remain
-separate checks.
+Set `PRNS_BUILD_ID` when packaging a candidate to expose a useful build label in
+About and diagnostic reports. Keep its source/artifact record alongside the
+package; the label and API contract fingerprint are not source-hash attestations.
 
-Use `native:ios:client` or `native:android:client` for development clients that
-use Metro. The iOS client helper also installs and runs its simulator smoke;
-physical iOS installation uses `native:ios:device`. See the
-[iOS](docs/ios.md) and [Android](docs/android.md) guides for those workflows.
-
-`PRNS_UBRN_CACHE` and `CARGO_TARGET_DIR` can place disposable source/build caches
-on a larger volume. Keep separate caches for different host operating systems.
-The [validation record](docs/validation.md) distinguishes automated checks,
-build-specific device observations and remaining release qualification.
+The app and general SDK select different native images from the same source.
+App builds must preserve canonical SDK files and committed product bindings.
+CI configuration describes intended coverage; consult the actual run for results.
+`PRNS_UBRN_CACHE` and `CARGO_TARGET_DIR` can place disposable caches on a larger
+volume; keep host operating systems and source checkouts separate.

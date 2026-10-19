@@ -107,5 +107,5 @@ retirement. Pause preserves them and remains supported.
 
 See the [identity library checks](../../../../../prns-identities/README.md#checks)
 for host and portable-target coverage, and [app validation](../../../../docs/validation.md)
-for packaged-build and device acceptance. The app scheduling and lifecycle design is documented with the following
-maintainer journey integration.
+for packaged-build and device acceptance. The [named-identity design](../../../../docs/named-identities.md)
+defines app scheduling and lifecycle policy.

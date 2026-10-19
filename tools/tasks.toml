@@ -1282,3 +1282,96 @@ reason = "Native extension source and target availability validation for host-co
 [[internal]]
 path = "tools/repo/host_contract/formatting.py"
 reason = "Shared Rust formatting for canonical host-contract generated output."
+
+[[task]]
+id = "device.groups.provision"
+summary = "Check or install a private development-group fixture on an explicit stopped Android or iOS app without replacing enrollment."
+domain = "device"
+effect = "device-write"
+platforms = ["macos", "linux"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/groups-provision.py"]
+requires = ["python3"]
+setup = "Use adb for Android or Xcode devicectl on macOS for iOS. Initialize the development app, copy its public identity, and stop it first; check performs read-only device preflight."
+
+[[task]]
+id = "device.groups.observe"
+summary = "Capture bounded phone diagnostics or evaluate a recorded group trial."
+domain = "device"
+effect = "workspace-write"
+platforms = ["macos", "linux"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/group-trial/observer.py"]
+requires = ["python3"]
+setup = "Use an explicitly selected Android device/PID or an already captured iOS stream; capture writes private local evidence and does not operate the app."
+
+[[task]]
+id = "device.groups.observe-board"
+summary = "Capture bounded E290 diagnostics from an explicitly verified serial device."
+domain = "device"
+effect = "device-write"
+platforms = ["macos", "linux"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/group-trial/board_observer.py"]
+requires = ["python3"]
+setup = "Requires pySerial and explicit USB identity. Serial open/close can reset hardware despite disabled DTR/RTS; run before trial cases and keep the capture open."
+
+[[task]]
+id = "device.groups.link-timeline"
+summary = "Summarize Link timing from recorded phone trial evidence."
+domain = "device"
+effect = "workspace-write"
+platforms = ["any"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/group-trial/link_timeline.py"]
+requires = ["python3"]
+setup = "Consumes existing local evidence; does not connect to a device."
+
+[[task]]
+id = "device.groups.handshake-timeline"
+summary = "Correlate recorded group Link handshake events."
+domain = "device"
+effect = "workspace-write"
+platforms = ["any"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/group-trial/handshake_timeline.py"]
+requires = ["python3"]
+setup = "Consumes existing local evidence; does not connect to a device."
+
+[[task]]
+id = "device.groups.route-timeline"
+summary = "Summarize route recovery from recorded phone and board evidence."
+domain = "device"
+effect = "workspace-write"
+platforms = ["any"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/group-trial/route_timeline.py"]
+requires = ["python3"]
+setup = "Consumes existing local evidence; does not connect to a device."
+
+[[task]]
+id = "device.groups.board-link-timeline"
+summary = "Correlate queue, transmit and receive events from recorded board evidence."
+domain = "device"
+effect = "workspace-write"
+platforms = ["any"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/group-trial/board_link_timeline.py"]
+requires = ["python3"]
+setup = "Consumes existing local evidence; does not connect to a device."
+
+[[internal]]
+path = "tools/device/group-trial/README.md"
+reason = "Phone trial observation guide for registered group diagnostic tasks."
+
+[[internal]]
+path = "tools/device/group-trial/BOARD-OBSERVER.md"
+reason = "Board capture and interpretation guide for registered group diagnostic tasks."
+
+[[internal]]
+path = "tools/device/group-trial/link_schema.py"
+reason = "Shared closed-schema parser for group Link diagnostic tasks."
+
+[[internal]]
+path = "tools/device/group-trial/board_link_schema.py"
+reason = "Shared closed-schema parser for group board diagnostic tasks."

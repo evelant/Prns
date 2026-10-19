@@ -6,10 +6,9 @@ for new groups and invitations. Fixture snapshots contain private MLS state.
 
 ## Fixed-membership fixtures
 
-The headless peer below is the independent consumer available in this boundary.
-Phone fixture import and generated application bindings belong to the following
-app integration. A fixture is deliberate development provisioning, not a normal
-invitation or production backup.
+Rebuild the app's native client with the updated generated bindings before trying
+the screen; a JavaScript reload cannot add native group APIs to an older binary.
+Use the [application build guide](../../../applications/README.md).
 
 No public test identity or globally shared private group key is baked in. Obtain
 the **primary Reticulum identity hash** from each intended device's node details
@@ -26,11 +25,15 @@ It emits `member-1.json`, `member-2.json`, etc. in the same order as the argumen
 with restricted Unix file permissions. Each fixture contains only that endpoint's
 private MLS state plus the authenticated group and peer configuration.
 
-Install each generated fixture only into its intended endpoint. The headless
-peer accepts the file at its private `group-fixture.json` path as described below.
-Other consumers must implement atomic import, identity validation and refusal to
-restore initial secrets over an already-used database. Phone import is not part
-of this library boundary.
+On each development device, place its corresponding file at
+`prns/development/group-fixture.json` under the app's prepared private data root,
+then restart the native application owner. This is deliberate developer
+provisioning, not an invitation or file-import UI. The native owner reads at most
+4 MiB, validates the primary identity and imports into its existing
+`application.redb` database. Import is atomic and refuses any existing namespace
+table. Later starts verify the fixture configuration and open current state;
+they never restore the original snapshot over current ratchets. A corrupt or
+mismatched artifact fails closed. Keep the file available for subsequent starts.
 
 Fixtures contain plaintext secrets. Transfer them privately, install each on
 exactly one device and do not commit or publish them. Cloning a fixture or
@@ -66,7 +69,7 @@ prns-groups/target/debug/dev-group-peer init /private/tmp/group-peer
 `init` prints the public `identity` and `destination` as JSON. It generates and
 persists a private identity using OS entropy only on the first invocation; later
 invocations return the same public identity. Include this identity hash along with
-the other endpoints' primary identity hashes when running `dev-group-fixture` above. Copy
+the phones' primary identity hashes when running `dev-group-fixture` above. Copy
 **only this peer's** fixture to `/private/tmp/group-peer/group-fixture.json`, then
 start it:
 
@@ -74,7 +77,7 @@ start it:
 prns-groups/target/debug/dev-group-peer run /private/tmp/group-peer --listen 0.0.0.0:4242
 ```
 
-Connect other endpoints' TCP interfaces to this computer's reachable LAN address and
+Connect the phones' TCP interfaces to this computer's reachable LAN address and
 port 4242. The listener enables Reticulum Transport, allowing connected members
 to establish links through it as well as exchange stored group envelopes with it.
 Use a private test network and allow the port through the host firewall. A second

@@ -4,19 +4,22 @@
 on messaging, Reticulum routing, a database, an executor or a platform key store.
 Its production code is `no_std`, allocation-free and forbids unsafe code. The
 caller supplies storage, two bounded catalog buffers and service/key adapters.
-The app journey and live messaging-service composition are following
-integrations; this workspace supplies the reusable lifecycle mechanisms.
+The [named identities design](../applications/docs/named-identities.md) owns the
+broader app journey and policy decisions.
 
 | Crate | Responsibility | Environment |
 | --- | --- | --- |
 | `prns-identities-core` | Durable lifecycle, admission and exact-operation recovery | `no_std`, allocation-free, caller-owned buffers/storage |
 | [codec](codec/README.md) | Bounded, versioned catalog encoding and validation | `no_std`, allocation-free |
-| [runtime](runtime/README.md) | Scoped ownership, resource admission, mutation drain, shutdown evidence and shared announce scheduling | `no_std`, allocation-free, caller-owned tables |
+| [runtime](runtime/README.md) | Scoped ownership, resource admission, mutation drain and shutdown evidence | `no_std`, allocation-free, caller-owned tables |
 | [native](native/README.md) | Atomic filesystem catalog, Reticulum key vault, durable runtime authority and optional scoped service databases | `std`, Unix local filesystems |
 
-Clients retain their original identity binding across selection changes. Apps own
-selection, history presentation and queue policy. Embedded flash/runtime adapters
-remain separate work.
+The native [service composition](../applications/prns/native-composition/src/identity_services/README.md)
+connects live services and identity-scoped contact/group storage. App selection,
+queue limits, history access and UI outcomes belong to the
+[named identity integration](../applications/docs/named-identities.md), not this
+portable contract. Clients keep their original identity binding across selection
+changes. Embedded flash/runtime adapters remain separate work.
 
 ## Storage and effects
 
@@ -119,11 +122,13 @@ types into this library. An adapter must preserve unrelated key holders, Links,
 pairing grants and interface state; it cannot use whole-node shutdown as a persona
 pause operation. Capacity admission must leave management/pairing reserves intact.
 
-Keep installation RemoteControl and Bluetooth credentials independent of
-messaging identities when composing a phone app. A board forwarding BLE/LoRa
-traffic needs no copy of a phone's identity or MLS secrets, and management pairing
-does not enroll it in a group. A board hosting its own identity requires its own
-durable storage and scoped runtime adapter.
+The current phone keeps installation RemoteControl and Bluetooth credentials
+separate from its messaging key. An E290 forwarding phone traffic over BLE/LoRa
+needs no copy of the phone's persona or MLS secrets, and board pairing does not
+enroll it in a group. A board hosting its own identity instead needs its own
+durable storage and scoped runtime adapter. See the source-backed
+[management audit](../applications/docs/named-identities.md#remotecontrol-and-managed-nodes)
+for existing ownership, resource bounds and remaining integration seams.
 
 ## Runtime integration
 
@@ -142,12 +147,11 @@ catalog acknowledgements, reconcile the affected owner rather than clearing the
 whole table or disturbing unrelated identities. Driver scopes must be checked
 again at execution for queued work.
 
-A live service adapter must supply destination, Link, announcement, operation
-and retained-buffer barriers. Keep staged registrations closed until network
-admission and fence stale crypto completions. This boundary includes recording
-drivers and native persistence adapters; the live messaging composition and its
-phone/radio qualification are separate integration work. Host-buffer handoff can
-never establish physical radio transmission or a peer receipt.
+The native service adapter now supplies live destination, Link, announcement,
+operation and retained-buffer barriers. Staged registrations stay closed until
+network admission; stale crypto completions cannot revive a retired destination.
+Host-buffer handoff is not physical radio transmission or peer receipt. See the [service composition](../applications/prns/native-composition/src/identity_services/README.md)
+for implemented barriers and remaining inbound-quota, phone and radio limits.
 
 ## Checks
 
