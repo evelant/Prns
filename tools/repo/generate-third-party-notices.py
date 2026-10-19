@@ -22,6 +22,7 @@ ABOUT = ROOT / "about.toml"
 GRAPHS = (
     ("Group libraries", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("Group secure storage", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
+    ("Group MLS adapter", "prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("engine", "Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("daemon Linux", "prnsd/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("daemon macOS", "prnsd/Cargo.toml", "aarch64-apple-darwin"),

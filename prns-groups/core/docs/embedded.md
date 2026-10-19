@@ -1,8 +1,8 @@
 # Embedded group support
 
 This source boundary includes the allocation-free `no_std` group core and the
-bounded `no_std + alloc` transaction coordinator. MLS, record service, text codec,
-native enrollment/transport and app consumers are following integrations.
+bounded `no_std + alloc` transaction coordinator and MLS adapter. The record
+service, text codec, native enrollment/transport and app are separate integrations.
 Reticulum routing and the group application protocol remain separate: a board can
 forward group traffic without joining or holding MLS keys.
 
@@ -26,9 +26,9 @@ Applications supply storage ownership, entropy, time, scheduling and record
 meaning. They choose hard limits before admitting work; no board may silently
 weaken the security profile to fit. The [participant design](embedded-participants.md)
 defines the portable enrollment/carrier seams and independently enrolled board
-role. MLS security (separate integration) explains the protocol choice
-and its delayed-delivery tradeoffs. The following MLS integration must document
-implemented quotas separately from the requirements here.
+role. [MLS security](../../security/docs/security.md) explains the protocol choice
+and its delayed-delivery tradeoffs; the [adapter](../../security/mls-rs/README.md)
+is authoritative for implemented quotas and missing integration.
 
 ## Resource contract
 
@@ -86,8 +86,7 @@ Dated captures are historical evidence, not a supported member profile.
 The secure fixture stores its test wrapping key in plaintext. It therefore does
 not qualify confidentiality against flash extraction, protected provisioning,
 physical key retirement or rollback resistance. The firmware integration carries
-the firmware reproduction guide (separate integration)
-and compiler configuration; no fixture partition is
+its own reproduction guide and compiler configuration; no fixture partition is
 implicitly available to the shipping record service.
 
 ## Release gates
@@ -112,6 +111,6 @@ implicitly available to the shipping record service.
    canonical vectors and a supported profile.
 
 Only then publish board/member/owner limits or expand to smaller targets. The
-security contract (separate integration) and
+[security contract](../../security/docs/security.md) and
 [behavioral contract](v0.md) retain the unimplemented policy choices; neither
 turns a proposed grace period, custody level or recovery rule into a guarantee.

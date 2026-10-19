@@ -5,7 +5,7 @@ with policy choices and worked failure cases. The
 [initial behavioral contract](v0.md) selects a small subset;
 the matrices here describe the wider design space, not features all supported
 by v0. No wire format or guarantees have been implemented.
-See the encryption and privacy analysis (separate integration) for
+See the [encryption and privacy analysis](../../security/docs/security.md) for
 who can read each layer, forward-secrecy conditions and the LXMF comparison.
 
 ## Configuration model

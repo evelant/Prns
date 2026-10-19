@@ -24,6 +24,8 @@ class UnsafeAuditTests(unittest.TestCase):
         self.assertNotIn("group-libraries", audit.GRAPH_FEATURES)
         self.assertEqual(graphs["group-secure-storage"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertEqual(audit.GRAPH_FEATURES["group-secure-storage"], ("prns-groups-store/secure",))
+        self.assertEqual(graphs["group-mls-adapter"], ("prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertNotIn("group-mls-adapter", audit.GRAPH_FEATURES)
 
     def test_app_graphs_audit_the_shipped_platform_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}

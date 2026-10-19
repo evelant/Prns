@@ -35,9 +35,8 @@ authentication, MLS processing, persistence, executor scheduling or application 
 Services must preserve the original metadata/targets when reopening progress;
 constructing a new in-memory value is not permission to change a durable record.
 
-The [store coordinator](../store/README.md) consumes these shared types. MLS
-security adapters are a following integration; crypto and allocation remain
-outside the portable core.
+The [store coordinator](../store/README.md) and [MLS adapter](../security/mls-rs/README.md)
+consume these shared types without adding crypto or allocation to the core.
 
 `retry` provides the allocation-free `PGR1` request-token encoding and a bounded
 retry policy. Callers supply cryptographic entropy and trusted time, authenticate

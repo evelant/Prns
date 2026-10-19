@@ -29,6 +29,8 @@ class ThirdPartyNoticeTests(unittest.TestCase):
         self.assertNotIn("Group libraries", notices.GRAPH_FEATURES)
         self.assertEqual(graphs["Group secure storage"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertEqual(notices.GRAPH_FEATURES["Group secure storage"], ("prns-groups-store/secure",))
+        self.assertEqual(graphs["Group MLS adapter"], ("prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertNotIn("Group MLS adapter", notices.GRAPH_FEATURES)
 
     def test_app_graphs_add_only_the_platform_product_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
