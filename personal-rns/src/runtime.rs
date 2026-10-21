@@ -85,9 +85,9 @@ pub use prns_runtime_tokio::runtime::{
     RequestOptions, RequestPathError, ResourceAdmissionPeer, ResourceOfferAdmission,
     ResourceOfferMonitor, ResourceProgress, ResourceReceipt, ResourceReceiveError,
     ResourceSendError, ResponseSendError, RouteSeedProgress, RouteSeedReport,
-    RuntimeRequestHandlerError, SaveOnLearn, SaveOnLearnWiring, SegmentCompression,
-    SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError, Subscription,
-    TokioHandleEntropy, TunnelSeedReport, AUTO_COMPRESS_MAX_LEN,
+    RuntimeRequestHandlerError, SaveOnLearn, SaveOnLearnWiring, SaveRemoteControlTargetAccessError,
+    SegmentCompression, SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError,
+    Subscription, TokioHandleEntropy, TunnelSeedReport, AUTO_COMPRESS_MAX_LEN,
 };
 
 #[cfg(all(feature = "tokio-host", feature = "scheduler-tuning"))]

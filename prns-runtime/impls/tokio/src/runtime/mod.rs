@@ -67,3 +67,4 @@ pub use node_facade::{
 #[cfg(feature = "rnx")]
 pub use process_commands::ProcessCommands;
 pub use remote_control_pairing_persistence::RemoteControlAuthorizationPersistenceFailure;
+pub use remote_control_target_accesses::SaveRemoteControlTargetAccessError;
