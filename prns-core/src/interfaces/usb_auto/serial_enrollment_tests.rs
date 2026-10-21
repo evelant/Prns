@@ -5,7 +5,9 @@ use crate::remote_control::{RemoteControlControllerAuthority, RemoteControlReque
 fn hex(value: &str) -> std::vec::Vec<u8> {
     value
         .as_bytes()
-        .chunks_exact(2)
+        .as_chunks::<2>()
+        .0
+        .iter()
         .map(|pair| {
             let digit = |byte| char::from(byte).to_digit(16).unwrap() as u8;
             (digit(pair[0]) << 4) | digit(pair[1])
@@ -49,7 +51,7 @@ fn serial_enrollment_matches_shared_cross_client_vectors() {
     assert!(capability.supports_controller_enrollment());
     assert!(!capability.supports_host_lane());
     assert!(!Capabilities::none().supports_controller_enrollment());
-    assert!(MAX_MESSAGE_BYTES >= 1 + SERIAL_CONTROLLER_ENROLL_REQUEST_BYTES);
+    const { assert!(MAX_MESSAGE_BYTES > SERIAL_CONTROLLER_ENROLL_REQUEST_BYTES) };
 }
 
 #[test]
