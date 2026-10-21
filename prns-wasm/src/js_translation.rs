@@ -98,20 +98,32 @@ pub(crate) fn outbound_to_js(frame: &OutboundFrame) -> JsValue {
     object.into()
 }
 
-pub(crate) fn usb_auto_message_to_js(message: usb_auto::Message<'_>) -> JsValue {
-    let object = Object::new();
-    match message {
-        usb_auto::Message::Hello(_) => set_str(&object, "type", "hello"),
+pub(crate) fn usb_auto_message_to_js(message: usb_auto::Message<'_>) -> Option<JsValue> {
+    let object = match message {
+        usb_auto::Message::Hello(_) => {
+            let object = Object::new();
+            set_str(&object, "type", "hello");
+            object
+        }
         usb_auto::Message::HelloAck { tag, .. } => {
+            let object = Object::new();
             set_str(&object, "type", "helloAck");
             set_bytes(&object, "tag", &tag.0);
+            object
         }
         usb_auto::Message::Data(packet) => {
+            let object = Object::new();
             set_str(&object, "type", "data");
             set_bytes(&object, "bytes", packet);
+            object
         }
-    }
-    object.into()
+        // The browser network session does not own local enrollment. Its public
+        // message contract remains Hello/Ack/Data; control traffic stays out.
+        usb_auto::Message::ControllerEnroll(_)
+        | usb_auto::Message::ControllerEnrollmentStatusQuery { .. }
+        | usb_auto::Message::ControllerEnrollmentStatus { .. } => return None,
+    };
+    Some(object.into())
 }
 
 pub(crate) fn bluetooth_control_to_js(control: bluetooth_contract::Control) -> JsValue {
