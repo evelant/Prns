@@ -17664,11 +17664,11 @@
       "name": "personal-hopspot-esp32",
       "source": "personal-hopspot/embedded/esp32",
       "unsafe": {
-        "blocks": 1014,
+        "blocks": 1015,
         "externs": 779,
         "functions": 123,
         "impls": 39,
-        "tokens": 2088
+        "tokens": 2089
       },
       "version": "0.1.0"
     },
