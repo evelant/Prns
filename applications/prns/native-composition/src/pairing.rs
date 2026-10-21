@@ -711,6 +711,82 @@ mod tests {
     }
 
     #[test]
+    fn completed_pairing_keeps_discovery_live_and_old_events_cannot_cancel_the_next_attempt() {
+        let first_attempt = pairing_attempt_id(0x31);
+        let next_attempt = pairing_attempt_id(0x41);
+        let mut controls = PairingControls::default();
+        let snapshots = SnapshotStore::new();
+        apply_candidate(&mut controls, &snapshots, 0x51, 1, 100, b"First", 1);
+        apply_candidate(&mut controls, &snapshots, 0x52, 2, 100, b"Next", 2);
+        let first_id = candidate(0x51, 1, 100, b"").candidate_id;
+        let next_id = candidate(0x52, 2, 100, b"").candidate_id;
+        controls.retain_initiation(first_id.clone());
+        controls.retain_attempt(attempt_id_string(first_attempt));
+
+        assert_eq!(
+            apply_event(
+                OwnedNodeEvent::ControllerAuthorizationPersisted(first_attempt),
+                &mut controls,
+                &snapshots,
+                InstantMillis(3),
+            ),
+            AppliedNodeEvent::TargetInventoryChanged
+        );
+        assert!(!controls.pairing_in_progress());
+        assert_eq!(snapshots.read().pairing_candidates.len(), 1);
+        assert_eq!(snapshots.read().pairing_candidates[0].candidate_id, next_id);
+        assert_eq!(
+            controls.resolve_candidate(&first_id, InstantMillis(3)),
+            PairingCandidateResolution::Missing
+        );
+        assert!(matches!(
+            controls.resolve_candidate(&next_id, InstantMillis(3)),
+            PairingCandidateResolution::Retained { .. }
+        ));
+        apply_candidate(&mut controls, &snapshots, 0x53, 4, 100, b"New arrival", 4);
+        assert_eq!(snapshots.read().pairing_candidates.len(), 2);
+        assert!(matches!(
+            snapshots.read().pairing,
+            RemoteControlPairingState::Paired { .. }
+        ));
+
+        controls.retain_initiation(next_id.clone());
+        let next_attempt_id = attempt_id_string(next_attempt);
+        controls.retain_attempt(next_attempt_id.clone());
+        snapshots.update(|snapshot| {
+            snapshot.pairing = RemoteControlPairingState::InvitationSubmitted {
+                candidate_id: next_id.clone(),
+            };
+        });
+        let retained = snapshots.read();
+        for stale in [
+            OwnedNodeEvent::ControllerAuthorizationPersisted(first_attempt),
+            OwnedNodeEvent::ControllerAuthorizationPersistenceFailed(first_attempt),
+            OwnedNodeEvent::ControllerExpired {
+                attempt_id: Some(first_attempt),
+            },
+            OwnedNodeEvent::ControllerLinkClosed {
+                attempt_id: Some(first_attempt),
+            },
+        ] {
+            assert_eq!(
+                apply_event(stale, &mut controls, &snapshots, InstantMillis(5)),
+                AppliedNodeEvent::None
+            );
+            assert_eq!(snapshots.read().pairing, retained.pairing);
+            assert_eq!(
+                snapshots.read().pairing_candidates,
+                retained.pairing_candidates
+            );
+            assert!(controls.pairing_in_progress());
+            assert_eq!(
+                controls.active_attempt_id.as_deref(),
+                Some(next_attempt_id.as_str())
+            );
+        }
+    }
+
+    #[test]
     fn event_lane_overflow_invalidates_the_attempt_and_ignores_late_terminal_events() {
         let attempt = pairing_attempt_id(0x31);
         let attempt_id = attempt_id_string(attempt);

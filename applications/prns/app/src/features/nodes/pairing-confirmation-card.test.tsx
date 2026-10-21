@@ -45,10 +45,32 @@ test("keeps the code, access summary and decisions visible with all controls col
   ).toMatchObject({
     expanded: false,
   });
-  expect(view.queryByText("Node ID")).toBeNull();
+  expect(view.getByText("Node ID")).toBeTruthy();
+  expect(view.getByText("44".repeat(16))).toBeTruthy();
+  expect(view.queryByText("Already paired with this device")).toBeNull();
   for (const permission of allPermissions) {
     expect(view.queryByText(formatRequestKind(permission))).toBeNull();
   }
+});
+
+test("shows saved pairing status without approving or rejecting automatically", () => {
+  const onApprove = jest.fn();
+  const onReject = jest.fn();
+  const view = render(
+    <PairingConfirmationCard
+      {...idleProps}
+      alreadyPaired
+      pairing={confirmation()}
+      onApprove={onApprove}
+      onReject={onReject}
+    />,
+  );
+  expect(view.getByText("Already paired with this device")).toBeTruthy();
+  expect(view.getByText("44".repeat(16))).toBeTruthy();
+  expect(view.getByRole("button", { name: "Codes match — approve" })).toBeEnabled();
+  expect(view.getByRole("button", { name: "Reject pairing" })).toBeEnabled();
+  expect(onApprove).not.toHaveBeenCalled();
+  expect(onReject).not.toHaveBeenCalled();
 });
 
 test("shows every exact requested control on its own line only when expanded", () => {

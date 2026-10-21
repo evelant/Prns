@@ -670,9 +670,13 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_describe_target(
     ): Int
+    external fun uniffi_prns_app_checksum_func_export_controller_setup_card(
+    ): Int
     external fun uniffi_prns_app_checksum_func_finish_remote_wifi_trial(
     ): Int
     external fun uniffi_prns_app_checksum_func_get_contact(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_import_target_access_card(
     ): Int
     external fun uniffi_prns_app_checksum_func_initiate_pairing(
     ): Int
@@ -707,6 +711,8 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_prns_app_checksum_func_native_stop(
     ): Int
     external fun uniffi_prns_app_checksum_func_preview_identity_import(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_preview_target_access_card(
     ): Int
     external fun uniffi_prns_app_checksum_func_read_bluetooth_settings(
     ): Int
@@ -774,9 +780,13 @@ external fun uniffi_prns_app_fn_func_delete_contact(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_describe_target(`input`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_func_export_controller_setup_card(
+): Long
 external fun uniffi_prns_app_fn_func_finish_remote_wifi_trial(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_get_contact(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_import_target_access_card(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_initiate_pairing(`input`: RustBuffer.ByValue,
 ): Long
@@ -811,6 +821,8 @@ external fun uniffi_prns_app_fn_func_native_start_with_apple_bluetooth_restorati
 external fun uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_preview_identity_import(`identity`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
+): RustBuffer.ByValue
+external fun uniffi_prns_app_fn_func_preview_target_access_card(`card`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_read_bluetooth_settings(
 ): Long
@@ -994,10 +1006,16 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_describe_target() != 49809) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_export_controller_setup_card() != 37636) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_finish_remote_wifi_trial() != 11313) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_get_contact() != 18891) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_import_target_access_card() != 7026) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_initiate_pairing() != 58991) {
@@ -1049,6 +1067,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_preview_identity_import() != 31445) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_preview_target_access_card() != 26108) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_read_bluetooth_settings() != 48522) {
@@ -1745,6 +1766,52 @@ public object FfiConverterTypeContactDestinationInput: FfiConverterRustBuffer<Co
 
 
 
+/**
+ * Public setup information for this installation, never a messaging identity or secret.
+ */
+data class ControllerSetupCard (
+    var `text`: kotlin.String
+    ,
+    var `publicKeyHex`: kotlin.String
+    ,
+    var `controllerIdentityFingerprint`: Bytes16
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeControllerSetupCard: FfiConverterRustBuffer<ControllerSetupCard> {
+    override fun read(buf: ByteBuffer): ControllerSetupCard {
+        return ControllerSetupCard(
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ControllerSetupCard) = (
+            FfiConverterString.allocationSize(value.`text`) +
+            FfiConverterString.allocationSize(value.`publicKeyHex`) +
+            FfiConverterTypeBytes16.allocationSize(value.`controllerIdentityFingerprint`)
+    )
+
+    override fun write(value: ControllerSetupCard, buf: ByteBuffer) {
+            FfiConverterString.write(value.`text`, buf)
+            FfiConverterString.write(value.`publicKeyHex`, buf)
+            FfiConverterTypeBytes16.write(value.`controllerIdentityFingerprint`, buf)
+    }
+}
+
+
+
 data class CreateManualContactInput (
     var `destination`: Bytes16
     ,
@@ -2086,6 +2153,52 @@ public object FfiConverterTypeFinishRemoteWifiTrialInput: FfiConverterRustBuffer
             FfiConverterByteArray.write(value.`targetIdentityFingerprint`, buf)
             FfiConverterUInt.write(value.`revision`, buf)
             FfiConverterTypeRemoteWifiDecision.write(value.`decision`, buf)
+    }
+}
+
+
+
+data class ImportTargetAccessCardInput (
+    var `card`: kotlin.String
+    ,
+    var `expectedControllerIdentity`: Bytes16
+    ,
+    /**
+     * Explicit caller confirmation of the setup tool or administrator's identity.
+     */
+    var `trustedSourceConfirmed`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeImportTargetAccessCardInput: FfiConverterRustBuffer<ImportTargetAccessCardInput> {
+    override fun read(buf: ByteBuffer): ImportTargetAccessCardInput {
+        return ImportTargetAccessCardInput(
+            FfiConverterString.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ImportTargetAccessCardInput) = (
+            FfiConverterString.allocationSize(value.`card`) +
+            FfiConverterTypeBytes16.allocationSize(value.`expectedControllerIdentity`) +
+            FfiConverterBoolean.allocationSize(value.`trustedSourceConfirmed`)
+    )
+
+    override fun write(value: ImportTargetAccessCardInput, buf: ByteBuffer) {
+            FfiConverterString.write(value.`card`, buf)
+            FfiConverterTypeBytes16.write(value.`expectedControllerIdentity`, buf)
+            FfiConverterBoolean.write(value.`trustedSourceConfirmed`, buf)
     }
 }
 
@@ -3892,6 +4005,57 @@ public object FfiConverterTypeStartRemoteWifiTrialInput: FfiConverterRustBuffer<
 
 
 
+/**
+ * An unverified claim from a local setup tool or administrator. Preview saves nothing.
+ */
+data class TargetAccessCardPreview (
+    var `targetIdentityFingerprint`: Bytes16
+    ,
+    var `recipientControllerFingerprint`: Bytes16
+    ,
+    var `authority`: RemoteControlControllerAuthority
+    ,
+    var `permissions`: List<RemoteControlRequestKind>
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeTargetAccessCardPreview: FfiConverterRustBuffer<TargetAccessCardPreview> {
+    override fun read(buf: ByteBuffer): TargetAccessCardPreview {
+        return TargetAccessCardPreview(
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeBytes16.read(buf),
+            FfiConverterTypeRemoteControlControllerAuthority.read(buf),
+            FfiConverterSequenceTypeRemoteControlRequestKind.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: TargetAccessCardPreview) = (
+            FfiConverterTypeBytes16.allocationSize(value.`targetIdentityFingerprint`) +
+            FfiConverterTypeBytes16.allocationSize(value.`recipientControllerFingerprint`) +
+            FfiConverterTypeRemoteControlControllerAuthority.allocationSize(value.`authority`) +
+            FfiConverterSequenceTypeRemoteControlRequestKind.allocationSize(value.`permissions`)
+    )
+
+    override fun write(value: TargetAccessCardPreview, buf: ByteBuffer) {
+            FfiConverterTypeBytes16.write(value.`targetIdentityFingerprint`, buf)
+            FfiConverterTypeBytes16.write(value.`recipientControllerFingerprint`, buf)
+            FfiConverterTypeRemoteControlControllerAuthority.write(value.`authority`, buf)
+            FfiConverterSequenceTypeRemoteControlRequestKind.write(value.`permissions`, buf)
+    }
+}
+
+
+
 
 enum class AnnounceLxmfOutcome {
 
@@ -4940,6 +5104,117 @@ public object FfiConverterTypeContactMutationOutcome : FfiConverterRustBuffer<Co
             is ContactMutationOutcome.DevelopmentResetRequired -> {
                 buf.putInt(12)
                 FfiConverterString.write(value.`reason`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class ControllerSetupCardOutcome {
+
+    data class Ready(
+        val `card`: rs.reticulum.prns.app.bindings.ControllerSetupCard) : ControllerSetupCardOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : ControllerSetupCardOutcome()
+
+
+    object LocalNodeStopped : ControllerSetupCardOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : ControllerSetupCardOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeControllerSetupCardOutcome : FfiConverterRustBuffer<ControllerSetupCardOutcome>{
+    override fun read(buf: ByteBuffer): ControllerSetupCardOutcome {
+        return when(buf.getInt()) {
+            1 -> ControllerSetupCardOutcome.Ready(
+                FfiConverterTypeControllerSetupCard.read(buf),
+                )
+            2 -> ControllerSetupCardOutcome.Busy
+            3 -> ControllerSetupCardOutcome.LocalNodeStopped
+            4 -> ControllerSetupCardOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: ControllerSetupCardOutcome) = when(value) {
+        is ControllerSetupCardOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeControllerSetupCard.allocationSize(value.`card`)
+            )
+        }
+        is ControllerSetupCardOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ControllerSetupCardOutcome.LocalNodeStopped -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ControllerSetupCardOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: ControllerSetupCardOutcome, buf: ByteBuffer) {
+        when(value) {
+            is ControllerSetupCardOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeControllerSetupCard.write(value.`card`, buf)
+                Unit
+            }
+            is ControllerSetupCardOutcome.Busy -> {
+                buf.putInt(2)
+                Unit
+            }
+            is ControllerSetupCardOutcome.LocalNodeStopped -> {
+                buf.putInt(3)
+                Unit
+            }
+            is ControllerSetupCardOutcome.Unavailable -> {
+                buf.putInt(4)
+                FfiConverterString.write(value.`detail`, buf)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
@@ -10552,6 +10827,366 @@ public object FfiConverterTypeSendDirectTextOutcome : FfiConverterRustBuffer<Sen
 
 
 
+sealed class TargetAccessCardImportOutcome {
+
+    /**
+     * Durable local access only. The target's grant and connectivity remain unchecked.
+     */
+    data class Saved(
+        val `targetIdentityFingerprint`: rs.reticulum.prns.app.bindings.Bytes16) : TargetAccessCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Existing(
+        val `targetIdentityFingerprint`: rs.reticulum.prns.app.bindings.Bytes16) : TargetAccessCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object TrustRequired : TargetAccessCardImportOutcome()
+
+
+    object ControllerChanged : TargetAccessCardImportOutcome()
+
+
+    object RecipientMismatch : TargetAccessCardImportOutcome()
+
+
+    object Conflict : TargetAccessCardImportOutcome()
+
+
+    object CapacityExhausted : TargetAccessCardImportOutcome()
+
+
+    data class Invalid(
+        val `detail`: kotlin.String) : TargetAccessCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : TargetAccessCardImportOutcome()
+
+
+    object LocalNodeStopped : TargetAccessCardImportOutcome()
+
+
+    object PersistenceUnavailable : TargetAccessCardImportOutcome()
+
+
+    object PersistenceFailed : TargetAccessCardImportOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : TargetAccessCardImportOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    /**
+     * Admission may have committed. Inspect saved access before explicitly retrying.
+     */
+    object OutcomeUnknown : TargetAccessCardImportOutcome()
+
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeTargetAccessCardImportOutcome : FfiConverterRustBuffer<TargetAccessCardImportOutcome>{
+    override fun read(buf: ByteBuffer): TargetAccessCardImportOutcome {
+        return when(buf.getInt()) {
+            1 -> TargetAccessCardImportOutcome.Saved(
+                FfiConverterTypeBytes16.read(buf),
+                )
+            2 -> TargetAccessCardImportOutcome.Existing(
+                FfiConverterTypeBytes16.read(buf),
+                )
+            3 -> TargetAccessCardImportOutcome.TrustRequired
+            4 -> TargetAccessCardImportOutcome.ControllerChanged
+            5 -> TargetAccessCardImportOutcome.RecipientMismatch
+            6 -> TargetAccessCardImportOutcome.Conflict
+            7 -> TargetAccessCardImportOutcome.CapacityExhausted
+            8 -> TargetAccessCardImportOutcome.Invalid(
+                FfiConverterString.read(buf),
+                )
+            9 -> TargetAccessCardImportOutcome.Busy
+            10 -> TargetAccessCardImportOutcome.LocalNodeStopped
+            11 -> TargetAccessCardImportOutcome.PersistenceUnavailable
+            12 -> TargetAccessCardImportOutcome.PersistenceFailed
+            13 -> TargetAccessCardImportOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            14 -> TargetAccessCardImportOutcome.OutcomeUnknown
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: TargetAccessCardImportOutcome) = when(value) {
+        is TargetAccessCardImportOutcome.Saved -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes16.allocationSize(value.`targetIdentityFingerprint`)
+            )
+        }
+        is TargetAccessCardImportOutcome.Existing -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeBytes16.allocationSize(value.`targetIdentityFingerprint`)
+            )
+        }
+        is TargetAccessCardImportOutcome.TrustRequired -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.ControllerChanged -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.RecipientMismatch -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.Conflict -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.CapacityExhausted -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.Invalid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is TargetAccessCardImportOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.LocalNodeStopped -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.PersistenceUnavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.PersistenceFailed -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is TargetAccessCardImportOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is TargetAccessCardImportOutcome.OutcomeUnknown -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+    }
+
+    override fun write(value: TargetAccessCardImportOutcome, buf: ByteBuffer) {
+        when(value) {
+            is TargetAccessCardImportOutcome.Saved -> {
+                buf.putInt(1)
+                FfiConverterTypeBytes16.write(value.`targetIdentityFingerprint`, buf)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.Existing -> {
+                buf.putInt(2)
+                FfiConverterTypeBytes16.write(value.`targetIdentityFingerprint`, buf)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.TrustRequired -> {
+                buf.putInt(3)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.ControllerChanged -> {
+                buf.putInt(4)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.RecipientMismatch -> {
+                buf.putInt(5)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.Conflict -> {
+                buf.putInt(6)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.CapacityExhausted -> {
+                buf.putInt(7)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.Invalid -> {
+                buf.putInt(8)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.Busy -> {
+                buf.putInt(9)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.LocalNodeStopped -> {
+                buf.putInt(10)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.PersistenceUnavailable -> {
+                buf.putInt(11)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.PersistenceFailed -> {
+                buf.putInt(12)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.Unavailable -> {
+                buf.putInt(13)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is TargetAccessCardImportOutcome.OutcomeUnknown -> {
+                buf.putInt(14)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class TargetAccessCardPreviewOutcome {
+
+    data class Valid(
+        val `preview`: rs.reticulum.prns.app.bindings.TargetAccessCardPreview) : TargetAccessCardPreviewOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Invalid(
+        val `detail`: kotlin.String) : TargetAccessCardPreviewOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeTargetAccessCardPreviewOutcome : FfiConverterRustBuffer<TargetAccessCardPreviewOutcome>{
+    override fun read(buf: ByteBuffer): TargetAccessCardPreviewOutcome {
+        return when(buf.getInt()) {
+            1 -> TargetAccessCardPreviewOutcome.Valid(
+                FfiConverterTypeTargetAccessCardPreview.read(buf),
+                )
+            2 -> TargetAccessCardPreviewOutcome.Invalid(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: TargetAccessCardPreviewOutcome) = when(value) {
+        is TargetAccessCardPreviewOutcome.Valid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeTargetAccessCardPreview.allocationSize(value.`preview`)
+            )
+        }
+        is TargetAccessCardPreviewOutcome.Invalid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: TargetAccessCardPreviewOutcome, buf: ByteBuffer) {
+        when(value) {
+            is TargetAccessCardPreviewOutcome.Valid -> {
+                buf.putInt(1)
+                FfiConverterTypeTargetAccessCardPreview.write(value.`preview`, buf)
+                Unit
+            }
+            is TargetAccessCardPreviewOutcome.Invalid -> {
+                buf.putInt(2)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
 
 /**
  * @suppress
@@ -11695,6 +12330,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     }
 
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `exportControllerSetupCard`() : ControllerSetupCardOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_export_controller_setup_card(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeControllerSetupCardOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
      suspend fun `finishRemoteWifiTrial`(`input`: FinishRemoteWifiTrialInput) : RemoteWifiCommandOutcome {
         return uniffiRustCallAsync(
         UniffiLib.uniffi_prns_app_fn_func_finish_remote_wifi_trial(FfiConverterTypeFinishRemoteWifiTrialInput.lower(`input`),),
@@ -11717,6 +12366,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeContactLookupOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `importTargetAccessCard`(`input`: ImportTargetAccessCardInput) : TargetAccessCardImportOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_import_target_access_card(FfiConverterTypeImportTargetAccessCardInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeTargetAccessCardImportOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -11949,6 +12612,19 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
     UniffiLib.uniffi_prns_app_fn_func_preview_identity_import(
 
         FfiConverterByteArray.lower(`identity`),_status)
+}
+    )
+    }
+
+
+        /**
+         * Bounded parsing only; importing a card requires a separate trusted-source decision.
+         */ fun `previewTargetAccessCard`(`card`: kotlin.String): TargetAccessCardPreviewOutcome {
+            return FfiConverterTypeTargetAccessCardPreviewOutcome.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.uniffi_prns_app_fn_func_preview_target_access_card(
+
+        FfiConverterString.lower(`card`),_status)
 }
     )
     }

@@ -182,6 +182,24 @@ pub async fn initiate_pairing(
 }
 
 #[uniffi::export]
+pub async fn export_controller_setup_card() -> ControllerSetupCardOutcome {
+    crate::lifecycle::remote_setup::export().await
+}
+
+/// Bounded parsing only; importing a card requires a separate trusted-source decision.
+#[uniffi::export]
+pub fn preview_target_access_card(card: String) -> TargetAccessCardPreviewOutcome {
+    crate::lifecycle::remote_setup::preview(card)
+}
+
+#[uniffi::export]
+pub async fn import_target_access_card(
+    input: ImportTargetAccessCardInput,
+) -> TargetAccessCardImportOutcome {
+    crate::lifecycle::remote_setup::import(input).await
+}
+
+#[uniffi::export]
 pub async fn approve_pairing(
     input: RemoteControlPairingDecisionInput,
 ) -> RemoteControlPairingCommandOutcome {

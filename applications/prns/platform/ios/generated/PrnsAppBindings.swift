@@ -983,6 +983,67 @@ public func FfiConverterTypeContactDestinationInput_lower(_ value: ContactDestin
 }
 
 
+/**
+ * Public setup information for this installation, never a messaging identity or secret.
+ */
+public struct ControllerSetupCard: Equatable, Hashable {
+    public var text: String
+    public var publicKeyHex: String
+    public var controllerIdentityFingerprint: Bytes16
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(text: String, publicKeyHex: String, controllerIdentityFingerprint: Bytes16) {
+        self.text = text
+        self.publicKeyHex = publicKeyHex
+        self.controllerIdentityFingerprint = controllerIdentityFingerprint
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ControllerSetupCard: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeControllerSetupCard: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ControllerSetupCard {
+        return
+            try ControllerSetupCard(
+                text: FfiConverterString.read(from: &buf),
+                publicKeyHex: FfiConverterString.read(from: &buf),
+                controllerIdentityFingerprint: FfiConverterTypeBytes16.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ControllerSetupCard, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.text, into: &buf)
+        FfiConverterString.write(value.publicKeyHex, into: &buf)
+        FfiConverterTypeBytes16.write(value.controllerIdentityFingerprint, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeControllerSetupCard_lift(_ buf: RustBuffer) throws -> ControllerSetupCard {
+    return try FfiConverterTypeControllerSetupCard.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeControllerSetupCard_lower(_ value: ControllerSetupCard) -> RustBuffer {
+    return FfiConverterTypeControllerSetupCard.lower(value)
+}
+
+
 public struct CreateManualContactInput: Equatable, Hashable {
     public var destination: Bytes16
     public var identity: Bytes16?
@@ -1422,6 +1483,70 @@ public func FfiConverterTypeFinishRemoteWifiTrialInput_lift(_ buf: RustBuffer) t
 #endif
 public func FfiConverterTypeFinishRemoteWifiTrialInput_lower(_ value: FinishRemoteWifiTrialInput) -> RustBuffer {
     return FfiConverterTypeFinishRemoteWifiTrialInput.lower(value)
+}
+
+
+public struct ImportTargetAccessCardInput: Equatable, Hashable {
+    public var card: String
+    public var expectedControllerIdentity: Bytes16
+    /**
+     * Explicit caller confirmation of the setup tool or administrator's identity.
+     */
+    public var trustedSourceConfirmed: Bool
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(card: String, expectedControllerIdentity: Bytes16,
+        /**
+         * Explicit caller confirmation of the setup tool or administrator's identity.
+         */trustedSourceConfirmed: Bool) {
+        self.card = card
+        self.expectedControllerIdentity = expectedControllerIdentity
+        self.trustedSourceConfirmed = trustedSourceConfirmed
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ImportTargetAccessCardInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeImportTargetAccessCardInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ImportTargetAccessCardInput {
+        return
+            try ImportTargetAccessCardInput(
+                card: FfiConverterString.read(from: &buf),
+                expectedControllerIdentity: FfiConverterTypeBytes16.read(from: &buf),
+                trustedSourceConfirmed: FfiConverterBool.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ImportTargetAccessCardInput, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.card, into: &buf)
+        FfiConverterTypeBytes16.write(value.expectedControllerIdentity, into: &buf)
+        FfiConverterBool.write(value.trustedSourceConfirmed, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeImportTargetAccessCardInput_lift(_ buf: RustBuffer) throws -> ImportTargetAccessCardInput {
+    return try FfiConverterTypeImportTargetAccessCardInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeImportTargetAccessCardInput_lower(_ value: ImportTargetAccessCardInput) -> RustBuffer {
+    return FfiConverterTypeImportTargetAccessCardInput.lower(value)
 }
 
 
@@ -3764,6 +3889,71 @@ public func FfiConverterTypeStartRemoteWifiTrialInput_lower(_ value: StartRemote
     return FfiConverterTypeStartRemoteWifiTrialInput.lower(value)
 }
 
+
+/**
+ * An unverified claim from a local setup tool or administrator. Preview saves nothing.
+ */
+public struct TargetAccessCardPreview: Equatable, Hashable {
+    public var targetIdentityFingerprint: Bytes16
+    public var recipientControllerFingerprint: Bytes16
+    public var authority: RemoteControlControllerAuthority
+    public var permissions: [RemoteControlRequestKind]
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(targetIdentityFingerprint: Bytes16, recipientControllerFingerprint: Bytes16, authority: RemoteControlControllerAuthority, permissions: [RemoteControlRequestKind]) {
+        self.targetIdentityFingerprint = targetIdentityFingerprint
+        self.recipientControllerFingerprint = recipientControllerFingerprint
+        self.authority = authority
+        self.permissions = permissions
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension TargetAccessCardPreview: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeTargetAccessCardPreview: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TargetAccessCardPreview {
+        return
+            try TargetAccessCardPreview(
+                targetIdentityFingerprint: FfiConverterTypeBytes16.read(from: &buf),
+                recipientControllerFingerprint: FfiConverterTypeBytes16.read(from: &buf),
+                authority: FfiConverterTypeRemoteControlControllerAuthority.read(from: &buf),
+                permissions: FfiConverterSequenceTypeRemoteControlRequestKind.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: TargetAccessCardPreview, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes16.write(value.targetIdentityFingerprint, into: &buf)
+        FfiConverterTypeBytes16.write(value.recipientControllerFingerprint, into: &buf)
+        FfiConverterTypeRemoteControlControllerAuthority.write(value.authority, into: &buf)
+        FfiConverterSequenceTypeRemoteControlRequestKind.write(value.permissions, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTargetAccessCardPreview_lift(_ buf: RustBuffer) throws -> TargetAccessCardPreview {
+    return try FfiConverterTypeTargetAccessCardPreview.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTargetAccessCardPreview_lower(_ value: TargetAccessCardPreview) -> RustBuffer {
+    return FfiConverterTypeTargetAccessCardPreview.lower(value)
+}
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 
@@ -4626,6 +4816,93 @@ public func FfiConverterTypeContactMutationOutcome_lift(_ buf: RustBuffer) throw
 #endif
 public func FfiConverterTypeContactMutationOutcome_lower(_ value: ContactMutationOutcome) -> RustBuffer {
     return FfiConverterTypeContactMutationOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum ControllerSetupCardOutcome: Equatable, Hashable {
+
+    case ready(card: ControllerSetupCard
+    )
+    case busy
+    case localNodeStopped
+    case unavailable(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ControllerSetupCardOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeControllerSetupCardOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = ControllerSetupCardOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ControllerSetupCardOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(card: try FfiConverterTypeControllerSetupCard.read(from: &buf)
+        )
+
+        case 2: return .busy
+
+        case 3: return .localNodeStopped
+
+        case 4: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ControllerSetupCardOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(card):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeControllerSetupCard.write(card, into: &buf)
+
+
+        case .busy:
+            writeInt(&buf, Int32(2))
+
+
+        case .localNodeStopped:
+            writeInt(&buf, Int32(3))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(4))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeControllerSetupCardOutcome_lift(_ buf: RustBuffer) throws -> ControllerSetupCardOutcome {
+    return try FfiConverterTypeControllerSetupCardOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeControllerSetupCardOutcome_lower(_ value: ControllerSetupCardOutcome) -> RustBuffer {
+    return FfiConverterTypeControllerSetupCardOutcome.lower(value)
 }
 
 
@@ -10386,6 +10663,248 @@ public func FfiConverterTypeSendDirectTextOutcome_lower(_ value: SendDirectTextO
 }
 
 
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum TargetAccessCardImportOutcome: Equatable, Hashable {
+
+    /**
+     * Durable local access only. The target's grant and connectivity remain unchecked.
+     */
+    case saved(targetIdentityFingerprint: Bytes16
+    )
+    case existing(targetIdentityFingerprint: Bytes16
+    )
+    case trustRequired
+    case controllerChanged
+    case recipientMismatch
+    case conflict
+    case capacityExhausted
+    case invalid(detail: String
+    )
+    case busy
+    case localNodeStopped
+    case persistenceUnavailable
+    case persistenceFailed
+    case unavailable(detail: String
+    )
+    /**
+     * Admission may have committed. Inspect saved access before explicitly retrying.
+     */
+    case outcomeUnknown
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension TargetAccessCardImportOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeTargetAccessCardImportOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = TargetAccessCardImportOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TargetAccessCardImportOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .saved(targetIdentityFingerprint: try FfiConverterTypeBytes16.read(from: &buf)
+        )
+
+        case 2: return .existing(targetIdentityFingerprint: try FfiConverterTypeBytes16.read(from: &buf)
+        )
+
+        case 3: return .trustRequired
+
+        case 4: return .controllerChanged
+
+        case 5: return .recipientMismatch
+
+        case 6: return .conflict
+
+        case 7: return .capacityExhausted
+
+        case 8: return .invalid(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 9: return .busy
+
+        case 10: return .localNodeStopped
+
+        case 11: return .persistenceUnavailable
+
+        case 12: return .persistenceFailed
+
+        case 13: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 14: return .outcomeUnknown
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: TargetAccessCardImportOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .saved(targetIdentityFingerprint):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeBytes16.write(targetIdentityFingerprint, into: &buf)
+
+
+        case let .existing(targetIdentityFingerprint):
+            writeInt(&buf, Int32(2))
+            FfiConverterTypeBytes16.write(targetIdentityFingerprint, into: &buf)
+
+
+        case .trustRequired:
+            writeInt(&buf, Int32(3))
+
+
+        case .controllerChanged:
+            writeInt(&buf, Int32(4))
+
+
+        case .recipientMismatch:
+            writeInt(&buf, Int32(5))
+
+
+        case .conflict:
+            writeInt(&buf, Int32(6))
+
+
+        case .capacityExhausted:
+            writeInt(&buf, Int32(7))
+
+
+        case let .invalid(detail):
+            writeInt(&buf, Int32(8))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case .busy:
+            writeInt(&buf, Int32(9))
+
+
+        case .localNodeStopped:
+            writeInt(&buf, Int32(10))
+
+
+        case .persistenceUnavailable:
+            writeInt(&buf, Int32(11))
+
+
+        case .persistenceFailed:
+            writeInt(&buf, Int32(12))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(13))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case .outcomeUnknown:
+            writeInt(&buf, Int32(14))
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTargetAccessCardImportOutcome_lift(_ buf: RustBuffer) throws -> TargetAccessCardImportOutcome {
+    return try FfiConverterTypeTargetAccessCardImportOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTargetAccessCardImportOutcome_lower(_ value: TargetAccessCardImportOutcome) -> RustBuffer {
+    return FfiConverterTypeTargetAccessCardImportOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum TargetAccessCardPreviewOutcome: Equatable, Hashable {
+
+    case valid(preview: TargetAccessCardPreview
+    )
+    case invalid(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension TargetAccessCardPreviewOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeTargetAccessCardPreviewOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = TargetAccessCardPreviewOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TargetAccessCardPreviewOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .valid(preview: try FfiConverterTypeTargetAccessCardPreview.read(from: &buf)
+        )
+
+        case 2: return .invalid(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: TargetAccessCardPreviewOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .valid(preview):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeTargetAccessCardPreview.write(preview, into: &buf)
+
+
+        case let .invalid(detail):
+            writeInt(&buf, Int32(2))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTargetAccessCardPreviewOutcome_lift(_ buf: RustBuffer) throws -> TargetAccessCardPreviewOutcome {
+    return try FfiConverterTypeTargetAccessCardPreviewOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTargetAccessCardPreviewOutcome_lower(_ value: TargetAccessCardPreviewOutcome) -> RustBuffer {
+    return FfiConverterTypeTargetAccessCardPreviewOutcome.lower(value)
+}
+
+
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
@@ -11533,6 +12052,21 @@ public func describeTarget(input: DescribeRemoteControlTargetInput)async  -> Rem
 
         )
 }
+public func exportControllerSetupCard()async  -> ControllerSetupCardOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_export_controller_setup_card(
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeControllerSetupCardOutcome_lift,
+            errorHandler: nil
+
+        )
+}
 public func finishRemoteWifiTrial(input: FinishRemoteWifiTrialInput)async  -> RemoteWifiCommandOutcome  {
     return
         try!  await uniffiRustCallAsync(
@@ -11559,6 +12093,21 @@ public func getContact(input: ContactDestinationInput)async  -> ContactLookupOut
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeContactLookupOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+public func importTargetAccessCard(input: ImportTargetAccessCardInput)async  -> TargetAccessCardImportOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_import_target_access_card(FfiConverterTypeImportTargetAccessCardInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeTargetAccessCardImportOutcome_lift,
             errorHandler: nil
 
         )
@@ -11775,6 +12324,16 @@ public func previewIdentityImport(identity: Data) -> IdentityImportPreviewOutcom
     return try!  FfiConverterTypeIdentityImportPreviewOutcome_lift(try! rustCall() {
     uniffi_prns_app_fn_func_preview_identity_import(
         FfiConverterData.lower(identity),$0
+    )
+})
+}
+/**
+ * Bounded parsing only; importing a card requires a separate trusted-source decision.
+ */
+public func previewTargetAccessCard(card: String) -> TargetAccessCardPreviewOutcome  {
+    return try!  FfiConverterTypeTargetAccessCardPreviewOutcome_lift(try! rustCall() {
+    uniffi_prns_app_fn_func_preview_target_access_card(
+        FfiConverterString.lower(card),$0
     )
 })
 }
@@ -12055,10 +12614,16 @@ private let initializationResult: InitializationResult = {
     if (uniffi_prns_app_checksum_func_describe_target() != 49809) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_prns_app_checksum_func_export_controller_setup_card() != 37636) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_prns_app_checksum_func_finish_remote_wifi_trial() != 11313) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_get_contact() != 18891) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_import_target_access_card() != 7026) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_initiate_pairing() != 58991) {
@@ -12110,6 +12675,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_preview_identity_import() != 31445) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_preview_target_access_card() != 26108) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_read_bluetooth_settings() != 48522) {

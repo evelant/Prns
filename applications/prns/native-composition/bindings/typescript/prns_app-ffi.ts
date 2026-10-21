@@ -314,12 +314,22 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_func_export_controller_setup_card": {
+      args: [],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_fn_func_finish_remote_wifi_trial": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_fn_func_get_contact": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_fn_func_import_target_access_card": {
       args: [FfiType.RustBuffer],
       ret: FfiType.Handle,
       hasRustCallStatus: false,
@@ -405,6 +415,11 @@ const DEFINITIONS = {
       hasRustCallStatus: true,
     },
     "uniffi_prns_app_fn_func_preview_identity_import": {
+      args: [FfiType.RustBuffer],
+      ret: FfiType.RustBuffer,
+      hasRustCallStatus: true,
+    },
+    "uniffi_prns_app_fn_func_preview_target_access_card": {
       args: [FfiType.RustBuffer],
       ret: FfiType.RustBuffer,
       hasRustCallStatus: true,
@@ -544,12 +559,22 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_func_export_controller_setup_card": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
     "uniffi_prns_app_checksum_func_finish_remote_wifi_trial": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_get_contact": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_import_target_access_card": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -635,6 +660,11 @@ const DEFINITIONS = {
       hasRustCallStatus: false,
     },
     "uniffi_prns_app_checksum_func_preview_identity_import": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
+    "uniffi_prns_app_checksum_func_preview_target_access_card": {
       args: [],
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
@@ -799,8 +829,10 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_create_manual_contact(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_delete_contact(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_describe_target(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_export_controller_setup_card(): bigint;
     uniffi_prns_app_fn_func_finish_remote_wifi_trial(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_get_contact(input: Uint8Array): bigint;
+    uniffi_prns_app_fn_func_import_target_access_card(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_initiate_pairing(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_inspect_remote_wifi_trial(input: Uint8Array): bigint;
     uniffi_prns_app_fn_func_list_contacts(): bigint;
@@ -818,6 +850,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_func_native_start_with_apple_bluetooth_restoration(storageRoot: Uint8Array, input: Uint8Array, centralIdentifier: Uint8Array, peripheralIdentifier: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_preview_identity_import(identity: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
+    uniffi_prns_app_fn_func_preview_target_access_card(card: Uint8Array, uniffi_out_err: UniffiRustCallStatus): Uint8Array;
     uniffi_prns_app_fn_func_read_bluetooth_settings(): bigint;
     uniffi_prns_app_fn_func_read_messaging_profile(): bigint;
     uniffi_prns_app_fn_func_read_remote_node(input: Uint8Array): bigint;
@@ -845,8 +878,10 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_create_manual_contact(): number;
     uniffi_prns_app_checksum_func_delete_contact(): number;
     uniffi_prns_app_checksum_func_describe_target(): number;
+    uniffi_prns_app_checksum_func_export_controller_setup_card(): number;
     uniffi_prns_app_checksum_func_finish_remote_wifi_trial(): number;
     uniffi_prns_app_checksum_func_get_contact(): number;
+    uniffi_prns_app_checksum_func_import_target_access_card(): number;
     uniffi_prns_app_checksum_func_initiate_pairing(): number;
     uniffi_prns_app_checksum_func_inspect_remote_wifi_trial(): number;
     uniffi_prns_app_checksum_func_list_contacts(): number;
@@ -864,6 +899,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_func_native_start_with_apple_bluetooth_restoration(): number;
     uniffi_prns_app_checksum_func_native_stop(): number;
     uniffi_prns_app_checksum_func_preview_identity_import(): number;
+    uniffi_prns_app_checksum_func_preview_target_access_card(): number;
     uniffi_prns_app_checksum_func_read_bluetooth_settings(): number;
     uniffi_prns_app_checksum_func_read_messaging_profile(): number;
     uniffi_prns_app_checksum_func_read_remote_node(): number;
