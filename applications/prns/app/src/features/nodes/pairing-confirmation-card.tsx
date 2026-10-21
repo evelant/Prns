@@ -11,12 +11,14 @@ import { summarizePairingAccess } from "./pairing-access-summary";
 type Confirmation = Extract<DevelopmentNodeSnapshot["pairing"], { tag: "ConfirmationRequired" }>;
 
 export function PairingConfirmationCard({
+  alreadyPaired = false,
   pairing,
   pending,
   commandFailure,
   onApprove,
   onReject,
 }: {
+  readonly alreadyPaired?: boolean;
   readonly pairing: Confirmation;
   readonly pending: "approve" | "initiate" | "reject" | null;
   readonly commandFailure: string | null;
@@ -30,7 +32,7 @@ export function PairingConfirmationCard({
   return (
     <Card>
       <Subheading>Confirmation required</Subheading>
-      <BodyText>Compare this code on both devices.</BodyText>
+      <BodyText>Compare this code with the code provided by the node.</BodyText>
       <Text
         accessibilityLabel={`Confirmation code ${confirmationCode.split("").join(" ")}`}
         selectable
@@ -38,6 +40,16 @@ export function PairingConfirmationCard({
       >
         {confirmationCode}
       </Text>
+      <KeyValue label="Node ID" value={formatBytes(targetIdentityFingerprint)} />
+      {alreadyPaired ? (
+        <>
+          <Badge>Already paired with this device</Badge>
+          <BodyText>
+            This node is already saved in Nodes. Continue only if you want to update this
+            device&apos;s access, or reject this pairing to choose another node.
+          </BodyText>
+        </>
+      ) : null}
       <Badge>{formatControllerAuthority(authority)}</Badge>
       <BodyText muted>Requested access</BodyText>
       <BodyText>{summarizePairingAccess(permissions)}</BodyText>
@@ -53,7 +65,6 @@ export function PairingConfirmationCard({
       </Button>
       {detailsVisible ? (
         <CardStack>
-          <KeyValue label="Node ID" value={formatBytes(targetIdentityFingerprint)} />
           <Subheading>Requested controls</Subheading>
           {permissions.length === 0 ? (
             <BodyText>No node controls requested.</BodyText>

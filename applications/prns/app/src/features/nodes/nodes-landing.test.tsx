@@ -1,9 +1,9 @@
-import * as Bindings from "@prns-internal/expo";
 import type { DevelopmentNodeSnapshot } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import { act, fireEvent, render } from "@testing-library/react-native";
 import { Link } from "expo-router";
-import type { ReactNode } from "react";
 import { destinationHash, identityHash } from "personal-rns/contract";
+import type { ReactNode } from "react";
 
 import type { DevelopmentRuntimeView } from "@/native/development-runtime-context";
 import { NodesScreen } from "./nodes-screen";
@@ -130,15 +130,15 @@ test("puts this phone, its connections and controls before paired nodes", () => 
   const view = render(<NodesScreen />);
   const headings = view.getAllByRole("header").map((heading) => heading.props.children);
   expect(headings.slice(0, 2)).toEqual(["Nodes", "This phone"]);
-  expect(headings.indexOf("Bluetooth access")).toBeLessThan(headings.indexOf("Paired nodes"));
-  expect(headings.indexOf("Node controls")).toBeLessThan(headings.indexOf("Paired nodes"));
+  expect(headings.indexOf("Bluetooth access")).toBeLessThan(headings.indexOf("Saved nodes"));
+  expect(headings.indexOf("Node controls")).toBeLessThan(headings.indexOf("Saved nodes"));
   expect(view.getByRole("link", { name: "Connections" })).toBeTruthy();
   expect(view.getByRole("link", { name: "Network" })).toBeTruthy();
   expect(view.UNSAFE_getAllByType(Link).map((link) => link.props.href)).toContain(
     "/more/interfaces",
   );
   expect(view.UNSAFE_getAllByType(Link).map((link) => link.props.href)).toContain("/more/activity");
-  expect(view.getByText("Paired")).toBeTruthy();
+  expect(view.getByText("Access saved")).toBeTruthy();
   expect(view.queryByText("Connected")).toBeNull();
   expect(view.getByRole("link", { name: "Manage node" })).toBeTruthy();
   expect(view.getByRole("link", { name: "Pair a node" })).toBeTruthy();
@@ -175,8 +175,8 @@ test("keeps stopped nodes unavailable rather than describing them as an empty pa
     canStopNode: false,
   };
   const view = render(<NodesScreen />);
-  expect(view.getByText("Paired nodes unavailable")).toBeTruthy();
-  expect(view.queryByText("No paired nodes")).toBeNull();
+  expect(view.getByText("Saved nodes unavailable")).toBeTruthy();
+  expect(view.queryByText("No saved nodes")).toBeNull();
   expect(view.queryByRole("link", { name: "Manage node" })).toBeNull();
   expect(view.getByRole("button", { name: "Start node" })).toBeEnabled();
   expect(view.getByRole("button", { name: "Stop node" })).toBeDisabled();
@@ -185,7 +185,7 @@ test("keeps stopped nodes unavailable rather than describing them as an empty pa
     headings.indexOf("This device's node is stopped"),
   );
   expect(headings.indexOf("This device's node is stopped")).toBeLessThan(
-    headings.indexOf("Paired nodes"),
+    headings.indexOf("Saved nodes"),
   );
   expect(view.getByRole("link", { name: "Connections" })).toBeTruthy();
   fireEvent.press(view.getByRole("button", { name: "Start node" }));
@@ -205,7 +205,7 @@ test("keeps the pair action with an empty list and preserves Bluetooth access re
     },
   };
   const view = render(<NodesScreen />);
-  expect(view.getByText("No paired nodes")).toBeTruthy();
+  expect(view.getByText("No saved nodes")).toBeTruthy();
   expect(view.getByRole("link", { name: "Pair a node" })).toBeTruthy();
   expect(view.getByRole("button", { name: "Open app settings" })).toBeEnabled();
   expect(

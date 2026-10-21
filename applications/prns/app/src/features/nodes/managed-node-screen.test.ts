@@ -7,10 +7,10 @@ type DescribeFailureStage = Extract<
 >["inner"]["stage"];
 describe("managed-node failure guidance", () => {
   const stageMessages = [
-    [Bindings.RemoteControlDescribeFailureStage.Input, "This paired node is no longer available."],
+    [Bindings.RemoteControlDescribeFailureStage.Input, "This saved node is no longer available."],
     [
       Bindings.RemoteControlDescribeFailureStage.Inventory,
-      "This paired node is no longer available.",
+      "This saved node is no longer available.",
     ],
     [
       Bindings.RemoteControlDescribeFailureStage.Route,
@@ -22,11 +22,11 @@ describe("managed-node failure guidance", () => {
     ],
     [
       Bindings.RemoteControlDescribeFailureStage.Identification,
-      "The saved pairing could not be used with this node. Check that it is still paired, then try again.",
+      "The saved access could not be used with this node. Check its current controller authorization, then try again.",
     ],
     [
       Bindings.RemoteControlDescribeFailureStage.Permission,
-      "This pairing does not allow the app to view node information.",
+      "This saved access does not allow the app to view node information.",
     ],
     [
       Bindings.RemoteControlDescribeFailureStage.Request,

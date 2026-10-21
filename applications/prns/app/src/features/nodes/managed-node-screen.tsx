@@ -117,7 +117,7 @@ export function ManagedNodeScreen() {
       [Bindings.DevelopmentNodeRuntime.Stopped]: {
         title: "This device's node is stopped",
         detail: android
-          ? "Return to Nodes and start this device's node to manage your paired nodes."
+          ? "Return to Nodes and start this device's node to manage your saved nodes."
           : "Return to Nodes to check this device's status.",
       },
       [Bindings.DevelopmentNodeRuntime.Stopping]: {
@@ -128,7 +128,7 @@ export function ManagedNodeScreen() {
       },
       [Bindings.DevelopmentNodeRuntime.Starting]: {
         title: "This device's node is starting",
-        detail: "Your paired node's details will appear when this device is ready.",
+        detail: "Your saved node's details will appear when this device is ready.",
       },
       [Bindings.DevelopmentNodeRuntime.Failed]: {
         title: "This device's node is unavailable",
@@ -233,7 +233,7 @@ export function ManagedNodeScreen() {
           runtime={runtime}
         />
       ) : (
-        <BodyText>This pairing does not allow the app to view node information.</BodyText>
+        <BodyText>This saved access does not allow the app to view node information.</BodyText>
       )}
       <Button
         tone="secondary"
@@ -424,19 +424,19 @@ export function describeFailureMessage(stage: DescribeFailureStage): string {
   switch (stage) {
     case Bindings.RemoteControlDescribeFailureStage.Input:
     case Bindings.RemoteControlDescribeFailureStage.Inventory:
-      return "This paired node is no longer available.";
+      return "This saved node is no longer available.";
     case Bindings.RemoteControlDescribeFailureStage.Route:
       return "This node is not reachable yet. Keep it on and nearby, then try again.";
     case Bindings.RemoteControlDescribeFailureStage.Link:
       return "The connection check could not complete. Try again.";
     case Bindings.RemoteControlDescribeFailureStage.Identification:
-      return "The saved pairing could not be used with this node. Check that it is still paired, then try again.";
+      return "The saved access could not be used with this node. Check its current controller authorization, then try again.";
     case Bindings.RemoteControlDescribeFailureStage.Request:
       return "The node could not complete the connection check. Try again.";
     case Bindings.RemoteControlDescribeFailureStage.Timeout:
       return "The node did not answer before the connection check timed out. Make sure it is on and nearby, then try again.";
     case Bindings.RemoteControlDescribeFailureStage.Permission:
-      return "This pairing does not allow the app to view node information.";
+      return "This saved access does not allow the app to view node information.";
     case Bindings.RemoteControlDescribeFailureStage.Node:
       return "This device went offline before the check finished.";
   }
@@ -448,14 +448,14 @@ function announcementFailureMessage(stage: Bindings.RemoteControlAnnounceFailure
       return "Another operation is in progress. Address sharing has not started.";
     case Bindings.RemoteControlAnnounceFailureStage.Input:
     case Bindings.RemoteControlAnnounceFailureStage.Inventory:
-      return "This paired node is no longer available.";
+      return "This saved node is no longer available.";
     case Bindings.RemoteControlAnnounceFailureStage.Route:
     case Bindings.RemoteControlAnnounceFailureStage.Link:
       return "The node could not be reached. Keep it on and nearby.";
     case Bindings.RemoteControlAnnounceFailureStage.Identification:
-      return "The saved pairing could not be used with this node.";
+      return "The saved access could not be used with this node.";
     case Bindings.RemoteControlAnnounceFailureStage.Permission:
-      return "This pairing does not allow the node to share its address.";
+      return "This saved access does not allow the node to share its address.";
     case Bindings.RemoteControlAnnounceFailureStage.Node:
       return "This device went offline before address sharing could start.";
     case Bindings.RemoteControlAnnounceFailureStage.Request:

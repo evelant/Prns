@@ -442,6 +442,46 @@ export async function describeTarget(input: DescribeRemoteControlTargetInput, as
     }
     }
 
+export async function exportControllerSetupCard(asyncOpts_?: { signal: AbortSignal }): Promise<ControllerSetupCardOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_export_controller_setup_card(
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeControllerSetupCardOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 export async function finishRemoteWifiTrial(input: FinishRemoteWifiTrialInput, asyncOpts_?: { signal: AbortSignal }): Promise<RemoteWifiCommandOutcome> {
     const __stack = uniffiIsDebug ? new Error().stack : undefined;
     try {
@@ -506,6 +546,46 @@ export async function getContact(input: ContactDestinationInput, asyncOpts_?: { 
             /*liftFunc:*/ (__rb) => {
                 try {
                     return FfiConverterTypeContactLookupOutcome.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
+export async function importTargetAccessCard(input: ImportTargetAccessCardInput, asyncOpts_?: { signal: AbortSignal }): Promise<TargetAccessCardImportOutcome> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_func_import_target_access_card(FfiConverterTypeImportTargetAccessCardInput.lower(input, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterTypeTargetAccessCardImportOutcome.lift(__rb);
                 } finally {
                     nativeModule().rustbuffer_free(__rb);
                 }
@@ -997,6 +1077,25 @@ export function previewIdentityImport(identity: Uint8Array): IdentityImportPrevi
     );
     try {
         return FfiConverterTypeIdentityImportPreviewOutcome.lift(__rb);
+    } finally {
+        nativeModule().rustbuffer_free(__rb);
+    }
+    }
+
+/**
+ * Bounded parsing only; importing a card requires a separate trusted-source decision.
+ */
+export function previewTargetAccessCard(card: string): TargetAccessCardPreviewOutcome {
+    const __rb: Uint8Array = uniffiCaller.rustCall(
+            /*caller:*/ (callStatus) => {
+                return nativeModule().uniffi_prns_app_fn_func_preview_target_access_card(
+        FfiConverterString.lower(card, nativeModule().rustbuffer_alloc),
+                callStatus);
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+    );
+    try {
+        return FfiConverterTypeTargetAccessCardPreviewOutcome.lift(__rb);
     } finally {
         nativeModule().rustbuffer_free(__rb);
     }
@@ -2818,6 +2917,56 @@ const FfiConverterTypeContactDestinationInput = (() => {
         }
         allocationSize(value: TypeName): number {
             return FfiConverterTypeBytes16.allocationSize(value.destination);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+/**
+ * Public setup information for this installation, never a messaging identity or secret.
+ */
+export type ControllerSetupCard = {
+    text: string,
+    publicKeyHex: string,
+    controllerIdentityFingerprint: Bytes16
+}
+
+/**
+ * Generated factory for {@link ControllerSetupCard} record objects.
+ */
+export const ControllerSetupCard = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<ControllerSetupCard, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<ControllerSetupCard>,
+    });
+})();
+
+const FfiConverterTypeControllerSetupCard = (() => {
+    type TypeName = ControllerSetupCard;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                text: FfiConverterString.readFromCursor(c),
+                publicKeyHex: FfiConverterString.readFromCursor(c),
+                controllerIdentityFingerprint: FfiConverterTypeBytes16.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterString.writeIntoCursor(value.text, c);
+            FfiConverterString.writeIntoCursor(value.publicKeyHex, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.controllerIdentityFingerprint, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterString.allocationSize(value.text) +
+             FfiConverterString.allocationSize(value.publicKeyHex) +
+             FfiConverterTypeBytes16.allocationSize(value.controllerIdentityFingerprint);
 
         }
     };
@@ -7068,6 +7217,56 @@ const FfiConverterTypeFinishRemoteWifiTrialInput = (() => {
     return new FFIConverter();
 })();
 
+export type ImportTargetAccessCardInput = {
+    card: string,
+    expectedControllerIdentity: Bytes16,
+    /**
+     * Explicit caller confirmation of the setup tool or administrator's identity.
+     */
+    trustedSourceConfirmed: boolean
+}
+
+/**
+ * Generated factory for {@link ImportTargetAccessCardInput} record objects.
+ */
+export const ImportTargetAccessCardInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<ImportTargetAccessCardInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<ImportTargetAccessCardInput>,
+    });
+})();
+
+const FfiConverterTypeImportTargetAccessCardInput = (() => {
+    type TypeName = ImportTargetAccessCardInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                card: FfiConverterString.readFromCursor(c),
+                expectedControllerIdentity: FfiConverterTypeBytes16.readFromCursor(c),
+                trustedSourceConfirmed: FfiConverterBool.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterString.writeIntoCursor(value.card, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.expectedControllerIdentity, c);
+            FfiConverterBool.writeIntoCursor(value.trustedSourceConfirmed, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterString.allocationSize(value.card) +
+             FfiConverterTypeBytes16.allocationSize(value.expectedControllerIdentity) +
+             FfiConverterBool.allocationSize(value.trustedSourceConfirmed);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export type InitiateRemoteControlPairingInput = {
     candidateId: string,
     invitationCode: string
@@ -9722,6 +9921,60 @@ const FfiConverterTypeStartRemoteWifiTrialInput = (() => {
     return new FFIConverter();
 })();
 
+/**
+ * An unverified claim from a local setup tool or administrator. Preview saves nothing.
+ */
+export type TargetAccessCardPreview = {
+    targetIdentityFingerprint: Bytes16,
+    recipientControllerFingerprint: Bytes16,
+    authority: RemoteControlControllerAuthority,
+    permissions: Array<RemoteControlRequestKind>
+}
+
+/**
+ * Generated factory for {@link TargetAccessCardPreview} record objects.
+ */
+export const TargetAccessCardPreview = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<TargetAccessCardPreview, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<TargetAccessCardPreview>,
+    });
+})();
+
+const FfiConverterTypeTargetAccessCardPreview = (() => {
+    type TypeName = TargetAccessCardPreview;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                targetIdentityFingerprint: FfiConverterTypeBytes16.readFromCursor(c),
+                recipientControllerFingerprint: FfiConverterTypeBytes16.readFromCursor(c),
+                authority: FfiConverterTypeRemoteControlControllerAuthority.readFromCursor(c),
+                permissions: FfiConverterSequenceTypeRemoteControlRequestKind.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes16.writeIntoCursor(value.targetIdentityFingerprint, c);
+            FfiConverterTypeBytes16.writeIntoCursor(value.recipientControllerFingerprint, c);
+            FfiConverterTypeRemoteControlControllerAuthority.writeIntoCursor(value.authority, c);
+            FfiConverterSequenceTypeRemoteControlRequestKind.writeIntoCursor(value.permissions, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes16.allocationSize(value.targetIdentityFingerprint) +
+             FfiConverterTypeBytes16.allocationSize(value.recipientControllerFingerprint) +
+             FfiConverterTypeRemoteControlControllerAuthority.allocationSize(value.authority) +
+             FfiConverterSequenceTypeRemoteControlRequestKind.allocationSize(value.permissions);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export enum AnnounceLxmfOutcome {
     Requested,
     NoUsableConnection,
@@ -11608,6 +11861,210 @@ const FfiConverterTypeContactMutationOutcome = (() => {
                     const inner = value.inner;
                     let size = 4;
                     size += FfiConverterString.allocationSize(inner.reason);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: ControllerSetupCardOutcome
+export enum ControllerSetupCardOutcome_Tags {
+    Ready = "Ready",
+    Busy = "Busy",
+    LocalNodeStopped = "LocalNodeStopped",
+    Unavailable = "Unavailable"
+}
+export const ControllerSetupCardOutcome = (() => {
+
+    type Ready__interface = {
+        tag: ControllerSetupCardOutcome_Tags.Ready;
+        inner:
+Readonly<{card: ControllerSetupCard}>
+    };
+    class Ready_ extends UniffiEnum implements Ready__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ControllerSetupCardOutcome";
+        readonly tag = ControllerSetupCardOutcome_Tags.Ready;
+        readonly inner:
+Readonly<{card: ControllerSetupCard}>;
+        constructor(
+inner: {card: ControllerSetupCard }) {
+            super("ControllerSetupCardOutcome", "Ready");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {card: ControllerSetupCard }): Ready_ {
+            return new Ready_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Ready_ {
+            return obj.tag === ControllerSetupCardOutcome_Tags.Ready;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: ControllerSetupCardOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ControllerSetupCardOutcome";
+        readonly tag = ControllerSetupCardOutcome_Tags.Busy;
+        constructor() {
+            super("ControllerSetupCardOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === ControllerSetupCardOutcome_Tags.Busy;
+        }
+
+    }
+
+    type LocalNodeStopped__interface = {
+        tag: ControllerSetupCardOutcome_Tags.LocalNodeStopped
+    };
+    class LocalNodeStopped_ extends UniffiEnum implements LocalNodeStopped__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ControllerSetupCardOutcome";
+        readonly tag = ControllerSetupCardOutcome_Tags.LocalNodeStopped;
+        constructor() {
+            super("ControllerSetupCardOutcome", "LocalNodeStopped");
+        }
+
+        static new(): LocalNodeStopped_ {
+            return new LocalNodeStopped_();
+        }
+
+        static instanceOf(obj: any): obj is LocalNodeStopped_ {
+            return obj.tag === ControllerSetupCardOutcome_Tags.LocalNodeStopped;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: ControllerSetupCardOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "ControllerSetupCardOutcome";
+        readonly tag = ControllerSetupCardOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("ControllerSetupCardOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === ControllerSetupCardOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is ControllerSetupCardOutcome {
+        return obj[uniffiTypeNameSymbol] === "ControllerSetupCardOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Ready: Ready_,
+  Busy: Busy_,
+  LocalNodeStopped: LocalNodeStopped_,
+  Unavailable: Unavailable_
+    });
+
+})();
+export type ControllerSetupCardOutcome = InstanceType<
+    typeof ControllerSetupCardOutcome['Ready' | 'Busy' | 'LocalNodeStopped' | 'Unavailable']
+>;
+
+// FfiConverter for enum ControllerSetupCardOutcome
+const FfiConverterTypeControllerSetupCardOutcome = (() => {
+    type TypeName = ControllerSetupCardOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new ControllerSetupCardOutcome.Ready({card: FfiConverterTypeControllerSetupCard.readFromCursor(c) });
+                case 2: return new ControllerSetupCardOutcome.Busy();
+                case 3: return new ControllerSetupCardOutcome.LocalNodeStopped();
+                case 4: return new ControllerSetupCardOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case ControllerSetupCardOutcome_Tags.Ready: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeControllerSetupCard.writeIntoCursor(inner.card, c);
+                    return;
+                }
+                case ControllerSetupCardOutcome_Tags.Busy: {
+                    c.writeI32(2);
+                    return;
+                }
+                case ControllerSetupCardOutcome_Tags.LocalNodeStopped: {
+                    c.writeI32(3);
+                    return;
+                }
+                case ControllerSetupCardOutcome_Tags.Unavailable: {
+                    c.writeI32(4);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that ControllerSetupCardOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case ControllerSetupCardOutcome_Tags.Ready: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeControllerSetupCard.allocationSize(inner.card);
+                    return size;
+                }
+                case ControllerSetupCardOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case ControllerSetupCardOutcome_Tags.LocalNodeStopped: {
+                    return 4;
+                }
+                case ControllerSetupCardOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
                     return size;
                 }
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
@@ -15550,6 +16007,716 @@ const FfiConverterTypeSendDirectTextOutcome = (() => {
     return new FFIConverter();
 })();
 
+
+// Enum: TargetAccessCardImportOutcome
+export enum TargetAccessCardImportOutcome_Tags {
+    Saved = "Saved",
+    Existing = "Existing",
+    TrustRequired = "TrustRequired",
+    ControllerChanged = "ControllerChanged",
+    RecipientMismatch = "RecipientMismatch",
+    Conflict = "Conflict",
+    CapacityExhausted = "CapacityExhausted",
+    Invalid = "Invalid",
+    Busy = "Busy",
+    LocalNodeStopped = "LocalNodeStopped",
+    PersistenceUnavailable = "PersistenceUnavailable",
+    PersistenceFailed = "PersistenceFailed",
+    Unavailable = "Unavailable",
+    OutcomeUnknown = "OutcomeUnknown"
+}
+export const TargetAccessCardImportOutcome = (() => {
+
+    type Saved__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.Saved;
+        inner:
+Readonly<{targetIdentityFingerprint: Bytes16}>
+    };
+    /**
+     * Durable local access only. The target's grant and connectivity remain unchecked.
+     */
+    class Saved_ extends UniffiEnum implements Saved__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.Saved;
+        readonly inner:
+Readonly<{targetIdentityFingerprint: Bytes16}>;
+        constructor(
+inner: {targetIdentityFingerprint: Bytes16 }) {
+            super("TargetAccessCardImportOutcome", "Saved");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {targetIdentityFingerprint: Bytes16 }): Saved_ {
+            return new Saved_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Saved_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.Saved;
+        }
+
+    }
+
+    type Existing__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.Existing;
+        inner:
+Readonly<{targetIdentityFingerprint: Bytes16}>
+    };
+    class Existing_ extends UniffiEnum implements Existing__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.Existing;
+        readonly inner:
+Readonly<{targetIdentityFingerprint: Bytes16}>;
+        constructor(
+inner: {targetIdentityFingerprint: Bytes16 }) {
+            super("TargetAccessCardImportOutcome", "Existing");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {targetIdentityFingerprint: Bytes16 }): Existing_ {
+            return new Existing_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Existing_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.Existing;
+        }
+
+    }
+
+    type TrustRequired__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.TrustRequired
+    };
+    class TrustRequired_ extends UniffiEnum implements TrustRequired__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.TrustRequired;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "TrustRequired");
+        }
+
+        static new(): TrustRequired_ {
+            return new TrustRequired_();
+        }
+
+        static instanceOf(obj: any): obj is TrustRequired_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.TrustRequired;
+        }
+
+    }
+
+    type ControllerChanged__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.ControllerChanged
+    };
+    class ControllerChanged_ extends UniffiEnum implements ControllerChanged__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.ControllerChanged;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "ControllerChanged");
+        }
+
+        static new(): ControllerChanged_ {
+            return new ControllerChanged_();
+        }
+
+        static instanceOf(obj: any): obj is ControllerChanged_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.ControllerChanged;
+        }
+
+    }
+
+    type RecipientMismatch__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.RecipientMismatch
+    };
+    class RecipientMismatch_ extends UniffiEnum implements RecipientMismatch__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.RecipientMismatch;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "RecipientMismatch");
+        }
+
+        static new(): RecipientMismatch_ {
+            return new RecipientMismatch_();
+        }
+
+        static instanceOf(obj: any): obj is RecipientMismatch_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.RecipientMismatch;
+        }
+
+    }
+
+    type Conflict__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.Conflict
+    };
+    class Conflict_ extends UniffiEnum implements Conflict__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.Conflict;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "Conflict");
+        }
+
+        static new(): Conflict_ {
+            return new Conflict_();
+        }
+
+        static instanceOf(obj: any): obj is Conflict_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.Conflict;
+        }
+
+    }
+
+    type CapacityExhausted__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.CapacityExhausted
+    };
+    class CapacityExhausted_ extends UniffiEnum implements CapacityExhausted__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.CapacityExhausted;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "CapacityExhausted");
+        }
+
+        static new(): CapacityExhausted_ {
+            return new CapacityExhausted_();
+        }
+
+        static instanceOf(obj: any): obj is CapacityExhausted_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.CapacityExhausted;
+        }
+
+    }
+
+    type Invalid__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.Invalid;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Invalid_ extends UniffiEnum implements Invalid__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.Invalid;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("TargetAccessCardImportOutcome", "Invalid");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Invalid_ {
+            return new Invalid_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Invalid_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.Invalid;
+        }
+
+    }
+
+    type Busy__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.Busy
+    };
+    class Busy_ extends UniffiEnum implements Busy__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.Busy;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "Busy");
+        }
+
+        static new(): Busy_ {
+            return new Busy_();
+        }
+
+        static instanceOf(obj: any): obj is Busy_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.Busy;
+        }
+
+    }
+
+    type LocalNodeStopped__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.LocalNodeStopped
+    };
+    class LocalNodeStopped_ extends UniffiEnum implements LocalNodeStopped__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.LocalNodeStopped;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "LocalNodeStopped");
+        }
+
+        static new(): LocalNodeStopped_ {
+            return new LocalNodeStopped_();
+        }
+
+        static instanceOf(obj: any): obj is LocalNodeStopped_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.LocalNodeStopped;
+        }
+
+    }
+
+    type PersistenceUnavailable__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.PersistenceUnavailable
+    };
+    class PersistenceUnavailable_ extends UniffiEnum implements PersistenceUnavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.PersistenceUnavailable;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "PersistenceUnavailable");
+        }
+
+        static new(): PersistenceUnavailable_ {
+            return new PersistenceUnavailable_();
+        }
+
+        static instanceOf(obj: any): obj is PersistenceUnavailable_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.PersistenceUnavailable;
+        }
+
+    }
+
+    type PersistenceFailed__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.PersistenceFailed
+    };
+    class PersistenceFailed_ extends UniffiEnum implements PersistenceFailed__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.PersistenceFailed;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "PersistenceFailed");
+        }
+
+        static new(): PersistenceFailed_ {
+            return new PersistenceFailed_();
+        }
+
+        static instanceOf(obj: any): obj is PersistenceFailed_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.PersistenceFailed;
+        }
+
+    }
+
+    type Unavailable__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.Unavailable;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Unavailable_ extends UniffiEnum implements Unavailable__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.Unavailable;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("TargetAccessCardImportOutcome", "Unavailable");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Unavailable_ {
+            return new Unavailable_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Unavailable_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.Unavailable;
+        }
+
+    }
+
+    type OutcomeUnknown__interface = {
+        tag: TargetAccessCardImportOutcome_Tags.OutcomeUnknown
+    };
+    /**
+     * Admission may have committed. Inspect saved access before explicitly retrying.
+     */
+    class OutcomeUnknown_ extends UniffiEnum implements OutcomeUnknown__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardImportOutcome";
+        readonly tag = TargetAccessCardImportOutcome_Tags.OutcomeUnknown;
+        constructor() {
+            super("TargetAccessCardImportOutcome", "OutcomeUnknown");
+        }
+
+        static new(): OutcomeUnknown_ {
+            return new OutcomeUnknown_();
+        }
+
+        static instanceOf(obj: any): obj is OutcomeUnknown_ {
+            return obj.tag === TargetAccessCardImportOutcome_Tags.OutcomeUnknown;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is TargetAccessCardImportOutcome {
+        return obj[uniffiTypeNameSymbol] === "TargetAccessCardImportOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Saved: Saved_,
+  Existing: Existing_,
+  TrustRequired: TrustRequired_,
+  ControllerChanged: ControllerChanged_,
+  RecipientMismatch: RecipientMismatch_,
+  Conflict: Conflict_,
+  CapacityExhausted: CapacityExhausted_,
+  Invalid: Invalid_,
+  Busy: Busy_,
+  LocalNodeStopped: LocalNodeStopped_,
+  PersistenceUnavailable: PersistenceUnavailable_,
+  PersistenceFailed: PersistenceFailed_,
+  Unavailable: Unavailable_,
+  OutcomeUnknown: OutcomeUnknown_
+    });
+
+})();
+export type TargetAccessCardImportOutcome = InstanceType<
+    typeof TargetAccessCardImportOutcome['Saved' | 'Existing' | 'TrustRequired' | 'ControllerChanged' | 'RecipientMismatch' | 'Conflict' | 'CapacityExhausted' | 'Invalid' | 'Busy' | 'LocalNodeStopped' | 'PersistenceUnavailable' | 'PersistenceFailed' | 'Unavailable' | 'OutcomeUnknown']
+>;
+
+// FfiConverter for enum TargetAccessCardImportOutcome
+const FfiConverterTypeTargetAccessCardImportOutcome = (() => {
+    type TypeName = TargetAccessCardImportOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new TargetAccessCardImportOutcome.Saved({targetIdentityFingerprint: FfiConverterTypeBytes16.readFromCursor(c) });
+                case 2: return new TargetAccessCardImportOutcome.Existing({targetIdentityFingerprint: FfiConverterTypeBytes16.readFromCursor(c) });
+                case 3: return new TargetAccessCardImportOutcome.TrustRequired();
+                case 4: return new TargetAccessCardImportOutcome.ControllerChanged();
+                case 5: return new TargetAccessCardImportOutcome.RecipientMismatch();
+                case 6: return new TargetAccessCardImportOutcome.Conflict();
+                case 7: return new TargetAccessCardImportOutcome.CapacityExhausted();
+                case 8: return new TargetAccessCardImportOutcome.Invalid({detail: FfiConverterString.readFromCursor(c) });
+                case 9: return new TargetAccessCardImportOutcome.Busy();
+                case 10: return new TargetAccessCardImportOutcome.LocalNodeStopped();
+                case 11: return new TargetAccessCardImportOutcome.PersistenceUnavailable();
+                case 12: return new TargetAccessCardImportOutcome.PersistenceFailed();
+                case 13: return new TargetAccessCardImportOutcome.Unavailable({detail: FfiConverterString.readFromCursor(c) });
+                case 14: return new TargetAccessCardImportOutcome.OutcomeUnknown();
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case TargetAccessCardImportOutcome_Tags.Saved: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes16.writeIntoCursor(inner.targetIdentityFingerprint, c);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.Existing: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterTypeBytes16.writeIntoCursor(inner.targetIdentityFingerprint, c);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.TrustRequired: {
+                    c.writeI32(3);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.ControllerChanged: {
+                    c.writeI32(4);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.RecipientMismatch: {
+                    c.writeI32(5);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.Conflict: {
+                    c.writeI32(6);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.CapacityExhausted: {
+                    c.writeI32(7);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.Invalid: {
+                    c.writeI32(8);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.Busy: {
+                    c.writeI32(9);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.LocalNodeStopped: {
+                    c.writeI32(10);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.PersistenceUnavailable: {
+                    c.writeI32(11);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.PersistenceFailed: {
+                    c.writeI32(12);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.Unavailable: {
+                    c.writeI32(13);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                case TargetAccessCardImportOutcome_Tags.OutcomeUnknown: {
+                    c.writeI32(14);
+                    return;
+                }
+                default:
+                    // Throwing from here means that TargetAccessCardImportOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case TargetAccessCardImportOutcome_Tags.Saved: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes16.allocationSize(inner.targetIdentityFingerprint);
+                    return size;
+                }
+                case TargetAccessCardImportOutcome_Tags.Existing: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeBytes16.allocationSize(inner.targetIdentityFingerprint);
+                    return size;
+                }
+                case TargetAccessCardImportOutcome_Tags.TrustRequired: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.ControllerChanged: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.RecipientMismatch: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.Conflict: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.CapacityExhausted: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.Invalid: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case TargetAccessCardImportOutcome_Tags.Busy: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.LocalNodeStopped: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.PersistenceUnavailable: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.PersistenceFailed: {
+                    return 4;
+                }
+                case TargetAccessCardImportOutcome_Tags.Unavailable: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                case TargetAccessCardImportOutcome_Tags.OutcomeUnknown: {
+                    return 4;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
+
+// Enum: TargetAccessCardPreviewOutcome
+export enum TargetAccessCardPreviewOutcome_Tags {
+    Valid = "Valid",
+    Invalid = "Invalid"
+}
+export const TargetAccessCardPreviewOutcome = (() => {
+
+    type Valid__interface = {
+        tag: TargetAccessCardPreviewOutcome_Tags.Valid;
+        inner:
+Readonly<{preview: TargetAccessCardPreview}>
+    };
+    class Valid_ extends UniffiEnum implements Valid__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardPreviewOutcome";
+        readonly tag = TargetAccessCardPreviewOutcome_Tags.Valid;
+        readonly inner:
+Readonly<{preview: TargetAccessCardPreview}>;
+        constructor(
+inner: {preview: TargetAccessCardPreview }) {
+            super("TargetAccessCardPreviewOutcome", "Valid");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {preview: TargetAccessCardPreview }): Valid_ {
+            return new Valid_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Valid_ {
+            return obj.tag === TargetAccessCardPreviewOutcome_Tags.Valid;
+        }
+
+    }
+
+    type Invalid__interface = {
+        tag: TargetAccessCardPreviewOutcome_Tags.Invalid;
+        inner:
+Readonly<{detail: string}>
+    };
+    class Invalid_ extends UniffiEnum implements Invalid__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "TargetAccessCardPreviewOutcome";
+        readonly tag = TargetAccessCardPreviewOutcome_Tags.Invalid;
+        readonly inner:
+Readonly<{detail: string}>;
+        constructor(
+inner: {detail: string }) {
+            super("TargetAccessCardPreviewOutcome", "Invalid");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {detail: string }): Invalid_ {
+            return new Invalid_(inner);
+        }
+
+        static instanceOf(obj: any): obj is Invalid_ {
+            return obj.tag === TargetAccessCardPreviewOutcome_Tags.Invalid;
+        }
+
+    }
+
+    function instanceOf(obj: any): obj is TargetAccessCardPreviewOutcome {
+        return obj[uniffiTypeNameSymbol] === "TargetAccessCardPreviewOutcome";
+    }
+
+    return Object.freeze({
+        instanceOf,
+  Valid: Valid_,
+  Invalid: Invalid_
+    });
+
+})();
+export type TargetAccessCardPreviewOutcome = InstanceType<
+    typeof TargetAccessCardPreviewOutcome['Valid' | 'Invalid']
+>;
+
+// FfiConverter for enum TargetAccessCardPreviewOutcome
+const FfiConverterTypeTargetAccessCardPreviewOutcome = (() => {
+    type TypeName = TargetAccessCardPreviewOutcome;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return new TargetAccessCardPreviewOutcome.Valid({preview: FfiConverterTypeTargetAccessCardPreview.readFromCursor(c) });
+                case 2: return new TargetAccessCardPreviewOutcome.Invalid({detail: FfiConverterString.readFromCursor(c) });
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value.tag) {
+                case TargetAccessCardPreviewOutcome_Tags.Valid: {
+                    c.writeI32(1);
+                    const inner = value.inner;
+                    FfiConverterTypeTargetAccessCardPreview.writeIntoCursor(inner.preview, c);
+                    return;
+                }
+                case TargetAccessCardPreviewOutcome_Tags.Invalid: {
+                    c.writeI32(2);
+                    const inner = value.inner;
+                    FfiConverterString.writeIntoCursor(inner.detail, c);
+                    return;
+                }
+                default:
+                    // Throwing from here means that TargetAccessCardPreviewOutcome_Tags hasn't matched an ordinal.
+                    throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        allocationSize(value: TypeName): number {
+            switch (value.tag) {
+                case TargetAccessCardPreviewOutcome_Tags.Valid: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeTargetAccessCardPreview.allocationSize(inner.preview);
+                    return size;
+                }
+                case TargetAccessCardPreviewOutcome_Tags.Invalid: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterString.allocationSize(inner.detail);
+                    return size;
+                }
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+    }
+    return new FFIConverter();
+})();
+
 // FfiConverter for Array<string>
 const FfiConverterSequenceString = new FfiConverterArray(FfiConverterString);
 
@@ -15695,11 +16862,17 @@ function uniffiEnsureInitialized() {
     if (nativeModule().uniffi_prns_app_checksum_func_describe_target() !== 49809) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_describe_target");
     }
+    if (nativeModule().uniffi_prns_app_checksum_func_export_controller_setup_card() !== 37636) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_export_controller_setup_card");
+    }
     if (nativeModule().uniffi_prns_app_checksum_func_finish_remote_wifi_trial() !== 11313) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_finish_remote_wifi_trial");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_get_contact() !== 18891) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_get_contact");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_import_target_access_card() !== 7026) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_import_target_access_card");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_initiate_pairing() !== 58991) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_initiate_pairing");
@@ -15751,6 +16924,9 @@ function uniffiEnsureInitialized() {
     }
     if (nativeModule().uniffi_prns_app_checksum_func_preview_identity_import() !== 31445) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_preview_identity_import");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_func_preview_target_access_card() !== 26108) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_preview_target_access_card");
     }
     if (nativeModule().uniffi_prns_app_checksum_func_read_bluetooth_settings() !== 48522) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_func_read_bluetooth_settings");
@@ -15822,6 +16998,8 @@ export default Object.freeze({
     FfiConverterTypeContactListOutcome,
     FfiConverterTypeContactLookupOutcome,
     FfiConverterTypeContactMutationOutcome,
+    FfiConverterTypeControllerSetupCard,
+    FfiConverterTypeControllerSetupCardOutcome,
     FfiConverterTypeCreateManualContactInput,
     FfiConverterTypeDescribeRemoteControlTargetInput,
     FfiConverterTypeDevelopmentNodeFailure,
@@ -15837,6 +17015,7 @@ export default Object.freeze({
     FfiConverterTypeFinishRemoteWifiTrialInput,
     FfiConverterTypeIdentityCreationOutcome,
     FfiConverterTypeIdentityImportPreviewOutcome,
+    FfiConverterTypeImportTargetAccessCardInput,
     FfiConverterTypeInitiateRemoteControlPairingInput,
     FfiConverterTypeInspectRemoteWifiTrialInput,
     FfiConverterTypeListLxmfConversationsInput,
@@ -15924,5 +17103,8 @@ export default Object.freeze({
     FfiConverterTypeSetContactPinnedInput,
     FfiConverterTypeSnapshotBox,
     FfiConverterTypeStartRemoteWifiTrialInput,
+    FfiConverterTypeTargetAccessCardImportOutcome,
+    FfiConverterTypeTargetAccessCardPreview,
+    FfiConverterTypeTargetAccessCardPreviewOutcome,
   }
 });

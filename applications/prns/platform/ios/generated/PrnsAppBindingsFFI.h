@@ -301,6 +301,12 @@ uint64_t uniffi_prns_app_fn_func_delete_contact(RustBuffer input
 uint64_t uniffi_prns_app_fn_func_describe_target(RustBuffer input
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_EXPORT_CONTROLLER_SETUP_CARD
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_EXPORT_CONTROLLER_SETUP_CARD
+uint64_t uniffi_prns_app_fn_func_export_controller_setup_card(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_FINISH_REMOTE_WIFI_TRIAL
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_FINISH_REMOTE_WIFI_TRIAL
 uint64_t uniffi_prns_app_fn_func_finish_remote_wifi_trial(RustBuffer input
@@ -309,6 +315,11 @@ uint64_t uniffi_prns_app_fn_func_finish_remote_wifi_trial(RustBuffer input
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_GET_CONTACT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_GET_CONTACT
 uint64_t uniffi_prns_app_fn_func_get_contact(RustBuffer input
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_IMPORT_TARGET_ACCESS_CARD
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_IMPORT_TARGET_ACCESS_CARD
+uint64_t uniffi_prns_app_fn_func_import_target_access_card(RustBuffer input
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_INITIATE_PAIRING
@@ -397,6 +408,11 @@ RustBuffer uniffi_prns_app_fn_func_native_stop(RustCallStatus *_Nonnull out_stat
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREVIEW_IDENTITY_IMPORT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREVIEW_IDENTITY_IMPORT
 RustBuffer uniffi_prns_app_fn_func_preview_identity_import(RustBuffer identity, RustCallStatus *_Nonnull out_status
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREVIEW_TARGET_ACCESS_CARD
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREVIEW_TARGET_ACCESS_CARD
+RustBuffer uniffi_prns_app_fn_func_preview_target_access_card(RustBuffer card, RustCallStatus *_Nonnull out_status
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_READ_BLUETOOTH_SETTINGS
@@ -804,6 +820,12 @@ uint16_t uniffi_prns_app_checksum_func_describe_target(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_EXPORT_CONTROLLER_SETUP_CARD
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_EXPORT_CONTROLLER_SETUP_CARD
+uint16_t uniffi_prns_app_checksum_func_export_controller_setup_card(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_FINISH_REMOTE_WIFI_TRIAL
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_FINISH_REMOTE_WIFI_TRIAL
 uint16_t uniffi_prns_app_checksum_func_finish_remote_wifi_trial(void
@@ -813,6 +835,12 @@ uint16_t uniffi_prns_app_checksum_func_finish_remote_wifi_trial(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_GET_CONTACT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_GET_CONTACT
 uint16_t uniffi_prns_app_checksum_func_get_contact(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_IMPORT_TARGET_ACCESS_CARD
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_IMPORT_TARGET_ACCESS_CARD
+uint16_t uniffi_prns_app_checksum_func_import_target_access_card(void
 
 );
 #endif
@@ -915,6 +943,12 @@ uint16_t uniffi_prns_app_checksum_func_native_stop(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREVIEW_IDENTITY_IMPORT
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREVIEW_IDENTITY_IMPORT
 uint16_t uniffi_prns_app_checksum_func_preview_identity_import(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREVIEW_TARGET_ACCESS_CARD
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREVIEW_TARGET_ACCESS_CARD
+uint16_t uniffi_prns_app_checksum_func_preview_target_access_card(void
 
 );
 #endif

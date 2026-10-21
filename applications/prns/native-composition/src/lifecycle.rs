@@ -1,5 +1,6 @@
 pub(crate) mod admission;
 pub(crate) mod profile;
+pub(crate) mod remote_setup;
 
 use std::net::SocketAddr;
 use std::path::{Path, PathBuf};
@@ -183,6 +184,11 @@ impl ShutdownSignal {
 type Reply<T> = oneshot::Sender<T>;
 
 enum Command {
+    ExportControllerCard(Reply<ControllerSetupCardOutcome>),
+    ImportTargetAccessCard(
+        ImportTargetAccessCardInput,
+        Reply<TargetAccessCardImportOutcome>,
+    ),
     RemoteRead(management::ReadCommand),
     RemoteChange(RemoteChangeOperation, tokio::time::Instant),
     RemoteWifi(wifi::WifiCommand),
@@ -2591,6 +2597,21 @@ async fn run_actor_loop(
                         RemoteControlPairingCommandOutcome::Busy
                     } else {
                         initiate_pairing(handle, &mut controls, snapshots, clock.now(), input).await
+                    };
+                    operation_admitted.store(false, Ordering::Release);
+                    let _ = response.send(outcome);
+                }
+                Some(Command::ExportControllerCard(response)) => {
+                    if !response.is_closed() {
+                        let outcome = remote_setup::export_with_handle(handle).await;
+                        let _ = response.send(outcome);
+                    }
+                }
+                Some(Command::ImportTargetAccessCard(input, response)) => {
+                    let outcome = if controls.pairing_in_progress() {
+                        TargetAccessCardImportOutcome::Busy
+                    } else {
+                        remote_setup::import_with_handle(handle, snapshots, input).await
                     };
                     operation_admitted.store(false, Ordering::Release);
                     let _ = response.send(outcome);

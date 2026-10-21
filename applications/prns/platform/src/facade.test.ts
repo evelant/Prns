@@ -651,3 +651,40 @@ test("supports React Native's actual AbortSignal polyfill without modern conveni
   });
   expect(api.readSnapshot).toHaveBeenCalledTimes(1);
 });
+
+test("radio setup cards stay local, retain explicit trust, and never start Bluetooth or configure a radio", async () => {
+  const exported = Bindings.ControllerSetupCardOutcome.Ready.new({
+    card: {
+      text: "prns-rc:controller-fixture",
+      publicKeyHex: "01".repeat(64),
+      controllerIdentityFingerprint: new Uint8Array(16).fill(1),
+    },
+  });
+  const preview = Bindings.TargetAccessCardPreviewOutcome.Invalid.new({ detail: "fixture" });
+  const imported = Bindings.TargetAccessCardImportOutcome.TrustRequired.new();
+  const exportControllerSetupCard = jest.fn(async () => exported);
+  const previewTargetAccessCard = jest.fn((_text: string) => preview);
+  const importTargetAccessCard = jest.fn(async () => imported);
+  const changeRemoteNode = jest.fn();
+  const { runtime, native } = setup({
+    exportControllerSetupCard,
+    previewTargetAccessCard,
+    importTargetAccessCard,
+    changeRemoteNode,
+  });
+  const signal = new AbortController().signal;
+  expect(await runtime.exportControllerSetupCard(signal)).toBe(exported);
+  expect(await runtime.previewTargetAccessCard("untrusted input")).toBe(preview);
+  expect(importTargetAccessCard).not.toHaveBeenCalled();
+  const input = {
+    card: "untrusted input",
+    expectedControllerIdentity: new Uint8Array(16).fill(1),
+    trustedSourceConfirmed: false,
+  };
+  expect(await runtime.importTargetAccessCard(input, signal)).toBe(imported);
+  expect(importTargetAccessCard).toHaveBeenCalledTimes(1);
+  expect(importTargetAccessCard).toHaveBeenCalledWith(input, { signal });
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  expect(native.start).not.toHaveBeenCalled();
+  expect(changeRemoteNode).not.toHaveBeenCalled();
+});
