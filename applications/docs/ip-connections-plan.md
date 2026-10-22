@@ -1,6 +1,10 @@
 # LAN discovery and TCP peer implementation plan
 
-Status: implemented for iOS and Android. The [implementation checkpoint](ip-connections.md) separates source checks, development-device evidence and remaining distribution acceptance. Apple multicast approval was requested on October 21, 2026 and remains pending. Configured TCP and declared-service Bonjour operate independently of that approval.
+Status: implemented for iOS and Android. The [implementation guide](ip-connections.md)
+separates source checks, development-device evidence and remaining distribution
+acceptance. Apple multicast approval was requested on October 21, 2026 and remains
+pending. Configured TCP and declared-service Bonjour operate independently of
+that approval.
 
 Enable automatic local network discovery and saved outbound TCP peers in
 prns-chat on iOS and Android. Both must use the existing app-owned Prns host,

@@ -52,9 +52,10 @@ and locked-idle observations.
 ## Set up and choose an identity
 
 On a fresh installation, choose **Set up this phone → Connect this phone**. Start
-this phone, allow Bluetooth, enable nearby connections and choose an identity.
-Set **Name others see** if desired. Existing installations can open connection
-setup from Inbox or Connections.
+this phone and choose Bluetooth, LAN, TCP or offline continuation. Allow the
+permission for the connection you use, then choose an identity. Set **Name others
+see** if desired. Existing installations can open connection setup from Inbox or
+Connections.
 
 The identity control at the top chooses which identity Inbox and Contacts use.
 **More → Identities** creates and manages independent identities such as Personal

@@ -241,9 +241,8 @@ async fn acknowledged_supervisor_retirement_drops_queued_members_before_the_mani
 
 #[tokio::test]
 async fn acknowledged_retirement_drains_members_stopped_by_natural_parent_completion() {
-    use super::{complete_interface, retire_driver_interface, RunningInterface};
+    use super::{complete_interface, retire_driver_interface, DriverInbox, RunningInterface};
     use futures_util::stream::FuturesUnordered;
-    use std::collections::VecDeque;
     use std::pin::Pin;
     use std::sync::atomic::{AtomicBool, Ordering};
 
@@ -279,8 +278,8 @@ async fn acknowledged_retirement_drains_members_stopped_by_natural_parent_comple
     let mut parents = HashMap::from([(child, parent)]);
     let interfaces = Arc::new(Mutex::new(HashMap::new()));
     let (commands, _command_receiver) = tokio::sync::mpsc::unbounded_channel();
-    let (_messages, mut receiver) = tokio::sync::mpsc::unbounded_channel();
-    let mut deferred = VecDeque::new();
+    let (_messages, receiver) = tokio::sync::mpsc::unbounded_channel();
+    let mut inbox = DriverInbox::new(receiver);
 
     // The parent's run future has naturally ended. Its children have received
     // stop, but their futures have not been polled again to release resources.
@@ -295,8 +294,7 @@ async fn acknowledged_retirement_drains_members_stopped_by_natural_parent_comple
         &mut parents,
         &interfaces,
         &commands,
-        &mut receiver,
-        &mut deferred,
+        &mut inbox,
         parent,
     )
     .await;

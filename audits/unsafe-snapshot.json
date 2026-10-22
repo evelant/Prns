@@ -24250,7 +24250,8 @@
           "weave",
           "websocket",
           "websocket-server",
-          "wifi-auto"
+          "wifi-auto",
+          "wifi-auto-apple"
         ],
         "sdk-native-linux": [
           "alloc",
@@ -26059,6 +26060,7 @@
           "default"
         ],
         "prns-app-ios": [
+          "apple-platform",
           "default"
         ],
         "sdk-native-linux": [
@@ -26920,7 +26922,8 @@
           "weave",
           "websocket",
           "websocket-server",
-          "wifi-auto"
+          "wifi-auto",
+          "wifi-auto-apple"
         ],
         "sdk-native-linux": [
           "ax25",
@@ -29915,21 +29918,6 @@
           "ring",
           "std"
         ],
-        "expo-android": [
-          "alloc",
-          "ring",
-          "std"
-        ],
-        "expo-host-linux": [
-          "alloc",
-          "ring",
-          "std"
-        ],
-        "expo-ios": [
-          "alloc",
-          "ring",
-          "std"
-        ],
         "group-headless-peer": [
           "alloc",
           "ring",
@@ -29960,17 +29948,46 @@
           "ring",
           "std"
         ],
+        "sdk-native-linux": [
+          "alloc",
+          "ring",
+          "std"
+        ]
+      },
+      "name": "rustls-webpki",
+      "source": "registry+https://github.com/rust-lang/crates.io-index",
+      "unsafe": {
+        "blocks": 0,
+        "externs": 0,
+        "functions": 0,
+        "impls": 0,
+        "tokens": 0
+      },
+      "version": "0.103.16"
+    },
+    {
+      "graphs": {
+        "expo-android": [
+          "alloc",
+          "ring",
+          "std"
+        ],
+        "expo-host-linux": [
+          "alloc",
+          "ring",
+          "std"
+        ],
+        "expo-ios": [
+          "alloc",
+          "ring",
+          "std"
+        ],
         "prns-app-android": [
           "alloc",
           "ring",
           "std"
         ],
         "prns-app-ios": [
-          "alloc",
-          "ring",
-          "std"
-        ],
-        "sdk-native-linux": [
           "alloc",
           "ring",
           "std"
