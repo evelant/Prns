@@ -65,6 +65,10 @@ pub enum HostCommand {
         id: InterfaceId,
         departure: Departure,
     },
+    /// A FIFO acknowledgement after interface lifecycle commands have landed.
+    InterfaceLifecycleBarrier {
+        reply: oneshot::Sender<()>,
+    },
     DropRoute {
         destination: DestinationHash,
         reply: oneshot::Sender<DropRouteOutcome>,

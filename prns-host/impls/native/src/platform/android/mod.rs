@@ -7,6 +7,8 @@
 
 use std::sync::{Arc, Mutex, OnceLock};
 
+pub mod lan;
+
 use personal_rns::interfaces::bluetooth_auto::RadioMode;
 #[cfg(any(test, target_os = "android"))]
 use prns_ffi::bluetooth_auto::android::AndroidBleBackend;

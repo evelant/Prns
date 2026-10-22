@@ -53,7 +53,7 @@ pub use node_facade::{
     AttachedSupervisor, BitrateTimingOracle, ByteStreamReader, ByteStreamWriter,
     DefaultLocationError, DestinationIdentitySeedReport, DetachedFleet, Fleet, FlushError,
     FlushFailurePolicy, FlushMark, FlushReport, InterfaceArbitration, InterfaceAttachmentMetadata,
-    InterfaceEventSource, InterfaceSupervisor, NodePersistence, NodeRunError,
+    InterfaceDetachError, InterfaceEventSource, InterfaceSupervisor, NodePersistence, NodeRunError,
     NonRoutingIdentityError, PersistenceEvent, PersistenceFlushStatus, PersistenceIntent,
     PersistenceIo, PersistenceIoCompletion, PersistenceIoError, PersistenceIoOperation,
     PersistenceIoTask, PersistenceRestoreReport, PersistenceTrigger, PersistenceWorker,

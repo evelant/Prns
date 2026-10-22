@@ -66,7 +66,8 @@ pub use byte_stream::{
 };
 pub use interface_lifecycle::{
     AttachIntent, Attachable, AttachedInterface, AttachedSupervisor, DetachedFleet, Fleet,
-    InterfaceArbitration, InterfaceAttachmentMetadata, InterfaceEventSource, InterfaceSupervisor,
+    InterfaceArbitration, InterfaceAttachmentMetadata, InterfaceDetachError, InterfaceEventSource,
+    InterfaceSupervisor,
 };
 use interface_lifecycle::{DriverMsg, RegisteredInterface};
 pub use node_lifecycle::{

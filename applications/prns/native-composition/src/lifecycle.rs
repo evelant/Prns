@@ -2202,6 +2202,7 @@ async fn run_generation(
         all(feature = "android", target_os = "android"),
     ));
     let embedding = NativeEmbedding {
+        auto_lan_factory: None,
         link_diagnostics: crate::group_diagnostics::links::observers(),
         remote_control_config: None,
         remote_control,
