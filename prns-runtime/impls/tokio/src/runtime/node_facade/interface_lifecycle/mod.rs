@@ -748,6 +748,28 @@ pub(super) enum DriverMsg {
     },
 }
 
+/// Driver messages retain their original order when retirement defers work.
+struct DriverInbox {
+    receiver: UnboundedReceiver<DriverMsg>,
+    deferred: std::collections::VecDeque<DriverMsg>,
+}
+
+impl DriverInbox {
+    fn new(receiver: UnboundedReceiver<DriverMsg>) -> Self {
+        Self {
+            receiver,
+            deferred: std::collections::VecDeque::new(),
+        }
+    }
+
+    async fn recv(&mut self) -> Option<DriverMsg> {
+        match self.deferred.pop_front() {
+            Some(message) => Some(message),
+            None => self.receiver.recv().await,
+        }
+    }
+}
+
 /// Drive every interface run future — the recipe's initial set, plus any added through the handle at runtime — on the `run` task. Each runtime-added interface is wrapped with a stop signal so [`PrnsNodeHandle::remove_interface`] can drop it mid-flight; the initial set runs for the node's life.
 #[cfg(test)]
 pub(super) async fn drive_interfaces(
@@ -768,7 +790,7 @@ pub(super) async fn drive_interfaces(
 
 pub(super) async fn drive_interfaces_with_arbitration(
     initial: std::vec::Vec<Pin<Box<dyn Future<Output = ()>>>>,
-    mut messages: UnboundedReceiver<DriverMsg>,
+    messages: UnboundedReceiver<DriverMsg>,
     commands: UnboundedSender<HostCommand>,
     interfaces: Arc<Mutex<HashMap<InterfaceId, RegisteredInterface>>>,
     mut arbitration: InterfaceArbitration,
@@ -786,7 +808,7 @@ pub(super) async fn drive_interfaces_with_arbitration(
         .collect();
     let mut stops: HashMap<InterfaceId, RunningInterface> = HashMap::new();
     let mut supervisor_of: HashMap<InterfaceId, InterfaceId> = HashMap::new();
-    let mut deferred = std::collections::VecDeque::new();
+    let mut inbox = DriverInbox::new(messages);
     let mut open = true;
     loop {
         if !open && futures.is_empty() {
@@ -800,10 +822,7 @@ pub(super) async fn drive_interfaces_with_arbitration(
             .select(
                 async {
                     if open {
-                        Event::Message(match deferred.pop_front() {
-                            Some(message) => Some(message),
-                            None => messages.recv().await,
-                        })
+                        Event::Message(inbox.recv().await)
                     } else {
                         std::future::pending().await
                     }
@@ -856,8 +875,7 @@ pub(super) async fn drive_interfaces_with_arbitration(
                         &mut supervisor_of,
                         &interfaces,
                         &commands,
-                        &mut messages,
-                        &mut deferred,
+                        &mut inbox,
                         id,
                     )
                     .await;
@@ -869,8 +887,7 @@ pub(super) async fn drive_interfaces_with_arbitration(
                         &mut supervisor_of,
                         &interfaces,
                         &commands,
-                        &mut messages,
-                        &mut deferred,
+                        &mut inbox,
                         id,
                     )
                     .await;
@@ -983,8 +1000,7 @@ async fn retire_driver_interface(
     supervisor_of: &mut HashMap<InterfaceId, InterfaceId>,
     interfaces: &Arc<Mutex<HashMap<InterfaceId, RegisteredInterface>>>,
     commands: &UnboundedSender<HostCommand>,
-    messages: &mut UnboundedReceiver<DriverMsg>,
-    deferred: &mut std::collections::VecDeque<DriverMsg>,
+    inbox: &mut DriverInbox,
     stopped_id: InterfaceId,
 ) {
     let mut targets = supervisor_of
@@ -1028,8 +1044,8 @@ async fn retire_driver_interface(
     }
     // The retired parent's last poll may already have enqueued a member. The
     // builder owns its resources before run() and is dropped without starting.
-    let mut queued = std::mem::take(deferred);
-    while let Ok(message) = messages.try_recv() {
+    let mut queued = std::mem::take(&mut inbox.deferred);
+    while let Ok(message) = inbox.receiver.try_recv() {
         queued.push_back(message);
     }
     while let Some(message) = queued.pop_front() {
@@ -1047,7 +1063,7 @@ async fn retire_driver_interface(
                     departure: Departure::MayReturn,
                 });
             }
-            other => deferred.push_back(other),
+            other => inbox.deferred.push_back(other),
         }
     }
 }
