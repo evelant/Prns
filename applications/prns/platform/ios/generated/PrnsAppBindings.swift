@@ -1783,6 +1783,246 @@ public func FfiConverterTypeClearNetworkActivityInput_lower(_ value: ClearNetwor
 }
 
 
+public struct ConnectionSettings: Equatable, Hashable {
+    public var lanEnabled: Bool
+    public var tcpPeers: [TcpPeerProfile]
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(lanEnabled: Bool, tcpPeers: [TcpPeerProfile]) {
+        self.lanEnabled = lanEnabled
+        self.tcpPeers = tcpPeers
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ConnectionSettings: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeConnectionSettings: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ConnectionSettings {
+        return
+            try ConnectionSettings(
+                lanEnabled: FfiConverterBool.read(from: &buf),
+                tcpPeers: FfiConverterSequenceTypeTcpPeerProfile.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ConnectionSettings, into buf: inout [UInt8]) {
+        FfiConverterBool.write(value.lanEnabled, into: &buf)
+        FfiConverterSequenceTypeTcpPeerProfile.write(value.tcpPeers, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettings_lift(_ buf: RustBuffer) throws -> ConnectionSettings {
+    return try FfiConverterTypeConnectionSettings.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettings_lower(_ value: ConnectionSettings) -> RustBuffer {
+    return FfiConverterTypeConnectionSettings.lower(value)
+}
+
+
+public struct ConnectionSettingsSnapshot: Equatable, Hashable {
+    public var ownerId: UInt64
+    public var revision: UInt64
+    public var settings: ConnectionSettings
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(ownerId: UInt64, revision: UInt64, settings: ConnectionSettings) {
+        self.ownerId = ownerId
+        self.revision = revision
+        self.settings = settings
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ConnectionSettingsSnapshot: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeConnectionSettingsSnapshot: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ConnectionSettingsSnapshot {
+        return
+            try ConnectionSettingsSnapshot(
+                ownerId: FfiConverterUInt64.read(from: &buf),
+                revision: FfiConverterUInt64.read(from: &buf),
+                settings: FfiConverterTypeConnectionSettings.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ConnectionSettingsSnapshot, into buf: inout [UInt8]) {
+        FfiConverterUInt64.write(value.ownerId, into: &buf)
+        FfiConverterUInt64.write(value.revision, into: &buf)
+        FfiConverterTypeConnectionSettings.write(value.settings, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettingsSnapshot_lift(_ buf: RustBuffer) throws -> ConnectionSettingsSnapshot {
+    return try FfiConverterTypeConnectionSettingsSnapshot.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettingsSnapshot_lower(_ value: ConnectionSettingsSnapshot) -> RustBuffer {
+    return FfiConverterTypeConnectionSettingsSnapshot.lower(value)
+}
+
+
+public struct ConnectionSettingsUpdateInput: Equatable, Hashable {
+    public var ownerId: UInt64
+    public var expectedRevision: UInt64
+    public var settings: ConnectionSettings
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(ownerId: UInt64, expectedRevision: UInt64, settings: ConnectionSettings) {
+        self.ownerId = ownerId
+        self.expectedRevision = expectedRevision
+        self.settings = settings
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ConnectionSettingsUpdateInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeConnectionSettingsUpdateInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ConnectionSettingsUpdateInput {
+        return
+            try ConnectionSettingsUpdateInput(
+                ownerId: FfiConverterUInt64.read(from: &buf),
+                expectedRevision: FfiConverterUInt64.read(from: &buf),
+                settings: FfiConverterTypeConnectionSettings.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ConnectionSettingsUpdateInput, into buf: inout [UInt8]) {
+        FfiConverterUInt64.write(value.ownerId, into: &buf)
+        FfiConverterUInt64.write(value.expectedRevision, into: &buf)
+        FfiConverterTypeConnectionSettings.write(value.settings, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettingsUpdateInput_lift(_ buf: RustBuffer) throws -> ConnectionSettingsUpdateInput {
+    return try FfiConverterTypeConnectionSettingsUpdateInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettingsUpdateInput_lower(_ value: ConnectionSettingsUpdateInput) -> RustBuffer {
+    return FfiConverterTypeConnectionSettingsUpdateInput.lower(value)
+}
+
+
+public struct ConnectionSnapshot: Equatable, Hashable {
+    public var generationId: UInt64
+    public var settings: ConnectionSettingsSnapshot
+    public var appliedRevision: UInt64?
+    public var lan: LanConnectionSnapshot
+    public var tcpPeers: [TcpPeerConnectionSnapshot]
+    public var physicalConnections: [PhysicalConnectionSnapshot]
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(generationId: UInt64, settings: ConnectionSettingsSnapshot, appliedRevision: UInt64?, lan: LanConnectionSnapshot, tcpPeers: [TcpPeerConnectionSnapshot], physicalConnections: [PhysicalConnectionSnapshot]) {
+        self.generationId = generationId
+        self.settings = settings
+        self.appliedRevision = appliedRevision
+        self.lan = lan
+        self.tcpPeers = tcpPeers
+        self.physicalConnections = physicalConnections
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ConnectionSnapshot: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeConnectionSnapshot: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ConnectionSnapshot {
+        return
+            try ConnectionSnapshot(
+                generationId: FfiConverterUInt64.read(from: &buf),
+                settings: FfiConverterTypeConnectionSettingsSnapshot.read(from: &buf),
+                appliedRevision: FfiConverterOptionUInt64.read(from: &buf),
+                lan: FfiConverterTypeLanConnectionSnapshot.read(from: &buf),
+                tcpPeers: FfiConverterSequenceTypeTcpPeerConnectionSnapshot.read(from: &buf),
+                physicalConnections: FfiConverterSequenceTypePhysicalConnectionSnapshot.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: ConnectionSnapshot, into buf: inout [UInt8]) {
+        FfiConverterUInt64.write(value.generationId, into: &buf)
+        FfiConverterTypeConnectionSettingsSnapshot.write(value.settings, into: &buf)
+        FfiConverterOptionUInt64.write(value.appliedRevision, into: &buf)
+        FfiConverterTypeLanConnectionSnapshot.write(value.lan, into: &buf)
+        FfiConverterSequenceTypeTcpPeerConnectionSnapshot.write(value.tcpPeers, into: &buf)
+        FfiConverterSequenceTypePhysicalConnectionSnapshot.write(value.physicalConnections, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSnapshot_lift(_ buf: RustBuffer) throws -> ConnectionSnapshot {
+    return try FfiConverterTypeConnectionSnapshot.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSnapshot_lower(_ value: ConnectionSnapshot) -> RustBuffer {
+    return FfiConverterTypeConnectionSnapshot.lower(value)
+}
+
+
 public struct Contact: Equatable, Hashable {
     public var destination: Bytes16
     public var alias: String?
@@ -3594,6 +3834,76 @@ public func FfiConverterTypeInviteToGroupInput_lower(_ value: InviteToGroupInput
 }
 
 
+public struct LanConnectionSnapshot: Equatable, Hashable {
+    public var desiredEnabled: Bool
+    public var state: LocalConnectionState
+    public var discoveryMethod: LanDiscoveryMethod
+    public var detail: String?
+    public var stockMulticastAvailable: Bool
+    public var connectedPeerCount: UInt32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(desiredEnabled: Bool, state: LocalConnectionState, discoveryMethod: LanDiscoveryMethod, detail: String?, stockMulticastAvailable: Bool, connectedPeerCount: UInt32) {
+        self.desiredEnabled = desiredEnabled
+        self.state = state
+        self.discoveryMethod = discoveryMethod
+        self.detail = detail
+        self.stockMulticastAvailable = stockMulticastAvailable
+        self.connectedPeerCount = connectedPeerCount
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension LanConnectionSnapshot: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeLanConnectionSnapshot: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LanConnectionSnapshot {
+        return
+            try LanConnectionSnapshot(
+                desiredEnabled: FfiConverterBool.read(from: &buf),
+                state: FfiConverterTypeLocalConnectionState.read(from: &buf),
+                discoveryMethod: FfiConverterTypeLanDiscoveryMethod.read(from: &buf),
+                detail: FfiConverterOptionString.read(from: &buf),
+                stockMulticastAvailable: FfiConverterBool.read(from: &buf),
+                connectedPeerCount: FfiConverterUInt32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: LanConnectionSnapshot, into buf: inout [UInt8]) {
+        FfiConverterBool.write(value.desiredEnabled, into: &buf)
+        FfiConverterTypeLocalConnectionState.write(value.state, into: &buf)
+        FfiConverterTypeLanDiscoveryMethod.write(value.discoveryMethod, into: &buf)
+        FfiConverterOptionString.write(value.detail, into: &buf)
+        FfiConverterBool.write(value.stockMulticastAvailable, into: &buf)
+        FfiConverterUInt32.write(value.connectedPeerCount, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLanConnectionSnapshot_lift(_ buf: RustBuffer) throws -> LanConnectionSnapshot {
+    return try FfiConverterTypeLanConnectionSnapshot.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLanConnectionSnapshot_lower(_ value: LanConnectionSnapshot) -> RustBuffer {
+    return FfiConverterTypeLanConnectionSnapshot.lower(value)
+}
+
+
 public struct ListGroupMessagesInput: Equatable, Hashable {
     public var groupId: Bytes32
     public var beforeSequence: UInt64?
@@ -4890,6 +5200,96 @@ public func FfiConverterTypeNamedIdentitySummary_lower(_ value: NamedIdentitySum
 }
 
 
+public struct PhysicalConnectionSnapshot: Equatable, Hashable {
+    public var interfaceId: Data
+    public var logicalInterfaceId: Data
+    public var parentInterfaceId: Data?
+    public var profileId: String?
+    public var kind: String
+    public var name: String?
+    public var state: LocalConnectionState
+    public var rxBytes: UInt64
+    public var txBytes: UInt64
+    public var endpoint: String?
+    public var localOnly: Bool
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(interfaceId: Data, logicalInterfaceId: Data, parentInterfaceId: Data?, profileId: String?, kind: String, name: String?, state: LocalConnectionState, rxBytes: UInt64, txBytes: UInt64, endpoint: String?, localOnly: Bool) {
+        self.interfaceId = interfaceId
+        self.logicalInterfaceId = logicalInterfaceId
+        self.parentInterfaceId = parentInterfaceId
+        self.profileId = profileId
+        self.kind = kind
+        self.name = name
+        self.state = state
+        self.rxBytes = rxBytes
+        self.txBytes = txBytes
+        self.endpoint = endpoint
+        self.localOnly = localOnly
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension PhysicalConnectionSnapshot: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypePhysicalConnectionSnapshot: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> PhysicalConnectionSnapshot {
+        return
+            try PhysicalConnectionSnapshot(
+                interfaceId: FfiConverterData.read(from: &buf),
+                logicalInterfaceId: FfiConverterData.read(from: &buf),
+                parentInterfaceId: FfiConverterOptionData.read(from: &buf),
+                profileId: FfiConverterOptionString.read(from: &buf),
+                kind: FfiConverterString.read(from: &buf),
+                name: FfiConverterOptionString.read(from: &buf),
+                state: FfiConverterTypeLocalConnectionState.read(from: &buf),
+                rxBytes: FfiConverterUInt64.read(from: &buf),
+                txBytes: FfiConverterUInt64.read(from: &buf),
+                endpoint: FfiConverterOptionString.read(from: &buf),
+                localOnly: FfiConverterBool.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: PhysicalConnectionSnapshot, into buf: inout [UInt8]) {
+        FfiConverterData.write(value.interfaceId, into: &buf)
+        FfiConverterData.write(value.logicalInterfaceId, into: &buf)
+        FfiConverterOptionData.write(value.parentInterfaceId, into: &buf)
+        FfiConverterOptionString.write(value.profileId, into: &buf)
+        FfiConverterString.write(value.kind, into: &buf)
+        FfiConverterOptionString.write(value.name, into: &buf)
+        FfiConverterTypeLocalConnectionState.write(value.state, into: &buf)
+        FfiConverterUInt64.write(value.rxBytes, into: &buf)
+        FfiConverterUInt64.write(value.txBytes, into: &buf)
+        FfiConverterOptionString.write(value.endpoint, into: &buf)
+        FfiConverterBool.write(value.localOnly, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypePhysicalConnectionSnapshot_lift(_ buf: RustBuffer) throws -> PhysicalConnectionSnapshot {
+    return try FfiConverterTypePhysicalConnectionSnapshot.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypePhysicalConnectionSnapshot_lower(_ value: PhysicalConnectionSnapshot) -> RustBuffer {
+    return FfiConverterTypePhysicalConnectionSnapshot.lower(value)
+}
+
+
 public struct PrepareGroupActionInput: Equatable, Hashable {
     /**
      * Caller-visible identity; mismatches fail before any durable mutation.
@@ -6106,6 +6506,74 @@ public func FfiConverterTypeRespondGroupInvitationInput_lower(_ value: RespondGr
 }
 
 
+public struct RetryConnectionInput: Equatable, Hashable {
+    public var ownerId: UInt64
+    public var generationId: UInt64
+    public var expectedRevision: UInt64
+    /**
+     * "lan" or the saved TCP profile ID.
+     */
+    public var profileId: String
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(ownerId: UInt64, generationId: UInt64, expectedRevision: UInt64,
+        /**
+         * "lan" or the saved TCP profile ID.
+         */profileId: String) {
+        self.ownerId = ownerId
+        self.generationId = generationId
+        self.expectedRevision = expectedRevision
+        self.profileId = profileId
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension RetryConnectionInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeRetryConnectionInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RetryConnectionInput {
+        return
+            try RetryConnectionInput(
+                ownerId: FfiConverterUInt64.read(from: &buf),
+                generationId: FfiConverterUInt64.read(from: &buf),
+                expectedRevision: FfiConverterUInt64.read(from: &buf),
+                profileId: FfiConverterString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: RetryConnectionInput, into buf: inout [UInt8]) {
+        FfiConverterUInt64.write(value.ownerId, into: &buf)
+        FfiConverterUInt64.write(value.generationId, into: &buf)
+        FfiConverterUInt64.write(value.expectedRevision, into: &buf)
+        FfiConverterString.write(value.profileId, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRetryConnectionInput_lift(_ buf: RustBuffer) throws -> RetryConnectionInput {
+    return try FfiConverterTypeRetryConnectionInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRetryConnectionInput_lower(_ value: RetryConnectionInput) -> RustBuffer {
+    return FfiConverterTypeRetryConnectionInput.lower(value)
+}
+
+
 public struct RetryLxmfMessageInput: Equatable, Hashable {
     public var localRecordId: UInt64
 
@@ -6497,6 +6965,148 @@ public func FfiConverterTypeStartRemoteWifiTrialInput_lift(_ buf: RustBuffer) th
 #endif
 public func FfiConverterTypeStartRemoteWifiTrialInput_lower(_ value: StartRemoteWifiTrialInput) -> RustBuffer {
     return FfiConverterTypeStartRemoteWifiTrialInput.lower(value)
+}
+
+
+public struct TcpPeerConnectionSnapshot: Equatable, Hashable {
+    public var profile: TcpPeerProfile
+    public var interfaceId: Data?
+    public var state: LocalConnectionState
+    public var detail: String?
+    public var rxBytes: UInt64
+    public var txBytes: UInt64
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(profile: TcpPeerProfile, interfaceId: Data?, state: LocalConnectionState, detail: String?, rxBytes: UInt64, txBytes: UInt64) {
+        self.profile = profile
+        self.interfaceId = interfaceId
+        self.state = state
+        self.detail = detail
+        self.rxBytes = rxBytes
+        self.txBytes = txBytes
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension TcpPeerConnectionSnapshot: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeTcpPeerConnectionSnapshot: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TcpPeerConnectionSnapshot {
+        return
+            try TcpPeerConnectionSnapshot(
+                profile: FfiConverterTypeTcpPeerProfile.read(from: &buf),
+                interfaceId: FfiConverterOptionData.read(from: &buf),
+                state: FfiConverterTypeLocalConnectionState.read(from: &buf),
+                detail: FfiConverterOptionString.read(from: &buf),
+                rxBytes: FfiConverterUInt64.read(from: &buf),
+                txBytes: FfiConverterUInt64.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: TcpPeerConnectionSnapshot, into buf: inout [UInt8]) {
+        FfiConverterTypeTcpPeerProfile.write(value.profile, into: &buf)
+        FfiConverterOptionData.write(value.interfaceId, into: &buf)
+        FfiConverterTypeLocalConnectionState.write(value.state, into: &buf)
+        FfiConverterOptionString.write(value.detail, into: &buf)
+        FfiConverterUInt64.write(value.rxBytes, into: &buf)
+        FfiConverterUInt64.write(value.txBytes, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTcpPeerConnectionSnapshot_lift(_ buf: RustBuffer) throws -> TcpPeerConnectionSnapshot {
+    return try FfiConverterTypeTcpPeerConnectionSnapshot.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTcpPeerConnectionSnapshot_lower(_ value: TcpPeerConnectionSnapshot) -> RustBuffer {
+    return FfiConverterTypeTcpPeerConnectionSnapshot.lower(value)
+}
+
+
+public struct TcpPeerProfile: Equatable, Hashable {
+    /**
+     * Empty on creation; native assigns a stable opaque identifier before commit.
+     */
+    public var id: String
+    public var label: String
+    public var host: String
+    public var port: UInt16
+    public var enabled: Bool
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * Empty on creation; native assigns a stable opaque identifier before commit.
+         */id: String, label: String, host: String, port: UInt16, enabled: Bool) {
+        self.id = id
+        self.label = label
+        self.host = host
+        self.port = port
+        self.enabled = enabled
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension TcpPeerProfile: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeTcpPeerProfile: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> TcpPeerProfile {
+        return
+            try TcpPeerProfile(
+                id: FfiConverterString.read(from: &buf),
+                label: FfiConverterString.read(from: &buf),
+                host: FfiConverterString.read(from: &buf),
+                port: FfiConverterUInt16.read(from: &buf),
+                enabled: FfiConverterBool.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: TcpPeerProfile, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.id, into: &buf)
+        FfiConverterString.write(value.label, into: &buf)
+        FfiConverterString.write(value.host, into: &buf)
+        FfiConverterUInt16.write(value.port, into: &buf)
+        FfiConverterBool.write(value.enabled, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTcpPeerProfile_lift(_ buf: RustBuffer) throws -> TcpPeerProfile {
+    return try FfiConverterTypeTcpPeerProfile.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeTcpPeerProfile_lower(_ value: TcpPeerProfile) -> RustBuffer {
+    return FfiConverterTypeTcpPeerProfile.lower(value)
 }
 
 // Note that we don't yet support `indirect` for enums.
@@ -7043,6 +7653,203 @@ public func FfiConverterTypeClearNetworkActivityOutcome_lift(_ buf: RustBuffer) 
 #endif
 public func FfiConverterTypeClearNetworkActivityOutcome_lower(_ value: ClearNetworkActivityOutcome) -> RustBuffer {
     return FfiConverterTypeClearNetworkActivityOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum ConnectionSettingsOutcome: Equatable, Hashable {
+
+    case ready(snapshot: ConnectionSettingsSnapshot
+    )
+    case conflict(snapshot: ConnectionSettingsSnapshot
+    )
+    case invalid(detail: String
+    )
+    case invalidSaved(detail: String
+    )
+    case busy
+    case ownerChanged
+    case unavailable(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ConnectionSettingsOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeConnectionSettingsOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = ConnectionSettingsOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ConnectionSettingsOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(snapshot: try FfiConverterTypeConnectionSettingsSnapshot.read(from: &buf)
+        )
+
+        case 2: return .conflict(snapshot: try FfiConverterTypeConnectionSettingsSnapshot.read(from: &buf)
+        )
+
+        case 3: return .invalid(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 4: return .invalidSaved(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        case 5: return .busy
+
+        case 6: return .ownerChanged
+
+        case 7: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ConnectionSettingsOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(snapshot):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeConnectionSettingsSnapshot.write(snapshot, into: &buf)
+
+
+        case let .conflict(snapshot):
+            writeInt(&buf, Int32(2))
+            FfiConverterTypeConnectionSettingsSnapshot.write(snapshot, into: &buf)
+
+
+        case let .invalid(detail):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case let .invalidSaved(detail):
+            writeInt(&buf, Int32(4))
+            FfiConverterString.write(detail, into: &buf)
+
+
+        case .busy:
+            writeInt(&buf, Int32(5))
+
+
+        case .ownerChanged:
+            writeInt(&buf, Int32(6))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(7))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettingsOutcome_lift(_ buf: RustBuffer) throws -> ConnectionSettingsOutcome {
+    return try FfiConverterTypeConnectionSettingsOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSettingsOutcome_lower(_ value: ConnectionSettingsOutcome) -> RustBuffer {
+    return FfiConverterTypeConnectionSettingsOutcome.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum ConnectionSnapshotOutcome: Equatable, Hashable {
+
+    case ready(snapshot: ConnectionSnapshot
+    )
+    case busy
+    case unavailable(detail: String
+    )
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension ConnectionSnapshotOutcome: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeConnectionSnapshotOutcome: FfiConverterRustBuffer {
+    typealias SwiftType = ConnectionSnapshotOutcome
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> ConnectionSnapshotOutcome {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .ready(snapshot: try FfiConverterTypeConnectionSnapshot.read(from: &buf)
+        )
+
+        case 2: return .busy
+
+        case 3: return .unavailable(detail: try FfiConverterString.read(from: &buf)
+        )
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: ConnectionSnapshotOutcome, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case let .ready(snapshot):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeConnectionSnapshot.write(snapshot, into: &buf)
+
+
+        case .busy:
+            writeInt(&buf, Int32(2))
+
+
+        case let .unavailable(detail):
+            writeInt(&buf, Int32(3))
+            FfiConverterString.write(detail, into: &buf)
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSnapshotOutcome_lift(_ buf: RustBuffer) throws -> ConnectionSnapshotOutcome {
+    return try FfiConverterTypeConnectionSnapshotOutcome.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeConnectionSnapshotOutcome_lower(_ value: ConnectionSnapshotOutcome) -> RustBuffer {
+    return FfiConverterTypeConnectionSnapshotOutcome.lower(value)
 }
 
 
@@ -10595,6 +11402,87 @@ public func FfiConverterTypeInviteToGroupOutcome_lower(_ value: InviteToGroupOut
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 
+public enum LanDiscoveryMethod: Equatable, Hashable {
+
+    case unavailable
+    case bonjour
+    case stockMulticast
+    case combined
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension LanDiscoveryMethod: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeLanDiscoveryMethod: FfiConverterRustBuffer {
+    typealias SwiftType = LanDiscoveryMethod
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LanDiscoveryMethod {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .unavailable
+
+        case 2: return .bonjour
+
+        case 3: return .stockMulticast
+
+        case 4: return .combined
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: LanDiscoveryMethod, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case .unavailable:
+            writeInt(&buf, Int32(1))
+
+
+        case .bonjour:
+            writeInt(&buf, Int32(2))
+
+
+        case .stockMulticast:
+            writeInt(&buf, Int32(3))
+
+
+        case .combined:
+            writeInt(&buf, Int32(4))
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLanDiscoveryMethod_lift(_ buf: RustBuffer) throws -> LanDiscoveryMethod {
+    return try FfiConverterTypeLanDiscoveryMethod.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLanDiscoveryMethod_lower(_ value: LanDiscoveryMethod) -> RustBuffer {
+    return FfiConverterTypeLanDiscoveryMethod.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
 public enum LocalBluetoothDiscoveryGroupsOutcome: Equatable, Hashable {
 
     case ready(settings: LocalBluetoothDiscoveryGroupsSettings
@@ -10903,6 +11791,129 @@ public func FfiConverterTypeLocalBluetoothState_lift(_ buf: RustBuffer) throws -
 #endif
 public func FfiConverterTypeLocalBluetoothState_lower(_ value: LocalBluetoothState) -> RustBuffer {
     return FfiConverterTypeLocalBluetoothState.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum LocalConnectionState: Equatable, Hashable {
+
+    case stopped
+    case disabled
+    case applying
+    case discovering
+    case connecting
+    case connected
+    case reconnecting
+    case unavailable
+    case failed
+    case retiring
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension LocalConnectionState: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeLocalConnectionState: FfiConverterRustBuffer {
+    typealias SwiftType = LocalConnectionState
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LocalConnectionState {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .stopped
+
+        case 2: return .disabled
+
+        case 3: return .applying
+
+        case 4: return .discovering
+
+        case 5: return .connecting
+
+        case 6: return .connected
+
+        case 7: return .reconnecting
+
+        case 8: return .unavailable
+
+        case 9: return .failed
+
+        case 10: return .retiring
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: LocalConnectionState, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case .stopped:
+            writeInt(&buf, Int32(1))
+
+
+        case .disabled:
+            writeInt(&buf, Int32(2))
+
+
+        case .applying:
+            writeInt(&buf, Int32(3))
+
+
+        case .discovering:
+            writeInt(&buf, Int32(4))
+
+
+        case .connecting:
+            writeInt(&buf, Int32(5))
+
+
+        case .connected:
+            writeInt(&buf, Int32(6))
+
+
+        case .reconnecting:
+            writeInt(&buf, Int32(7))
+
+
+        case .unavailable:
+            writeInt(&buf, Int32(8))
+
+
+        case .failed:
+            writeInt(&buf, Int32(9))
+
+
+        case .retiring:
+            writeInt(&buf, Int32(10))
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLocalConnectionState_lift(_ buf: RustBuffer) throws -> LocalConnectionState {
+    return try FfiConverterTypeLocalConnectionState.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLocalConnectionState_lower(_ value: LocalConnectionState) -> RustBuffer {
+    return FfiConverterTypeLocalConnectionState.lower(value)
 }
 
 
@@ -17150,6 +18161,31 @@ fileprivate struct FfiConverterSequenceTypeNamedIdentitySummary: FfiConverterRus
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterSequenceTypePhysicalConnectionSnapshot: FfiConverterRustBuffer {
+    typealias SwiftType = [PhysicalConnectionSnapshot]
+
+    public static func write(_ value: [PhysicalConnectionSnapshot], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypePhysicalConnectionSnapshot.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [PhysicalConnectionSnapshot] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [PhysicalConnectionSnapshot]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypePhysicalConnectionSnapshot.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterSequenceTypeRemoteControlPairingCandidate: FfiConverterRustBuffer {
     typealias SwiftType = [RemoteControlPairingCandidate]
 
@@ -17242,6 +18278,56 @@ fileprivate struct FfiConverterSequenceTypeRemotePeerEntry: FfiConverterRustBuff
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
             seq.append(try FfiConverterTypeRemotePeerEntry.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeTcpPeerConnectionSnapshot: FfiConverterRustBuffer {
+    typealias SwiftType = [TcpPeerConnectionSnapshot]
+
+    public static func write(_ value: [TcpPeerConnectionSnapshot], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeTcpPeerConnectionSnapshot.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [TcpPeerConnectionSnapshot] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [TcpPeerConnectionSnapshot]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeTcpPeerConnectionSnapshot.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+fileprivate struct FfiConverterSequenceTypeTcpPeerProfile: FfiConverterRustBuffer {
+    typealias SwiftType = [TcpPeerProfile]
+
+    public static func write(_ value: [TcpPeerProfile], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeTcpPeerProfile.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [TcpPeerProfile] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [TcpPeerProfile]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeTcpPeerProfile.read(from: &buf))
         }
         return seq
     }
@@ -18164,6 +19250,14 @@ public func nativeStop() -> DevelopmentNodeStopOutcome  {
 })
 }
 /**
+ * Native platform callback only; wakes existing discovery without changing saved intent.
+ */
+public func notifyConnectionNetworkChanged()  {try! rustCall() {
+    uniffi_prns_app_fn_func_notify_connection_network_changed($0
+    )
+}
+}
+/**
  * Commit immutable UI recovery input before submitting a group operation.
  */
 public func prepareGroupAction(input: PrepareGroupActionInput)async  -> GroupActionOutcome  {
@@ -18230,6 +19324,36 @@ public func readBluetoothSettings()async  -> LocalBluetoothSettingsOutcome  {
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeLocalBluetoothSettingsOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+public func readConnectionSettings()async  -> ConnectionSettingsOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_read_connection_settings(
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeConnectionSettingsOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+public func readConnectionSnapshot()async  -> ConnectionSnapshotOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_read_connection_snapshot(
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeConnectionSnapshotOutcome_lift,
             errorHandler: nil
 
         )
@@ -18311,6 +19435,21 @@ public func respondGroupInvitation(input: RespondGroupInvitationInput)async  -> 
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeRespondGroupInvitationOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+public func retryConnection(input: RetryConnectionInput)async  -> ConnectionSnapshotOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_retry_connection(FfiConverterTypeRetryConnectionInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeConnectionSnapshotOutcome_lift,
             errorHandler: nil
 
         )
@@ -18506,6 +19645,24 @@ public func startRemoteWifiTrial(input: StartRemoteWifiTrialInput)async  -> Remo
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeRemoteWifiCommandOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+/**
+ * Persist installation intent first; the exact native owner reconciles it independently of this waiter.
+ */
+public func updateConnectionSettings(input: ConnectionSettingsUpdateInput)async  -> ConnectionSettingsOutcome  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_func_update_connection_settings(FfiConverterTypeConnectionSettingsUpdateInput_lower(input)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterTypeConnectionSettingsOutcome_lift,
             errorHandler: nil
 
         )
@@ -18722,6 +19879,9 @@ private let initializationResult: InitializationResult = {
     if (uniffi_prns_app_checksum_func_native_stop() != 41536) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_prns_app_checksum_func_notify_connection_network_changed() != 29413) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_prns_app_checksum_func_prepare_group_action() != 9779) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -18737,6 +19897,12 @@ private let initializationResult: InitializationResult = {
     if (uniffi_prns_app_checksum_func_read_bluetooth_settings() != 48522) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_prns_app_checksum_func_read_connection_settings() != 39602) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_read_connection_snapshot() != 40867) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_prns_app_checksum_func_read_messaging_profile() != 32931) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -18750,6 +19916,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_respond_group_invitation() != 50214) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_retry_connection() != 34106) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_retry_lxmf_message() != 20310) {
@@ -18789,6 +19958,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_start_remote_wifi_trial() != 55182) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_func_update_connection_settings() != 9081) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_func_change_named_identity() != 19035) {

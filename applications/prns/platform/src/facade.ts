@@ -9,6 +9,7 @@ import { type FfiConverter, UniffiInternalError } from "@ubjs/core";
 import type { PrnsAppNativeModule } from "./native";
 
 export type * from "@prns-internal/native-bindings";
+export type LocalNetworkPermission = "granted" | "notRequired" | "denied" | "blocked";
 
 export class NativeContractMismatchError extends Error {
   constructor(
@@ -332,6 +333,18 @@ export function createDevelopmentRuntime(
   };
 
   return {
+    requestLocalNetworkPermission: async (): Promise<LocalNetworkPermission> => {
+      await bindings();
+      const result = await getNativeModule().requestLocalNetworkPermission();
+      if (
+        result !== "granted" &&
+        result !== "notRequired" &&
+        result !== "denied" &&
+        result !== "blocked"
+      )
+        throw new Error("Local network permission could not be checked.");
+      return result;
+    },
     ...identityRuntime(),
     forIdentity: (reference: Bindings.NamedIdentityReference) =>
       identityRuntime({
@@ -373,6 +386,12 @@ export function createDevelopmentRuntime(
     },
     readDevelopmentNodeSnapshot: (signal?: AbortSignal) =>
       call((api) => api.readSnapshot(asyncOptions(signal)), signal),
+    readConnectionSettings: () => call((api) => api.readConnectionSettings(), undefined, "storage"),
+    updateConnectionSettings: (input: Bindings.ConnectionSettingsUpdateInput) =>
+      call((api) => api.updateConnectionSettings(input), undefined, "storage"),
+    readConnectionSnapshot: () => call((api) => api.readConnectionSnapshot(), undefined, "storage"),
+    retryConnection: (input: Bindings.RetryConnectionInput) =>
+      call((api) => api.retryConnection(input), undefined, "storage"),
     clearNetworkActivity: (input: Bindings.ClearNetworkActivityInput, signal?: AbortSignal) =>
       call((api) => api.clearNetworkActivity(input, asyncOptions(signal)), signal),
     readBluetoothSettings: () => call((api) => api.readBluetoothSettings(), undefined, "storage"),

@@ -184,6 +184,18 @@ test("denied permission remains recoverable and never reports nearby readiness",
   expect(mockDiscovery).not.toHaveBeenCalled();
 });
 
+test("identity setup can continue offline without Bluetooth permission or a radio", async () => {
+  mockRuntime.androidRuntime.status.bluetoothPermission = "denied";
+  const view = render(<SetupScreen />);
+  expect(view.getByRole("button", { name: "Continue to your identity" })).toBeDisabled();
+  fireEvent.press(view.getByRole("button", { name: "Continue offline" }));
+  await waitFor(() =>
+    expect(view.getByRole("button", { name: "Save and continue" })).toBeEnabled(),
+  );
+  expect(mockEnable).not.toHaveBeenCalled();
+  expect(mockRequestPermission).not.toHaveBeenCalled();
+});
+
 test("blocked permission opens settings and a powered-off radio is not ready", async () => {
   const settings = jest.spyOn(Linking, "openSettings").mockResolvedValue();
   mockRuntime.androidRuntime.status.bluetoothPermission = "blocked";

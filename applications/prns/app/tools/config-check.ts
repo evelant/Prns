@@ -6,7 +6,7 @@ type JsonRecord = Readonly<Record<string, unknown>>;
 const appRoot = fileURLToPath(new URL("..", import.meta.url));
 const bluetoothUsageDescription = "prns uses Bluetooth to connect to nearby Reticulum nodes.";
 const localNetworkUsageDescription =
-  "prns uses the local network for an explicitly configured development LXMF peer.";
+  "prns uses your local network to find nearby Reticulum nodes and connect to saved peers.";
 
 function fail(message: string): never {
   throw new Error(`config:check: ${message}`);
@@ -94,9 +94,22 @@ function assertVariant(
   }
   if (infoPlist.NSLocalNetworkUsageDescription !== localNetworkUsageDescription) {
     fail(
-      `${variant}.ios.infoPlist.NSLocalNetworkUsageDescription must be the tracked development fixture copy`,
+      `${variant}.ios.infoPlist.NSLocalNetworkUsageDescription must cover LAN discovery and saved peers`,
     );
   }
+  const bonjour = infoPlist.NSBonjourServices;
+  if (
+    !Array.isArray(bonjour) ||
+    bonjour.length !== 2 ||
+    !bonjour.includes("_reticulum._tcp") ||
+    !bonjour.includes("_reticulum._udp")
+  )
+    fail(`${variant}.ios.infoPlist must declare both Reticulum Bonjour service types`);
+  if (
+    isRecord(ios.entitlements) &&
+    ios.entitlements["com.apple.developer.networking.multicast"] === true
+  )
+    fail(`${variant} must omit the separately gated stock multicast entitlement`);
   const expectedCentral = `${expected.identifier}.bluetooth-auto.central.v1`;
   if (infoPlist.PRNSCoreBluetoothCentralRestorationIdentifier !== expectedCentral) {
     fail(`${variant}.ios.infoPlist must contain its exact central restoration identifier`);

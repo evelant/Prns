@@ -20,6 +20,9 @@ public final class PrnsAppModule: Module {
 
   public func definition() -> ModuleDefinition {
     Name("PrnsApp")
+    // iOS asks at the first actual Bonjour/LAN operation; there is no general
+    // permission-status API or independent permission request to fabricate here.
+    AsyncFunction("requestLocalNetworkPermission") { "notRequired" }
 
     Events("onBluetoothAuthorizationStatus")
 
@@ -129,6 +132,7 @@ public final class PrnsAppModule: Module {
     prepareRestoration: (() throws -> Void)? = nil,
     completion: @escaping (Result<DevelopmentNodeStartOutcome, Error>) -> Void
   ) {
+    PrnsAppLifecycleCoordinator.shared.observeNetwork()
     let startGeneration: UInt64
     do {
       guard

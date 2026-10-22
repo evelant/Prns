@@ -1,5 +1,6 @@
 pub(crate) mod admission;
 pub(crate) mod bluetooth_discovery;
+pub(crate) mod connections;
 pub(crate) mod contact_cards;
 pub(crate) mod group_actions;
 pub(crate) mod group_announces;
@@ -161,6 +162,7 @@ struct Worker {
     runtime: Arc<OnceLock<tokio::runtime::Handle>>,
     host: Arc<OnceLock<HostClient>>,
     bluetooth: Arc<OnceLock<BluetoothControl>>,
+    connections: Arc<OnceLock<Arc<crate::connections::ConnectionRuntime>>>,
     commands: mpsc::Sender<Command>,
     shutdown: ShutdownSignal,
     done: std_mpsc::Receiver<WorkerResult>,
@@ -979,6 +981,19 @@ fn start_configured_with_supervisor(
         #[cfg(all(feature = "android", target_os = "android"))]
         android: android_bluetooth,
     };
+    let connection_bootstrap = {
+        let owner = state
+            .application_owner
+            .as_ref()
+            .expect("startup prepared installation storage");
+        crate::connections::ConnectionBootstrap {
+            owner_id: owner.owner_id(),
+            // A malformed optional transport preference must not stop messaging/Bluetooth.
+            saved: owner
+                .read_connections_blocking()
+                .map_err(|error| format!("{error:?}")),
+        }
+    };
     supervisor.snapshots.begin_generation(primary_identity);
     supervisor
         .snapshots
@@ -1007,6 +1022,8 @@ fn start_configured_with_supervisor(
     let worker_host = Arc::clone(&host);
     let bluetooth = Arc::new(OnceLock::new());
     let worker_bluetooth = Arc::clone(&bluetooth);
+    let connections = Arc::new(OnceLock::new());
+    let worker_connections = Arc::clone(&connections);
     let join = std::thread::Builder::new()
         .name("prns-app-native".to_owned())
         .spawn(move || {
@@ -1014,6 +1031,8 @@ fn start_configured_with_supervisor(
                 worker_runtime,
                 worker_host,
                 worker_bluetooth,
+                worker_connections,
+                connection_bootstrap,
                 bluetooth_enabled,
                 bluetooth_groups,
                 messaging_name,
@@ -1052,6 +1071,7 @@ fn start_configured_with_supervisor(
         runtime,
         host,
         bluetooth,
+        connections,
         commands: command_tx,
         shutdown,
         done: done_rx,
@@ -1918,6 +1938,8 @@ fn run_worker(
     published_runtime: Arc<OnceLock<tokio::runtime::Handle>>,
     published_host: Arc<OnceLock<HostClient>>,
     bluetooth_control: Arc<OnceLock<BluetoothControl>>,
+    published_connections: Arc<OnceLock<Arc<crate::connections::ConnectionRuntime>>>,
+    connection_bootstrap: crate::connections::ConnectionBootstrap,
     bluetooth_enabled: bool,
     bluetooth_groups: prns_core::interfaces::DiscoveryGroupSet,
     messaging_name: String,
@@ -1948,6 +1970,8 @@ fn run_worker(
         !cfg!(test),
         published_host,
         bluetooth_control,
+        published_connections,
+        connection_bootstrap,
         bluetooth_enabled,
         bluetooth_groups,
         messaging_name,
@@ -1972,6 +1996,8 @@ async fn run_generation(
     named_mode: bool,
     published_host: Arc<OnceLock<HostClient>>,
     bluetooth_control: Arc<OnceLock<BluetoothControl>>,
+    published_connections: Arc<OnceLock<Arc<crate::connections::ConnectionRuntime>>>,
+    connection_bootstrap: crate::connections::ConnectionBootstrap,
     bluetooth_enabled: bool,
     bluetooth_groups: prns_core::interfaces::DiscoveryGroupSet,
     messaging_name: String,
@@ -2202,7 +2228,7 @@ async fn run_generation(
         all(feature = "android", target_os = "android"),
     ));
     let embedding = NativeEmbedding {
-        auto_lan_factory: None,
+        auto_lan_factory: prns_host_native::platform::mobile_auto_lan_factory(),
         link_diagnostics: crate::group_diagnostics::links::observers(),
         remote_control_config: None,
         remote_control,
@@ -2274,6 +2300,7 @@ async fn run_generation(
     // Joining the host belongs to this generation even if service startup fails.
     // A foreign finalizer's scheduled cleanup is insufficient for app reset safety.
     let mut named_runtime = None;
+    let mut connection_runtime: Option<Arc<crate::connections::ConnectionRuntime>> = None;
     let result = async {
         let host_client = owner.client();
         let services = host_client.native_services().map_err(|error| boot_failure(
@@ -2281,6 +2308,14 @@ async fn run_generation(
         let handle = services.protocols().clone();
         let clock = services.clock();
         let _ = published_host.set(host_client.clone());
+        let connections = Arc::new(crate::connections::ConnectionRuntime::new(
+            host_client.clone(), connection_bootstrap.owner_id, snapshots.read().generation_id,
+        ));
+        let _ = published_connections.set(Arc::clone(&connections));
+        connection_runtime = Some(Arc::clone(&connections));
+        if let Ok(saved) = connection_bootstrap.saved {
+            connections.apply(saved).await;
+        }
 
         if named_mode {
             let runtime = crate::named_identities::NamedRuntime::open(
@@ -2371,6 +2406,9 @@ async fn run_generation(
         Ok(())
     };
     let result = result.and(named_stopped);
+    if let Some(connections) = connection_runtime {
+        connections.stop().await;
+    }
     let joined = owner.stop().await.map_err(map_host_stop_error);
     let result = joined.and(result);
     settle_worker_result(&operation_admitted, &snapshots, &result);

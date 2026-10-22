@@ -57,6 +57,14 @@ impl DevelopmentStoreFailure {
 }
 
 enum StoreJob {
+    Connections {
+        input: Option<crate::contract::ConnectionSettingsUpdateInput>,
+        completion: Box<
+            dyn FnOnce(
+                    Result<crate::connections::StoredSettings, crate::connections::SettingsError>,
+                ) + Send,
+        >,
+    },
     Activity {
         operation: crate::named_identities::activity::Operation,
         response: oneshot::Sender<Result<crate::named_identities::activity::Reply, String>>,
@@ -176,6 +184,7 @@ impl StoreLane {
             | StoreJob::GroupAnnounces { settings: None, .. }
             | StoreJob::Bluetooth { enabled: None, .. }
             | StoreJob::BluetoothDiscovery { groups: None, .. }
+            | StoreJob::Connections { input: None, .. }
             | StoreJob::Drain(_)
             | StoreJob::DrainAsync(_)
             // This private owner method is used by the scoped teardown driver,
@@ -356,6 +365,41 @@ pub(crate) enum ScopedOpen {
 }
 
 impl DevelopmentStoreOwner {
+    pub(crate) fn admit_connections(
+        &self,
+        input: Option<crate::contract::ConnectionSettingsUpdateInput>,
+        completion: impl FnOnce(Result<crate::connections::StoredSettings, crate::connections::SettingsError>)
+            + Send
+            + 'static,
+    ) -> Result<(), DevelopmentStoreFailure> {
+        self.require_installation_owner()?;
+        self.lane
+            .admit_default(StoreJob::Connections {
+                input,
+                completion: Box::new(completion),
+            })
+            .map_err(|_| {
+                DevelopmentStoreFailure::unavailable(
+                    "The connection settings lane is full or closed.",
+                )
+            })
+    }
+
+    pub(crate) fn read_connections_blocking(
+        &self,
+    ) -> Result<crate::connections::StoredSettings, crate::connections::SettingsError> {
+        let (reply, receive) = mpsc::sync_channel(1);
+        self.admit_connections(None, move |result| {
+            let _ = reply.send(result);
+        })
+        .map_err(crate::connections::SettingsError::Storage)?;
+        receive.recv().map_err(|_| {
+            crate::connections::SettingsError::Storage(DevelopmentStoreFailure::unavailable(
+                "Connection settings owner stopped.",
+            ))
+        })?
+    }
+
     pub(crate) fn admit_activity(
         &self,
         operation: crate::named_identities::activity::Operation,
@@ -1064,6 +1108,9 @@ fn run_owner(
             }
             StoreJob::BluetoothDiscovery { groups, completion } => {
                 completion(crate::bluetooth_discovery::settings(database, groups));
+            }
+            StoreJob::Connections { input, completion } => {
+                completion(crate::connections::settings(database, input));
             }
             StoreJob::GroupAnnounces {
                 settings,

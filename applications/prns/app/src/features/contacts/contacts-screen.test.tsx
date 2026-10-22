@@ -204,6 +204,19 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
       Bindings.GroupRequestIdOutcome.Ready.new({ clientRequestId: new Uint8Array(32) }),
     sendGroupText: async () => Bindings.GroupTextSendOutcome.NotProvisioned.new(),
     attachHost: async () => undefined,
+    requestLocalNetworkPermission: async () => "notRequired",
+    readConnectionSettings: async () => {
+      throw new Error("No connection settings fixture");
+    },
+    updateConnectionSettings: async () => {
+      throw new Error("No connection settings fixture");
+    },
+    readConnectionSnapshot: async () => {
+      throw new Error("No connection snapshot fixture");
+    },
+    retryConnection: async () => {
+      throw new Error("No connection snapshot fixture");
+    },
     readBluetoothDiscoveryGroups: async () =>
       Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
     setBluetoothDiscoveryGroups: async () =>

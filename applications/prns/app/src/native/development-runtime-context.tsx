@@ -145,6 +145,23 @@ export type DevelopmentRuntimeView = {
   readonly androidRuntime: AndroidRuntimeView | null;
   readonly phase: "unavailable" | "starting" | "ready" | "failed";
   readonly snapshot: DevelopmentNodeSnapshot | null;
+  readonly connectionSnapshot: Bindings.ConnectionSnapshot | null;
+  readonly connectionFailure: string | null;
+  readonly requestLocalNetworkPermission: () => Promise<
+    RuntimeCommandResult<Bindings.LocalNetworkPermission>
+  >;
+  readonly refreshConnections: () => Promise<
+    RuntimeCommandResult<Bindings.ConnectionSnapshotOutcome>
+  >;
+  readonly readConnectionSettings: () => Promise<
+    RuntimeCommandResult<Bindings.ConnectionSettingsOutcome>
+  >;
+  readonly updateConnectionSettings: (
+    input: Bindings.ConnectionSettingsUpdateInput,
+  ) => Promise<RuntimeCommandResult<Bindings.ConnectionSettingsOutcome>>;
+  readonly retryConnection: (
+    input: Bindings.RetryConnectionInput,
+  ) => Promise<RuntimeCommandResult<Bindings.ConnectionSnapshotOutcome>>;
   readonly networkActivityClear: {
     readonly generationId: bigint;
     readonly activityRevision: bigint;
@@ -238,6 +255,13 @@ export function DevelopmentRuntimeProvider({
     selectedProvider.availability.type === "available" ? "starting" : "unavailable",
   );
   const [snapshot, setSnapshot] = useState<DevelopmentNodeSnapshot | null>(null);
+  const [connectionSnapshot, setConnectionSnapshot] = useState<Bindings.ConnectionSnapshot | null>(
+    null,
+  );
+  const [connectionFailure, setConnectionFailure] = useState<string | null>(null);
+  const connectionRead = useRef(0);
+  const connectionEpoch = useRef(0);
+  const connectionWrite = useRef(false);
   const [networkActivityClear, setNetworkActivityClear] =
     useState<DevelopmentRuntimeView["networkActivityClear"]>(null);
   const [lifecycleFailure, setLifecycleFailure] = useState<string | null>(null);
@@ -304,8 +328,15 @@ export function DevelopmentRuntimeProvider({
       return;
     }
     latestRevision.current = next.revision;
-    latestNetworkGeneration.current =
+    const nextGeneration =
       next.runtime === Bindings.DevelopmentNodeRuntime.Running ? next.generationId : null;
+    if (latestNetworkGeneration.current !== nextGeneration) {
+      connectionRead.current += 1;
+      connectionEpoch.current += 1;
+      setConnectionSnapshot(null);
+      setConnectionFailure(null);
+    }
+    latestNetworkGeneration.current = nextGeneration;
     setNetworkActivityClear((previous) =>
       previous !== null &&
       previous.generationId === latestNetworkGeneration.current &&
@@ -318,10 +349,16 @@ export function DevelopmentRuntimeProvider({
 
   useEffect(() => {
     activeProvider.current = selectedProvider;
+    connectionRead.current += 1;
+    connectionEpoch.current += 1;
+    setConnectionSnapshot(null);
+    setConnectionFailure(null);
     stopOwner.current = null;
     setStoppingNode(false);
     setStopFailure(null);
     return () => {
+      connectionRead.current += 1;
+      connectionEpoch.current += 1;
       activeProvider.current = null;
       stopOwner.current = null;
     };
@@ -497,6 +534,141 @@ export function DevelopmentRuntimeProvider({
     [selectedProvider.availability],
   );
 
+  const refreshConnections = useCallback(async (): Promise<
+    RuntimeCommandResult<Bindings.ConnectionSnapshotOutcome>
+  > => {
+    if (!("runtime" in selectedProvider) || activeProvider.current !== selectedProvider)
+      return unavailableResult();
+    const request = ++connectionRead.current;
+    const epoch = connectionEpoch.current;
+    try {
+      const outcome = await selectedProvider.runtime.readConnectionSnapshot();
+      if (
+        request !== connectionRead.current ||
+        epoch !== connectionEpoch.current ||
+        activeProvider.current !== selectedProvider
+      )
+        return { type: "operationFailure", detail: "Connections changed. Refresh to check them." };
+      if (outcome.tag === "Ready") {
+        if (
+          latestNetworkGeneration.current !== null &&
+          outcome.inner.snapshot.generationId !== latestNetworkGeneration.current
+        )
+          return {
+            type: "operationFailure",
+            detail: "Connections changed. Refresh to check them.",
+          };
+        setConnectionSnapshot(outcome.inner.snapshot);
+        setConnectionFailure(null);
+      } else if (outcome.tag === "Unavailable") {
+        setConnectionSnapshot(null);
+        setConnectionFailure(outcome.inner.detail);
+      }
+      return { type: "outcome", outcome };
+    } catch (failure) {
+      const result = commandFailure(failure);
+      if (request === connectionRead.current && activeProvider.current === selectedProvider) {
+        setConnectionSnapshot(null);
+        setConnectionFailure(result.detail);
+      }
+      return result;
+    }
+  }, [selectedProvider, unavailableResult]);
+
+  // This follows the existing native snapshot subscription. It never starts a
+  // socket or schedules a reconnect; native reconciliation owns those actions.
+  useEffect(() => {
+    if (snapshot !== null && refreshActive) void refreshConnections();
+  }, [snapshot, refreshActive, refreshConnections]);
+
+  const readConnectionSettings = useCallback(async (): Promise<
+    RuntimeCommandResult<Bindings.ConnectionSettingsOutcome>
+  > => {
+    if (!("runtime" in selectedProvider) || activeProvider.current !== selectedProvider)
+      return unavailableResult();
+    const epoch = connectionEpoch.current;
+    try {
+      const outcome = await selectedProvider.runtime.readConnectionSettings();
+      if (activeProvider.current !== selectedProvider || connectionEpoch.current !== epoch)
+        return unavailableResult();
+      return { type: "outcome", outcome };
+    } catch (failure) {
+      return commandFailure(failure);
+    }
+  }, [selectedProvider, unavailableResult]);
+
+  const requestLocalNetworkPermission = useCallback(async (): Promise<
+    RuntimeCommandResult<Bindings.LocalNetworkPermission>
+  > => {
+    if (!("runtime" in selectedProvider) || activeProvider.current !== selectedProvider)
+      return unavailableResult();
+    try {
+      return {
+        type: "outcome",
+        outcome: await selectedProvider.runtime.requestLocalNetworkPermission(),
+      };
+    } catch (failure) {
+      return commandFailure(failure);
+    }
+  }, [selectedProvider, unavailableResult]);
+
+  const updateConnectionSettings = useCallback(
+    async (
+      input: Bindings.ConnectionSettingsUpdateInput,
+    ): Promise<RuntimeCommandResult<Bindings.ConnectionSettingsOutcome>> => {
+      if (
+        !("runtime" in selectedProvider) ||
+        activeProvider.current !== selectedProvider ||
+        connectionWrite.current
+      )
+        return unavailableResult();
+      connectionWrite.current = true;
+      const epoch = connectionEpoch.current;
+      try {
+        // The native owner retains an admitted save after this observer leaves.
+        const outcome = await selectedProvider.runtime.updateConnectionSettings(input);
+        if (activeProvider.current !== selectedProvider || connectionEpoch.current !== epoch)
+          return unavailableResult();
+        await refreshConnections();
+        return { type: "outcome", outcome };
+      } catch (failure) {
+        await refreshConnections();
+        return commandFailure(failure);
+      } finally {
+        connectionWrite.current = false;
+      }
+    },
+    [selectedProvider, unavailableResult, refreshConnections],
+  );
+
+  const retryConnection = useCallback(
+    async (
+      input: Bindings.RetryConnectionInput,
+    ): Promise<RuntimeCommandResult<Bindings.ConnectionSnapshotOutcome>> => {
+      if (
+        !("runtime" in selectedProvider) ||
+        activeProvider.current !== selectedProvider ||
+        connectionWrite.current
+      )
+        return unavailableResult();
+      connectionWrite.current = true;
+      const epoch = connectionEpoch.current;
+      try {
+        const outcome = await selectedProvider.runtime.retryConnection(input);
+        if (activeProvider.current !== selectedProvider || connectionEpoch.current !== epoch)
+          return unavailableResult();
+        await refreshConnections();
+        return { type: "outcome", outcome };
+      } catch (failure) {
+        await refreshConnections();
+        return commandFailure(failure);
+      } finally {
+        connectionWrite.current = false;
+      }
+    },
+    [selectedProvider, unavailableResult, refreshConnections],
+  );
+
   const run = useCallback(
     async <Outcome,>(
       operation: (active: DevelopmentRuntimeSession) => Effect.Effect<Outcome, unknown>,
@@ -558,8 +730,9 @@ export function DevelopmentRuntimeProvider({
     if (result.type === "outcome") {
       publishSnapshot(result.outcome);
     }
+    await refreshConnections();
     return result;
-  }, [publishSnapshot, runRead]);
+  }, [publishSnapshot, runRead, refreshConnections]);
 
   const bluetoothChange = useRef(false);
   const clearNetworkActivity = useCallback(
@@ -929,6 +1102,13 @@ export function DevelopmentRuntimeProvider({
       androidRuntime: androidCapability === undefined ? null : androidRuntime,
       phase,
       snapshot,
+      connectionSnapshot,
+      connectionFailure,
+      requestLocalNetworkPermission,
+      refreshConnections,
+      readConnectionSettings,
+      updateConnectionSettings,
+      retryConnection,
       networkActivityClear,
       lifecycleFailure,
       backgroundFailure,
@@ -1043,6 +1223,13 @@ export function DevelopmentRuntimeProvider({
       sendGroupText,
       selectedProvider.availability,
       snapshot,
+      connectionSnapshot,
+      connectionFailure,
+      requestLocalNetworkPermission,
+      refreshConnections,
+      readConnectionSettings,
+      updateConnectionSettings,
+      retryConnection,
       networkActivityClear,
     ],
   );

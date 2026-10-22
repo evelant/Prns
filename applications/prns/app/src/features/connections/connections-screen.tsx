@@ -22,6 +22,8 @@ import {
 } from "@/ui/primitives";
 import { bluetoothStatus } from "./bluetooth-status";
 import { DiscoveryGroupsSettings } from "./discovery-groups-settings";
+import { IpConnections } from "./ip-connections";
+import { IpPhysicalConnections } from "./ip-physical-connections";
 
 export function ConnectionsScreen() {
   const runtime = useDevelopmentRuntime();
@@ -71,14 +73,19 @@ export function ConnectionsScreen() {
       <ScreenHeading
         trailing={
           <InfoDisclosure label="About connections">
-            <BodyText>Connect to nearby phones and nodes using Bluetooth.</BodyText>
+            <BodyText>
+              Connect using Bluetooth, local network discovery or saved TCP peers.
+            </BodyText>
             <BodyText>
               Turning connections off keeps your identities, contacts and messages saved.
               {runtime.snapshot?.runtime === DevelopmentNodeRuntime.Running
                 ? " Your node keeps running."
                 : ""}
             </BodyText>
-            <BodyText>Both phones need matching discovery groups to find each other.</BodyText>
+            <BodyText>
+              Bluetooth peers need matching Bluetooth discovery groups. Connected peers do not
+              confirm that a message was delivered.
+            </BodyText>
           </InfoDisclosure>
         }
       >
@@ -151,6 +158,11 @@ export function ConnectionsScreen() {
                 </CardSection>
               ))
           : null}
+      </Card>
+      <IpConnections />
+      <Card>
+        <CardHeader title="LAN and TCP connections" />
+        <IpPhysicalConnections snapshot={runtime.connectionSnapshot} />
       </Card>
       <DiscoveryGroupsSettings />
       <AndroidBluetoothCard />

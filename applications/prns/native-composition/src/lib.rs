@@ -5,6 +5,7 @@
 use prns_host_native::platform::android;
 mod bluetooth;
 mod bluetooth_discovery;
+mod connections;
 mod contact_cards;
 pub mod contract;
 mod development_store;
