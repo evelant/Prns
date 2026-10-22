@@ -26,6 +26,9 @@ The app's native owner surviving JavaScript replacement differs from the
 standalone SDK's JavaScript-owned session reopening after reload; see the
 [SDK qualification guide](../../prns-react-native/docs/qualification.md).
 
+The [LAN/TCP guide](ip-connections.md) records independent configured TCP,
+Bonjour and stock multicast boundaries and remaining package acceptance.
+
 ## Repeatable checks
 
 Run the [workspace setup](../README.md#setup) first, then select checks for the
