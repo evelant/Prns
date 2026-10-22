@@ -2538,8 +2538,10 @@ name = "prns-expo-android"
 version = "0.3.8"
 dependencies = [
  "jni 0.21.1",
+ "prns-core",
  "prns-ffi",
  "prns-host-native",
+ "prns-interfaces-tokio",
 ]
 
 [[package]]

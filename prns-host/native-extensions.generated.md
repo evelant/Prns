@@ -38,11 +38,11 @@ The callback borrows AuthenticatedAnnounce for its duration. Native services cop
 
 ## preparedInterfaceAttachments
 
-Attach native platform transports prepared before host startup or restoration.
+Attach prepared native transports and recreate automatic LAN attachments when enabled.
 
-The embedding returns every prepared interface or supervisor as NativePreparedAttachment so host inspection and teardown retain ownership. OS managers, authorization and restoration policy stay in native platform integration. Existing canonical AttachInterface commands remain independently available where their backend capabilities permit them.
+The embedding returns prepared transports as NativePreparedAttachment and supplies auto_lan_factory for every automatic LAN attachment, including re-enable. A ManagedSupervisor retains a repeatable NativeAttachmentCleanup callback. Native detach waits for owned run futures, sockets, supervised members and queued builders to retire and for a manifold barrier before joined platform cleanup; uncertain cleanup retains host ownership for retry. Host stop keeps driving the runtime until accepted retirement and provider cleanup settle. Completion does not prove physical transmission or remote receipt. OS authorization and restoration policy stay in platform integration. Canonical interface commands remain independently available where their backend capabilities permit them.
 
-- Native Rust: supported through [`NativeEmbedding.prepare_interfaces`](impls/native/src/embedding.rs), [`NativePreparedAttachment`](impls/native/src/embedding.rs).
+- Native Rust: supported through [`NativeEmbedding.prepare_interfaces`](impls/native/src/embedding.rs), [`NativeEmbedding.auto_lan_factory`](impls/native/src/embedding.rs), [`NativePreparedAttachment`](impls/native/src/embedding.rs), [`NativeAutoLanFactory`](impls/native/src/embedding.rs), [`NativeAttachmentCleanup`](impls/native/src/embedding.rs), [`PrnsNodeHandle.remove_interface_and_wait`](../prns-runtime/impls/tokio/src/runtime/node_facade/interface_lifecycle/mod.rs), [`InterfaceDetachError`](../prns-runtime/impls/tokio/src/runtime/node_facade/interface_lifecycle/mod.rs).
 - Native UniFFI: unsupported. Prepared native platform objects cannot be supplied through the UniFFI host factory.
 - C: unsupported. The native prepared-object hook is not a C operation; existing supplied-pipe and interface commands retain their own semantics.
 - N-API: unsupported. The native prepared-object hook is not projected by the N-API host.

@@ -19,7 +19,7 @@ Pod::Spec.new do |s|
   s.source = { :git => 'https://github.com/KenAKAFrosty/Prns.git', :tag => s.version.to_s }
   s.platforms = { :ios => '18.0' }
   s.swift_version = '5.9'
-  s.frameworks = 'Foundation', 'UIKit', 'CoreBluetooth'
+  s.frameworks = 'Foundation', 'UIKit', 'CoreBluetooth', 'Network'
   s.static_framework = true
   s.dependency 'ExpoModulesCore'
   s.dependency 'UbjsReactNative'

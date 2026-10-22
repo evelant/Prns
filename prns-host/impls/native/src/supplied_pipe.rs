@@ -439,8 +439,10 @@ pub(super) async fn detach(
             _ => None,
         });
     if let Some(interface) = interface {
-        if let Some(attachment) = attachments.remove(&interface) {
-            attachment.teardown(handle).await;
+        if let Some(attachment) = attachments.get_mut(&interface) {
+            if attachment.teardown(handle).await.is_ok() {
+                attachments.remove(&interface);
+            }
         }
     }
 }

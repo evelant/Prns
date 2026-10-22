@@ -14,6 +14,9 @@ use prns_host::{
     InterfaceKind, InterfaceSnapshot, PersistenceSnapshot, RouteSnapshot, RuntimeHealthSnapshot,
 };
 
+mod topology;
+pub use topology::{detailed_interface_topology, HostConnectionRole, HostConnectionSnapshot};
+
 /// Attachment metadata needed to project one runtime interface into a Host snapshot.
 ///
 /// `interface` may identify either an independent interface, a fleet supervisor, or one of its
@@ -409,6 +412,7 @@ mod tests {
     ) -> InterfaceInventoryEntry {
         InterfaceInventoryEntry {
             name: Some(name.to_string()),
+            endpoint: None,
             origin: InterfaceOriginKind::Configured,
             attachment_epoch: 1,
             frame_accounting: FrameAccountingCoverage::Complete(FrameAccounting::default()),

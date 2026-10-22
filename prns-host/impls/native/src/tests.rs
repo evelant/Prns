@@ -793,6 +793,312 @@ fn snapshots_track_interface_changes_consistently() -> Result<(), String> {
     Ok(())
 }
 
+struct WitnessedSocket {
+    socket: Option<std::net::TcpListener>,
+    dropped: Arc<AtomicBool>,
+    tag: Vec<u8>,
+    id: personal_rns::interfaces::InterfaceId,
+    status: personal_rns::manifold::tokio::TokioInterfaceStatus,
+}
+
+impl WitnessedSocket {
+    fn new(
+        socket: std::net::TcpListener,
+        kind: personal_rns::interfaces::InterfaceKind,
+        tag: Vec<u8>,
+        dropped: Arc<AtomicBool>,
+    ) -> Self {
+        let id = personal_rns::interfaces::InterfaceId::from_channel_tag(kind, &tag);
+        Self {
+            socket: Some(socket),
+            dropped,
+            tag,
+            id,
+            status: personal_rns::manifold::tokio::TokioInterfaceStatus::new_accounted(
+                id,
+                personal_rns::interfaces::ConnectionState::Connected,
+            ),
+        }
+    }
+}
+
+impl Drop for WitnessedSocket {
+    fn drop(&mut self) {
+        // Publish only after the actual owned OS handle has been closed. An
+        // immediate bind is a separate kernel operation, not a Drop witness.
+        drop(self.socket.take());
+        self.dropped.store(true, Ordering::Release);
+    }
+}
+
+impl personal_rns::interfaces::ReportsStatus for WitnessedSocket {
+    fn status_view(&self) -> Option<personal_rns::interfaces::StatusView> {
+        let status = self.status.clone();
+        Some(Arc::new(move || {
+            vec![personal_rns::interfaces::InterfaceVitals::of(&status)]
+        }))
+    }
+}
+
+impl personal_rns::manifold::interface_seam::Interface for WitnessedSocket {
+    const HW_MTU: usize = personal_rns::interfaces::tcp::TCP_HW_MTU_CAP;
+    const KIND: personal_rns::interfaces::InterfaceKind =
+        personal_rns::interfaces::InterfaceKind::TcpServerPeer;
+
+    fn channel_tag(&self) -> &[u8] {
+        &self.tag
+    }
+
+    fn descriptor(&self) -> personal_rns::interfaces::InterfaceDescriptor {
+        personal_rns::interfaces::tcp::descriptor(
+            self.id,
+            personal_rns::interfaces::tcp::policy_for_bitrate(
+                personal_rns::interfaces::tcp::TCP_BITRATE_ESTIMATE,
+            ),
+        )
+    }
+
+    async fn run<S: personal_rns::manifold::interface_seam::InterfaceSeam>(self, _seam: S) {
+        let _owned = self;
+        std::future::pending::<()>().await;
+    }
+}
+
+struct WitnessedSocketSupervisor {
+    owner: WitnessedSocket,
+    member: WitnessedSocket,
+    started: std::sync::mpsc::Sender<()>,
+}
+
+impl personal_rns::interfaces::ReportsStatus for WitnessedSocketSupervisor {
+    fn status_view(&self) -> Option<personal_rns::interfaces::StatusView> {
+        personal_rns::interfaces::ReportsStatus::status_view(&self.owner)
+    }
+}
+
+impl personal_rns::runtime::InterfaceSupervisor for WitnessedSocketSupervisor {
+    const KIND: personal_rns::interfaces::InterfaceKind =
+        personal_rns::interfaces::InterfaceKind::TcpServer;
+
+    fn channel_tag(&self) -> &[u8] {
+        &self.owner.tag
+    }
+
+    fn policy(&self) -> personal_rns::interfaces::EffectiveInterfacePolicy {
+        personal_rns::interfaces::tcp::policy_for_bitrate(
+            personal_rns::interfaces::tcp::TCP_BITRATE_ESTIMATE,
+        )
+    }
+
+    async fn run(self, fleet: personal_rns::Fleet) {
+        let _owner = self.owner;
+        let _member = fleet.add(self.member);
+        let _ = self.started.send(());
+        std::future::pending::<()>().await;
+    }
+}
+
+#[test]
+fn acknowledged_detach_closes_owned_sockets_and_retires_members_before_reply() -> Result<(), String>
+{
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|error| error.to_string())?;
+    let mut prepared = Vec::new();
+    let mut witnesses = Vec::new();
+    let (started, ready) = std::sync::mpsc::channel();
+    for _ in 0..8 {
+        let socket = std::net::TcpListener::bind("[::1]:0").map_err(|e| e.to_string())?;
+        let member_socket = socket.try_clone().map_err(|e| e.to_string())?;
+        let address = socket.local_addr().map_err(|e| e.to_string())?;
+        let owner_dropped = Arc::new(AtomicBool::new(false));
+        let member_dropped = Arc::new(AtomicBool::new(false));
+        let owner = WitnessedSocket::new(
+            socket,
+            personal_rns::interfaces::InterfaceKind::TcpServer,
+            address.to_string().into_bytes(),
+            owner_dropped.clone(),
+        );
+        let member = WitnessedSocket::new(
+            member_socket,
+            personal_rns::interfaces::InterfaceKind::TcpServerPeer,
+            format!("{address}/member").into_bytes(),
+            member_dropped.clone(),
+        );
+        witnesses.push((host_interface(owner.id), owner_dropped, member_dropped));
+        prepared.push(WitnessedSocketSupervisor {
+            owner,
+            member,
+            started: started.clone(),
+        });
+    }
+    let embedding = NativeEmbedding {
+        prepare_interfaces: Some(Box::new(move |client| {
+            Ok(prepared
+                .into_iter()
+                .map(|supervisor| NativePreparedAttachment::Supervisor {
+                    attachment: client.protocols().supervise(supervisor),
+                    kind: InterfaceKind::TcpServer,
+                })
+                .collect())
+        })),
+        ..NativeEmbedding::default()
+    };
+    let host = NativeHost::start_with_embedding(config(), Arc::new(Sink), embedding)
+        .map_err(|error| format!("{error:?}"))?;
+    for _ in &witnesses {
+        ready
+            .recv_timeout(Duration::from_secs(2))
+            .map_err(|error| error.to_string())?;
+    }
+    assert_eq!(
+        runtime
+            .block_on(host.inspection_async())
+            .map_err(|error| format!("{error:?}"))?
+            .interfaces
+            .len(),
+        witnesses.len() * 2
+    );
+    for (iteration, (interface, owner_dropped, member_dropped)) in witnesses.iter().enumerate() {
+        assert!(!owner_dropped.load(Ordering::Acquire));
+        assert!(!member_dropped.load(Ordering::Acquire));
+        let detached = host
+            .submit(HostCommand::DetachInterface {
+                interface: *interface,
+            })
+            .map_err(|error| format!("{error:?}"))?;
+        match detached.wait(Some(Duration::from_secs(2))) {
+            CommandWait::Completed(Ok(CommandOutcome::InterfaceDetached { .. })) => {}
+            outcome => {
+                return Err(format!(
+                    "retirement {iteration} was not acknowledged: {outcome:?}"
+                ))
+            }
+        }
+        assert!(owner_dropped.load(Ordering::Acquire));
+        assert!(member_dropped.load(Ordering::Acquire));
+        // Inspection runs after the same manifold FIFO barrier as the receipt.
+        // Every departed parent/member lane and raw registration is gone, while
+        // unrelated active supervisors retain both sockets and registrations.
+        assert_eq!(
+            runtime
+                .block_on(host.inspection_async())
+                .map_err(|error| format!("{error:?}"))?
+                .interfaces
+                .len(),
+            (witnesses.len() - iteration - 1) * 2
+        );
+        assert_eq!(
+            host.snapshot(Some(Duration::from_secs(2)))
+                .map_err(|error| format!("{error:?}"))?
+                .runtime
+                .interface_count,
+            (witnesses.len() - iteration - 1) as u32
+        );
+    }
+    host.stop_result().map_err(|error| format!("{error:?}"))?;
+    Ok(())
+}
+
+#[test]
+fn occupied_tcp_listener_remains_a_typed_bind_failure_without_an_attachment() -> Result<(), String>
+{
+    let runtime = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .map_err(|error| error.to_string())?;
+    let occupied = std::net::TcpListener::bind("[::1]:0").map_err(|error| error.to_string())?;
+    let address = occupied.local_addr().map_err(|error| error.to_string())?;
+    let host = NativeHost::start(config(), Arc::new(Sink)).map_err(|error| format!("{error:?}"))?;
+    let attempted = host
+        .submit(HostCommand::AttachTcpServer {
+            bind: address.to_string(),
+            bitrate: Bitrate::Auto,
+        })
+        .map_err(|error| format!("{error:?}"))?;
+    assert!(matches!(
+        attempted.wait(Some(Duration::from_secs(2))),
+        CommandWait::Completed(Err(CommandFailure::BindFailed { .. }))
+    ));
+    assert!(runtime
+        .block_on(host.inspection_async())
+        .map_err(|error| format!("{error:?}"))?
+        .interfaces
+        .is_empty());
+    assert_eq!(
+        occupied.local_addr().map_err(|error| error.to_string())?,
+        address
+    );
+    host.stop_result().map_err(|error| format!("{error:?}"))?;
+    Ok(())
+}
+
+struct CleanupSupervisor(Arc<AtomicBool>);
+
+impl Drop for CleanupSupervisor {
+    fn drop(&mut self) {
+        self.0.store(true, Ordering::Release);
+    }
+}
+
+impl personal_rns::interfaces::ReportsStatus for CleanupSupervisor {}
+
+impl personal_rns::runtime::InterfaceSupervisor for CleanupSupervisor {
+    const KIND: personal_rns::interfaces::InterfaceKind =
+        personal_rns::interfaces::InterfaceKind::AutoWifi;
+    fn channel_tag(&self) -> &[u8] {
+        b"managed-cleanup-test"
+    }
+    fn policy(&self) -> personal_rns::interfaces::EffectiveInterfacePolicy {
+        personal_rns::interfaces::tcp::policy_for_bitrate(
+            personal_rns::interfaces::tcp::TCP_BITRATE_ESTIMATE,
+        )
+    }
+    async fn run(self, _fleet: personal_rns::Fleet) {
+        let _owned = self;
+        std::future::pending::<()>().await;
+    }
+}
+
+#[test]
+fn graceful_host_stop_waits_for_managed_provider_cleanup_after_socket_retirement(
+) -> Result<(), String> {
+    let dropped = Arc::new(AtomicBool::new(false));
+    let cleaned = Arc::new(AtomicBool::new(false));
+    let cleanup_completed = cleaned.clone();
+    let embedding = NativeEmbedding {
+        prepare_interfaces: Some(Box::new(move |client| {
+            let attachment = client
+                .protocols()
+                .supervise(CleanupSupervisor(dropped.clone()));
+            let cleanup: NativeAttachmentCleanup = Arc::new(move || {
+                let dropped = dropped.clone();
+                let cleaned = cleanup_completed.clone();
+                Box::pin(async move {
+                    if !dropped.load(Ordering::Acquire) {
+                        return Err("provider stopped before socket retirement".into());
+                    }
+                    tokio::task::yield_now().await;
+                    cleaned.store(true, Ordering::Release);
+                    Ok(())
+                })
+            });
+            Ok(vec![NativePreparedAttachment::ManagedSupervisor {
+                attachment,
+                kind: InterfaceKind::AutoLan,
+                cleanup,
+            }])
+        })),
+        ..NativeEmbedding::default()
+    };
+    let host = NativeHost::start_with_embedding(config(), Arc::new(Sink), embedding)
+        .map_err(|e| format!("{e:?}"))?;
+    host.stop_result().map_err(|e| format!("{e:?}"))?;
+    assert!(cleaned.load(Ordering::Acquire));
+    Ok(())
+}
+
 #[test]
 fn oversized_response_failure_remains_typed() {
     assert_eq!(

@@ -3,11 +3,15 @@
 #![deny(unsafe_op_in_unsafe_fn)]
 
 mod bluetooth_jni;
+mod lan_jni;
+mod lan_owner_jni;
 mod lifecycle_jni;
 use prns_host_native::platform::android::ble_bridge;
 
 /// Keeps name-bound JNI exports in either selected native image, even under LTO.
 pub fn ensure_linked() {
+    lan_jni::ensure_linked();
+    lan_owner_jni::ensure_linked();
     std::hint::black_box([
         bluetooth_jni::Java_rs_reticulum_prns_expo_PrnsBluetoothNative_nativeBleSetPsm as *const (),
         bluetooth_jni::Java_rs_reticulum_prns_expo_PrnsBluetoothNative_nativeBleDesiredState
