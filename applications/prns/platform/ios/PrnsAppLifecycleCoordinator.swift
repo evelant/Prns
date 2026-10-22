@@ -7,6 +7,9 @@ import UIKit
 @MainActor
 final class PrnsAppLifecycleCoordinator: NSObject {
   static let shared = PrnsAppLifecycleCoordinator()
+  private let network = PrnsLanNetworkMonitor(changed: { notifyConnectionNetworkChanged() })
+
+  func observeNetwork() { network.start() }
 
   private lazy var protectedData = PrnsProtectedDataCoordinator(
     retry: { [weak self] application in self?.prepareAndStartNativeRuntime(application: application) },
@@ -36,6 +39,7 @@ final class PrnsAppLifecycleCoordinator: NSObject {
   }
 
   func launch(application: UIApplication) {
+    network.start()
     protectedData.observe(application: application)
     let restorationAttempt: Bool
     do {
@@ -65,6 +69,7 @@ final class PrnsAppLifecycleCoordinator: NSObject {
   }
 
   func nativeStopWillBegin(application: UIApplication) {
+    network.stop()
     protectedData.stop(application: application)
   }
 

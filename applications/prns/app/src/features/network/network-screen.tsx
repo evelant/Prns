@@ -3,6 +3,10 @@ import { type PropsWithChildren, useEffect, useRef, useState } from "react";
 import { Pressable, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 
 import { bluetoothStatus } from "@/features/connections/bluetooth-status";
+import {
+  connectedIpCount,
+  IpPhysicalConnections,
+} from "@/features/connections/ip-physical-connections";
 import { useMessagingDirectory } from "@/features/contacts/messaging-directory";
 import { peerLabel } from "@/features/inbox/format";
 import { formatBytes, formatRuntime } from "@/features/nodes/format";
@@ -199,7 +203,7 @@ function NetworkSession({
         selected={tab}
         onSelect={setTab}
         counts={{
-          connections: peers.length,
+          connections: peers.length + connectedIpCount(runtime.connectionSnapshot),
           routes: routes.length,
           announcements: announcements.length,
         }}
@@ -232,6 +236,8 @@ function NetworkSession({
               <KeyValue label="Connection ID" value={formatBytes(peer.interfaceId)} />
             </NetworkRow>
           ))}
+          <CardHeader title="LAN and TCP connections" />
+          <IpPhysicalConnections snapshot={runtime.connectionSnapshot} />
           <NavigationLink href="/more/interfaces">Connection settings</NavigationLink>
         </Card>
       ) : null}

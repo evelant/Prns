@@ -1,7 +1,7 @@
 // route-id: interfaces.detail
 
-import { CatalogPlaceholderRoute } from "@/features/placeholder-screen";
+import { ConnectionDetailScreen } from "@/features/connections/connection-detail-screen";
 
 export default function InterfaceRoute() {
-  return <CatalogPlaceholderRoute screenId="interfaces.detail" />;
+  return <ConnectionDetailScreen />;
 }

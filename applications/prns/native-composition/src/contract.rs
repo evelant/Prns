@@ -2,6 +2,8 @@ mod named_identities;
 pub use named_identities::*;
 mod bluetooth_discovery;
 pub use bluetooth_discovery::*;
+mod connections;
+pub use connections::*;
 mod contact_cards;
 pub use contact_cards::*;
 mod remote_management;

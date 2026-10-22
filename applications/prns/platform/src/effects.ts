@@ -25,6 +25,10 @@ import type {
 } from "./facade";
 
 export type DevelopmentRuntimeOperationName =
+  | "readConnectionSettings"
+  | "updateConnectionSettings"
+  | "readConnectionSnapshot"
+  | "retryConnection"
   | "approvePairing"
   | "clearNetworkActivity"
   | "describeTarget"
@@ -74,6 +78,26 @@ export type DevelopmentRuntimeFailure =
   | DevelopmentRuntimeStopError;
 
 export type EffectDevelopmentRuntime = {
+  readonly retryConnection: (
+    input: import("./facade").RetryConnectionInput,
+  ) => Effect.Effect<
+    import("./facade").ConnectionSnapshotOutcome,
+    DevelopmentRuntimeOperationError
+  >;
+  readonly readConnectionSettings: () => Effect.Effect<
+    import("./facade").ConnectionSettingsOutcome,
+    DevelopmentRuntimeOperationError
+  >;
+  readonly updateConnectionSettings: (
+    input: import("./facade").ConnectionSettingsUpdateInput,
+  ) => Effect.Effect<
+    import("./facade").ConnectionSettingsOutcome,
+    DevelopmentRuntimeOperationError
+  >;
+  readonly readConnectionSnapshot: () => Effect.Effect<
+    import("./facade").ConnectionSnapshotOutcome,
+    DevelopmentRuntimeOperationError
+  >;
   readonly clearNetworkActivity: (
     input: ClearNetworkActivityInput,
   ) => Effect.Effect<ClearNetworkActivityOutcome, DevelopmentRuntimeOperationError>;
@@ -146,6 +170,14 @@ export function makeEffectDevelopmentRuntime(
   runtime: DevelopmentRuntime,
 ): EffectDevelopmentRuntime {
   return {
+    retryConnection: (input) =>
+      runtimeCall("retryConnection", () => runtime.retryConnection(input)),
+    readConnectionSettings: () =>
+      runtimeCall("readConnectionSettings", () => runtime.readConnectionSettings()),
+    updateConnectionSettings: (input) =>
+      runtimeCall("updateConnectionSettings", () => runtime.updateConnectionSettings(input)),
+    readConnectionSnapshot: () =>
+      runtimeCall("readConnectionSnapshot", () => runtime.readConnectionSnapshot()),
     clearNetworkActivity: (input) =>
       runtimeCall("clearNetworkActivity", (signal) => runtime.clearNetworkActivity(input, signal)),
     readRemoteNode: (input) =>

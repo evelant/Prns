@@ -670,6 +670,12 @@ RustBuffer uniffi_prns_app_fn_func_native_stop(RustCallStatus *_Nonnull out_stat
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_NOTIFY_CONNECTION_NETWORK_CHANGED
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_NOTIFY_CONNECTION_NETWORK_CHANGED
+void uniffi_prns_app_fn_func_notify_connection_network_changed(RustCallStatus *_Nonnull out_status
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREPARE_GROUP_ACTION
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_PREPARE_GROUP_ACTION
 uint64_t uniffi_prns_app_fn_func_prepare_group_action(RustBuffer input
@@ -694,6 +700,18 @@ uint64_t uniffi_prns_app_fn_func_read_bluetooth_discovery_groups(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_READ_BLUETOOTH_SETTINGS
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_READ_BLUETOOTH_SETTINGS
 uint64_t uniffi_prns_app_fn_func_read_bluetooth_settings(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_READ_CONNECTION_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_READ_CONNECTION_SETTINGS
+uint64_t uniffi_prns_app_fn_func_read_connection_settings(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_READ_CONNECTION_SNAPSHOT
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_READ_CONNECTION_SNAPSHOT
+uint64_t uniffi_prns_app_fn_func_read_connection_snapshot(void
 
 );
 #endif
@@ -722,6 +740,11 @@ uint64_t uniffi_prns_app_fn_func_reject_pairing(RustBuffer input
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RESPOND_GROUP_INVITATION
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RESPOND_GROUP_INVITATION
 uint64_t uniffi_prns_app_fn_func_respond_group_invitation(RustBuffer input
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RETRY_CONNECTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RETRY_CONNECTION
+uint64_t uniffi_prns_app_fn_func_retry_connection(RustBuffer input
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_RETRY_LXMF_MESSAGE
@@ -788,6 +811,11 @@ RustBuffer uniffi_prns_app_fn_func_shared_host(RustCallStatus *_Nonnull out_stat
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_START_REMOTE_WIFI_TRIAL
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_START_REMOTE_WIFI_TRIAL
 uint64_t uniffi_prns_app_fn_func_start_remote_wifi_trial(RustBuffer input
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_UPDATE_CONNECTION_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_UPDATE_CONNECTION_SETTINGS
+uint64_t uniffi_prns_app_fn_func_update_connection_settings(RustBuffer input
 );
 #endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_FN_FUNC_CHANGE_NAMED_IDENTITY
@@ -1335,6 +1363,12 @@ uint16_t uniffi_prns_app_checksum_func_native_stop(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_NOTIFY_CONNECTION_NETWORK_CHANGED
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_NOTIFY_CONNECTION_NETWORK_CHANGED
+uint16_t uniffi_prns_app_checksum_func_notify_connection_network_changed(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREPARE_GROUP_ACTION
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_PREPARE_GROUP_ACTION
 uint16_t uniffi_prns_app_checksum_func_prepare_group_action(void
@@ -1365,6 +1399,18 @@ uint16_t uniffi_prns_app_checksum_func_read_bluetooth_settings(void
 
 );
 #endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_READ_CONNECTION_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_READ_CONNECTION_SETTINGS
+uint16_t uniffi_prns_app_checksum_func_read_connection_settings(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_READ_CONNECTION_SNAPSHOT
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_READ_CONNECTION_SNAPSHOT
+uint16_t uniffi_prns_app_checksum_func_read_connection_snapshot(void
+
+);
+#endif
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_READ_MESSAGING_PROFILE
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_READ_MESSAGING_PROFILE
 uint16_t uniffi_prns_app_checksum_func_read_messaging_profile(void
@@ -1392,6 +1438,12 @@ uint16_t uniffi_prns_app_checksum_func_reject_pairing(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RESPOND_GROUP_INVITATION
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RESPOND_GROUP_INVITATION
 uint16_t uniffi_prns_app_checksum_func_respond_group_invitation(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RETRY_CONNECTION
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_RETRY_CONNECTION
+uint16_t uniffi_prns_app_checksum_func_retry_connection(void
 
 );
 #endif
@@ -1470,6 +1522,12 @@ uint16_t uniffi_prns_app_checksum_func_shared_host(void
 #ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_START_REMOTE_WIFI_TRIAL
 #define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_START_REMOTE_WIFI_TRIAL
 uint16_t uniffi_prns_app_checksum_func_start_remote_wifi_trial(void
+
+);
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_UPDATE_CONNECTION_SETTINGS
+#define UNIFFI_FFIDEF_UNIFFI_PRNS_APP_CHECKSUM_FUNC_UPDATE_CONNECTION_SETTINGS
+uint16_t uniffi_prns_app_checksum_func_update_connection_settings(void
 
 );
 #endif

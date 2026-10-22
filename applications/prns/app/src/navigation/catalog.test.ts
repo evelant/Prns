@@ -40,6 +40,8 @@ describe("screen catalog", () => {
       "identities.index",
       "identities.detail",
       "interfaces.index",
+      "interfaces.detail",
+      "interfaces.edit",
       "activity.index",
       "settings.index",
       "settings.about",

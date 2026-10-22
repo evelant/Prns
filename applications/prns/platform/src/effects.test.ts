@@ -59,6 +59,19 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
     changeNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
     forIdentity: () => fakeRuntime(overrides),
     attachHost: async () => undefined,
+    requestLocalNetworkPermission: async () => "notRequired",
+    readConnectionSettings: async () => {
+      throw new Error("No connection settings fixture");
+    },
+    updateConnectionSettings: async () => {
+      throw new Error("No connection settings fixture");
+    },
+    readConnectionSnapshot: async () => {
+      throw new Error("No connection snapshot fixture");
+    },
+    retryConnection: async () => {
+      throw new Error("No connection snapshot fixture");
+    },
     exportContactCard: async () => Bindings.ContactCardExportOutcome.Busy.new(),
     previewContactCard: async () =>
       Bindings.ContactCardPreviewOutcome.Invalid.new({ detail: "fixture" }),

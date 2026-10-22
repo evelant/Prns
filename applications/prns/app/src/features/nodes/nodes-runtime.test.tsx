@@ -210,6 +210,11 @@ function fakeProvider(
       Bindings.GroupRequestIdOutcome.Ready.new({ clientRequestId: new Uint8Array(32) }),
     sendGroupText: async () => Bindings.GroupTextSendOutcome.NotProvisioned.new(),
     attachHost: async () => undefined,
+    requestLocalNetworkPermission: async () => "notRequired",
+    readConnectionSettings: async () => Bindings.ConnectionSettingsOutcome.Busy.new(),
+    updateConnectionSettings: async () => Bindings.ConnectionSettingsOutcome.Busy.new(),
+    readConnectionSnapshot: async () => Bindings.ConnectionSnapshotOutcome.Busy.new(),
+    retryConnection: async () => Bindings.ConnectionSnapshotOutcome.Busy.new(),
     readBluetoothDiscoveryGroups: async () =>
       Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
     setBluetoothDiscoveryGroups: async () =>
@@ -289,6 +294,11 @@ function fakeProvider(
     ...overrides,
   };
   const effectRuntime: EffectDevelopmentRuntime = {
+    retryConnection: Bindings.makeEffectDevelopmentRuntime(runtime).retryConnection,
+    readConnectionSettings: Bindings.makeEffectDevelopmentRuntime(runtime).readConnectionSettings,
+    updateConnectionSettings:
+      Bindings.makeEffectDevelopmentRuntime(runtime).updateConnectionSettings,
+    readConnectionSnapshot: Bindings.makeEffectDevelopmentRuntime(runtime).readConnectionSnapshot,
     clearNetworkActivity: Bindings.makeEffectDevelopmentRuntime(runtime).clearNetworkActivity,
     startDevelopmentNode: (input) => Effect.promise(() => runtime.startDevelopmentNode(input)),
     readDevelopmentNodeSnapshot: Effect.promise(runtime.readDevelopmentNodeSnapshot),
@@ -3104,5 +3114,135 @@ describe("Foundation 1 Nodes runtime binding", () => {
     const completed = { ...first, status: Bindings.RemoteChangeStatus.Applied.new() };
     expect(reconcileRemoteChange(completed, second)).toBe(completed);
     expect(reconcileRemoteChange(first, undefined)).toBe(first);
+  });
+});
+
+describe("native-owned IP connection settings", () => {
+  const settings = (): Bindings.ConnectionSettingsSnapshot => ({
+    ownerId: 1n,
+    revision: 1n,
+    settings: { lanEnabled: false, tcpPeers: [] },
+  });
+  const connections = (generationId: bigint): Bindings.ConnectionSnapshot => ({
+    generationId,
+    settings: settings(),
+    appliedRevision: 1n,
+    lan: {
+      desiredEnabled: false,
+      state: Bindings.LocalConnectionState.Disabled,
+      discoveryMethod: Bindings.LanDiscoveryMethod.Bonjour,
+      detail: undefined,
+      stockMulticastAvailable: false,
+      connectedPeerCount: 0,
+    },
+    tcpPeers: [],
+    physicalConnections: [],
+  });
+
+  it("saves connection settings while stopped without starting the host or resetting data", async () => {
+    const fixture = androidRestartFixture();
+    const update = jest
+      .spyOn(fixture.runtime, "updateConnectionSettings")
+      .mockResolvedValue(
+        Bindings.ConnectionSettingsOutcome.Ready.new({ snapshot: { ...settings(), revision: 2n } }),
+      );
+    const reset = jest.spyOn(fixture.runtime, "resetDevelopmentData");
+    const publish = jest.fn<void, [DevelopmentRuntimeView]>();
+    const view = render(
+      <DevelopmentRuntimeProvider provider={fixture.provider} refreshIntervalMillis={60000}>
+        <RuntimeViewProbe publish={publish} />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(publish.mock.calls.at(-1)?.[0].phase).toBe("ready"));
+    act(() => fixture.emit(stoppedSnapshot()));
+    const input = {
+      ownerId: 1n,
+      expectedRevision: 1n,
+      settings: { lanEnabled: true, tcpPeers: [] },
+    };
+    await act(async () => {
+      expect((await publish.mock.calls.at(-1)?.[0].updateConnectionSettings(input))?.type).toBe(
+        "outcome",
+      );
+    });
+    expect(update).toHaveBeenCalledWith(input);
+    expect(fixture.start).toHaveBeenCalledTimes(1);
+    expect(reset).not.toHaveBeenCalled();
+    expect(fixture.stop).not.toHaveBeenCalled();
+    view.unmount();
+  });
+
+  it("retains one admitted save after observer release and rejects another mutation", async () => {
+    const fixture = androidRestartFixture();
+    let finish: ((outcome: Bindings.ConnectionSettingsOutcome) => void) | undefined;
+    const update = jest.spyOn(fixture.runtime, "updateConnectionSettings").mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          finish = resolve;
+        }),
+    );
+    const retry = jest.spyOn(fixture.runtime, "retryConnection");
+    const publish = jest.fn<void, [DevelopmentRuntimeView]>();
+    const view = render(
+      <DevelopmentRuntimeProvider provider={fixture.provider} refreshIntervalMillis={60000}>
+        <RuntimeViewProbe publish={publish} />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(publish.mock.calls.at(-1)?.[0].phase).toBe("ready"));
+    const observed = publish.mock.calls.at(-1)?.[0];
+    if (!observed) throw new Error("missing runtime view");
+    const pending = observed.updateConnectionSettings({
+      ownerId: 1n,
+      expectedRevision: 1n,
+      settings: settings().settings,
+    });
+    expect(
+      (
+        await observed.retryConnection({
+          ownerId: 1n,
+          expectedRevision: 1n,
+          generationId: 0n,
+          profileId: "lan",
+        })
+      ).type,
+    ).toBe("operationFailure");
+    expect(update).toHaveBeenCalledTimes(1);
+    expect(retry).not.toHaveBeenCalled();
+    view.unmount();
+    finish?.(Bindings.ConnectionSettingsOutcome.Ready.new({ snapshot: settings() }));
+    expect((await pending).type).toBe("operationFailure");
+    expect(fixture.stop).not.toHaveBeenCalled();
+  });
+
+  it("does not publish a late physical snapshot from the previous native generation", async () => {
+    const fixture = androidRestartFixture();
+    let finish: ((outcome: Bindings.ConnectionSnapshotOutcome) => void) | undefined;
+    jest
+      .spyOn(fixture.runtime, "readConnectionSnapshot")
+      .mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            finish = resolve;
+          }),
+      )
+      .mockResolvedValue(
+        Bindings.ConnectionSnapshotOutcome.Ready.new({ snapshot: connections(1n) }),
+      );
+    const publish = jest.fn<void, [DevelopmentRuntimeView]>();
+    const view = render(
+      <DevelopmentRuntimeProvider provider={fixture.provider} refreshIntervalMillis={60000}>
+        <RuntimeViewProbe publish={publish} />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(finish).toBeDefined());
+    act(() => fixture.emit({ ...snapshot(3n), generationId: 1n }));
+    await waitFor(() =>
+      expect(publish.mock.calls.at(-1)?.[0].connectionSnapshot?.generationId).toBe(1n),
+    );
+    await act(async () => {
+      finish?.(Bindings.ConnectionSnapshotOutcome.Ready.new({ snapshot: connections(0n) }));
+    });
+    expect(publish.mock.calls.at(-1)?.[0].connectionSnapshot?.generationId).toBe(1n);
+    view.unmount();
   });
 });
