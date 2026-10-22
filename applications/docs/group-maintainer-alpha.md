@@ -19,6 +19,36 @@ recorded checks, known limits and the remaining APK/TestFlight handoff gates.
 - Use the supplied build's install/update instructions. Preserve app data during
   updates and recovery; backup/restore is not a supported group-key recovery path.
 
+## Use LAN discovery or a saved TCP peer
+
+Use a build containing the [LAN/TCP implementation](ip-connections.md).
+Open **More → Connections**. The maintainer must provide a reachable TCP host and
+port; no public server is preconfigured. Enter them with **Add TCP peer**, save
+and enable the profile. A profile can be saved while offline. Existing app
+identities and groups use the same installation-wide connection settings.
+
+For automatic local discovery, join the same reachable LAN, enable **LAN
+discovery** and allow local-network access when requested. Android supports
+stock Reticulum discovery and PRNS Bonjour. The current iOS build supports
+compatible Bonjour peers; stock multicast-only peers await Apple's separate
+entitlement/provisioning lane. Network isolation or blocked traffic can still
+prevent discovery or connection.
+
+Check the physical peer/endpoint in Connections, then exchange a unique message
+and check its actual receipt. If testing TCP alone, disable LAN and Bluetooth
+inside the test app. If testing LAN alone, disable saved TCP and Bluetooth.
+Restore the intended connections afterwards. Leaving another path enabled can
+hide failure of the path being tested.
+
+For TCP recovery, stop and restore the controlled peer, or leave and return to
+its network. The enabled profile should reconnect automatically. Restart the
+app and confirm its saved enabled state and original pending message remain.
+**Retry** requests another attempt; repeated Retry is not required for normal
+recovery. Saved and applied settings may differ while a change takes effect.
+A permission blocker has an **Open settings** action; preserve saved settings
+while restoring permission. Keep foreground checks separate from background
+and locked-idle observations.
+
 ## Set up and choose an identity
 
 On a fresh installation, choose **Set up this phone → Connect this phone**. Start

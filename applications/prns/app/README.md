@@ -60,10 +60,27 @@ interrupt unfinished delivery from the previous membership.
 
 ## Connections, announcements and network inspection
 
-**Nodes → This phone → Connections** shows Bluetooth permission/radio state and
-actual physical peers. Enable/disable preserves identities and messages and does
-not stop the shared node. A ready radio, a saved route and an authorized pairing
-are different from a current connection to the intended recipient.
+**More → Connections** (also available through **Nodes → This phone**) shows
+Bluetooth, LAN discovery and saved TCP peers, with their current physical
+connections. Turning a connection off preserves identities, contacts and messages.
+A saved route and an authorized pairing are different from a current connection
+to the intended recipient.
+
+Enable **LAN discovery** to find compatible peers on the local network. Allow
+local-network access when the phone requests it. iOS uses declared Bonjour
+services independently of Apple's pending multicast entitlement; discovering
+stock multicast-only Reticulum peers on iOS remains pending approval and
+qualification. Android supports stock Reticulum discovery and Bonjour. Wi-Fi
+membership alone does not establish a Reticulum connection.
+
+Use **Add TCP peer** for a hostname or IP address and port, with an optional name.
+Profiles can be saved while offline, edited, enabled, disabled or removed.
+Settings belong to this installation and apply to every messaging identity.
+Saved and applied settings are shown separately when a change is still taking
+effect. Enabled profiles return when the native node restarts and reconnect
+without keeping Connections open. **Retry** requests another attempt; an
+unavailable peer does not stop the other connections. Connection details show
+the actual endpoint and traffic; a connected peer is not a delivery receipt.
 
 **Advanced Bluetooth discovery** accepts one to four shared discovery-group names.
 The default is `reticulum`; phones need a matching name to discover one another.
