@@ -14,6 +14,32 @@ prebuild declares `EXExpoAppSceneDelegate` and makes AppDelegate provide the Rea
 factory without starting the window itself. Scene creation owns the UI only,
 not the native node. See [Expo's SDK 57 guidance](https://github.com/expo/fyi/blob/main/ios-scene-lifecycle.md#staying-on-sdk-57-with-xcode-27).
 
+## Release configuration
+
+The production iOS bundle and scheme are `rs.reticulum.prns.chat`, matching the
+existing App Store app; development remains `rs.reticulum.prns.dev`. Android
+identifiers are unchanged. The app version is `0.1.0`; iOS uses the checked-in
+1024-pixel RGB icon and restoration identifiers derived from its own bundle ID.
+
+Set `PRNS_APP_VARIANT=production` and `PRNS_IOS_BUILD_NUMBER` before generating or
+archiving a release. The build number accepts a positive decimal safe integer;
+it defaults to `1` for local builds. Select a fresh number for the target App Store
+version rather than reusing a historical candidate. For example, inspect the
+chosen configuration from `applications/prns/app` before prebuild:
+
+```sh
+PRNS_APP_VARIANT=production PRNS_IOS_BUILD_NUMBER=37 npx expo config --type public
+```
+
+The example does not reserve or establish that build number's availability.
+Rebuild native output after changing these inputs. Before distribution, inspect
+the package's bundle ID, version, build number, icon and restoration metadata.
+Test an in-place upgrade of an existing `.chat` installation with populated
+identity, contacts and pending messages; do not uninstall or reset it. An older
+production variant installed as `rs.reticulum.prns` has a different iOS container
+and is not automatically migrated by this identifier change. Packaging alone
+does not establish device or TestFlight acceptance.
+
 ## Build without installation
 
 After [workspace setup](../README.md#setup), install Xcode, CocoaPods and the

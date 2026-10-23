@@ -30,7 +30,12 @@ function render(
   const output = execFileSync("expo", ["config", "--type", "public", "--json"], {
     cwd: appRoot,
     encoding: "utf8",
-    env: { ...process.env, ...environment, PRNS_APP_VARIANT: variant },
+    env: {
+      ...process.env,
+      PRNS_IOS_BUILD_NUMBER: undefined,
+      ...environment,
+      PRNS_APP_VARIANT: variant,
+    },
   });
   const parsed: unknown = JSON.parse(output);
   return readRecord(parsed, `${variant} Expo config`);
@@ -38,7 +43,12 @@ function render(
 
 function assertVariant(
   variant: "development" | "production",
-  expected: { readonly name: string; readonly slug: string; readonly identifier: string },
+  expected: {
+    readonly name: string;
+    readonly slug: string;
+    readonly identifier: string;
+    readonly iosIdentifier: string;
+  },
 ): void {
   const config = render(variant);
   const ios = readRecord(config.ios, `${variant}.ios`);
@@ -50,7 +60,11 @@ function assertVariant(
     ["name", config.name, expected.name],
     ["slug", config.slug, expected.slug],
     ["scheme", config.scheme, expected.identifier],
-    ["ios.bundleIdentifier", ios.bundleIdentifier, expected.identifier],
+    ["version", config.version, "0.1.0"],
+    ["ios.bundleIdentifier", ios.bundleIdentifier, expected.iosIdentifier],
+    ["ios.scheme", ios.scheme, expected.iosIdentifier],
+    ["ios.buildNumber", ios.buildNumber, "1"],
+    ["ios.icon", ios.icon, "./assets/icon.png"],
     ["android.package", android.package, expected.identifier],
     ["web.bundler", web.bundler, "metro"],
   ];
@@ -69,13 +83,13 @@ function assertVariant(
       `${variant}.ios.infoPlist.NSLocalNetworkUsageDescription must be the tracked development fixture copy`,
     );
   }
-  const expectedCentral = `${expected.identifier}.bluetooth-auto.central.v1`;
+  const expectedCentral = `${expected.iosIdentifier}.bluetooth-auto.central.v1`;
   if (infoPlist.PRNSCoreBluetoothCentralRestorationIdentifier !== expectedCentral) {
     fail(`${variant}.ios.infoPlist must contain its exact central restoration identifier`);
   }
   if (
     infoPlist.PRNSCoreBluetoothPeripheralRestorationIdentifier !==
-    `${expected.identifier}.bluetooth-auto.peripheral.v1`
+    `${expected.iosIdentifier}.bluetooth-auto.peripheral.v1`
   ) {
     fail(`${variant}.ios.infoPlist must contain its exact peripheral restoration identifier`);
   }
@@ -120,11 +134,13 @@ assertVariant("development", {
   name: "prns dev",
   slug: "prns-dev",
   identifier: "rs.reticulum.prns.dev",
+  iosIdentifier: "rs.reticulum.prns.dev",
 });
 assertVariant("production", {
   name: "prns",
   slug: "prns",
   identifier: "rs.reticulum.prns",
+  iosIdentifier: "rs.reticulum.prns.chat",
 });
 
 for (const variant of ["development", "production"] as const) {
@@ -145,6 +161,27 @@ if (
   fail("an unset native TCP fixture must remain absent");
 }
 
+for (const variant of ["development", "production"] as const) {
+  const config = render(variant, { PRNS_IOS_BUILD_NUMBER: "37" });
+  if (readRecord(config.ios, `${variant}.ios`).buildNumber !== "37") {
+    fail(`${variant} must use the requested iOS build number`);
+  }
+}
+
+for (const buildNumber of ["", "0", "-1", "1.5", "2e3", "01", "abc", "9007199254740992"]) {
+  const invalidBuild = spawnSync("expo", ["config", "--type", "public", "--json"], {
+    cwd: appRoot,
+    encoding: "utf8",
+    env: { ...process.env, PRNS_APP_VARIANT: "production", PRNS_IOS_BUILD_NUMBER: buildNumber },
+  });
+  if (
+    invalidBuild.status === 0 ||
+    !`${invalidBuild.stdout}${invalidBuild.stderr}`.includes("PRNS_IOS_BUILD_NUMBER")
+  ) {
+    fail(`invalid iOS build number ${JSON.stringify(buildNumber)} must be rejected explicitly`);
+  }
+}
+
 const invalid = spawnSync("expo", ["config", "--type", "public", "--json"], {
   cwd: appRoot,
   encoding: "utf8",
@@ -155,5 +192,5 @@ if (invalid.status === 0) {
 }
 
 console.log(
-  "config:check: variant coordinates, dual-role Bluetooth restoration, and Android runtime policy are exact",
+  "config:check: variant coordinates, iOS release metadata, dual-role Bluetooth restoration, and Android runtime policy are exact",
 );

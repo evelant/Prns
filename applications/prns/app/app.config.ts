@@ -5,11 +5,13 @@ const variants = {
     name: "prns dev",
     slug: "prns-dev",
     identifier: "rs.reticulum.prns.dev",
+    iosIdentifier: "rs.reticulum.prns.dev",
   },
   production: {
     name: "prns",
     slug: "prns",
     identifier: "rs.reticulum.prns",
+    iosIdentifier: "rs.reticulum.prns.chat",
   },
 } as const;
 
@@ -27,19 +29,28 @@ function selectedVariant(value: string | undefined): AppVariant {
   );
 }
 
+function selectedIosBuildNumber(value: string | undefined): string {
+  const buildNumber = value?.trim() ?? "1";
+  if (!/^[1-9][0-9]*$/.test(buildNumber) || !Number.isSafeInteger(Number(buildNumber))) {
+    throw new Error("PRNS_IOS_BUILD_NUMBER must be a positive decimal safe integer");
+  }
+  return buildNumber;
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => {
   const variant = selectedVariant(process.env.PRNS_APP_VARIANT);
   const selection = variants[variant];
+  const iosBuildNumber = selectedIosBuildNumber(process.env.PRNS_IOS_BUILD_NUMBER);
   const developmentTcpTarget =
     variant === "development" ? process.env.EXPO_PUBLIC_PRNS_LXMF_TCP_TARGET?.trim() : undefined;
-  const bluetoothRestorationPrefix = `${selection.identifier}.bluetooth-auto`;
+  const bluetoothRestorationPrefix = `${selection.iosIdentifier}.bluetooth-auto`;
 
   return {
     ...config,
     name: selection.name,
     slug: selection.slug,
     scheme: selection.identifier,
-    version: "0.0.0",
+    version: "0.1.0",
     runtimeVersion: { policy: "fingerprint" },
     orientation: "default",
     userInterfaceStyle: "automatic",
@@ -51,7 +62,10 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     ],
     ios: {
       ...config.ios,
-      bundleIdentifier: selection.identifier,
+      bundleIdentifier: selection.iosIdentifier,
+      scheme: selection.iosIdentifier,
+      buildNumber: iosBuildNumber,
+      icon: "./assets/icon.png",
       infoPlist: {
         ...config.ios?.infoPlist,
         ...(developmentTcpTarget ? { PRNSDevelopmentTcpTarget: developmentTcpTarget } : {}),
