@@ -23,13 +23,15 @@ use personal_rns::runtime::{
 };
 use personal_rns::units::DurationMillis;
 use prns_app::contract::{
-    AnnounceRemoteControlTargetInput, DescribeRemoteControlTargetInput, DevelopmentNodeRuntime,
+    AnnounceRemoteControlTargetInput, ConnectionSettings, ConnectionSettingsOutcome,
+    ConnectionSettingsUpdateInput, DescribeRemoteControlTargetInput, DevelopmentNodeRuntime,
     DevelopmentNodeSnapshot, DevelopmentNodeStartInput, DevelopmentNodeStartOutcome,
     DevelopmentNodeStopOutcome, IdentityCreationOutcome, InitiateRemoteControlPairingInput,
-    LocalHostState, RemoteControlAnnounceFailureStage, RemoteControlAnnounceOutcome,
-    RemoteControlAnnounceStatus, RemoteControlDescribeFailureStage, RemoteControlDescribeOutcome,
-    RemoteControlPairingCommandOutcome, RemoteControlPairingDecisionInput,
-    RemoteControlPairingFailureStage, RemoteControlPairingState, RemoteControlRequestKind,
+    LocalHostState, NativeStoragePreparationOutcome, RemoteControlAnnounceFailureStage,
+    RemoteControlAnnounceOutcome, RemoteControlAnnounceStatus, RemoteControlDescribeFailureStage,
+    RemoteControlDescribeOutcome, RemoteControlPairingCommandOutcome,
+    RemoteControlPairingDecisionInput, RemoteControlPairingFailureStage, RemoteControlPairingState,
+    RemoteControlRequestKind,
 };
 use prns_app::host_test as app;
 use tokio::sync::{mpsc, oneshot};
@@ -818,8 +820,31 @@ async fn approve_pairing(target: &TargetHarness, attempt: PairingAttempt) {
 async fn create_identity(storage_root: &Path) {
     let storage_root = storage_root.to_owned();
     assert!(matches!(
-        run_blocking(move || app::create_generated_identity(&storage_root)).await,
+        run_blocking(move || {
+            assert_eq!(
+                app::prepare_storage(&storage_root),
+                NativeStoragePreparationOutcome::Prepared
+            );
+            app::create_generated_identity(&storage_root)
+        })
+        .await,
         IdentityCreationOutcome::Created { .. }
+    ));
+    let ConnectionSettingsOutcome::Ready { snapshot } = app::read_connection_settings().await
+    else {
+        panic!("fixture connection settings are readable");
+    };
+    // This matrix owns only its controlled TCP carrier. Persist an explicit
+    // empty list so fresh-install public defaults cannot keep it online after
+    // the target stops or leak pairing observations onto an external network.
+    assert!(matches!(
+        app::update_connection_settings(ConnectionSettingsUpdateInput {
+            owner_id: snapshot.owner_id,
+            expected_revision: snapshot.revision,
+            settings: ConnectionSettings::default(),
+        })
+        .await,
+        ConnectionSettingsOutcome::Ready { snapshot } if snapshot.settings == ConnectionSettings::default()
     ));
 }
 

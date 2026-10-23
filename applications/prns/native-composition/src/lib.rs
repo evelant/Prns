@@ -39,6 +39,23 @@ pub mod host_test {
     pub use crate::lifecycle::snapshot_async as snapshot;
     pub use crate::lifecycle::{create_generated_identity, start_configured, stop};
 
+    pub fn prepare_storage(
+        storage_root: &std::path::Path,
+    ) -> crate::contract::NativeStoragePreparationOutcome {
+        crate::lifecycle::admission::prepare_native_storage(storage_root)
+    }
+
+    /// Use the same settings lane as the public bindings in controlled fixtures.
+    pub async fn read_connection_settings() -> crate::contract::ConnectionSettingsOutcome {
+        crate::lifecycle::connections::settings(None).await
+    }
+
+    pub async fn update_connection_settings(
+        input: crate::contract::ConnectionSettingsUpdateInput,
+    ) -> crate::contract::ConnectionSettingsOutcome {
+        crate::lifecycle::connections::settings(Some(input)).await
+    }
+
     /// Exercise the application operation against a controlled public runtime.
     pub async fn describe_with_handle(
         handle: &personal_rns::prelude::PrnsNodeHandle,
