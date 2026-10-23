@@ -2,7 +2,7 @@
 
 This checked bundle covers the shipped and qualification Rust, JavaScript, and Android product graphs.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:07ff29369edd30afbb22eb93fa87626475f795ecfde91d2d516caa08ba7b13c9`.
+Notice input fingerprint: `sha256:906c135ba3e8bcb999460a41e0c932e4d7cc8453bf4f8e0159e0f182aac975a2`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by SPDX identifier and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
@@ -4661,7 +4661,7 @@ DEALINGS IN THE SOFTWARE.
 
 License: MIT License
 
-Used by: `ctutils 0.4.2`
+Used by: `ctutils 0.4.4`
 
 Release graphs: Android, ESP32-C6, ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, HaLoW appliance manager, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, WASM, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64, iOS, nRF52840, website Rust/WASM
 
