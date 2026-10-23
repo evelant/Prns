@@ -35,9 +35,13 @@ Use one automatic LAN configuration initially, with stock defaults: discovery
 group reticulum, link scope, discovery port 29716 and data port 42671. Offer LAN
 discovery enabled during new-install setup, with the platform's local-network
 explanation and permission handling. Existing installations preserve Bluetooth
-settings and start with no configured TCP peers; a missing LAN setting defaults
-to disabled until enabled from Connections. Do not rerun identity onboarding.
-Do not silently import the development TCP fixture or add a public server.
+settings; a missing LAN setting defaults to disabled until enabled from
+Connections. Do not rerun identity onboarding or import the development TCP fixture.
+
+When the connection settings row is absent, add the enabled **PRNS public node**
+at `prns.fly.dev:4242`. This covers new installations and upgrades from before
+saved TCP settings. Preserve every existing saved row, including an empty peer
+list and disabled or edited profiles. Removing the default remains durable.
 
 Expose advanced LAN configuration only when the selected discovery backend
 supports it. LAN and Bluetooth discovery settings are independent. Arbitrary

@@ -22,10 +22,12 @@ recorded checks, known limits and the remaining APK/TestFlight handoff gates.
 ## Use LAN discovery or a saved TCP peer
 
 Use a build containing the [LAN/TCP implementation](ip-connections.md).
-Open **More → Connections**. The maintainer must provide a reachable TCP host and
-port; no public server is preconfigured. Enter them with **Add TCP peer**, save
-and enable the profile. A profile can be saved while offline. Existing app
-identities and groups use the same installation-wide connection settings.
+Open **More → Connections**. When connection settings have never been saved, the
+app adds and enables **PRNS public node** at `prns.fly.dev:4242`. Existing saved
+settings are preserved, including an empty list or a disabled or edited profile;
+removing the default is durable. Use **Add TCP peer** to save another reachable
+host and port, even while offline. Existing app identities and groups use the
+same installation-wide connection settings.
 
 For automatic local discovery, join the same reachable LAN, enable **LAN
 discovery** and allow local-network access when requested. Android supports
