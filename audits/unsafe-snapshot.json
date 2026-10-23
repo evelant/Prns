@@ -4923,11 +4923,15 @@
         "expo-android": [],
         "expo-host-linux": [],
         "expo-ios": [],
+        "group-headless-peer": [],
+        "group-libraries": [],
+        "group-secure-storage": [],
         "halow-appliance-manager": [],
         "halow-headless": [],
         "host-c-linux": [],
         "host-c-macos": [],
         "host-c-windows": [],
+        "identity-native": [],
         "ios": [],
         "nrf52840": [],
         "prns-app-android": [],
@@ -4944,25 +4948,7 @@
         "impls": 0,
         "tokens": 0
       },
-      "version": "0.4.2"
-    },
-    {
-      "graphs": {
-        "group-headless-peer": [],
-        "group-libraries": [],
-        "group-secure-storage": [],
-        "identity-native": []
-      },
-      "name": "ctutils",
-      "source": "registry+https://github.com/rust-lang/crates.io-index",
-      "unsafe": {
-        "blocks": 0,
-        "externs": 0,
-        "functions": 0,
-        "impls": 0,
-        "tokens": 0
-      },
-      "version": "0.4.3"
+      "version": "0.4.4"
     },
     {
       "graphs": {
