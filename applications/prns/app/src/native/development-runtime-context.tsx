@@ -68,6 +68,7 @@ import {
 import { runtimeProvider } from "@/native/runtime-provider";
 import type { RuntimeProvider } from "./runtime-provider.types";
 import { useAndroidRuntime, type AndroidRuntimeView } from "./use-android-runtime";
+import { useLxmfHealth } from "./use-lxmf-health";
 
 export type RuntimeCommandResult<Outcome> =
   | { readonly type: "outcome"; readonly outcome: Outcome }
@@ -80,6 +81,8 @@ export type RuntimeCommandResult<Outcome> =
 export type DevelopmentRuntimeView = {
   readonly ownerKey?: string;
   readonly canPublish?: boolean;
+  readonly messagingHealth?: Bindings.LxmfHealth | null;
+  readonly messagingRevision?: number;
   readonly listGroupActions: () => Promise<RuntimeCommandResult<Bindings.GroupActionListOutcome>>;
   readonly prepareGroupAction: (
     input: Bindings.PrepareGroupActionInput,
@@ -1257,6 +1260,12 @@ export function DevelopmentMessagingScope({
   readonly canPublish: boolean;
 }>) {
   const parent = useDevelopmentRuntime();
+  const messaging = useLxmfHealth(
+    runtime,
+    ownerKey,
+    parent.snapshot?.generationId,
+    projectIdentity && canPublish && parent.phase === "ready" && !parent.stoppingNode,
+  );
   const methods = useMemo(() => {
     const run = async <T,>(
       operation: (client: DevelopmentRuntime) => Promise<T>,
@@ -1348,8 +1357,26 @@ export function DevelopmentMessagingScope({
     [parent.snapshot, identityHash, projectIdentity],
   );
   const value = useMemo(
-    () => ({ ...parent, ...methods, snapshot, ownerKey, canPublish }),
-    [parent, methods, snapshot, ownerKey, canPublish],
+    () => ({
+      ...parent,
+      ...methods,
+      snapshot,
+      ownerKey,
+      canPublish,
+      ...(projectIdentity
+        ? { messagingHealth: messaging.health, messagingRevision: messaging.revision }
+        : {}),
+    }),
+    [
+      parent,
+      methods,
+      snapshot,
+      ownerKey,
+      canPublish,
+      projectIdentity,
+      messaging.health,
+      messaging.revision,
+    ],
   );
   return (
     <DevelopmentRuntimeContext.Provider value={value}>

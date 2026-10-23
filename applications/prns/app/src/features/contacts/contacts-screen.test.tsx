@@ -162,6 +162,7 @@ function snapshot(): DevelopmentNodeSnapshot {
 }
 function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRuntime {
   return {
+    waitLxmfChange: async () => undefined,
     listNamedIdentityActivity: async () =>
       Bindings.NamedIdentityActivityListOutcome.Ready.new({ activities: [] }),
     readIdentityActivity: async () =>

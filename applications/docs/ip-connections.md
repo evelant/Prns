@@ -13,7 +13,10 @@ Installation-owned versioned settings retain a LAN preference and up to sixteen
 named outbound TCP peers. Native code validates host/IP and port offline,
 assigns stable identifiers, rejects duplicate endpoints and fences stale edits
 with saved revisions. Malformed or unsupported saved records are preserved.
-Existing installations default to LAN disabled and no TCP peers; enabling a
+When no connection settings have ever been saved, the app starts with LAN
+disabled and one enabled `PRNS public node` peer at `prns.fly.dev:4242`. Existing
+saved settings keep their exact intent, including an empty peer list or a
+disabled default peer; upgrades do not reinsert or reenable it. Enabling a
 connection does not rerun identity setup.
 
 A native reconciler owns attachments and retries across JavaScript and native
@@ -26,6 +29,14 @@ TCP retries resolve hostnames again and race bounded alternate IPv4/IPv6 answers
 Connections includes LAN enablement, discovery details and permission recovery;
 TCP add/edit/enable/disable/remove/retry; and physical endpoint/traffic details.
 Setup accepts LAN, TCP or offline continuation independently of Bluetooth.
+
+Authenticated LXMF announcements without a published display name are accepted
+as unnamed discoverable messaging peers. Identity and destination checks still
+apply; malformed nonempty metadata remains invalid. Each named conversation observes
+its captured identity's LXMF service, so incoming messages and delivery changes
+update the mounted screen without a radio poll or manual refresh. Identity and
+host replacement cancel the old subscription; foreground reattachment rereads
+the durable projection while keeping the selected route and loaded history.
 
 Android uses lifecycle-owned NSD, authoritative network inventories and a
 multicast lock. Empty inventories retire stale peers; unchanged notifications
@@ -65,6 +76,9 @@ No always-on iOS or long-idle Android delivery claim follows from these checks.
 
 ## Source qualification and alpha handoff
 
+The [public TCP and live-refresh follow-up](ip-connections-followup-2026-10-22.md)
+records the later two-phone foreground trial and its source boundaries.
+
 The extracted PR is checked separately from the containing working tree.
 CI and the PR description record exact source checks and the publication-gate result.
 The native contract requires rebuilt binaries; existing phone packages are not
@@ -73,9 +87,10 @@ updated by a JavaScript-only release.
 Before maintainer distribution, package the selected containing revision with
 stable signing and visible build identification. Check fresh installation and
 in-place updates with populated identities, contacts, groups and pending work.
-Provide a reachable maintainer-controlled TCP endpoint and its operating window;
-there is no bundled public peer. Repeat ordinary contact/announce discovery,
-direct and group messages, mixed Bluetooth/LAN/TCP paths, and recovery on those
+The bundled public peer provides an initial TCP path, not an availability or
+background-delivery guarantee. Confirm its operating window for a maintainer
+trial, or configure another reachable endpoint. Repeat ordinary contact/announce
+discovery, direct and group messages, mixed Bluetooth/LAN/TCP paths, and recovery on those
 exact packages. Keep API 37 permission-denial, iOS stock multicast and natural
 background/locked-idle acceptance distinct from the completed foreground checks.
 

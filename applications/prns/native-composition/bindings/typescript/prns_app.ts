@@ -25799,6 +25799,13 @@ export interface NamedIdentityClientLike {
     setContactPinned(input: SetContactPinnedInput, asyncOpts_?: { signal: AbortSignal }): Promise<ContactMutationOutcome>;
     setGroupAnnounceSettings(settings: GroupAnnounceSettings, asyncOpts_?: { signal: AbortSignal }): Promise<GroupAnnounceSettingsOutcome>;
     setMessagingName(name: string, asyncOpts_?: { signal: AbortSignal }): Promise<LocalMessagingProfileOutcome>;
+/**
+ * Read the initial projection, or wait until this owner's LXMF state changes.
+ * Cancel the wait when its screen, identity or host generation is replaced.
+ * A stopped projection or `None` ends this subscription; resume with no cursor
+ * after the identity becomes available again.
+ */
+    waitLxmfChange(afterProjectionRevision: bigint | undefined, asyncOpts_?: { signal: AbortSignal }): Promise<LxmfHealth | undefined>;
 }
 /**
  * @deprecated Use `NamedIdentityClientLike` instead.
@@ -27379,6 +27386,53 @@ private constructor(pointer: UniffiHandle) {
     }
     }
 
+/**
+ * Read the initial projection, or wait until this owner's LXMF state changes.
+ * Cancel the wait when its screen, identity or host generation is replaced.
+ * A stopped projection or `None` ends this subscription; resume with no cursor
+ * after the identity becomes available again.
+ */
+    async waitLxmfChange(afterProjectionRevision: bigint | undefined, asyncOpts_?: { signal: AbortSignal }): Promise<LxmfHealth | undefined> {
+    const __stack = uniffiIsDebug ? new Error().stack : undefined;
+    try {
+        return await uniffiRustCallAsync(
+            /*rustCaller:*/ uniffiCaller,
+            /*rustFutureFunc:*/ () => {
+                return nativeModule().uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change(
+                    uniffiTypeNamedIdentityClientObjectFactory.clonePointer(this),FfiConverterOptionalUInt64.lower(afterProjectionRevision, nativeModule().rustbuffer_alloc)
+                );
+            },
+            /*pollFunc:*/ nativeModule().ffi_prns_app_rust_future_poll_rust_buffer,
+            /*cancelFunc:*/ nativeModule().ffi_prns_app_rust_future_cancel_rust_buffer,
+            /*completeFunc:*/ nativeModule().ffi_prns_app_rust_future_complete_rust_buffer,
+            /*freeFunc:*/ nativeModule().ffi_prns_app_rust_future_free_rust_buffer,
+            // Async returns always go through the JS-side converter: the
+            // FFI symbol returns the future handle (u64), and the user-level
+            // RustBuffer comes back via the shared `rust_future_complete_*`
+            // export. The bytes the runtime hands back must be deserialized
+            // here using the per-callable return-type converter.
+            // Borrowed view over foreign memory: the call site owns the free,
+            // as on the sync paths. Unconditional — a no-op where buffers are
+            // already JS-owned.
+            /*liftFunc:*/ (__rb) => {
+                try {
+                    return FfiConverterOptionalTypeLxmfHealth.lift(__rb);
+                } finally {
+                    nativeModule().rustbuffer_free(__rb);
+                }
+            },
+            /*liftString:*/ FfiConverterString.lift.bind(FfiConverterString),
+            /*asyncOpts:*/ asyncOpts_,
+
+        );
+    } catch (__error: any) {
+        if (uniffiIsDebug && __error instanceof Error && __stack !== undefined) {
+            __error.stack = __stack;
+        }
+        throw __error;
+    }
+    }
+
 
     uniffiDestroy(): void {
         const ptr = (this as any)[destructorGuardSymbol];
@@ -27605,6 +27659,9 @@ const FfiConverterSequenceTypeLxmfPeerSummary = new FfiConverterArray(FfiConvert
 
 // FfiConverter for Array<NamedIdentityActivity>
 const FfiConverterSequenceTypeNamedIdentityActivity = new FfiConverterArray(FfiConverterTypeNamedIdentityActivity);
+
+// FfiConverter for LxmfHealth | undefined
+const FfiConverterOptionalTypeLxmfHealth = new FfiConverterOptional(FfiConverterTypeLxmfHealth);
 
 // FfiConverter for HostClientHandleLike | undefined
 const FfiConverterOptionalTypeHostClientHandle = new FfiConverterOptional(FfiConverterTypeHostClientHandle);
@@ -27969,6 +28026,9 @@ function uniffiEnsureInitialized() {
     }
     if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name() !== 31566) {
         throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name");
+    }
+    if (nativeModule().uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change() !== 2709) {
+        throw new UniffiInternalError.ApiChecksumMismatch("uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change");
     }
 
     }

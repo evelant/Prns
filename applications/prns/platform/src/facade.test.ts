@@ -1031,6 +1031,42 @@ test("named clients capture immutable local references and never consult global 
   expect(native.prepareOutbound).not.toHaveBeenCalled();
 });
 
+test("named live messaging waits forward the exact cursor and cancellation without outbound preparation", async () => {
+  const reference: Bindings.NamedIdentityReference = {
+    incarnation: new Uint8Array(16).fill(1),
+    sequence: 2n,
+    publicHash: new Uint8Array(16).fill(3),
+  };
+  const waitLxmfChange = jest.fn(async () => snapshot().lxmf);
+  const openNamedIdentity = jest.fn(
+    () => ({ waitLxmfChange }) as unknown as Bindings.NamedIdentityClient,
+  );
+  const { runtime, native } = setup({ openNamedIdentity });
+  const client = runtime.forIdentity(reference);
+  const controller = new AbortController();
+  expect(await client.waitLxmfChange(undefined, controller.signal)).toEqual(snapshot().lxmf);
+  await client.waitLxmfChange(9_007_199_254_740_993n, controller.signal);
+  expect(waitLxmfChange).toHaveBeenNthCalledWith(1, undefined, { signal: controller.signal });
+  expect(waitLxmfChange).toHaveBeenNthCalledWith(2, 9_007_199_254_740_993n, {
+    signal: controller.signal,
+  });
+  expect(openNamedIdentity).toHaveBeenCalledTimes(1);
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  controller.abort();
+  await expect(client.waitLxmfChange(1n, controller.signal)).rejects.toMatchObject({
+    name: "AbortError",
+  });
+  expect(waitLxmfChange).toHaveBeenCalledTimes(2);
+});
+
+test("legacy runtime leaves live messaging on its existing snapshot without opening a named client", async () => {
+  const openNamedIdentity = jest.fn();
+  const { runtime, native } = setup({ openNamedIdentity });
+  expect(await runtime.waitLxmfChange()).toBeUndefined();
+  expect(openNamedIdentity).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
 test("activity inspection and captured seen cursors use local scoped storage without outbound preparation", async () => {
   const identity: Bindings.NamedIdentityReference = {
     incarnation: new Uint8Array(16).fill(1),

@@ -49,6 +49,7 @@ function snapshot(revision: bigint): DevelopmentNodeSnapshot {
 }
 function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRuntime {
   return {
+    waitLxmfChange: async () => undefined,
     readIdentityActivity: async () =>
       Bindings.IdentityActivityOutcome.Unavailable.new({ detail: "fixture" }),
     markIdentityActivitySeen: async () =>
