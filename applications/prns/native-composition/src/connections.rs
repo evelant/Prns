@@ -15,6 +15,7 @@ const MAX_PEERS: usize = 16;
 const MAX_LABEL_BYTES: usize = 64;
 const MAX_HOST_BYTES: usize = 253;
 const MAX_SETTINGS_BYTES: usize = 32 * 1024;
+const DEFAULT_TCP_PEER_ID: &str = "4d0a885808985a03b07af06f7adf8d22";
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -29,7 +30,18 @@ impl Default for StoredSettings {
         Self {
             version: VERSION,
             revision: 0,
-            settings: ConnectionSettings::default(),
+            // Only an absent saved row receives installation defaults. A saved
+            // empty list records removal and must stay empty on later starts.
+            settings: ConnectionSettings {
+                tcp_peers: vec![TcpPeerProfile {
+                    id: DEFAULT_TCP_PEER_ID.into(),
+                    label: "PRNS public node".into(),
+                    host: "prns.fly.dev".into(),
+                    port: 4242,
+                    enabled: true,
+                }],
+                ..ConnectionSettings::default()
+            },
         }
     }
 }
@@ -233,6 +245,104 @@ mod tests {
                 lan_enabled: true,
                 tcp_peers: peers,
             },
+        }
+    }
+    #[test]
+    fn fresh_and_pre_tcp_settings_seed_the_same_enabled_public_peer() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("settings.redb");
+        let db = Database::create(&path).unwrap();
+        let fresh = settings(&db, None).unwrap();
+        assert_eq!(fresh.revision, 0);
+        assert!(!fresh.settings.lan_enabled);
+        assert_eq!(fresh.settings.tcp_peers.len(), 1);
+        let public = &fresh.settings.tcp_peers[0];
+        assert!(public.enabled);
+        assert_eq!(endpoint(public), "prns.fly.dev:4242");
+        assert_eq!(
+            normalize(fresh.settings.clone(), false).unwrap(),
+            fresh.settings
+        );
+
+        let groups = crate::bluetooth_discovery::parse(&["Existing network".into()]).unwrap();
+        crate::bluetooth_discovery::settings(&db, Some(groups)).unwrap();
+        assert_eq!(settings(&db, None).unwrap(), fresh);
+        assert_eq!(
+            crate::bluetooth_discovery::settings(&db, None).unwrap(),
+            groups
+        );
+        drop(db);
+
+        let reopened = Database::open(path).unwrap();
+        assert_eq!(settings(&reopened, None).unwrap(), fresh);
+        assert_eq!(
+            crate::bluetooth_discovery::settings(&reopened, None).unwrap(),
+            groups
+        );
+    }
+    #[test]
+    fn removing_the_default_peer_survives_reopen() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp.path().join("settings.redb");
+        let db = database(&path);
+        let initial = settings(&db, None).unwrap();
+        assert_eq!(initial.settings.tcp_peers.len(), 1);
+        let removed = settings(&db, Some(input(initial.revision, vec![]))).unwrap();
+        assert_eq!(removed.revision, 1);
+        assert!(removed.settings.tcp_peers.is_empty());
+        assert!(removed.settings.lan_enabled);
+        drop(db);
+
+        let reopened = Database::open(path).unwrap();
+        assert_eq!(settings(&reopened, None).unwrap(), removed);
+    }
+    #[test]
+    fn existing_settings_preserve_removed_disabled_edited_duplicate_and_full_peer_intent() {
+        let temp = tempfile::tempdir().unwrap();
+        let db = database(&temp.path().join("settings.redb"));
+        let default_peer = StoredSettings::default().settings.tcp_peers.remove(0);
+        let mut disabled = default_peer.clone();
+        disabled.enabled = false;
+        let mut edited = default_peer;
+        edited.label = "My relay".into();
+        edited.host = "private.example.com".into();
+        edited.port = 4422;
+        let full = (0..MAX_PEERS)
+            .map(|index| peer(&format!("peer-{index}.example.com")))
+            .collect();
+        for peers in [
+            vec![],
+            vec![disabled],
+            vec![edited],
+            vec![peer("prns.fly.dev")],
+            full,
+        ] {
+            let saved = StoredSettings {
+                version: VERSION,
+                revision: 7,
+                settings: normalize(input(7, peers).settings, true).unwrap(),
+            };
+            let encoded = serde_json::to_string(&saved).unwrap();
+            let write = db.begin_write().unwrap();
+            write
+                .open_table(APPLICATION_SETTINGS)
+                .unwrap()
+                .insert(KEY, encoded.as_str())
+                .unwrap();
+            write.commit().unwrap();
+            assert_eq!(settings(&db, None).unwrap(), saved);
+            assert_eq!(settings(&db, None).unwrap(), saved);
+            assert_eq!(
+                db.begin_read()
+                    .unwrap()
+                    .open_table(APPLICATION_SETTINGS)
+                    .unwrap()
+                    .get(KEY)
+                    .unwrap()
+                    .unwrap()
+                    .value(),
+                encoded,
+            );
         }
     }
     #[test]
