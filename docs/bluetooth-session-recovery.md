@@ -7,12 +7,6 @@ backends retain legacy behavior. The contracts below describe the implementation
 Physical restart, silent-peer expiry, long idle and OS lifecycle behavior need
 separate acceptance on the actual app and firmware builds.
 
-The [September 29 mobile checkpoint](../applications/checkpoints/2026-09-29-mobile-persistence-recovery.md)
-repeats that failure on the reconciled Release builds after separately fixing and
-verifying interval persistence. Reciprocal baseline delivery and an isolated
-Android restart send pass. The iOS restart remains blocked; the diagnostic peer
-reset is not automatic-recovery acceptance.
-
 ## Ownership and current repairs
 
 - The pure connection policy in `prns-core` keeps the healthy incumbent. A BLE
