@@ -2,7 +2,7 @@
 
 This checked bundle covers the shipped and qualification Rust, JavaScript, and Android product graphs.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:cab152e3a03114782c1d291781adf18eaebdcaf0eff5fd4a68fd7532e2f9cb21`.
+Notice input fingerprint: `sha256:5be211a39d51c2588efd81dbe019df981d4f0deb9caef8d2a686785c3683b0af`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by SPDX identifier and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
@@ -4630,7 +4630,7 @@ DEALINGS IN THE SOFTWARE.
 
 License: MIT License
 
-Used by: `tokio 1.52.3`, `tokio 1.53.1`, `tokio-stream 0.1.18`, `tokio-stream 0.1.19`, `tokio-util 0.7.18`, `tokio-util 0.7.19`
+Used by: `tokio 1.53.3`, `tokio-stream 0.1.18`, `tokio-stream 0.1.19`, `tokio-util 0.7.18`, `tokio-util 0.7.19`
 
 Release graphs: Android, Expo Android, Expo host, Expo iOS, HaLoW headless, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, Prns app Android, Prns app iOS, daemon Linux, daemon Windows, daemon macOS, desktop Linux, desktop Windows, desktop macOS, engine, iOS, website Rust/WASM
 
