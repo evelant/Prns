@@ -2,7 +2,7 @@
 
 This checked bundle covers the shipped and qualification Rust, JavaScript, and Android product graphs.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:9ca4dc9c33fe3f5e053f85a59b698538d834cab255d6e9acb7ee56a7e26976e0`.
+Notice input fingerprint: `sha256:487a92a39b3dff72b401799ec8320020b6e7a607e3ffd2070f1bca3791482883`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by SPDX identifier and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
@@ -2377,7 +2377,7 @@ express Statement of Purpose.
 
 License: Community Data License Agreement Permissive 2.0
 
-Used by: `webpki-roots 1.0.9`
+Used by: `webpki-roots 1.0.10`
 
 Release graphs: engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64
 
@@ -2473,7 +2473,7 @@ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 License: ISC License
 
-Used by: `rustls-webpki 0.103.15`
+Used by: `rustls-webpki 0.103.16`
 
 Release graphs: Expo Android, Expo host, Expo iOS, Host SDK native, Node addon Linux, Node addon Windows, Node addon macOS, daemon Linux, daemon Windows, daemon macOS, engine, flasher Linux arm64, flasher Linux x86_64, flasher Windows x86_64, flasher macOS arm64, flasher macOS x86_64
 
