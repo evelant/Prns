@@ -25,6 +25,12 @@ The 2026-10-23 advisory refresh updates every registered locked graph to
 The patch restores constant-time mask generation and 32-bit `u128` comparisons.
 No advisory exception is added; the release audit still uses current advisory data.
 
+The subsequent refresh also updates Tokio to `1.53.3` for
+[RUSTSEC-2026-0386](https://rustsec.org/advisories/RUSTSEC-2026-0386.html), dated
+2026-10-13. Unix supplied pipes and Linux HaLow sockets use a sealed owned-descriptor
+wrapper in the existing FFI boundary for Tokio's new registration safety contract.
+The consuming crates retain their unsafe-code forbids.
+
 The allowlist in [`deny.toml`](../deny.toml) admits reviewed license expressions;
 every unlisted expression fails.
 GPL, LGPL, AGPL, and unknown licenses are not accepted. Package-scoped additions are `ksni 0.3.6`
