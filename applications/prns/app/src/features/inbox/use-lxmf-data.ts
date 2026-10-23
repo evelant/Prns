@@ -155,18 +155,24 @@ export function useLxmfData(peer: Uint8Array | null) {
     await Promise.all([refreshMessages(), refreshContacts(), refreshDiscovery()]);
   }, [owner, refreshContacts, refreshDiscovery, refreshMessages]);
 
+  const health =
+    development.messagingHealth === undefined
+      ? development.snapshot?.lxmf
+      : development.messagingHealth;
   useEffect(() => {
     // Global snapshot revisions change on every radio poll. Reread only for LXMF
     // storage/projection changes (including active sends), or a new lifecycle owner.
-    void development.snapshot?.lxmf.mailboxRevision;
-    void development.snapshot?.lxmf.projectionRevision;
+    void health?.mailboxRevision;
+    void health?.projectionRevision;
+    void development.messagingRevision;
     void refreshMessages();
     return () => {
       request.current += 1;
     };
   }, [
-    development.snapshot?.lxmf.mailboxRevision,
-    development.snapshot?.lxmf.projectionRevision,
+    health?.mailboxRevision,
+    health?.projectionRevision,
+    development.messagingRevision,
     refreshMessages,
   ]);
 

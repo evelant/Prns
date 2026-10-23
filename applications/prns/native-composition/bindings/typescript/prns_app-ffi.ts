@@ -839,6 +839,11 @@ const DEFINITIONS = {
       ret: FfiType.Handle,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change": {
+      args: [FfiType.Handle, FfiType.RustBuffer],
+      ret: FfiType.Handle,
+      hasRustCallStatus: false,
+    },
     "ffi_prns_app_uniffi_contract_version": {
       args: [],
       ret: FfiType.UInt32,
@@ -1414,6 +1419,11 @@ const DEFINITIONS = {
       ret: FfiType.UInt16,
       hasRustCallStatus: false,
     },
+    "uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change": {
+      args: [],
+      ret: FfiType.UInt16,
+      hasRustCallStatus: false,
+    },
   },
   callbacks: {
     "RustFutureContinuationCallback": {
@@ -1604,6 +1614,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(uniffiSelf: bigint, input: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_set_group_announce_settings(uniffiSelf: bigint, settings: Uint8Array): bigint;
     uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(uniffiSelf: bigint, name: Uint8Array): bigint;
+    uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change(uniffiSelf: bigint, afterProjectionRevision: Uint8Array): bigint;
     ffi_prns_app_uniffi_contract_version(): number;
     uniffi_prns_app_checksum_func_acknowledge_group_action(): number;
     uniffi_prns_app_checksum_func_announce_groups(): number;
@@ -1719,6 +1730,7 @@ interface NativeModuleInterface {
     uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_set_group_announce_settings(): number;
     uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name(): number;
+    uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change(): number;
     // Codegen call sites use these via `nativeModule().rustbuffer_alloc(...)`
     // and `nativeModule().rustbuffer_free(...)`. The runtime's registered
     // module exposes them as method properties.

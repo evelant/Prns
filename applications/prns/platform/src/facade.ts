@@ -160,7 +160,10 @@ export function createDevelopmentRuntime(
   // nor invoking a method consults the UI's current default identity.
   const identityRuntime = (reference?: Bindings.NamedIdentityReference) => {
     let client: Promise<Bindings.NamedIdentityClientLike> | undefined;
-    const namedCall = <T>(operation: (api: Bindings.NamedIdentityClientLike) => Promise<T>) =>
+    const namedCall = <T>(
+      operation: (api: Bindings.NamedIdentityClientLike) => Promise<T>,
+      signal?: AbortSignal,
+    ) =>
       call(
         async (api) => {
           if (reference === undefined)
@@ -168,7 +171,7 @@ export function createDevelopmentRuntime(
           client ??= Promise.resolve(api.openNamedIdentity(reference));
           return operation(await client);
         },
-        undefined,
+        signal,
         "storage",
       );
     const domainCall = <T>(
@@ -187,6 +190,16 @@ export function createDevelopmentRuntime(
       );
     return {
       readIdentityActivity: () => namedCall((api) => api.readIdentityActivity()),
+      waitLxmfChange: (
+        afterProjectionRevision?: bigint,
+        signal?: AbortSignal,
+      ): Promise<Bindings.LxmfHealth | undefined> =>
+        reference === undefined
+          ? Promise.resolve(undefined)
+          : namedCall(
+              (api) => api.waitLxmfChange(afterProjectionRevision, asyncOptions(signal)),
+              signal,
+            ),
       markIdentityActivitySeen: (input: Bindings.MarkIdentityActivitySeenInput) =>
         namedCall((api) => api.markIdentityActivitySeen(input)),
       readMessagingProfile: () =>

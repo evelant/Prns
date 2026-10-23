@@ -170,6 +170,7 @@ function fakeProvider(
 ): RuntimeProvider {
   const initial = snapshot(2n, includeObservation, pairing, pairedTargets, pairingCandidates);
   const runtime: DevelopmentRuntime = {
+    waitLxmfChange: async () => undefined,
     listNamedIdentityActivity: async () =>
       Bindings.NamedIdentityActivityListOutcome.Ready.new({ activities: [] }),
     readIdentityActivity: async () =>

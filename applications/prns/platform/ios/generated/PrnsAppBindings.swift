@@ -682,6 +682,14 @@ public protocol NamedIdentityClientProtocol: AnyObject, Sendable {
 
     func setMessagingName(name: String) async  -> LocalMessagingProfileOutcome
 
+    /**
+     * Read the initial projection, or wait until this owner's LXMF state changes.
+     * Cancel the wait when its screen, identity or host generation is replaced.
+     * A stopped projection or `None` ends this subscription; resume with no cursor
+     * after the identity becomes available again.
+     */
+    func waitLxmfChange(afterProjectionRevision: UInt64?) async  -> LxmfHealth?
+
 }
 open class NamedIdentityClient: NamedIdentityClientProtocol, @unchecked Sendable {
     fileprivate let handle: UInt64
@@ -1415,6 +1423,30 @@ open func setMessagingName(name: String)async  -> LocalMessagingProfileOutcome  
             completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
             freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
             liftFunc: FfiConverterTypeLocalMessagingProfileOutcome_lift,
+            errorHandler: nil
+
+        )
+}
+
+    /**
+     * Read the initial projection, or wait until this owner's LXMF state changes.
+     * Cancel the wait when its screen, identity or host generation is replaced.
+     * A stopped projection or `None` ends this subscription; resume with no cursor
+     * after the identity becomes available again.
+     */
+open func waitLxmfChange(afterProjectionRevision: UInt64?)async  -> LxmfHealth?  {
+    return
+        try!  await uniffiRustCallAsync(
+            rustFutureFunc: {
+                uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change(
+                    self.uniffiCloneHandle(),
+                    FfiConverterOptionUInt64.lower(afterProjectionRevision)
+                )
+            },
+            pollFunc: ffi_prns_app_rust_future_poll_rust_buffer,
+            completeFunc: ffi_prns_app_rust_future_complete_rust_buffer,
+            freeFunc: ffi_prns_app_rust_future_free_rust_buffer,
+            liftFunc: FfiConverterOptionTypeLxmfHealth.lift,
             errorHandler: nil
 
         )
@@ -17472,6 +17504,30 @@ fileprivate struct FfiConverterOptionTypeDevelopmentNodeOperation: FfiConverterR
 #if swift(>=5.8)
 @_documentation(visibility: private)
 #endif
+fileprivate struct FfiConverterOptionTypeLxmfHealth: FfiConverterRustBuffer {
+    typealias SwiftType = LxmfHealth?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeLxmfHealth.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeLxmfHealth.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
 fileprivate struct FfiConverterOptionTypeNamedIdentityReference: FfiConverterRustBuffer {
     typealias SwiftType = NamedIdentityReference?
 
@@ -20090,6 +20146,9 @@ private let initializationResult: InitializationResult = {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name() != 31566) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change() != 2709) {
         return InitializationResult.apiChecksumMismatch
     }
 

@@ -877,6 +877,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name(
     ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change(
+    ): Int
     external fun ffi_prns_app_uniffi_contract_version(
     ): Int
 
@@ -975,6 +977,8 @@ external fun uniffi_prns_app_fn_method_namedidentityclient_set_contact_alias(`pt
 external fun uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(`ptr`: Long,`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(`ptr`: Long,`name`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change(`ptr`: Long,`afterProjectionRevision`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_acknowledge_group_action(`reference`: RustBuffer.ByValue,
 ): Long
@@ -1587,6 +1591,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name() != 31566) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change() != 2709) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
 }
@@ -2204,6 +2211,14 @@ public interface NamedIdentityClientInterface {
     suspend fun `setContactPinned`(`input`: SetContactPinnedInput): ContactMutationOutcome
 
     suspend fun `setMessagingName`(`name`: kotlin.String): LocalMessagingProfileOutcome
+
+    /**
+     * Read the initial projection, or wait until this owner's LXMF state changes.
+     * Cancel the wait when its screen, identity or host generation is replaced.
+     * A stopped projection or `None` ends this subscription; resume with no cursor
+     * after the identity becomes available again.
+     */
+    suspend fun `waitLxmfChange`(`afterProjectionRevision`: kotlin.ULong?): LxmfHealth?
 
     companion object
 }
@@ -3059,6 +3074,32 @@ open class NamedIdentityClient: Disposable, AutoCloseable, NamedIdentityClientIn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeLocalMessagingProfileOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
+    /**
+     * Read the initial projection, or wait until this owner's LXMF state changes.
+     * Cancel the wait when its screen, identity or host generation is replaced.
+     * A stopped projection or `None` ends this subscription; resume with no cursor
+     * after the identity becomes available again.
+     */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `waitLxmfChange`(`afterProjectionRevision`: kotlin.ULong?) : LxmfHealth? {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change(
+                uniffiHandle,
+                FfiConverterOptionalULong.lower(`afterProjectionRevision`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterOptionalTypeLxmfHealth.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -18408,6 +18449,38 @@ public object FfiConverterOptionalTypeDevelopmentNodeOperation: FfiConverterRust
         } else {
             buf.put(1)
             FfiConverterTypeDevelopmentNodeOperation.write(value, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterOptionalTypeLxmfHealth: FfiConverterRustBuffer<LxmfHealth?> {
+    override fun read(buf: ByteBuffer): LxmfHealth? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeLxmfHealth.read(buf)
+    }
+
+    override fun allocationSize(value: LxmfHealth?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeLxmfHealth.allocationSize(value)
+        }
+    }
+
+    override fun write(value: LxmfHealth?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeLxmfHealth.write(value, buf)
         }
     }
 }
