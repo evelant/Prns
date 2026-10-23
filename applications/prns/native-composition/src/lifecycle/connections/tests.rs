@@ -53,7 +53,7 @@ fn stopped_settings_survive_reopen_and_reject_stale_revision_and_owner() {
     let dir = tempfile::tempdir().unwrap();
     let supervisor = open(dir.path());
     let initial = read(&supervisor);
-    assert_eq!(initial.settings, ConnectionSettings::default());
+    assert_eq!(initial.settings, StoredSettings::default().settings);
     let input = change(&initial, 4242);
     assert!(matches!(
         foreign_block_on(settings_with_supervisor(&supervisor, Some(input.clone()))),
