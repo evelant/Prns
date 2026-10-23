@@ -39,6 +39,22 @@ Confirm the physical model, radio band, flash size and existing partition layout
 ESP32-S3 detection alone cannot distinguish these boards. Do not interchange V4
 and V4 R8 images. Tracker V2 and nRF menu support remain separate work.
 
+## Board controls and peripheral checks
+
+On V3/V3.1, V4, V4 R8 and T-Beam Supreme, use the BOOT/user button on GPIO0,
+not Reset or the Supreme's PMU/power button. Short presses move the selection;
+holding activates it. Release between holds and release BOOT before reset or
+power-up so the board starts normally instead of entering its ROM downloader.
+The E290 uses its GPIO21 user button.
+
+Check that the invitation, confirmation code and both action rows fit the display.
+Exercise Screen Off and wake after pairing. On Supreme, distinguish an OLED
+recovery failure from lost controller access, and record USB/battery conditions:
+unplugging USB while a battery remains connected is not a full power cycle.
+Optional V4/Supreme GNSS must not be required for pairing. If fitted, check GPS
+On/Off without losing menu control or authenticated access; record receiver and
+fix results separately.
+
 ## Preserve existing installations
 
 Use the canonical board package and partition table. Back up all flash privately
@@ -79,6 +95,21 @@ this lane so prior authorization cannot hide a failed pairing attempt.
    checking state, not by automatically replaying authorization.
 8. Reopen pairing after each failed/cancelled attempt. On V3, repeat open/cancel
    ten times and make five sequential authenticated reads to check stability.
+
+Also test a missing second approval with the independent controller: approve
+only on the board, wait beyond the 60-second attempt deadline, and confirm no
+Paired result or usable new authorization. Reopen pairing and complete a fresh
+attempt. Preserve leading zeroes in the eight-character invitation; the initial
+invitation window is about 120 seconds. A board approval screen or queued
+announcement alone does not establish a saved grant.
+
+After negative checks, perform an authenticated read with the original controller.
+If the new client can check target-side authorization, verify denial there too;
+a missing saved-target entry alone does not establish target-side denial.
+For a bounded stability pass, keep the board connected for at least 15 minutes,
+use menus and occasional authenticated reads, and record resets or growing delays.
+Keep an already configured radio's ordinary traffic unchanged and report it;
+this pass does not establish other traffic loads or indefinite uptime.
 
 An unconfigured LoRa card should show **SubG / Setup**, with no Failed state.
 Pairing alone must not choose a region/profile or start receiving/transmitting.
