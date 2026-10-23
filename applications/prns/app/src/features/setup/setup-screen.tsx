@@ -132,6 +132,15 @@ export function SetupScreen() {
           </InfoDisclosure>
         </Card>
       )}
+      {stage === "complete" && running ? (
+        <Card>
+          <CardHeader title="Add a board when you need one" />
+          <BodyText>
+            Your setup is complete without a board. You can pair one now or later from Nodes.
+          </BodyText>
+          <NavigationLink href="/nodes/pair">Add a board</NavigationLink>
+        </Card>
+      ) : null}
       <NavigationLink href="/inbox">
         {stage === "complete" ? "Open inbox" : "Finish later"}
       </NavigationLink>

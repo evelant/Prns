@@ -382,3 +382,28 @@ test("failed identity selection preserves the current route and unsaved name", a
   expect(view.getByDisplayValue("Personal draft")).toBeTruthy();
   expect(mockSaveName).not.toHaveBeenCalled();
 });
+
+test("offers optional board pairing only after setup and never starts board or transport work", async () => {
+  ready();
+  const view = render(<SetupScreen />);
+  expect(view.queryByText("Add a board when you need one")).toBeNull();
+  expect(mockLinks).not.toContain("/nodes/pair");
+  fireEvent.press(view.getByRole("button", { name: "Continue to your identity" }));
+  await waitFor(() =>
+    expect(view.getByRole("button", { name: "Save and continue" })).toBeEnabled(),
+  );
+  fireEvent.changeText(view.getByLabelText("Name others see"), "Ari");
+  fireEvent.press(view.getByRole("button", { name: "Save and continue" }));
+  await waitFor(() => expect(view.getByText("Add a board when you need one")).toBeTruthy());
+  expect(mockLinks).toContain("/nodes/pair");
+  expect(mockLinks).toContain(`/inbox?owner=${identityReferenceKey(reference)}`);
+  expect(mockRuntime.startNode).not.toHaveBeenCalled();
+  expect(mockEnable).not.toHaveBeenCalled();
+  expect(mockRequestPermission).not.toHaveBeenCalled();
+  expect(mockRadio).not.toHaveBeenCalled();
+  expect(mockDiscovery).not.toHaveBeenCalled();
+
+  mockRuntime.snapshot.runtime = Bindings.DevelopmentNodeRuntime.Stopped;
+  view.rerender(<SetupScreen />);
+  expect(view.queryByText("Add a board when you need one")).toBeNull();
+});
