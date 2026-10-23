@@ -3880,6 +3880,81 @@ mod tests {
     }
 
     #[tokio::test]
+    async fn authenticated_nameless_announce_is_discovered_and_resolves_the_recipient() {
+        let (_root, _database, submitter) = shared_database();
+        let network = Arc::new(DurableFakeNetwork::default());
+        let service = start_durable(network.clone(), submitter).await;
+        let callbacks = service.callbacks();
+        let (peer, destination) = peer_facts();
+        let local = PrivateIdentityMaterial::from_bytes(LOCAL_SECRET);
+        assert_eq!(
+            callbacks.on_authenticated_announce(&authenticated_observation(
+                [0xff; 16],
+                peer.identity_hash(),
+                &[],
+            )),
+            CallbackOutcome::InvalidDestinationAssociation
+        );
+        assert_eq!(
+            callbacks.on_authenticated_announce(&authenticated_observation(
+                destination,
+                local.identity_hash(),
+                &[],
+            )),
+            CallbackOutcome::InvalidDestinationAssociation
+        );
+        assert_eq!(
+            callbacks.on_authenticated_announce(&authenticated_observation(
+                service.local_destination(),
+                local.identity_hash(),
+                &[],
+            )),
+            CallbackOutcome::Ignored
+        );
+        assert!(service
+            .snapshot(all_messages())
+            .await
+            .unwrap()
+            .peers
+            .is_empty());
+        assert_eq!(
+            callbacks.on_authenticated_announce(&authenticated_observation(
+                destination,
+                peer.identity_hash(),
+                &[],
+            )),
+            CallbackOutcome::Enqueued
+        );
+        let snapshot =
+            wait_for_durable_snapshot(&service, |snapshot| snapshot.peers.len() == 1).await;
+        assert_eq!(snapshot.peers[0].destination, destination);
+        assert_eq!(
+            snapshot.peers[0].announced_identity,
+            *peer.identity_hash().as_bytes()
+        );
+        assert_eq!(snapshot.peers[0].display_name, None);
+        assert_eq!(snapshot.peers[0].required_stamp_cost, None);
+        assert_eq!(
+            snapshot.peers[0].source_interface,
+            *TEST_INTERFACE.as_bytes()
+        );
+        assert!(matches!(
+            service
+                .send_direct_text_to_identity(
+                    destination,
+                    Some(*peer.identity_hash().as_bytes()),
+                    1_700_000_000_000,
+                    b"",
+                    b"nameless recipient",
+                )
+                .await,
+            DurableSendDirectTextOutcome::Accepted { .. }
+        ));
+        assert_eq!(network.path_requests.load(Ordering::Acquire), 0);
+        service.stop().await.unwrap();
+    }
+
+    #[tokio::test]
     async fn newly_resolved_stamp_requirement_is_checked_before_any_message_is_accepted() {
         let (_root, _database, submitter) = shared_database();
         let network = Arc::new(DurableFakeNetwork::default());
