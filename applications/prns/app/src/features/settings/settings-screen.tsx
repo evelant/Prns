@@ -6,7 +6,15 @@ import { Alert } from "react-native";
 import { runtimeProvider } from "@/native/runtime-provider";
 import { useScaffoldState } from "@/state/scaffold-state-context";
 import { NavigationLink } from "@/ui/navigation-link";
-import { BodyText, Button, Card, CardStack, Screen, ScreenHeading } from "@/ui/primitives";
+import {
+  BodyText,
+  Button,
+  Card,
+  CardStack,
+  Screen,
+  ScreenHeading,
+  Subheading,
+} from "@/ui/primitives";
 import { Disclosure } from "@/ui/disclosure";
 
 export function SettingsScreen() {
@@ -51,7 +59,11 @@ export function SettingsScreen() {
   return (
     <Screen>
       <ScreenHeading>Settings</ScreenHeading>
-      <NavigationLink href="/more/settings/about">About prns</NavigationLink>
+      <CardStack>
+        <Subheading>App information</Subheading>
+        <NavigationLink href="/more/settings/about">About prns</NavigationLink>
+        <NavigationLink href="/more/help">Help</NavigationLink>
+      </CardStack>
       <Card>
         <Disclosure label="App data">
           <BodyText muted>

@@ -1,5 +1,6 @@
 import * as Bindings from "@prns-internal/expo";
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
+import { Link } from "expo-router";
 import { type ReactNode, StrictMode } from "react";
 import { Share } from "react-native";
 import {
@@ -446,6 +447,18 @@ it("renders and shares exactly the native portable URI, only after a user action
   await act(async () => fireEvent.press(view.getByText("Share contact link")));
   expect(share).toHaveBeenCalledWith({ message: mockCard.uri });
   expect(mockExport).toHaveBeenCalledWith({ expectedLocalIdentity: mockIdentity });
+});
+
+it("returns from the contact QR to My profile with the same identity owner", async () => {
+  const { work, selectOwner } = namedImportFixture();
+  selectOwner(work);
+  const view = render(<MyContactCardScreen />);
+  await view.findByTestId("my-contact-qr");
+  expect(view.getByRole("link", { name: "Back to Contacts" })).toBeTruthy();
+  expect(view.UNSAFE_getByType(Link).props.href).toEqual({
+    pathname: "/contacts",
+    params: { section: "profile", owner: identityReferenceKey(work.reference) },
+  });
 });
 
 it("encodes a maximum-size portable URI without a global TextEncoder on Hermes", () => {

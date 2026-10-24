@@ -137,7 +137,7 @@ export function NearbySetupStep({ onContinue }: { readonly onContinue: () => voi
           Your current discovery group and radio settings are kept. Phones using different discovery
           groups will not find each other.
         </BodyText>
-        <NavigationLink href="/more/interfaces">Connection settings</NavigationLink>
+        <NavigationLink href="/more/interfaces">Interface settings</NavigationLink>
         <NavigationLink href="/nodes/pair">Pair a radio node</NavigationLink>
       </InfoDisclosure>
     </Card>

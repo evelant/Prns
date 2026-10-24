@@ -210,36 +210,40 @@ function NetworkSession({
       />
 
       {tab === "connections" ? (
-        <Card>
-          <CardHeader title="Bluetooth connections">
-            <Badge tone={status.warning ? "warning" : "neutral"}>{status.label}</Badge>
-          </CardHeader>
-          <BodyText muted>{status.description}</BodyText>
-          {peers.length === 0 ? null : (
-            <BodyText muted>
-              Traffic totals below are for each connection, not the whole node.
-            </BodyText>
-          )}
-          {peers.map((peer) => (
-            <NetworkRow
-              key={formatBytes(peer.interfaceId)}
-              title={peer.name ?? "Nearby device"}
-              summary={`This connection: received ${formatTraffic(peer.rxBytes)} · sent ${formatTraffic(peer.txBytes)}`}
-              detailLabel={`Connection details for ${peer.name ?? shortNetworkId(peer.interfaceId)}`}
-            >
-              {peer.rssiDbm === undefined ? null : (
-                <KeyValue label="Signal" value={`${peer.rssiDbm} dBm`} />
-              )}
-              {peer.details === undefined ? null : <BodyText muted>{peer.details}</BodyText>}
-              <KeyValue label="Received on this connection" value={`${peer.rxBytes} bytes`} />
-              <KeyValue label="Sent on this connection" value={`${peer.txBytes} bytes`} />
-              <KeyValue label="Connection ID" value={formatBytes(peer.interfaceId)} />
-            </NetworkRow>
-          ))}
-          <CardHeader title="LAN and TCP connections" />
-          <IpPhysicalConnections snapshot={runtime.connectionSnapshot} />
-          <NavigationLink href="/more/interfaces">Connection settings</NavigationLink>
-        </Card>
+        <>
+          <Card>
+            <CardHeader title="Bluetooth connections">
+              <Badge tone={status.warning ? "warning" : "neutral"}>{status.label}</Badge>
+            </CardHeader>
+            <BodyText muted>{status.description}</BodyText>
+            {peers.length === 0 ? null : (
+              <BodyText muted>
+                Traffic totals below are for each connection, not the whole node.
+              </BodyText>
+            )}
+            {peers.map((peer) => (
+              <NetworkRow
+                key={formatBytes(peer.interfaceId)}
+                title={peer.name ?? "Nearby device"}
+                summary={`This connection: received ${formatTraffic(peer.rxBytes)} · sent ${formatTraffic(peer.txBytes)}`}
+                detailLabel={`Connection details for ${peer.name ?? shortNetworkId(peer.interfaceId)}`}
+              >
+                {peer.rssiDbm === undefined ? null : (
+                  <KeyValue label="Signal" value={`${peer.rssiDbm} dBm`} />
+                )}
+                {peer.details === undefined ? null : <BodyText muted>{peer.details}</BodyText>}
+                <KeyValue label="Received on this connection" value={`${peer.rxBytes} bytes`} />
+                <KeyValue label="Sent on this connection" value={`${peer.txBytes} bytes`} />
+                <KeyValue label="Connection ID" value={formatBytes(peer.interfaceId)} />
+              </NetworkRow>
+            ))}
+          </Card>
+          <Card>
+            <CardHeader title="LAN and TCP connections" />
+            <IpPhysicalConnections snapshot={runtime.connectionSnapshot} />
+          </Card>
+          <NavigationLink href="/more/interfaces">Interface settings</NavigationLink>
+        </>
       ) : null}
 
       {tab === "routes" ? (

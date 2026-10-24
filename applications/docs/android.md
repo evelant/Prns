@@ -168,7 +168,7 @@ board without touching the phone UI. Host auto-selection does not request paths
 or opt into path responses. Record this extra discovery traffic when interpreting
 background checks; discovery is not a delivery proof or a passive recovery test.
 
-The current source provides **More → Connections → Add TCP peer** for a saved
+The current source provides **More → Interfaces → LAN & TCP → Add TCP peer** for a saved
 hostname/IP and port. Enable that profile to reach a controlled listening peer
 directly, without a transport board. See the [LAN/TCP checkpoint](ip-connections.md)
 for build-specific evidence and the [maintainer quickstart](group-maintainer-alpha.md)

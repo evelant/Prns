@@ -786,7 +786,7 @@ export function DevelopmentRuntimeProvider({
         ) {
           return {
             type: "operationFailure",
-            detail: "This phone's node changed. Refresh Connections to check Bluetooth.",
+            detail: "This phone's node changed. Refresh Interfaces to check Bluetooth.",
           };
         }
         const next = await owner.runtime.readDevelopmentNodeSnapshot();

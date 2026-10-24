@@ -237,7 +237,7 @@ export function SetupLanChoice() {
     <CardSection title="Local network discovery">
       <BodyText>
         Find compatible devices on the same local network. You can also connect to a saved TCP peer
-        from connection settings.
+        from Interfaces → LAN & TCP.
       </BodyText>
       {enabled ? (
         <Badge>

@@ -89,7 +89,7 @@ export function NodesScreen() {
         )}
         <CardSection>
           <ActionRow>
-            <NavigationLink href="/more/interfaces">Connections</NavigationLink>
+            <NavigationLink href="/more/interfaces">Interfaces</NavigationLink>
             <NavigationLink href="/more/activity">Network</NavigationLink>
           </ActionRow>
         </CardSection>

@@ -26,7 +26,7 @@ providers. Snapshots distinguish saved and applied revisions, retain closing
 attachments and expose physical peers/endpoints separately from logical totals.
 TCP retries resolve hostnames again and race bounded alternate IPv4/IPv6 answers.
 
-Connections includes LAN enablement, discovery details and permission recovery;
+Interfaces → LAN & TCP includes LAN enablement, discovery details and permission recovery;
 TCP add/edit/enable/disable/remove/retry; and physical endpoint/traffic details.
 Setup accepts LAN, TCP or offline continuation independently of Bluetooth.
 

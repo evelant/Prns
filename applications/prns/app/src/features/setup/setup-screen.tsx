@@ -26,7 +26,7 @@ export function SetupScreen() {
         {!running
           ? "1 of 3 · This phone"
           : stage === "nearby"
-            ? "2 of 3 · Connections"
+            ? "2 of 3 · Interfaces"
             : stage === "identity"
               ? "3 of 3 · Your identity"
               : "Setup complete"}
@@ -93,7 +93,7 @@ export function SetupScreen() {
             />
           )}
           <Button tone="secondary" onPress={() => setStage("nearby")}>
-            Back to connections
+            Back to interfaces
           </Button>
         </>
       ) : (

@@ -14,8 +14,11 @@ export function ConnectionDetailScreen({ editing = false }: { readonly editing?:
         {...(profileId === undefined ? {} : { profileId })}
         initiallyEditing={editing}
       />
-      <NavigationLink href="/more/interfaces" direction="back">
-        Back to Connections
+      <NavigationLink
+        href={{ pathname: "/more/interfaces", params: { section: "ip" } }}
+        direction="back"
+      >
+        Back to Interfaces
       </NavigationLink>
     </Screen>
   );

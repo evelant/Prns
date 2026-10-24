@@ -1,6 +1,6 @@
 import * as Bindings from "@prns-internal/expo";
 import type { DevelopmentNodeSnapshot } from "@prns-internal/expo";
-import { act, fireEvent, render } from "@testing-library/react-native";
+import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import { Linking, StyleSheet, View } from "react-native";
 import { interfaceId } from "personal-rns/contract";
@@ -129,7 +129,9 @@ const mockSetBluetooth = jest.fn<
   [boolean]
 >();
 const mockRefresh = jest.fn<ReturnType<ConnectionsRuntime["refreshSnapshot"]>, []>();
-let mockRuntime: { -readonly [Key in keyof ConnectionsRuntime]: ConnectionsRuntime[Key] };
+let mockRuntime: { -readonly [Key in keyof ConnectionsRuntime]: ConnectionsRuntime[Key] } & Partial<
+  Pick<DevelopmentRuntimeView, "readConnectionSettings" | "updateConnectionSettings">
+>;
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -252,9 +254,9 @@ describe("Bluetooth status", () => {
     expect(view.getByText("Running")).toBeTruthy();
     expect(view.getByText("Off")).toBeTruthy();
     expect(view.queryByText(/Your node keeps running\./)).toBeNull();
-    fireEvent.press(view.getByRole("button", { name: "About connections" }));
+    fireEvent.press(view.getByRole("button", { name: "About interfaces" }));
     expect(view.getByText(/Your node keeps running\./)).toBeTruthy();
-    fireEvent.press(view.getByRole("button", { name: "Close About connections" }));
+    fireEvent.press(view.getByRole("button", { name: "Close About interfaces" }));
     expect(view.getByRole("button", { name: "Enable Bluetooth connections" })).toBeEnabled();
     expect(view.queryByText("Node stopped")).toBeNull();
   });
@@ -373,7 +375,7 @@ describe("Bluetooth status", () => {
 });
 
 describe("connection controls and recovery", () => {
-  test("exposes persistent discovery controls under the advanced Connections section", async () => {
+  test("exposes persistent discovery controls under the advanced Bluetooth section", async () => {
     const view = render(<ConnectionsScreen />);
     expect(mockRuntime.readBluetoothDiscoveryGroups).not.toHaveBeenCalled();
     await act(async () =>
@@ -641,4 +643,51 @@ describe("connection controls and recovery", () => {
       }
     },
   );
+});
+
+test("interface tabs group controls and preserve an unsaved TCP peer without changing settings", async () => {
+  const read = jest.fn(async () => ({
+    type: "outcome" as const,
+    outcome: Bindings.ConnectionSettingsOutcome.Ready.new({
+      snapshot: {
+        ownerId: 1n,
+        revision: 1n,
+        settings: { lanEnabled: false, tcpPeers: [] },
+      },
+    }),
+  }));
+  const update = jest.fn();
+  mockRuntime = { ...mockRuntime, readConnectionSettings: read, updateConnectionSettings: update };
+  const view = render(<ConnectionsScreen />);
+  expect(view.getByRole("header", { name: "Interfaces" })).toBeTruthy();
+  expect(view.getByRole("tab", { name: "Bluetooth", selected: true })).toBeTruthy();
+  expect(view.getByRole("button", { name: "Change discovery groups" })).toBeTruthy();
+  expect(view.queryByRole("button", { name: "Add TCP peer" })).toBeNull();
+
+  fireEvent.press(view.getByRole("tab", { name: "LAN & TCP" }));
+  expect(view.getByRole("tab", { name: "LAN & TCP", selected: true })).toBeTruthy();
+  expect(view.queryByRole("button", { name: "Change discovery groups" })).toBeNull();
+  expect(view.queryByRole("button", { name: "Disable Bluetooth connections" })).toBeNull();
+  expect(view.getByRole("header", { name: "Local network" })).toBeTruthy();
+  expect(view.getByRole("header", { name: "Live LAN and TCP connections" })).toBeTruthy();
+  await waitFor(() => expect(view.getByRole("button", { name: "Add TCP peer" })).toBeEnabled());
+  fireEvent.press(view.getByRole("button", { name: "Add TCP peer" }));
+  fireEvent.changeText(view.getByLabelText("Peer name"), "Home relay draft");
+  fireEvent.changeText(view.getByLabelText("Hostname or IP address"), "relay.example.org");
+
+  fireEvent.press(view.getByRole("tab", { name: "Bluetooth" }));
+  expect(view.queryByLabelText("Peer name")).toBeNull();
+  fireEvent.press(view.getByRole("tab", { name: "LAN & TCP" }));
+  expect(view.getByLabelText("Peer name").props.value).toBe("Home relay draft");
+  expect(view.getByLabelText("Hostname or IP address").props.value).toBe("relay.example.org");
+  expect(read).toHaveBeenCalledTimes(1);
+  expect(update).not.toHaveBeenCalled();
+  expect(mockSetBluetooth).not.toHaveBeenCalled();
+});
+
+test("returning from TCP peer details opens the LAN and TCP section", () => {
+  const view = render(<ConnectionsScreen initialSection="ip" />);
+  expect(view.getByRole("tab", { name: "LAN & TCP", selected: true })).toBeTruthy();
+  expect(view.getByRole("header", { name: "Saved TCP peers" })).toBeTruthy();
+  expect(view.queryByRole("button", { name: "Disable Bluetooth connections" })).toBeNull();
 });

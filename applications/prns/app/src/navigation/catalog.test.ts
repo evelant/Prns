@@ -80,7 +80,7 @@ describe("screen catalog", () => {
 
   it("distinguishes implemented native state from remaining placeholders", () => {
     expect(screenById("more.index")).toMatchObject({
-      summary: "Open identities, connections, network inspection, settings, and help.",
+      summary: "Open identities, interfaces, network inspection, settings, and help.",
       limitation: "Messaging and node connections require the iOS or Android app.",
     });
     expect(screenById("notifications.settings").limitation).toBe(

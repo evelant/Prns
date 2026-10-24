@@ -160,6 +160,7 @@ test("keeps connection, route and announcement counts independent and details se
   expect(view.getByRole("tab", { name: "Routes 2" })).toBeTruthy();
   expect(view.getByRole("tab", { name: "Announcements 1" })).toBeTruthy();
   expect(view.getByText("This connection: received 13 B · sent 21 B")).toBeTruthy();
+  expect(view.getByRole("link", { name: "Interface settings" })).toBeTruthy();
   expect(view.queryByText(formatBytes(peer.interfaceId))).toBeNull();
   fireEvent.press(view.getByRole("button", { name: "Connection details for Nearby phone" }));
   expect(view.getByText(formatBytes(peer.interfaceId))).toBeTruthy();

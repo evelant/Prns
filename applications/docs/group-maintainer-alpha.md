@@ -22,7 +22,7 @@ recorded checks, known limits and the remaining APK/TestFlight handoff gates.
 ## Use LAN discovery or a saved TCP peer
 
 Use a build containing the [LAN/TCP implementation](ip-connections.md).
-Open **More → Connections**. When connection settings have never been saved, the
+Open **More → Interfaces → LAN & TCP**. When connection settings have never been saved, the
 app adds and enables **PRNS public node** at `prns.fly.dev:4242`. Existing saved
 settings are preserved, including an empty list or a disabled or edited profile;
 removing the default is durable. Use **Add TCP peer** to save another reachable
@@ -36,7 +36,7 @@ compatible Bonjour peers; stock multicast-only peers await Apple's separate
 entitlement/provisioning lane. Network isolation or blocked traffic can still
 prevent discovery or connection.
 
-Check the physical peer/endpoint in Connections, then exchange a unique message
+Check the physical peer/endpoint in Interfaces, then exchange a unique message
 and check its actual receipt. If testing TCP alone, disable LAN and Bluetooth
 inside the test app. If testing LAN alone, disable saved TCP and Bluetooth.
 Restore the intended connections afterwards. Leaving another path enabled can
@@ -57,7 +57,7 @@ On a fresh installation, choose **Set up this phone → Connect this phone**. St
 this phone and choose Bluetooth, LAN, TCP or offline continuation. Allow the
 permission for the connection you use, then choose an identity. Set **Name others
 see** if desired. Existing installations can open connection setup from Inbox or
-Connections.
+**Interfaces → Setup and diagnostics**.
 
 The identity control at the top chooses which identity Inbox and Contacts use.
 **More → Identities** creates and manages independent identities such as Personal
@@ -78,7 +78,7 @@ pairings or pause other identities.
 
 ## Share a contact, invite and send
 
-1. On one phone, open **Contacts → My contact QR** or **Share contact link**.
+1. On one phone, open **Contacts → My profile → My contact QR** or **Share contact link**.
    On the other phone, choose **Scan or paste contact**, select **Save contact to**,
    review the card and save it. Repeat in the other direction. Choosing the save
    identity does not change the default identity. A signed card authenticates its
@@ -129,7 +129,7 @@ that app, and confirm its original message and paused state remain. Resume the
 receiver, then the sender, and wait for the original message and its receipt.
 
 To test a connection outage instead, disable the receiving app's Bluetooth
-connection under **Nodes → This phone → Connections**. That makes it unreachable
+connection under **Nodes → This phone → Interfaces**. That makes it unreachable
 only if no other usable path remains. Re-enable it and observe the same saved
 message. A Bluetooth test is not evidence of a LoRa hop; isolated radio testing
 has a [separate procedure](../../prns-groups/transport/reticulum/docs/lora-qualification.md).
@@ -141,7 +141,7 @@ messages/invitations before starting new work.
 
 ## When something stalls
 
-Check the chosen identity is Active, the local node is running, and Connections
+Check the chosen identity is Active, the local node is running, and Interfaces
 shows actual connected devices. **Ready** alone is not a connection to the peer.
 Confirm matching discovery groups and keep both apps open. Inspect **Delivery
 details** for retry, storage or membership issues. Announcements help discovery;
