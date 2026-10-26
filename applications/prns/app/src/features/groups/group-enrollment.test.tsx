@@ -34,6 +34,12 @@ const mockConversation: Bindings.GroupConversation = {
   ],
   ownerIdentity: mockOwner,
   canInvite: true,
+  canSend: false,
+  lifecycle: Bindings.GroupLifecycle.Active,
+  canRemoveMembers: true,
+  canLeave: false,
+  canClose: true,
+  canDeleteLocal: false,
   synchronization: Bindings.GroupSynchronizationState.Stopped.new(),
   progress: { running: false, observed: false, peers: [] },
 };
@@ -47,6 +53,8 @@ const mockInvitation: Bindings.GroupInvitation = {
   outgoing: false,
   state: Bindings.GroupInvitationState.Offered,
   waitingForDelivery: false,
+  canCancel: false,
+  canDismiss: false,
 };
 let mockSnapshot: Pick<
   Bindings.DevelopmentNodeSnapshot,

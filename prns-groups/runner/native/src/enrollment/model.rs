@@ -5,7 +5,10 @@ pub const MAX_GROUPS: usize = 4;
 pub const MAX_INVITATIONS: usize = 16;
 pub const INVITATION_LIFETIME_SECS: u64 = 7 * 24 * 60 * 60;
 pub(super) const STATE_KEY: &[u8] = b"enrollment/state/v1";
-pub(super) const MAX_CATALOG_BYTES: usize = 262_144;
+pub(super) const MAX_CATALOG_BYTES: usize = 2_097_152;
+pub(super) const MAX_REQUESTS: usize = 128;
+pub(super) const ORDINARY_REQUESTS: usize = 64;
+pub(super) const CATALOG_MANAGEMENT_RESERVE: usize = MAX_GROUPS * MAX_FRAME_BYTES;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum InvitationState {
@@ -14,6 +17,7 @@ pub enum InvitationState {
     Joined,
     Declined,
     Expired,
+    Cancelled,
 }
 #[derive(Clone, Debug)]
 pub struct Invitation {
@@ -28,6 +32,8 @@ pub struct Invitation {
     /// The accepted join is retrying while the owner finishes its current
     /// authored deliveries. This does not assert that every member is drained.
     pub waiting_for_delivery: bool,
+    pub can_cancel: bool,
+    pub can_dismiss: bool,
 }
 #[derive(Clone, Debug)]
 pub struct Work {
@@ -79,6 +85,7 @@ pub(super) struct Manifest {
     pub revision: u64,
     pub epoch: u64,
     pub commit_digest: [u8; 32],
+    pub kind: ControlKind,
     pub members: Vec<Member>,
 }
 #[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -99,14 +106,13 @@ impl Signed {
         title: &str,
     ) -> Result<(), EnrollmentError> {
         let m = &self.manifest;
-        if m.version != 1
+        if m.version != 2
             || m.group != group
             || m.owner != owner.rns
             || m.title != title
             || m.members.is_empty()
             || m.members.len() > 8
             || m.revision != m.epoch
-            || Some(m.members.len() as u64) != m.revision.checked_add(1)
             || !m.members.contains(owner)
             || self.signature.len() != 64
             || m.members.windows(2).any(|p| p[0].endpoint >= p[1].endpoint)
@@ -125,6 +131,13 @@ impl Signed {
             .map_err(|_| EnrollmentError::Authentication)
     }
 }
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub(super) enum ControlKind {
+    Create,
+    Add,
+    Remove(Member),
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(super) struct Control {
@@ -135,6 +148,7 @@ pub(super) struct Control {
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(super) struct Added {
+    pub member: Member,
     pub invitation: [u8; 32],
     pub request_hash: [u8; 32],
     pub signed: Signed,
@@ -149,6 +163,11 @@ pub(super) struct Snapshot {
     pub package: Option<Vec<u8>>,
     pub controls: Vec<Control>,
     pub added: Vec<Added>,
+    pub lifecycle: GroupLifecycle,
+    pub terminals: Vec<Terminal>,
+    pub notice_acks: Vec<[u8; 32]>,
+    /// Durable management result, committed with the MLS mutation.
+    pub management: Vec<Request>,
 }
 impl Snapshot {
     pub fn ready(&self) -> Result<bool, EnrollmentError> {
@@ -178,6 +197,8 @@ pub(super) struct Entry {
     pub namespace: [u8; 16],
     pub incarnation: [u8; 24],
     pub created: u64,
+    pub generation: u32,
+    pub invitation: Option<[u8; 32]>,
 }
 impl Drop for Entry {
     fn drop(&mut self) {
@@ -213,6 +234,7 @@ pub(super) struct Invite {
     /// Bind a deferred join to its exact member and KeyPackage across restarts.
     #[serde(default)]
     pub deferred_join: Option<[u8; 32]>,
+    pub dismissed: bool,
 }
 #[derive(Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -227,6 +249,12 @@ pub(super) struct Catalog {
     pub version: u8,
     pub local: [u8; 16],
     pub entries: Vec<Entry>,
+    pub archives: Vec<Entry>,
+    pub retired: Vec<Retired>,
+    pub departures: Vec<Departure>,
+    pub notifications: Vec<Notification>,
+    pub closed_groups: Vec<Terminal>,
+    pub cancellations: Vec<Cancellation>,
     pub invites: Vec<Invite>,
     pub requests: Vec<Request>,
     #[serde(default)]
@@ -239,6 +267,13 @@ pub(super) struct Catalog {
 #[derive(Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub(super) enum Frame {
+    Leave(Departure),
+    Terminal(Terminal),
+    Cancel {
+        invitation: [u8; 32],
+        group: [u8; 32],
+        expires: u64,
+    },
     Offer(Offer),
     Join {
         invitation: [u8; 32],
@@ -254,6 +289,7 @@ pub(super) enum Frame {
         invitation: [u8; 32],
     },
     Sync {
+        member: Member,
         group: [u8; 32],
         head: [u8; 32],
     },
@@ -263,6 +299,8 @@ pub(super) enum Frame {
 pub(super) enum Reply {
     Ack,
     Expired,
+    Cancelled,
+    Terminal(Terminal),
     AwaitingDelivery,
     Welcome { added: Added, tip: Box<Signed> },
     Control(Option<Control>),
@@ -275,7 +313,10 @@ pub(super) fn encode<T: Serialize>(value: &T) -> Result<Vec<u8>, EnrollmentError
     serde_json::to_vec(value).map_err(|_| EnrollmentError::Corrupt)
 }
 pub(super) fn frame<T: Serialize>(value: &T) -> Result<Vec<u8>, EnrollmentError> {
-    let bytes = encode(value)?;
+    let bytes = encode(&Wire {
+        version: 2,
+        payload: value,
+    })?;
     if bytes.len() > MAX_FRAME_BYTES {
         Err(EnrollmentError::Capacity)
     } else {
@@ -286,7 +327,9 @@ pub(super) fn decode<T: serde::de::DeserializeOwned>(bytes: &[u8]) -> Result<T, 
     if bytes.len() > MAX_FRAME_BYTES {
         return Err(EnrollmentError::Capacity);
     }
-    serde_json::from_slice(bytes).map_err(|_| EnrollmentError::Invalid)
+    require_version(bytes)?;
+    let wire: Wire<T> = serde_json::from_slice(bytes).map_err(|_| EnrollmentError::Invalid)?;
+    Ok(wire.payload)
 }
 pub(super) fn random<const N: usize>() -> Result<[u8; N], EnrollmentError> {
     let mut bytes = [0; N];
@@ -342,4 +385,104 @@ mod wire_bytes {
         }
         Ok(bytes)
     }
+}
+
+#[derive(Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Wire<T> {
+    version: u8,
+    payload: T,
+}
+
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Terminal {
+    pub statement: TerminalStatement,
+    #[serde(with = "wire_bytes")]
+    pub signature: Vec<u8>,
+}
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct TerminalStatement {
+    pub version: u8,
+    pub group: [u8; 32],
+    pub title: String,
+    pub owner: Member,
+    pub head: [u8; 32],
+    pub revision: u64,
+    pub kind: TerminalKind,
+}
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub(super) enum TerminalKind {
+    Removed(Member),
+    Closed,
+}
+impl Terminal {
+    pub fn verify(&self, group: [u8; 32], owner: &Member) -> Result<(), EnrollmentError> {
+        if self.statement.version != 2
+            || self.statement.group != group
+            || &self.statement.owner != owner
+            || self.signature.len() != 64
+        {
+            return Err(EnrollmentError::Authentication);
+        }
+        owner
+            .binding()
+            .verify_enrollment(&encode(&self.statement)?, &self.signature)
+            .map_err(|_| EnrollmentError::Authentication)
+    }
+    pub fn id(&self) -> Result<[u8; 32], EnrollmentError> {
+        Ok(hash(&encode(self)?))
+    }
+}
+#[derive(Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Departure {
+    pub id: [u8; 32],
+    pub group: [u8; 32],
+    pub owner: Member,
+    pub member: Member,
+    pub known_head: [u8; 32],
+}
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Notification {
+    pub proof: Terminal,
+    pub recipient: [u8; 16],
+    pub acknowledged: bool,
+}
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Retired {
+    pub group: [u8; 32],
+    pub owner: Member,
+    pub local: Member,
+    pub namespace: [u8; 16],
+    pub incarnation: [u8; 24],
+    pub purged: bool,
+    pub closed: Option<Terminal>,
+    pub invitations: Vec<[u8; 32]>,
+    pub audience: Vec<[u8; 16]>,
+}
+
+pub(super) fn require_version(bytes: &[u8]) -> Result<(), EnrollmentError> {
+    #[derive(Deserialize)]
+    struct Version {
+        version: u8,
+    }
+    let header: Version =
+        serde_json::from_slice(bytes).map_err(|_| EnrollmentError::UnsupportedVersion)?;
+    if header.version != 2 {
+        return Err(EnrollmentError::UnsupportedVersion);
+    }
+    Ok(())
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub(super) struct Cancellation {
+    pub invitation: [u8; 32],
+    pub group: [u8; 32],
+    pub owner: [u8; 16],
+    pub expires: u64,
 }

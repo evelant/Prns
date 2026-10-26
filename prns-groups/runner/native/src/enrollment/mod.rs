@@ -3,6 +3,7 @@
 //! The caller authenticates `handle`'s requester using an identified Reticulum
 //! Link and authenticates response peers against each Work's recipient.
 mod maintenance;
+mod management;
 mod model;
 pub use maintenance::{
     Maintenance, MAX_INCOMING_PER_PEER, MAX_LOCAL_INVITATIONS, MAX_UNACCEPTED_INCOMING,
@@ -19,7 +20,7 @@ pub enum CompletionActivity {
     Progress,
 }
 
-use crate::{profile, Provisioned};
+use crate::{profile, GroupLifecycle, Provisioned};
 use model::*;
 pub use model::{
     Invitation, InvitationState, Work, INVITATION_LIFETIME_SECS, MAX_FRAME_BYTES, MAX_GROUPS,
@@ -48,6 +49,12 @@ pub enum EnrollmentError {
     RequestConflict,
     NotOwner,
     NotJoined,
+    AlreadyJoined,
+    GroupClosed,
+    OwnerMustClose,
+    MemberNotFound,
+    StaleMembership,
+    UnsupportedVersion,
     Corrupt,
     Entropy,
     Storage(NativeError),
@@ -69,6 +76,34 @@ fn db_error(e: impl Into<redb::Error>) -> EnrollmentError {
     EnrollmentError::Database(e.into())
 }
 
+#[derive(Clone, Copy)]
+enum AdmissionClass {
+    Ordinary,
+    Management,
+}
+
+fn composition_error(
+    error: prns_groups_mls::CompositionError<NativeError, EnrollmentError>,
+) -> EnrollmentError {
+    use prns_groups_mls::{CompositionError, Error as MlsError, ProviderError};
+    use prns_groups_store::{OperationRejection, StoreError};
+    match error {
+        CompositionError::Application(error) => error,
+        CompositionError::Mls(
+            MlsError::Capacity(_)
+            | MlsError::Provider(ProviderError::Capacity(_))
+            | MlsError::Store(
+                StoreError::Capacity(_)
+                | StoreError::Backend(NativeError::Capacity)
+                | StoreError::OperationRejected(
+                    OperationRejection::RecoveryWindowFull | OperationRejection::ReservedCapacity,
+                ),
+            ),
+        ) => EnrollmentError::Capacity,
+        _ => EnrollmentError::Crypto,
+    }
+}
+
 pub struct Enrollment<'db> {
     database: &'db Database,
     local: IdentityHash,
@@ -86,16 +121,26 @@ impl<'db> Enrollment<'db> {
                 .map_err(db_error)?
                 .map(|v| Zeroizing::new(v.value().to_vec()));
             if let Some(bytes) = existing {
+                require_version(&bytes)?;
                 let catalog: Catalog =
                     serde_json::from_slice(&bytes).map_err(|_| EnrollmentError::Corrupt)?;
-                if catalog.version != 1 || catalog.local != local.into_bytes() {
+                if catalog.version != 2 {
+                    return Err(EnrollmentError::UnsupportedVersion);
+                }
+                if catalog.local != local.into_bytes() {
                     return Err(EnrollmentError::Authentication);
                 }
             } else {
                 let catalog = Catalog {
-                    version: 1,
+                    version: 2,
                     local: local.into_bytes(),
                     entries: Vec::new(),
+                    archives: Vec::new(),
+                    retired: Vec::new(),
+                    departures: Vec::new(),
+                    notifications: Vec::new(),
+                    closed_groups: Vec::new(),
+                    cancellations: Vec::new(),
                     invites: Vec::new(),
                     requests: Vec::new(),
                     request_retired_before: 0,
@@ -134,6 +179,9 @@ impl<'db> Enrollment<'db> {
             self.write(&catalog)?;
             group
         };
+        if catalog.retired.iter().any(|r| r.group == group) {
+            return Ok(GroupId(group));
+        }
         self.ensure_created(owner, Self::find(&catalog, group)?)?;
         Ok(GroupId(group))
     }
@@ -159,7 +207,7 @@ impl<'db> Enrollment<'db> {
                     |_, _, _| Ok::<_, EnrollmentError>(Admission::Reject(1)),
                     |tx, output| {
                         let manifest = Manifest {
-                            version: 1,
+                            version: 2,
                             group: entry.group,
                             owner: self.local.into_bytes(),
                             title: entry.title.clone(),
@@ -167,6 +215,7 @@ impl<'db> Enrollment<'db> {
                             revision: 0,
                             epoch: output.context.ok_or(EnrollmentError::Corrupt)?.epoch,
                             commit_digest: [0; 32],
+                            kind: ControlKind::Create,
                             members: vec![entry.local.clone()],
                         };
                         let signed = Signed {
@@ -184,7 +233,7 @@ impl<'db> Enrollment<'db> {
                         )
                     },
                 )
-                .map_err(|_| EnrollmentError::Crypto)?;
+                .map_err(composition_error)?;
             Ok(())
         })?;
         Ok(())
@@ -217,6 +266,7 @@ impl<'db> Enrollment<'db> {
             return Err(EnrollmentError::NotOwner);
         }
         self.adapter(owner, entry, None, |_, snapshot| {
+            Self::require_active(&snapshot)?;
             let manifest = &snapshot.current.ok_or(EnrollmentError::NotJoined)?.manifest;
             let pending = catalog
                 .invites
@@ -224,6 +274,7 @@ impl<'db> Enrollment<'db> {
                 .filter(|invite| {
                     invite.offer.group == group.0
                         && invite.offer.owner.rns == self.local.into_bytes()
+                        && !invite.dismissed
                         && invite.state == InvitationState::Pending
                         && now < invite.offer.expires
                         && !snapshot
@@ -267,10 +318,54 @@ impl<'db> Enrollment<'db> {
             acknowledged: false,
             terminal_at: None,
             deferred_join: None,
+            dismissed: false,
         });
         Self::remember(&mut catalog, request_id, fingerprint, id)?;
         self.write(&catalog)?;
         Ok(id)
+    }
+    /// Resolve an invitation's stable group without maintenance or other writes.
+    /// Dismissed and locally deleted invitations retain this association.
+    pub fn invitation_group(
+        &self,
+        invitation: [u8; 32],
+    ) -> Result<Option<GroupId>, EnrollmentError> {
+        let catalog = self.read()?;
+        let candidates = catalog
+            .invites
+            .iter()
+            .filter(|invite| invite.offer.id == invitation)
+            .map(|invite| invite.offer.group)
+            .chain(
+                catalog
+                    .entries
+                    .iter()
+                    .chain(&catalog.archives)
+                    .filter(|entry| entry.invitation == Some(invitation))
+                    .map(|entry| entry.group),
+            )
+            .chain(
+                catalog
+                    .retired
+                    .iter()
+                    .filter(|entry| entry.invitations.contains(&invitation))
+                    .map(|entry| entry.group),
+            )
+            .chain(
+                catalog
+                    .cancellations
+                    .iter()
+                    .filter(|entry| entry.invitation == invitation)
+                    .map(|entry| entry.group),
+            );
+        let mut result = None;
+        for group in candidates {
+            if result.is_some_and(|existing| existing != group) {
+                return Err(EnrollmentError::Corrupt);
+            }
+            result = Some(group);
+        }
+        Ok(result.map(GroupId))
     }
     pub fn invitations(
         &self,
@@ -282,9 +377,27 @@ impl<'db> Enrollment<'db> {
         catalog
             .invites
             .iter()
+            .filter(|invite| !invite.dismissed)
             .map(|invite| {
                 let (state, waiting_for_delivery) =
                     self.invitation_state(owner, &catalog, invite, now)?;
+                let can_cancel = if invite.offer.owner.rns == self.local.into_bytes()
+                    && state == InvitationState::Pending
+                {
+                    if let Ok(entry) = Self::find(&catalog, invite.offer.group) {
+                        self.adapter(owner, entry, None, |_, snapshot| {
+                            Ok(snapshot.lifecycle == GroupLifecycle::Active
+                                && !snapshot
+                                    .added
+                                    .iter()
+                                    .any(|a| a.invitation == invite.offer.id))
+                        })?
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                };
                 Ok(Invitation {
                     id: invite.offer.id,
                     group: GroupId(invite.offer.group),
@@ -295,6 +408,8 @@ impl<'db> Enrollment<'db> {
                     outgoing: invite.offer.owner.rns == self.local.into_bytes(),
                     state,
                     waiting_for_delivery,
+                    can_cancel,
+                    can_dismiss: Self::dismissible(state),
                 })
             })
             .collect()
@@ -326,24 +441,82 @@ impl<'db> Enrollment<'db> {
         }
         require_time(&invite.offer, now.max(catalog.invitation_time_floor))?;
         if accept {
-            if catalog.entries.len() >= MAX_GROUPS
+            if (catalog.entries.len() >= MAX_GROUPS
+                && !catalog
+                    .entries
+                    .iter()
+                    .any(|e| e.group == invite.offer.group))
                 || self.local_invitation_count(&catalog) >= MAX_LOCAL_INVITATIONS
             {
                 return Err(EnrollmentError::Capacity);
             }
-            if catalog
+            if let Some(prior) = catalog
                 .entries
                 .iter()
-                .any(|e| e.group == invite.offer.group)
+                .find(|e| e.group == invite.offer.group)
             {
-                return Err(EnrollmentError::Conflict);
+                let lifecycle =
+                    self.adapter(owner, prior, None, |_, snapshot| Ok(snapshot.lifecycle))?;
+                let terminal_unjoined = self.adapter(owner, prior, None, |_, snapshot| {
+                    Ok(snapshot.current.is_none())
+                })? && catalog.invites.iter().any(|i| {
+                    i.offer.group == prior.group
+                        && i.offer.recipient == self.local.into_bytes()
+                        && matches!(
+                            i.state,
+                            InvitationState::Cancelled | InvitationState::Expired
+                        )
+                });
+                if lifecycle != GroupLifecycle::Removed && !terminal_unjoined {
+                    return Err(EnrollmentError::Conflict);
+                }
             }
-            let entry = self.entry(
+            let mut entry = self.entry(
                 invite.offer.group,
                 &invite.offer.title,
                 Some(invite.offer.owner.clone()),
                 now,
             )?;
+            entry.invitation = Some(id);
+            if let Some(prior) = catalog.entries.iter().position(|e| e.group == entry.group) {
+                let old = catalog.entries.remove(prior);
+                entry.generation = old
+                    .generation
+                    .checked_add(1)
+                    .ok_or(EnrollmentError::Capacity)?;
+                if self.adapter(owner, &old, None, |_, snapshot| {
+                    Ok(snapshot.current.is_some())
+                })? {
+                    catalog.archives.push(old);
+                } else {
+                    catalog.retired.push(Retired {
+                        group: old.group,
+                        owner: old.owner.clone(),
+                        local: old.local.clone(),
+                        namespace: old.namespace,
+                        incarnation: old.incarnation,
+                        purged: false,
+                        closed: None,
+                        invitations: catalog
+                            .invites
+                            .iter()
+                            .filter(|i| i.offer.group == old.group && i.offer.id != id)
+                            .map(|i| i.offer.id)
+                            .collect(),
+                        audience: Vec::new(),
+                    });
+                }
+            } else {
+                entry.generation = catalog
+                    .archives
+                    .iter()
+                    .filter(|e| e.group == entry.group)
+                    .map(|e| e.generation)
+                    .max()
+                    .map_or(Ok(0), |generation| {
+                        generation.checked_add(1).ok_or(EnrollmentError::Capacity)
+                    })?;
+            }
             catalog.entries.push(entry);
         }
         catalog.invites[index].state = if accept {
@@ -365,7 +538,9 @@ impl<'db> Enrollment<'db> {
         let mut groups = Vec::new();
         for e in &catalog.entries {
             self.initialize(owner, e)?;
-            if self.adapter(owner, e, None, |_, s| s.ready())? {
+            if self.adapter(owner, e, None, |_, s| {
+                Ok(s.current.is_some() && (s.lifecycle != GroupLifecycle::Active || s.ready()?))
+            })? {
                 groups.push(GroupId(e.group));
             }
         }
@@ -409,11 +584,23 @@ impl<'db> Enrollment<'db> {
     ) -> Result<Provisioned, EnrollmentError> {
         let catalog = self.read()?;
         let entry = Self::find(&catalog, group.0)?;
+        self.provisioned_entry(owner, entry, &catalog)
+    }
+    fn provisioned_entry(
+        &self,
+        owner: &mut NativeStoreOwner<'db>,
+        entry: &Entry,
+        catalog: &Catalog,
+    ) -> Result<Provisioned, EnrollmentError> {
+        let group = GroupId(entry.group);
         self.adapter(owner, entry, None, |_, snapshot| {
-            if !snapshot.ready()? {
+            if snapshot.lifecycle == GroupLifecycle::Active && !snapshot.ready()? {
                 return Err(EnrollmentError::NotJoined);
             }
-            let signed = snapshot.current.ok_or(EnrollmentError::NotJoined)?;
+            let signed = snapshot
+                .current
+                .as_ref()
+                .ok_or(EnrollmentError::NotJoined)?;
             signed.verify(entry.group, &entry.owner, &entry.title)?;
             let readers = signed
                 .manifest
@@ -444,7 +631,44 @@ impl<'db> Enrollment<'db> {
                     })
                 })
                 .collect::<Result<Vec<_>, EnrollmentError>>()?;
+            let mut history_peers = Vec::new();
+            for member in snapshot
+                .controls
+                .iter()
+                .flat_map(|c| c.signed.manifest.members.iter())
+                .chain(signed.manifest.members.iter())
+            {
+                let endpoint = member.endpoint()?;
+                if member.rns == self.local.into_bytes()
+                    || history_peers
+                        .iter()
+                        .any(|peer: &prns_groups_reticulum::Peer| peer.endpoint == endpoint)
+                {
+                    continue;
+                }
+                history_peers.push(prns_groups_reticulum::Peer {
+                    endpoint,
+                    identity: IdentityHash::new(member.rns),
+                    destination: prns_groups_reticulum::destination_for(IdentityHash::new(
+                        member.rns,
+                    ))
+                    .map_err(|_| EnrollmentError::Invalid)?,
+                });
+            }
+            let lifecycle = if catalog
+                .departures
+                .iter()
+                .any(|d| d.group == entry.group && d.member == entry.local)
+                && snapshot.lifecycle == GroupLifecycle::Active
+            {
+                GroupLifecycle::Leaving
+            } else {
+                snapshot.lifecycle
+            };
             Ok(Provisioned {
+                lifecycle,
+                history_generation: entry.generation,
+                history_peers,
                 owner_identity: Some(IdentityHash::new(entry.owner.rns)),
                 group,
                 control: prns_groups_service::ControlReference {

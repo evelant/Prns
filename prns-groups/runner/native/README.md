@@ -31,6 +31,18 @@ opens the persisted MLS state and exact output. An expired/unknown legacy ID
 returns `RetryExpired`; callers must not silently mint a replacement. Exact
 retained legacy sends remain replayable.
 
+For durable headless publication intents, retain the group's `ControlReference`
+alongside the token and immutable input, then restore it with
+`Client::for_group(group).at_control(control)` when executing or retrying. A
+`GroupManager` first recovers exact committed results from the current or retained
+prior membership namespace, including after removal or rejoining. That read does
+not create another publication. An unknown intent with a stale control reference
+cannot create new work. A group-only request carries no evidence of which
+membership it was prepared against; request-token timestamps are not membership
+bindings. The app instead serializes its retained action journal by group,
+including invitation responses, so old pending intents cannot cross rejoining or
+local deletion. Explicit local deletion removes retained publication results.
+
 The legacy single-group `run` is a caller-owned future. It polls peers with bounded
 requests/bytes and backoff, persists inventory cursors, repairs pending device receipts and serves
 incoming requests concurrently. Every database operation finishes before the next
@@ -163,8 +175,9 @@ creation, invitations and joining; it requires no fixture transfer.
 
 ## Remaining limits
 
-Authenticated additions are supported by the new native enrollment path. Removal,
-blind custodians and mobile key protection remain separate work. Storage exhaustion
+Authenticated additions, owner removal, self-departure requests, invitation management,
+closure and local deletion are supported by the native enrollment path. Blind
+custodians and mobile key protection remain separate work. Storage exhaustion
 backpressures new work; only expired content is reclaimed. The service reserves logical envelope
 capacity for recipient receipts when accepting a record. An authenticated expired
 record leaves a tombstone so dependent receipts can be consumed without stalling

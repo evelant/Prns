@@ -11,6 +11,10 @@ use prns_host::IdentityHash;
 pub struct Provisioned {
     /// None only for the legacy, fixed development enrollment.
     pub owner_identity: Option<IdentityHash>,
+    pub lifecycle: GroupLifecycle,
+    pub history_generation: u32,
+    /// Retained mappings for authors removed from the current roster.
+    pub history_peers: Vec<Peer>,
     pub group: GroupId,
     pub control: ControlReference,
     pub readers: Vec<Endpoint>,
@@ -45,10 +49,25 @@ pub struct ConversationMember {
     pub is_owner: bool,
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize, Default)]
+pub enum GroupLifecycle {
+    #[default]
+    Active,
+    Leaving,
+    Removed,
+    Closed,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Conversation {
     pub owner_identity: Option<IdentityHash>,
+    pub lifecycle: GroupLifecycle,
+    pub can_send: bool,
     pub can_invite: bool,
+    pub can_remove_members: bool,
+    pub can_leave: bool,
+    pub can_close: bool,
+    pub can_delete_local: bool,
     pub group: GroupId,
     pub title: String,
     pub revision: u64,
@@ -100,6 +119,12 @@ pub enum RejectionReason {
     NotOwner,
     NotJoined,
     AuthenticationFailed,
+    AlreadyJoined,
+    GroupClosed,
+    OwnerMustClose,
+    MemberNotFound,
+    StaleMembership,
+    UnsupportedVersion,
 }
 
 #[derive(Debug)]
@@ -142,6 +167,12 @@ impl Error {
                 EnrollmentError::RequestConflict => RejectionReason::RequestConflict,
                 EnrollmentError::NotOwner => RejectionReason::NotOwner,
                 EnrollmentError::NotJoined => RejectionReason::NotJoined,
+                EnrollmentError::AlreadyJoined => RejectionReason::AlreadyJoined,
+                EnrollmentError::GroupClosed => RejectionReason::GroupClosed,
+                EnrollmentError::OwnerMustClose => RejectionReason::OwnerMustClose,
+                EnrollmentError::MemberNotFound => RejectionReason::MemberNotFound,
+                EnrollmentError::StaleMembership => RejectionReason::StaleMembership,
+                EnrollmentError::UnsupportedVersion => RejectionReason::UnsupportedVersion,
                 _ => return None,
             },
             _ => return None,
@@ -170,14 +201,23 @@ impl Error {
                 | Self::Storage(NativeError::Capacity)
                 | Self::Enrollment(crate::enrollment::EnrollmentError::Capacity)
                 | Self::Service(ServiceError::Fault(Fault::Capacity))
-                | Self::Service(ServiceError::Store(StoreError::Capacity(_)))
+                | Self::Service(ServiceError::Store(
+                    StoreError::Capacity(_)
+                        | StoreError::OperationRejected(
+                            OperationRejection::ReservedCapacity
+                                | OperationRejection::RecoveryWindowFull
+                        )
+                ))
                 | Self::Service(ServiceError::Security(MlsError::Capacity(_)))
                 | Self::Service(ServiceError::Security(MlsError::Provider(
                     prns_groups_mls::ProviderError::Capacity(_)
                 )))
                 | Self::Service(ServiceError::Security(MlsError::Store(
                     StoreError::Capacity(_)
-                        | StoreError::OperationRejected(OperationRejection::RecoveryWindowFull)
+                        | StoreError::OperationRejected(
+                            OperationRejection::RecoveryWindowFull
+                                | OperationRejection::ReservedCapacity
+                        )
                 )))
         )
     }
@@ -202,6 +242,39 @@ impl From<prns_groups_reticulum::Error<NativeError>> for Error {
 /// unchanged after an ambiguous reply. Keys and MLS bytes never cross this API.
 #[derive(Clone, Debug)]
 pub enum EnrollmentRequest {
+    CancelInvitation {
+        request_id: [u8; 32],
+        invitation: [u8; 32],
+        now: u64,
+    },
+    DismissInvitation {
+        request_id: [u8; 32],
+        invitation: [u8; 32],
+        now: u64,
+    },
+    RemoveMember {
+        request_id: [u8; 32],
+        group: GroupId,
+        member: Endpoint,
+        expected_head: [u8; 32],
+        now: u64,
+    },
+    Leave {
+        request_id: [u8; 32],
+        group: GroupId,
+        now: u64,
+    },
+    Close {
+        request_id: [u8; 32],
+        group: GroupId,
+        expected_head: [u8; 32],
+        now: u64,
+    },
+    DeleteLocal {
+        request_id: [u8; 32],
+        group: GroupId,
+        now: u64,
+    },
     Create {
         request_id: [u8; 32],
         title: String,

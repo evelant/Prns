@@ -8,7 +8,10 @@
 
 mod enrollment;
 mod metadata;
+mod removal;
+mod reserve;
 pub use enrollment::EnrollmentSnapshot;
+pub use reserve::NativeReserve;
 #[cfg(test)]
 mod tests;
 
@@ -143,6 +146,7 @@ impl<'db> NativeStoreOwner<'db> {
             names: TableNames::new(namespace),
             incarnation,
             limits,
+            admission: reserve::Admission::Full,
             lease: PhantomData,
         };
         backend.snapshot()?;
@@ -156,6 +160,7 @@ pub struct NativeBackend<'owner> {
     names: TableNames,
     incarnation: StoreIncarnation,
     limits: NativeLimits,
+    admission: reserve::Admission,
     lease: PhantomData<&'owner mut ()>,
 }
 impl NativeBackend<'_> {
@@ -334,6 +339,16 @@ impl AtomicBackend for NativeBackend<'_> {
                         .ok_or(NativeError::Capacity)?;
                     values.insert(change.key(), value).map_err(db_error)?;
                 }
+            }
+            if let Err(reason) = self.admission.check(
+                state.objects,
+                state.bytes,
+                state
+                    .receipt_count()?
+                    .checked_add(1)
+                    .ok_or(NativeError::Capacity)?,
+            ) {
+                return Ok(CommitOutcome::Rejected(reason));
             }
             if state.objects > self.limits.max_live_objects
                 || state.bytes > self.limits.max_live_bytes

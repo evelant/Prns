@@ -243,8 +243,16 @@ skips old-era records/receipts and `envelope` does not release them. Old receipt
 intents stop emitting; the next operation reconstructs logical reservations for
 the new era. `in_current_era` lets application projections label unfinished old
 messages as interrupted without manufacturing delivery evidence. This does not
-repair delivery across an Add or remove historical bytes from physical storage.
+repair delivery across a membership change or remove historical bytes from physical storage.
 See [native enrollment](../runner/native/enrollment.md) for the first consumer.
+
+After local removal or closure, the last active descriptor can reopen the ledger
+for history queries. The MLS terminal marker prevents publication, incoming
+admission, receipt emission, inventory export and forwarding, including previously
+accepted exact retries. `in_current_era` returns false and pending-work queries
+stop scheduling traffic, while bodies, changes and authentic receipt counts remain
+available. In active managed groups, targets absent from the authenticated current
+roster count as removed; removal never creates receipt evidence.
 
 `has_pending_authored_deliveries(clock)` checks bounded live publication facts and
 receipt flags before a caller changes membership. It considers this endpoint's

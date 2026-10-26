@@ -12,6 +12,7 @@ pub enum Event {
     Control,
     Proposal,
     Removed,
+    Retired,
     Application(Vec<u8>),
     Rejected(u16),
 }
@@ -62,6 +63,7 @@ impl Output {
             Event::Removed => (6, &[]),
             Event::Application(body) => (7, body),
             Event::Rejected(_) => (8, &[]),
+            Event::Retired => (9, &[]),
         };
         if body.len() > limits.max_plaintext_bytes {
             return Err(Limit::PlaintextBytes);
@@ -166,6 +168,7 @@ impl Output {
             6 => Event::Removed,
             7 => Event::Application(copy_bytes(body).map_err(|_| ())?),
             8 => Event::Rejected(code),
+            9 => Event::Retired,
             _ => return Err(()),
         };
         Ok(Self {
@@ -226,6 +229,7 @@ impl fmt::Debug for Event {
             Self::Control => f.write_str("Control"),
             Self::Proposal => f.write_str("Proposal"),
             Self::Removed => f.write_str("Removed"),
+            Self::Retired => f.write_str("Retired"),
             Self::Application(body) => f
                 .debug_struct("Application")
                 .field("bytes", &body.len())

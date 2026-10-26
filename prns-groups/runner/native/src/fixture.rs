@@ -228,6 +228,9 @@ fn provisioned(config: &Configuration) -> Result<Provisioned, FixtureError> {
         })
         .collect::<Result<Vec<_>, FixtureError>>()?;
     Ok(Provisioned {
+        lifecycle: crate::GroupLifecycle::Active,
+        history_generation: 0,
+        history_peers: peers.clone(),
         owner_identity: None,
         group: GroupId(config.group),
         control: ControlReference {

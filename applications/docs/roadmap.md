@@ -29,23 +29,24 @@ physical qualification than their implemented control surface.
 The owner now defers Add while its current messages await receipts or definite
 expiry. Coordinate other publishers: this local guard cannot prove every member
 has flushed. A bounded wake after receipts could reduce join latency; current
-automatic retries can be minutes apart. Removal and ownership recovery remain
+automatic retries can be minutes apart. Removal can interrupt pending delivery;
+it does not wait for the removed member's receipts. Ownership recovery remains
 separate design work.
 
 Keep runtime, reusable libraries, native contracts and app journeys reviewable
 as separate source boundaries. Package registries and generated contracts belong
 with their first consumers; historical evidence does not qualify a new prefix.
 
-Current capacity and missing group deletion can be managed by reusing a demo
-group. Existing admission, expiry, maintenance and safe retry retirement should
-be extended with targeted tests, not replaced. Do not clear app data to make a
+Local deletion reclaims active group capacity while preserving necessary replay
+and departure/closure records. Existing admission, expiry, maintenance and safe
+retry retirement remain the recovery contract. Do not clear app data to make a
 stalled action appear successful.
 
 ## Subsequent reliability and product work
 
 | Area | Next work and boundary |
 | --- | --- |
-| Group lifecycle | Design removal, ownership recovery, history sharing and group departure/reclamation. Keep authorization and delayed-content behavior explicit. |
+| Group lifecycle | Qualify management on physical devices; later design ownership recovery, history sharing and membership-history compaction. Keep authorization and delayed-content behavior explicit. |
 | Durable phone storage | Protected keys, locked-state behavior, supported backup/recovery, disk-full handling and physical-space reclamation. Logical cleanup is not secure erasure. |
 | Mobile lifecycle | Long idle, natural suspension, repeated restoration, permission transitions and message notification policy. A running service is not a background-delivery guarantee. |
 | Radio qualification | Repeat isolated E290/LoRa exchanges under movement and load on matching builds. Earlier foreground radio trials do not qualify new app binaries automatically. |

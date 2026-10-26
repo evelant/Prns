@@ -91,7 +91,11 @@ impl Client {
             ..self.clone()
         }
     }
-    /// Fence asynchronous sync work to the membership loaded at its start.
+    /// Fence new work to the membership loaded when the intent was prepared.
+    /// Durable headless callers should retain this reference with pending
+    /// publication intents and restore it after restart. A group-only client
+    /// cannot distinguish an unsent old intent from a new one after rejoining.
+    /// GroupManager recovers exact committed results before applying this fence.
     pub fn at_control(&self, control: prns_groups::ControlReference) -> Self {
         Self {
             control: Some(control),

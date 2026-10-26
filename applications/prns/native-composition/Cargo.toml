@@ -23,6 +23,11 @@ name = "uniffi-bindgen"
 path = "src/bin/uniffi_bindgen.rs"
 required-features = ["uniffi-bindgen"]
 
+[[bin]]
+name = "reset-test-groups"
+path = "src/bin/reset_test_groups.rs"
+required-features = ["host-test"]
+
 [features]
 default = ["uniffi-bindings"]
 uniffi-bindings = ["dep:uniffi", "dep:prns-host-uniffi"]
@@ -60,6 +65,8 @@ prns-host-native = { path = "../../../prns-host/impls/native" }
 prns-groups-runner-native = { path = "../../../prns-groups/runner/native" }
 prns-groups-reticulum = { path = "../../../prns-groups/transport/reticulum" }
 prns-groups-service = { path = "../../../prns-groups/service" }
+prns-groups-store = { path = "../../../prns-groups/store" }
+prns-groups-store-native = { path = "../../../prns-groups/store/native" }
 prns-host-uniffi = { path = "../../../prns-host/bindings/uniffi", optional = true }
 prns-interfaces-tokio = { path = "../../../prns-interfaces/impls/tokio", default-features = false, optional = true }
 log = { version = "0.4", default-features = false }

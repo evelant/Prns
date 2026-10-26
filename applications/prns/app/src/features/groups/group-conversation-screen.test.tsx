@@ -39,6 +39,12 @@ const mockConversation: Bindings.GroupConversation = {
   })),
   ownerIdentity: undefined,
   canInvite: false,
+  canSend: true,
+  lifecycle: Bindings.GroupLifecycle.Active,
+  canRemoveMembers: false,
+  canLeave: false,
+  canClose: false,
+  canDeleteLocal: false,
   synchronization: Bindings.GroupSynchronizationState.Running.new(),
   progress: { running: true, observed: false, peers: [] },
 };
@@ -240,6 +246,7 @@ test("an owner-only group offers invitation before sending", async () => {
           memberCount: 1,
           ownerIdentity: new Uint8Array(16).fill(7),
           canInvite: true,
+          canSend: false,
         },
       ],
     }),
@@ -841,5 +848,30 @@ test("a paused identity retains group history but cannot publish a new message",
   });
   expect(mockActions.prepareGroupAction).not.toHaveBeenCalled();
   expect(mockCreateGroupRequestId).not.toHaveBeenCalled();
+  expect(mockSendGroupText).not.toHaveBeenCalled();
+});
+
+test.each<[Bindings.GroupLifecycle, string]>([
+  [
+    Bindings.GroupLifecycle.Leaving,
+    "Leaving group · Waiting for the owner to confirm removal. Saved messages remain available.",
+  ],
+  [
+    Bindings.GroupLifecycle.Removed,
+    "You are no longer a member of this group. Saved messages remain available.",
+  ],
+  [Bindings.GroupLifecycle.Closed, "The owner closed this group. Saved messages remain available."],
+])("a %s group keeps history readable and removes the composer", async (lifecycle, explanation) => {
+  mockListGroupConversations.mockResolvedValue({
+    type: "outcome",
+    outcome: Bindings.GroupConversationListOutcome.Ready.new({
+      conversations: [{ ...mockConversation, lifecycle, canSend: false, canInvite: false }],
+    }),
+  });
+  const view = render(<GroupConversationScreen groupId={mockGroupId} />);
+  await view.findByText(explanation);
+  expect(view.getByText("First group message")).toBeTruthy();
+  expect(view.queryByTestId("group-compose-input")).toBeNull();
+  expect(view.queryByRole("button", { name: "Send to group" })).toBeNull();
   expect(mockSendGroupText).not.toHaveBeenCalled();
 });

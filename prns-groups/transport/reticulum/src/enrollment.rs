@@ -25,7 +25,7 @@ use crate::network::{connect_identified, request_ceiling, respond, CarrierLimits
 pub use crate::{IngressOutcome, NetworkError, RequestJob};
 
 pub const ASPECTS: &[&str] = &["groups", "enrollment"];
-pub const REQUEST_PATH: &str = "/prns/groups/enrollment/v1";
+pub const REQUEST_PATH: &str = "/prns/groups/enrollment/v2";
 /// Complete application frame, including its enrollment header. Reticulum's
 /// binary wrapper and request header are separately included in the node limit.
 pub const MAX_FRAME_BYTES: usize = 131_072;

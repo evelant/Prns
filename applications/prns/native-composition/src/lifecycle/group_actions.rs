@@ -1,14 +1,13 @@
 //! Bridge recovery retains the original owner and retry input across all awaits.
 
 use super::{admission, supervisor, Supervisor};
+use crate::group_actions::execution::admit_run;
 use crate::{
     contract::*,
     development_store::GroupActionClient,
     group_actions::{Error, Reply, Request},
 };
-use prns_groups_runner_native::{
-    Client, Clock, EnrollmentRequest, EnrollmentResult, SendText, SystemClock,
-};
+use prns_groups_runner_native::Client;
 
 #[cfg(test)]
 fn clients(supervisor: &Supervisor) -> Result<(Client, GroupActionClient), Error> {
@@ -189,77 +188,27 @@ fn rejection_detail(error: &prns_groups_runner_native::Error) -> &'static str {
         Some(RejectionReason::MembershipConflict) => {
             "Membership or invitation state no longer permits this action."
         }
-        Some(RejectionReason::NotOwner) => "Only the group owner can invite devices.",
+        Some(RejectionReason::NotOwner) => "Only the group owner can manage group membership.",
         Some(RejectionReason::NotJoined) => "Group membership has not finished synchronizing.",
         Some(RejectionReason::AuthenticationFailed) => {
             "The group or invitation could not be authenticated."
         }
+        Some(RejectionReason::AlreadyJoined) => {
+            "This device has already joined. Remove the member to revoke access."
+        }
+        Some(RejectionReason::GroupClosed) => "This group has been closed.",
+        Some(RejectionReason::OwnerMustClose) => {
+            "Close the group before deleting the owner's local copy."
+        }
+        Some(RejectionReason::MemberNotFound) => "This member is no longer in the group.",
+        Some(RejectionReason::StaleMembership) => {
+            "Membership changed. Review the current members before trying again."
+        }
+        Some(RejectionReason::UnsupportedVersion) => {
+            "This group uses an unsupported version. Recreate the test group with updated clients."
+        }
         _ => "The saved group action contains invalid input.",
     }
-}
-
-type Execution = std::pin::Pin<
-    Box<
-        dyn std::future::Future<
-                Output = Result<GroupActionResult, prns_groups_runner_native::Error>,
-            > + Send,
-    >,
->;
-
-fn admit_run(
-    client: &Client,
-    input: GroupActionInput,
-) -> Result<Execution, prns_groups_runner_native::Error> {
-    use prns_groups_runner_native::Error;
-    if let GroupActionInput::Send { input } = input {
-        let waiter = client.admit_send_text(SendText {
-            group: prns_groups_service::GroupId(input.group_id),
-            client_request_id: input.client_request_id,
-            text: input.text,
-            clock: SystemClock.now(),
-        })?;
-        return Ok(Box::pin(async move {
-            Ok(GroupActionResult::Sent {
-                message_id: waiter.await?.0,
-            })
-        }));
-    }
-    let prns_groups_service::ClockReading::Trusted(now) = SystemClock.now() else {
-        return Err(Error::Clock);
-    };
-    let now = now.upper().0;
-    let request = match input {
-        GroupActionInput::Create { input } => EnrollmentRequest::Create {
-            request_id: input.client_request_id,
-            title: input.title,
-            now,
-        },
-        GroupActionInput::Invite { input } => EnrollmentRequest::Invite {
-            request_id: input.client_request_id,
-            group: prns_groups_service::GroupId(input.group_id),
-            recipient: prns_host::IdentityHash::new(input.recipient_identity),
-            now,
-        },
-        GroupActionInput::Respond { input } => EnrollmentRequest::Respond {
-            request_id: input.client_request_id,
-            invitation: input.invitation_id,
-            accept: input.accept,
-            now,
-        },
-        GroupActionInput::Send { .. } => return Err(Error::InvalidInput),
-    };
-    let waiter = client.admit_enrollment(request)?;
-    Ok(Box::pin(async move {
-        match waiter.await? {
-            EnrollmentResult::Created(group) => {
-                Ok(GroupActionResult::Created { group_id: group.0 })
-            }
-            EnrollmentResult::Invited(invitation_id) => {
-                Ok(GroupActionResult::Invited { invitation_id })
-            }
-            EnrollmentResult::Saved => Ok(GroupActionResult::Responded),
-        }
-    }))
 }
 
 #[cfg(test)]

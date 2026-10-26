@@ -12,9 +12,24 @@ pub struct GroupConversation {
     pub member_count: u32,
     pub owner_identity: Option<[u8; 16]>,
     pub can_invite: bool,
+    pub lifecycle: GroupLifecycle,
+    pub can_send: bool,
+    pub can_remove_members: bool,
+    pub can_leave: bool,
+    pub can_close: bool,
+    pub can_delete_local: bool,
     pub synchronization: GroupSynchronizationState,
     /// Bounded, transient peer activity; durable delivery evidence remains on records.
     pub progress: GroupSynchronizationProgress,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Enum))]
+pub enum GroupLifecycle {
+    Active,
+    Leaving,
+    Removed,
+    Closed,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -43,6 +58,12 @@ pub enum GroupRejectionReason {
     NotOwner,
     NotJoined,
     AuthenticationFailed,
+    AlreadyJoined,
+    GroupClosed,
+    OwnerMustClose,
+    MemberNotFound,
+    StaleMembership,
+    UnsupportedVersion,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -262,6 +283,7 @@ pub enum GroupInvitationState {
     Joined,
     Declined,
     Expired,
+    Cancelled,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -278,6 +300,8 @@ pub struct GroupInvitation {
     /// The owner has deferred Add for its own unfinished current-era deliveries.
     /// This does not imply that every member's outgoing queue has been checked.
     pub waiting_for_delivery: bool,
+    pub can_cancel: bool,
+    pub can_dismiss: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]

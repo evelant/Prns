@@ -12,13 +12,16 @@ impl<'db> Enrollment<'db> {
         if bytes.value().len() > MAX_CATALOG_BYTES {
             return Err(EnrollmentError::Capacity);
         }
+        require_version(bytes.value())?;
         let catalog: Catalog =
             serde_json::from_slice(bytes.value()).map_err(|_| EnrollmentError::Corrupt)?;
+        if catalog.version != 2 {
+            return Err(EnrollmentError::UnsupportedVersion);
+        }
         if catalog.local != self.local.into_bytes()
-            || catalog.version != 1
             || catalog.entries.len() > MAX_GROUPS
             || catalog.invites.len() > MAX_INVITATIONS
-            || catalog.requests.len() > 64
+            || catalog.requests.len() > MAX_REQUESTS
         {
             return Err(EnrollmentError::Corrupt);
         }
@@ -65,7 +68,7 @@ impl<'db> Enrollment<'db> {
         fingerprint: [u8; 32],
         result: [u8; 32],
     ) -> Result<(), EnrollmentError> {
-        if catalog.requests.len() >= 64 {
+        if catalog.requests.len() >= MAX_REQUESTS {
             return Err(EnrollmentError::Capacity);
         }
         catalog.requests.push(Request {
@@ -95,6 +98,8 @@ impl<'db> Enrollment<'db> {
             namespace: random()?,
             incarnation: random()?,
             created: now,
+            generation: 0,
+            invitation: None,
         })
     }
     pub(super) fn initialize(
@@ -131,11 +136,40 @@ impl<'db> Enrollment<'db> {
         roster: Option<&[Member]>,
         action: impl FnOnce(Adapter<NativeBackend<'_>>, Snapshot) -> Result<T, EnrollmentError>,
     ) -> Result<T, EnrollmentError> {
+        self.owned_adapter_class(owner, entry, roster, AdmissionClass::Ordinary, action)
+    }
+    pub(super) fn management_adapter<T>(
+        &self,
+        owner: &mut NativeStoreOwner<'db>,
+        entry: &Entry,
+        roster: Option<&[Member]>,
+        action: impl FnOnce(&Adapter<NativeBackend<'_>>, Snapshot) -> Result<T, EnrollmentError>,
+    ) -> Result<T, EnrollmentError> {
+        self.owned_adapter_class(
+            owner,
+            entry,
+            roster,
+            AdmissionClass::Management,
+            |adapter, snapshot| action(&adapter, snapshot),
+        )
+    }
+    fn owned_adapter_class<T>(
+        &self,
+        owner: &mut NativeStoreOwner<'db>,
+        entry: &Entry,
+        roster: Option<&[Member]>,
+        class: AdmissionClass,
+        action: impl FnOnce(Adapter<NativeBackend<'_>>, Snapshot) -> Result<T, EnrollmentError>,
+    ) -> Result<T, EnrollmentError> {
         let backend = owner.open(
             StoreNamespace(entry.namespace),
             StoreIncarnation::new(entry.incarnation).map_err(|_| EnrollmentError::Corrupt)?,
             profile::native_limits(),
         )?;
+        let backend = match class {
+            AdmissionClass::Ordinary => backend.reserve_capacity(profile::management_reserve())?,
+            AdmissionClass::Management => backend,
+        };
         let l = profile::native_limits();
         let coordinator = Coordinator::new(
             backend,
@@ -156,9 +190,6 @@ impl<'db> Enrollment<'db> {
             Some(bytes) => serde_json::from_slice(&bytes).map_err(|_| EnrollmentError::Corrupt)?,
             None => Snapshot::default(),
         };
-        if snapshot.controls.len() > 7 || snapshot.added.len() > 7 {
-            return Err(EnrollmentError::Corrupt);
-        }
         let bindings = if let Some(roster) = roster {
             roster.iter().map(Member::binding).collect()
         } else if let Some(signed) = &snapshot.current {
@@ -194,6 +225,13 @@ impl<'db> Enrollment<'db> {
         let pending = adapter
             .pending_operations()
             .map_err(|_| EnrollmentError::Corrupt)?;
+        if pending.len()
+            >= profile::mls_limits()
+                .max_pending_outputs
+                .saturating_sub(profile::MANAGEMENT_OUTPUT_RESERVE)
+        {
+            return Err(EnrollmentError::Capacity);
+        }
         let (receipts, _) = Self::finalize_prefix(adapter, entry, &pending)?;
         if !Self::ordinary_receipt_available(receipts, profile::native_limits().max_receipts) {
             return Err(EnrollmentError::Capacity);
@@ -277,7 +315,7 @@ impl<'db> Enrollment<'db> {
                             Self::stage(tx, &snapshot)
                         },
                     )
-                    .map_err(|_| EnrollmentError::Crypto)?;
+                    .map_err(composition_error)?;
                 Ok(())
             })?;
         }
@@ -290,6 +328,12 @@ impl<'db> Enrollment<'db> {
         invite: &Invite,
         now: u64,
     ) -> Result<(InvitationState, bool), EnrollmentError> {
+        if matches!(
+            invite.state,
+            InvitationState::Cancelled | InvitationState::Expired | InvitationState::Declined
+        ) {
+            return Ok((invite.state, false));
+        }
         if let Some(entry) = catalog
             .entries
             .iter()
@@ -312,7 +356,7 @@ impl<'db> Enrollment<'db> {
                             false,
                         )));
                     }
-                } else if snapshot.current.is_some() {
+                } else if entry.invitation == Some(invite.offer.id) && snapshot.current.is_some() {
                     return Ok(Some((
                         if snapshot.ready()? {
                             InvitationState::Joined
@@ -354,6 +398,12 @@ impl EnrollmentError {
                 | Self::RequestConflict
                 | Self::NotOwner
                 | Self::NotJoined
+                | Self::AlreadyJoined
+                | Self::GroupClosed
+                | Self::OwnerMustClose
+                | Self::MemberNotFound
+                | Self::StaleMembership
+                | Self::UnsupportedVersion
                 | Self::Retry(
                     prns_groups::retry::RetryError::InvalidToken
                         | prns_groups::retry::RetryError::Expired

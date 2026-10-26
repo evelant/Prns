@@ -26,6 +26,58 @@ pub enum GroupActionInput {
     Invite { input: InviteToGroupInput },
     Respond { input: RespondGroupInvitationInput },
     Send { input: SendGroupTextInput },
+    RemoveMember { input: RemoveGroupMemberInput },
+    LeaveGroup { input: LeaveGroupInput },
+    CloseGroup { input: CloseGroupInput },
+    DeleteLocalGroup { input: DeleteLocalGroupInput },
+    CancelInvitation { input: CancelGroupInvitationInput },
+    DismissInvitation { input: DismissGroupInvitationInput },
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Record))]
+pub struct RemoveGroupMemberInput {
+    pub group_id: [u8; 32],
+    pub client_request_id: [u8; 32],
+    pub endpoint_id: [u8; 32],
+    pub endpoint_incarnation: u64,
+    pub expected_control_head: [u8; 32],
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Record))]
+pub struct LeaveGroupInput {
+    pub group_id: [u8; 32],
+    pub client_request_id: [u8; 32],
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Record))]
+pub struct CloseGroupInput {
+    pub group_id: [u8; 32],
+    pub client_request_id: [u8; 32],
+    pub expected_control_head: [u8; 32],
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Record))]
+pub struct DeleteLocalGroupInput {
+    pub group_id: [u8; 32],
+    pub client_request_id: [u8; 32],
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Record))]
+pub struct CancelGroupInvitationInput {
+    pub invitation_id: [u8; 32],
+    pub client_request_id: [u8; 32],
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "uniffi-bindings", derive(uniffi::Record))]
+pub struct DismissGroupInvitationInput {
+    pub invitation_id: [u8; 32],
+    pub client_request_id: [u8; 32],
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
@@ -38,6 +90,12 @@ pub enum GroupActionResult {
         invitation_id: [u8; 32],
     },
     Responded,
+    RemovedMember,
+    LeftGroup,
+    ClosedGroup,
+    DeletedLocalGroup,
+    CancelledInvitation,
+    DismissedInvitation,
     Sent {
         message_id: [u8; 32],
     },

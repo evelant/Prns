@@ -7,6 +7,10 @@ import { groupRejectionMessage } from "./group-action-feedback";
 
 type Kind = `${Bindings.GroupActionInput["tag"]}`;
 
+function isLocalAction(kind: Kind) {
+  return kind === "DeleteLocalGroup" || kind === "DismissInvitation";
+}
+
 export function groupActionMatches(input: Bindings.GroupActionInput, kind: Kind, scope?: string) {
   if (input.tag !== kind) return false;
   switch (input.tag) {
@@ -14,8 +18,14 @@ export function groupActionMatches(input: Bindings.GroupActionInput, kind: Kind,
       return true;
     case "Invite":
     case "Send":
+    case "RemoveMember":
+    case "LeaveGroup":
+    case "CloseGroup":
+    case "DeleteLocalGroup":
       return identifierHex(input.inner.input.groupId) === scope;
     case "Respond":
+    case "CancelInvitation":
+    case "DismissInvitation":
       return identifierHex(input.inner.input.invitationId) === scope;
   }
 }
@@ -49,6 +59,7 @@ export function useGroupMutation(kind: Kind, scope?: Uint8Array) {
     createGroupRequestId,
   } = development;
   const available = development.availability.type === "available";
+  const canMutate = development.canPublish !== false || isLocalAction(kind);
   const generation = development.snapshot?.generationId;
   const phase = development.phase;
   const runtime = development.snapshot?.runtime;
@@ -159,7 +170,7 @@ export function useGroupMutation(kind: Kind, scope?: Uint8Array) {
   const submit = async (makeInput: (id: Uint8Array) => Bindings.GroupActionInput) => {
     if (
       !available ||
-      development.canPublish === false ||
+      !canMutate ||
       !current() ||
       active.current !== null ||
       state.owner !== owner ||
@@ -205,8 +216,10 @@ export function useGroupMutation(kind: Kind, scope?: Uint8Array) {
           input: makeInput(created.outcome.inner.clientRequestId),
           state: Bindings.GroupActionState.Pending.new(),
         };
+        if (development.canPublish === false && !isLocalAction(action.input.tag)) return;
         publish(action, "Preparing this action…");
       }
+      if (development.canPublish === false && !isLocalAction(action.input.tag)) return;
       const prepared = await prepareGroupAction({
         ownerIdentity: action.ownerIdentity,
         input: action.input,
@@ -306,7 +319,7 @@ export function useGroupMutation(kind: Kind, scope?: Uint8Array) {
     input: action?.input ?? null,
     result: action?.state.tag === "Completed" ? action.state.inner.result : null,
     pending: pendingOwner === owner,
-    ready: valid && state.ready && development.canPublish !== false,
+    ready: valid && state.ready && canMutate,
     retrying: action !== null,
     retryExpired: action?.state.tag === "RetryExpired",
     failure: valid ? state.failure : null,

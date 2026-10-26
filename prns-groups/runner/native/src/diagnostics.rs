@@ -131,6 +131,12 @@ pub(crate) fn error_category(error: &crate::Error) -> &'static str {
                 EnrollmentError::Crypto => "enrollment_crypto",
                 EnrollmentError::Storage(_) | EnrollmentError::Database(_) => "enrollment_storage",
                 EnrollmentError::Retry(_) => "enrollment_retry",
+                EnrollmentError::AlreadyJoined => "already_joined",
+                EnrollmentError::GroupClosed => "group_closed",
+                EnrollmentError::OwnerMustClose => "owner_must_close",
+                EnrollmentError::MemberNotFound => "member_not_found",
+                EnrollmentError::StaleMembership => "stale_membership",
+                EnrollmentError::UnsupportedVersion => "unsupported_version",
             }
         }
         Error::Busy => "store_busy",

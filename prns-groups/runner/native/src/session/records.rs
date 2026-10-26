@@ -172,12 +172,15 @@ pub(super) fn messages(
         } else {
             cfg.peers
                 .iter()
+                .chain(cfg.history_peers.iter())
                 .find(|peer| peer.endpoint == record.metadata.author)
                 .ok_or(Error::Corrupt)?
                 .identity
         };
         messages.push(Message {
-            membership_changed: item.progress.membership_changed,
+            membership_changed: item.progress.membership_changed
+                || (cfg.lifecycle != crate::GroupLifecycle::Active
+                    && !item.progress.summary.all_received()),
             id: record.metadata.record,
             client_request_id: item.client_request_id,
             sequence: item.sequence,

@@ -2,8 +2,12 @@
 // Explicitly end borrowed lane lifetimes before closing/reopening the database.
 #![allow(clippy::drop_non_drop)]
 use super::*;
+#[path = "capacity_tests.rs"]
+mod capacity_tests;
 #[path = "maintenance_tests.rs"]
 mod maintenance_tests;
+#[path = "management_tests.rs"]
+mod management_tests;
 #[path = "membership_tests.rs"]
 mod membership_tests;
 const NOW: u64 = 1_800_000_000;
@@ -35,6 +39,9 @@ impl<'db> Device<'db> {
             .unwrap()
             .into_iter()
             .find(|w| match decode::<Frame>(&w.frame).unwrap() {
+                Frame::Leave(_) => kind == "leave",
+                Frame::Terminal(_) => kind == "terminal",
+                Frame::Cancel { .. } => kind == "cancel",
                 Frame::Offer(_) => kind == "offer",
                 Frame::Join { .. } => kind == "join",
                 Frame::Sync { .. } => kind == "sync",

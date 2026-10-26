@@ -530,6 +530,7 @@ fn input_rejections_do_not_block_a_subsequent_valid_operation() {
             next: Some(ticket(1)),
         },
         OperationRejection::RecoveryWindowFull,
+        OperationRejection::ReservedCapacity,
         OperationRejection::RetiredTicket,
     ] {
         let store = coordinator(Fault::None);

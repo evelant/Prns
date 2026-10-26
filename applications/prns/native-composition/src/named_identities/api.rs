@@ -58,7 +58,12 @@ impl NamedIdentityClient {
         .unwrap_or_else(|detail| GroupInvitationListOutcome::Unavailable { detail })
     }
     pub async fn prepare_group_action(&self, input: PrepareGroupActionInput) -> GroupActionOutcome {
-        self.call(core::AdmissionClass::ServiceMutation, move |services| {
+        let admission = if crate::group_actions::is_local_mutation(&input.input) {
+            core::AdmissionClass::LocalMutation
+        } else {
+            core::AdmissionClass::ServiceMutation
+        };
+        self.call(admission, move |services| {
             Box::pin(async move { Ok(actions::prepare(services, input).await) })
         })
         .await
@@ -83,10 +88,16 @@ impl NamedIdentityClient {
         {
             return previous;
         }
-        // A Pending journal entry may not yet have executed. Re-admit under
-        // ServiceMutation before doing any work; Pause between these awaits
-        // keeps the exact intent pending rather than creating new content.
-        self.call(core::AdmissionClass::ServiceMutation, move |services| {
+        let admission = match &previous {
+            GroupActionOutcome::Ready { action }
+                if crate::group_actions::is_local_mutation(&action.input) =>
+            {
+                core::AdmissionClass::LocalMutation
+            }
+            _ => core::AdmissionClass::ServiceMutation,
+        };
+        // Recheck lifecycle admission after reading the immutable journal input.
+        self.call(admission, move |services| {
             Box::pin(async move { Ok(actions::execute(services, input).await) })
         })
         .await

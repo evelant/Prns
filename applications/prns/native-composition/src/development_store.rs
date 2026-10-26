@@ -1056,10 +1056,24 @@ fn run_owner(
             StoreJob::GroupAction { request, response } => {
                 // Like accepted group operations, admitted intent writes finish
                 // even when a bridge caller disappears before receiving them.
-                let _ = response.send(crate::group_actions::execute(
+                let _ = response.send(crate::group_actions::execute_scoped(
                     database,
                     group_identity,
                     request,
+                    |invitation| {
+                        group_session
+                            .as_ref()
+                            .ok_or_else(|| {
+                                crate::group_actions::Error::Unavailable(
+                                    "The group store is not open.".into(),
+                                )
+                            })?
+                            .invitation_group(invitation)
+                            .map(|group| group.map(|group| group.0))
+                            .map_err(|error| {
+                                crate::group_actions::Error::Unavailable(error.to_string())
+                            })
+                    },
                 ));
             }
             StoreJob::BluetoothDiscovery { groups, completion } => {

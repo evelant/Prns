@@ -87,6 +87,51 @@ the wait.
 shows connection/retry observations. Technical explanations are behind info or
 Details controls so the conversation can stay focused on messages.
 
+## Manage a group
+
+The owner can remove another device from **Group details**, cancel an unused
+outgoing invitation, or close the group. If joining committed before cancellation,
+the device appears as a member and can be removed there. Finished invitations can
+be dismissed from the local list.
+
+Members can choose **Leave group**. Participation stops locally immediately;
+the saved departure waits for the owner to commit removal. Closing is the owner's
+departure action. Removal and closure retain readable local history and disable
+new sends. They cannot erase copies already held by other devices. Offline peers
+learn the change when they reconnect.
+
+**Delete from this device** removes local group history and private group state.
+Owners must close first. A member's local deletion alone does not change remote
+membership; leave first to request removal. Already saved departure and closure
+notifications survive local deletion. A removed member can accept a fresh
+invitation with new credentials; a closed group cannot be reopened.
+
+### Recreate the earlier test group
+
+The management protocol and stored group state use version two. This alpha does
+not migrate version-one groups or interoperate with older group clients. Upgrade
+all participants and recreate the disposable test group. Unsupported versions
+are reported explicitly; opening the app does not erase them.
+
+For an existing version-one database, stop the app and keep a copy of the database.
+The host-only reset tool removes its legacy group namespaces, invitation catalog
+and saved group actions, preserving identity, contact and node-setting tables:
+
+```sh
+cargo run --locked --manifest-path applications/Cargo.toml -p prns-app-native \
+  --features host-test --bin reset-test-groups -- \
+  --database /absolute/path/to/application.redb --confirm-legacy-reset
+```
+
+Run it on the relevant identity's closed database on each participating device
+(or an offline copy restored while the app is stopped). It refuses current
+version-two group catalogs. Reset can resume after interruption. Create a new
+group and invitations after reopening; the old group's address is not reused.
+
+Future storage conversions and network upgrades are separate decisions. Preserve
+signed historical bytes, validate converted state, and make any required
+conversion atomic and restart-safe when real retained data requires one.
+
 ## Check recovery
 
 Use unique test text so an old message cannot be mistaken for a new arrival.
@@ -126,9 +171,10 @@ intervention. A screenshot of Delivery details can help; avoid sensitive content
 ## Alpha limits
 
 - Up to eight named identities, four groups per identity and eight devices per
-  group. Reuse a demo group when full; deletion/leave and ownership transfer are
-  not available. Group names and text are bounded to 128 and 2048 UTF-8 bytes.
-- One owner manages additions. Member removal, history transfer, attachments and
+  group. Local deletion releases its active-group slot. Group names and text are
+  bounded to 128 and 2048 UTF-8 bytes. Retained membership history is bounded by
+  storage bytes; there is no seven-change lifetime limit or history compaction.
+- One owner orders membership changes. Ownership transfer, history transfer, attachments and
   a shared identity across multiple phones are not implemented.
 - Keep the apps open. Background delivery and notifications are not guaranteed.
 - Saved group data is not application-encrypted. Protected storage and supported

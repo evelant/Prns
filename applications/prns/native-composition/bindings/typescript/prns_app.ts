@@ -2737,6 +2737,57 @@ const FfiConverterTypeBindingContract = (() => {
     return new FFIConverter();
 })();
 
+/**
+ * Typealias from the type name used in the UDL file to the builtin type.  This
+ * is needed because the UDL type name is used in function/method signatures.
+ */
+export type Bytes32 = Uint8Array;
+// FfiConverter for Bytes32, a type alias for Uint8Array.
+const FfiConverterTypeBytes32 = FfiConverterUint8Array;
+
+export type CancelGroupInvitationInput = {
+    invitationId: Bytes32,
+    clientRequestId: Bytes32
+}
+
+/**
+ * Generated factory for {@link CancelGroupInvitationInput} record objects.
+ */
+export const CancelGroupInvitationInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<CancelGroupInvitationInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<CancelGroupInvitationInput>,
+    });
+})();
+
+const FfiConverterTypeCancelGroupInvitationInput = (() => {
+    type TypeName = CancelGroupInvitationInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                invitationId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.invitationId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.invitationId) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export type CancelLxmfMessageInput = {
     localRecordId: bigint
 }
@@ -4019,6 +4070,53 @@ const FfiConverterTypeClearNetworkActivityInput = (() => {
     return new FFIConverter();
 })();
 
+export type CloseGroupInput = {
+    groupId: Bytes32,
+    clientRequestId: Bytes32,
+    expectedControlHead: Bytes32
+}
+
+/**
+ * Generated factory for {@link CloseGroupInput} record objects.
+ */
+export const CloseGroupInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<CloseGroupInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<CloseGroupInput>,
+    });
+})();
+
+const FfiConverterTypeCloseGroupInput = (() => {
+    type TypeName = CloseGroupInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c),
+                expectedControlHead: FfiConverterTypeBytes32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.expectedControlHead, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId) +
+             FfiConverterTypeBytes32.allocationSize(value.expectedControlHead);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export type Contact = {
     destination: Bytes16,
     alias?: string | undefined,
@@ -4183,14 +4281,6 @@ const FfiConverterTypeContactDestinationInput = (() => {
     return new FFIConverter();
 })();
 
-/**
- * Typealias from the type name used in the UDL file to the builtin type.  This
- * is needed because the UDL type name is used in function/method signatures.
- */
-export type Bytes32 = Uint8Array;
-// FfiConverter for Bytes32, a type alias for Uint8Array.
-const FfiConverterTypeBytes32 = FfiConverterUint8Array;
-
 export type CreateGroupInput = {
     clientRequestId: Bytes32,
     title: string
@@ -4322,6 +4412,49 @@ const FfiConverterTypeCreateNamedIdentityInput = (() => {
             return FfiConverterTypeBytes32.allocationSize(value.requestId) +
              FfiConverterString.allocationSize(value.label) +
              FfiConverterOptionalString.allocationSize(value.publishedName);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type DeleteLocalGroupInput = {
+    groupId: Bytes32,
+    clientRequestId: Bytes32
+}
+
+/**
+ * Generated factory for {@link DeleteLocalGroupInput} record objects.
+ */
+export const DeleteLocalGroupInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<DeleteLocalGroupInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<DeleteLocalGroupInput>,
+    });
+})();
+
+const FfiConverterTypeDeleteLocalGroupInput = (() => {
+    type TypeName = DeleteLocalGroupInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId);
 
         }
     };
@@ -8450,6 +8583,49 @@ const FfiConverterTypeDevelopmentNodeStartInput = (() => {
     return new FFIConverter();
 })();
 
+export type DismissGroupInvitationInput = {
+    invitationId: Bytes32,
+    clientRequestId: Bytes32
+}
+
+/**
+ * Generated factory for {@link DismissGroupInvitationInput} record objects.
+ */
+export const DismissGroupInvitationInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<DismissGroupInvitationInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<DismissGroupInvitationInput>,
+    });
+})();
+
+const FfiConverterTypeDismissGroupInvitationInput = (() => {
+    type TypeName = DismissGroupInvitationInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                invitationId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.invitationId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.invitationId) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 export type ExportContactCardInput = {
     expectedLocalIdentity: Bytes16
 }
@@ -8705,13 +8881,117 @@ const FfiConverterTypeSendGroupTextInput = (() => {
     return new FFIConverter();
 })();
 
+export type RemoveGroupMemberInput = {
+    groupId: Bytes32,
+    clientRequestId: Bytes32,
+    endpointId: Bytes32,
+    endpointIncarnation: bigint,
+    expectedControlHead: Bytes32
+}
+
+/**
+ * Generated factory for {@link RemoveGroupMemberInput} record objects.
+ */
+export const RemoveGroupMemberInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<RemoveGroupMemberInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<RemoveGroupMemberInput>,
+    });
+})();
+
+const FfiConverterTypeRemoveGroupMemberInput = (() => {
+    type TypeName = RemoveGroupMemberInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c),
+                endpointId: FfiConverterTypeBytes32.readFromCursor(c),
+                endpointIncarnation: FfiConverterUInt64.readFromCursor(c),
+                expectedControlHead: FfiConverterTypeBytes32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.endpointId, c);
+            FfiConverterUInt64.writeIntoCursor(value.endpointIncarnation, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.expectedControlHead, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId) +
+             FfiConverterTypeBytes32.allocationSize(value.endpointId) +
+             FfiConverterUInt64.allocationSize(value.endpointIncarnation) +
+             FfiConverterTypeBytes32.allocationSize(value.expectedControlHead);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
+export type LeaveGroupInput = {
+    groupId: Bytes32,
+    clientRequestId: Bytes32
+}
+
+/**
+ * Generated factory for {@link LeaveGroupInput} record objects.
+ */
+export const LeaveGroupInput = (() => {
+    const defaults = () => ({
+    });
+    const create = (() => {
+        return uniffiCreateRecord<LeaveGroupInput, ReturnType<typeof defaults>>(defaults);
+    })();
+    return Object.freeze({
+        create,
+        new: create,
+        defaults: () => Object.freeze(defaults()) as Partial<LeaveGroupInput>,
+    });
+})();
+
+const FfiConverterTypeLeaveGroupInput = (() => {
+    type TypeName = LeaveGroupInput;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            return {
+                groupId: FfiConverterTypeBytes32.readFromCursor(c),
+                clientRequestId: FfiConverterTypeBytes32.readFromCursor(c)
+            };
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            FfiConverterTypeBytes32.writeIntoCursor(value.groupId, c);
+            FfiConverterTypeBytes32.writeIntoCursor(value.clientRequestId, c);
+        }
+        allocationSize(value: TypeName): number {
+            return FfiConverterTypeBytes32.allocationSize(value.groupId) +
+             FfiConverterTypeBytes32.allocationSize(value.clientRequestId);
+
+        }
+    };
+    return new FFIConverter();
+})();
+
 
 // Enum: GroupActionInput
 export enum GroupActionInput_Tags {
     Create = "Create",
     Invite = "Invite",
     Respond = "Respond",
-    Send = "Send"
+    Send = "Send",
+    RemoveMember = "RemoveMember",
+    LeaveGroup = "LeaveGroup",
+    CloseGroup = "CloseGroup",
+    DeleteLocalGroup = "DeleteLocalGroup",
+    CancelInvitation = "CancelInvitation",
+    DismissInvitation = "DismissInvitation"
 }
 export const GroupActionInput = (() => {
 
@@ -8839,6 +9119,192 @@ inner: {input: SendGroupTextInput }): Send_ {
 
     }
 
+    type RemoveMember__interface = {
+        tag: GroupActionInput_Tags.RemoveMember;
+        inner:
+Readonly<{input: RemoveGroupMemberInput}>
+    };
+    class RemoveMember_ extends UniffiEnum implements RemoveMember__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.RemoveMember;
+        readonly inner:
+Readonly<{input: RemoveGroupMemberInput}>;
+        constructor(
+inner: {input: RemoveGroupMemberInput }) {
+            super("GroupActionInput", "RemoveMember");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: RemoveGroupMemberInput }): RemoveMember_ {
+            return new RemoveMember_(inner);
+        }
+
+        static instanceOf(obj: any): obj is RemoveMember_ {
+            return obj.tag === GroupActionInput_Tags.RemoveMember;
+        }
+
+    }
+
+    type LeaveGroup__interface = {
+        tag: GroupActionInput_Tags.LeaveGroup;
+        inner:
+Readonly<{input: LeaveGroupInput}>
+    };
+    class LeaveGroup_ extends UniffiEnum implements LeaveGroup__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.LeaveGroup;
+        readonly inner:
+Readonly<{input: LeaveGroupInput}>;
+        constructor(
+inner: {input: LeaveGroupInput }) {
+            super("GroupActionInput", "LeaveGroup");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: LeaveGroupInput }): LeaveGroup_ {
+            return new LeaveGroup_(inner);
+        }
+
+        static instanceOf(obj: any): obj is LeaveGroup_ {
+            return obj.tag === GroupActionInput_Tags.LeaveGroup;
+        }
+
+    }
+
+    type CloseGroup__interface = {
+        tag: GroupActionInput_Tags.CloseGroup;
+        inner:
+Readonly<{input: CloseGroupInput}>
+    };
+    class CloseGroup_ extends UniffiEnum implements CloseGroup__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.CloseGroup;
+        readonly inner:
+Readonly<{input: CloseGroupInput}>;
+        constructor(
+inner: {input: CloseGroupInput }) {
+            super("GroupActionInput", "CloseGroup");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: CloseGroupInput }): CloseGroup_ {
+            return new CloseGroup_(inner);
+        }
+
+        static instanceOf(obj: any): obj is CloseGroup_ {
+            return obj.tag === GroupActionInput_Tags.CloseGroup;
+        }
+
+    }
+
+    type DeleteLocalGroup__interface = {
+        tag: GroupActionInput_Tags.DeleteLocalGroup;
+        inner:
+Readonly<{input: DeleteLocalGroupInput}>
+    };
+    class DeleteLocalGroup_ extends UniffiEnum implements DeleteLocalGroup__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.DeleteLocalGroup;
+        readonly inner:
+Readonly<{input: DeleteLocalGroupInput}>;
+        constructor(
+inner: {input: DeleteLocalGroupInput }) {
+            super("GroupActionInput", "DeleteLocalGroup");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: DeleteLocalGroupInput }): DeleteLocalGroup_ {
+            return new DeleteLocalGroup_(inner);
+        }
+
+        static instanceOf(obj: any): obj is DeleteLocalGroup_ {
+            return obj.tag === GroupActionInput_Tags.DeleteLocalGroup;
+        }
+
+    }
+
+    type CancelInvitation__interface = {
+        tag: GroupActionInput_Tags.CancelInvitation;
+        inner:
+Readonly<{input: CancelGroupInvitationInput}>
+    };
+    class CancelInvitation_ extends UniffiEnum implements CancelInvitation__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.CancelInvitation;
+        readonly inner:
+Readonly<{input: CancelGroupInvitationInput}>;
+        constructor(
+inner: {input: CancelGroupInvitationInput }) {
+            super("GroupActionInput", "CancelInvitation");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: CancelGroupInvitationInput }): CancelInvitation_ {
+            return new CancelInvitation_(inner);
+        }
+
+        static instanceOf(obj: any): obj is CancelInvitation_ {
+            return obj.tag === GroupActionInput_Tags.CancelInvitation;
+        }
+
+    }
+
+    type DismissInvitation__interface = {
+        tag: GroupActionInput_Tags.DismissInvitation;
+        inner:
+Readonly<{input: DismissGroupInvitationInput}>
+    };
+    class DismissInvitation_ extends UniffiEnum implements DismissInvitation__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionInput";
+        readonly tag = GroupActionInput_Tags.DismissInvitation;
+        readonly inner:
+Readonly<{input: DismissGroupInvitationInput}>;
+        constructor(
+inner: {input: DismissGroupInvitationInput }) {
+            super("GroupActionInput", "DismissInvitation");
+
+            this.inner = Object.freeze(inner);
+        }
+        static new(
+inner: {input: DismissGroupInvitationInput }): DismissInvitation_ {
+            return new DismissInvitation_(inner);
+        }
+
+        static instanceOf(obj: any): obj is DismissInvitation_ {
+            return obj.tag === GroupActionInput_Tags.DismissInvitation;
+        }
+
+    }
+
     function instanceOf(obj: any): obj is GroupActionInput {
         return obj[uniffiTypeNameSymbol] === "GroupActionInput";
     }
@@ -8848,12 +9314,18 @@ inner: {input: SendGroupTextInput }): Send_ {
   Create: Create_,
   Invite: Invite_,
   Respond: Respond_,
-  Send: Send_
+  Send: Send_,
+  RemoveMember: RemoveMember_,
+  LeaveGroup: LeaveGroup_,
+  CloseGroup: CloseGroup_,
+  DeleteLocalGroup: DeleteLocalGroup_,
+  CancelInvitation: CancelInvitation_,
+  DismissInvitation: DismissInvitation_
     });
 
 })();
 export type GroupActionInput = InstanceType<
-    typeof GroupActionInput['Create' | 'Invite' | 'Respond' | 'Send']
+    typeof GroupActionInput['Create' | 'Invite' | 'Respond' | 'Send' | 'RemoveMember' | 'LeaveGroup' | 'CloseGroup' | 'DeleteLocalGroup' | 'CancelInvitation' | 'DismissInvitation']
 >;
 
 // FfiConverter for enum GroupActionInput
@@ -8866,6 +9338,12 @@ const FfiConverterTypeGroupActionInput = (() => {
                 case 2: return new GroupActionInput.Invite({input: FfiConverterTypeInviteToGroupInput.readFromCursor(c) });
                 case 3: return new GroupActionInput.Respond({input: FfiConverterTypeRespondGroupInvitationInput.readFromCursor(c) });
                 case 4: return new GroupActionInput.Send({input: FfiConverterTypeSendGroupTextInput.readFromCursor(c) });
+                case 5: return new GroupActionInput.RemoveMember({input: FfiConverterTypeRemoveGroupMemberInput.readFromCursor(c) });
+                case 6: return new GroupActionInput.LeaveGroup({input: FfiConverterTypeLeaveGroupInput.readFromCursor(c) });
+                case 7: return new GroupActionInput.CloseGroup({input: FfiConverterTypeCloseGroupInput.readFromCursor(c) });
+                case 8: return new GroupActionInput.DeleteLocalGroup({input: FfiConverterTypeDeleteLocalGroupInput.readFromCursor(c) });
+                case 9: return new GroupActionInput.CancelInvitation({input: FfiConverterTypeCancelGroupInvitationInput.readFromCursor(c) });
+                case 10: return new GroupActionInput.DismissInvitation({input: FfiConverterTypeDismissGroupInvitationInput.readFromCursor(c) });
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
         }
@@ -8893,6 +9371,42 @@ const FfiConverterTypeGroupActionInput = (() => {
                     c.writeI32(4);
                     const inner = value.inner;
                     FfiConverterTypeSendGroupTextInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.RemoveMember: {
+                    c.writeI32(5);
+                    const inner = value.inner;
+                    FfiConverterTypeRemoveGroupMemberInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.LeaveGroup: {
+                    c.writeI32(6);
+                    const inner = value.inner;
+                    FfiConverterTypeLeaveGroupInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.CloseGroup: {
+                    c.writeI32(7);
+                    const inner = value.inner;
+                    FfiConverterTypeCloseGroupInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.DeleteLocalGroup: {
+                    c.writeI32(8);
+                    const inner = value.inner;
+                    FfiConverterTypeDeleteLocalGroupInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.CancelInvitation: {
+                    c.writeI32(9);
+                    const inner = value.inner;
+                    FfiConverterTypeCancelGroupInvitationInput.writeIntoCursor(inner.input, c);
+                    return;
+                }
+                case GroupActionInput_Tags.DismissInvitation: {
+                    c.writeI32(10);
+                    const inner = value.inner;
+                    FfiConverterTypeDismissGroupInvitationInput.writeIntoCursor(inner.input, c);
                     return;
                 }
                 default:
@@ -8926,6 +9440,42 @@ const FfiConverterTypeGroupActionInput = (() => {
                     size += FfiConverterTypeSendGroupTextInput.allocationSize(inner.input);
                     return size;
                 }
+                case GroupActionInput_Tags.RemoveMember: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeRemoveGroupMemberInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.LeaveGroup: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeLeaveGroupInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.CloseGroup: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeCloseGroupInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.DeleteLocalGroup: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeDeleteLocalGroupInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.CancelInvitation: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeCancelGroupInvitationInput.allocationSize(inner.input);
+                    return size;
+                }
+                case GroupActionInput_Tags.DismissInvitation: {
+                    const inner = value.inner;
+                    let size = 4;
+                    size += FfiConverterTypeDismissGroupInvitationInput.allocationSize(inner.input);
+                    return size;
+                }
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
         }
@@ -8947,7 +9497,13 @@ export enum GroupRejectionReason {
     MembershipConflict,
     NotOwner,
     NotJoined,
-    AuthenticationFailed
+    AuthenticationFailed,
+    AlreadyJoined,
+    GroupClosed,
+    OwnerMustClose,
+    MemberNotFound,
+    StaleMembership,
+    UnsupportedVersion
 }
 
 const FfiConverterTypeGroupRejectionReason = (() => {
@@ -8965,6 +9521,12 @@ const FfiConverterTypeGroupRejectionReason = (() => {
                 case 8: return GroupRejectionReason.NotOwner;
                 case 9: return GroupRejectionReason.NotJoined;
                 case 10: return GroupRejectionReason.AuthenticationFailed;
+                case 11: return GroupRejectionReason.AlreadyJoined;
+                case 12: return GroupRejectionReason.GroupClosed;
+                case 13: return GroupRejectionReason.OwnerMustClose;
+                case 14: return GroupRejectionReason.MemberNotFound;
+                case 15: return GroupRejectionReason.StaleMembership;
+                case 16: return GroupRejectionReason.UnsupportedVersion;
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
         }
@@ -8980,6 +9542,12 @@ const FfiConverterTypeGroupRejectionReason = (() => {
                 case GroupRejectionReason.NotOwner: return c.writeI32(8);
                 case GroupRejectionReason.NotJoined: return c.writeI32(9);
                 case GroupRejectionReason.AuthenticationFailed: return c.writeI32(10);
+                case GroupRejectionReason.AlreadyJoined: return c.writeI32(11);
+                case GroupRejectionReason.GroupClosed: return c.writeI32(12);
+                case GroupRejectionReason.OwnerMustClose: return c.writeI32(13);
+                case GroupRejectionReason.MemberNotFound: return c.writeI32(14);
+                case GroupRejectionReason.StaleMembership: return c.writeI32(15);
+                case GroupRejectionReason.UnsupportedVersion: return c.writeI32(16);
             }
         }
         allocationSize(value: TypeName): number {
@@ -8995,6 +9563,12 @@ export enum GroupActionResult_Tags {
     Created = "Created",
     Invited = "Invited",
     Responded = "Responded",
+    RemovedMember = "RemovedMember",
+    LeftGroup = "LeftGroup",
+    ClosedGroup = "ClosedGroup",
+    DeletedLocalGroup = "DeletedLocalGroup",
+    CancelledInvitation = "CancelledInvitation",
+    DismissedInvitation = "DismissedInvitation",
     Sent = "Sent",
     Rejected = "Rejected"
 }
@@ -9086,6 +9660,150 @@ inner: {invitationId: Bytes32 }): Invited_ {
 
     }
 
+    type RemovedMember__interface = {
+        tag: GroupActionResult_Tags.RemovedMember
+    };
+    class RemovedMember_ extends UniffiEnum implements RemovedMember__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.RemovedMember;
+        constructor() {
+            super("GroupActionResult", "RemovedMember");
+        }
+
+        static new(): RemovedMember_ {
+            return new RemovedMember_();
+        }
+
+        static instanceOf(obj: any): obj is RemovedMember_ {
+            return obj.tag === GroupActionResult_Tags.RemovedMember;
+        }
+
+    }
+
+    type LeftGroup__interface = {
+        tag: GroupActionResult_Tags.LeftGroup
+    };
+    class LeftGroup_ extends UniffiEnum implements LeftGroup__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.LeftGroup;
+        constructor() {
+            super("GroupActionResult", "LeftGroup");
+        }
+
+        static new(): LeftGroup_ {
+            return new LeftGroup_();
+        }
+
+        static instanceOf(obj: any): obj is LeftGroup_ {
+            return obj.tag === GroupActionResult_Tags.LeftGroup;
+        }
+
+    }
+
+    type ClosedGroup__interface = {
+        tag: GroupActionResult_Tags.ClosedGroup
+    };
+    class ClosedGroup_ extends UniffiEnum implements ClosedGroup__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.ClosedGroup;
+        constructor() {
+            super("GroupActionResult", "ClosedGroup");
+        }
+
+        static new(): ClosedGroup_ {
+            return new ClosedGroup_();
+        }
+
+        static instanceOf(obj: any): obj is ClosedGroup_ {
+            return obj.tag === GroupActionResult_Tags.ClosedGroup;
+        }
+
+    }
+
+    type DeletedLocalGroup__interface = {
+        tag: GroupActionResult_Tags.DeletedLocalGroup
+    };
+    class DeletedLocalGroup_ extends UniffiEnum implements DeletedLocalGroup__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.DeletedLocalGroup;
+        constructor() {
+            super("GroupActionResult", "DeletedLocalGroup");
+        }
+
+        static new(): DeletedLocalGroup_ {
+            return new DeletedLocalGroup_();
+        }
+
+        static instanceOf(obj: any): obj is DeletedLocalGroup_ {
+            return obj.tag === GroupActionResult_Tags.DeletedLocalGroup;
+        }
+
+    }
+
+    type CancelledInvitation__interface = {
+        tag: GroupActionResult_Tags.CancelledInvitation
+    };
+    class CancelledInvitation_ extends UniffiEnum implements CancelledInvitation__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.CancelledInvitation;
+        constructor() {
+            super("GroupActionResult", "CancelledInvitation");
+        }
+
+        static new(): CancelledInvitation_ {
+            return new CancelledInvitation_();
+        }
+
+        static instanceOf(obj: any): obj is CancelledInvitation_ {
+            return obj.tag === GroupActionResult_Tags.CancelledInvitation;
+        }
+
+    }
+
+    type DismissedInvitation__interface = {
+        tag: GroupActionResult_Tags.DismissedInvitation
+    };
+    class DismissedInvitation_ extends UniffiEnum implements DismissedInvitation__interface {
+        /**
+         * @private
+         * This field is private and should not be used, use `tag` instead.
+         */
+        readonly [uniffiTypeNameSymbol] = "GroupActionResult";
+        readonly tag = GroupActionResult_Tags.DismissedInvitation;
+        constructor() {
+            super("GroupActionResult", "DismissedInvitation");
+        }
+
+        static new(): DismissedInvitation_ {
+            return new DismissedInvitation_();
+        }
+
+        static instanceOf(obj: any): obj is DismissedInvitation_ {
+            return obj.tag === GroupActionResult_Tags.DismissedInvitation;
+        }
+
+    }
+
     type Sent__interface = {
         tag: GroupActionResult_Tags.Sent;
         inner:
@@ -9157,13 +9875,19 @@ inner: {reason: GroupRejectionReason; detail: string }): Rejected_ {
   Created: Created_,
   Invited: Invited_,
   Responded: Responded_,
+  RemovedMember: RemovedMember_,
+  LeftGroup: LeftGroup_,
+  ClosedGroup: ClosedGroup_,
+  DeletedLocalGroup: DeletedLocalGroup_,
+  CancelledInvitation: CancelledInvitation_,
+  DismissedInvitation: DismissedInvitation_,
   Sent: Sent_,
   Rejected: Rejected_
     });
 
 })();
 export type GroupActionResult = InstanceType<
-    typeof GroupActionResult['Created' | 'Invited' | 'Responded' | 'Sent' | 'Rejected']
+    typeof GroupActionResult['Created' | 'Invited' | 'Responded' | 'RemovedMember' | 'LeftGroup' | 'ClosedGroup' | 'DeletedLocalGroup' | 'CancelledInvitation' | 'DismissedInvitation' | 'Sent' | 'Rejected']
 >;
 
 // FfiConverter for enum GroupActionResult
@@ -9175,8 +9899,14 @@ const FfiConverterTypeGroupActionResult = (() => {
                 case 1: return new GroupActionResult.Created({groupId: FfiConverterTypeBytes32.readFromCursor(c) });
                 case 2: return new GroupActionResult.Invited({invitationId: FfiConverterTypeBytes32.readFromCursor(c) });
                 case 3: return new GroupActionResult.Responded();
-                case 4: return new GroupActionResult.Sent({messageId: FfiConverterTypeBytes32.readFromCursor(c) });
-                case 5: return new GroupActionResult.Rejected({reason: FfiConverterTypeGroupRejectionReason.readFromCursor(c), detail: FfiConverterString.readFromCursor(c) });
+                case 4: return new GroupActionResult.RemovedMember();
+                case 5: return new GroupActionResult.LeftGroup();
+                case 6: return new GroupActionResult.ClosedGroup();
+                case 7: return new GroupActionResult.DeletedLocalGroup();
+                case 8: return new GroupActionResult.CancelledInvitation();
+                case 9: return new GroupActionResult.DismissedInvitation();
+                case 10: return new GroupActionResult.Sent({messageId: FfiConverterTypeBytes32.readFromCursor(c) });
+                case 11: return new GroupActionResult.Rejected({reason: FfiConverterTypeGroupRejectionReason.readFromCursor(c), detail: FfiConverterString.readFromCursor(c) });
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
         }
@@ -9198,14 +9928,38 @@ const FfiConverterTypeGroupActionResult = (() => {
                     c.writeI32(3);
                     return;
                 }
-                case GroupActionResult_Tags.Sent: {
+                case GroupActionResult_Tags.RemovedMember: {
                     c.writeI32(4);
+                    return;
+                }
+                case GroupActionResult_Tags.LeftGroup: {
+                    c.writeI32(5);
+                    return;
+                }
+                case GroupActionResult_Tags.ClosedGroup: {
+                    c.writeI32(6);
+                    return;
+                }
+                case GroupActionResult_Tags.DeletedLocalGroup: {
+                    c.writeI32(7);
+                    return;
+                }
+                case GroupActionResult_Tags.CancelledInvitation: {
+                    c.writeI32(8);
+                    return;
+                }
+                case GroupActionResult_Tags.DismissedInvitation: {
+                    c.writeI32(9);
+                    return;
+                }
+                case GroupActionResult_Tags.Sent: {
+                    c.writeI32(10);
                     const inner = value.inner;
                     FfiConverterTypeBytes32.writeIntoCursor(inner.messageId, c);
                     return;
                 }
                 case GroupActionResult_Tags.Rejected: {
-                    c.writeI32(5);
+                    c.writeI32(11);
                     const inner = value.inner;
                     FfiConverterTypeGroupRejectionReason.writeIntoCursor(inner.reason, c);
                     FfiConverterString.writeIntoCursor(inner.detail, c);
@@ -9231,6 +9985,24 @@ const FfiConverterTypeGroupActionResult = (() => {
                     return size;
                 }
                 case GroupActionResult_Tags.Responded: {
+                    return 4;
+                }
+                case GroupActionResult_Tags.RemovedMember: {
+                    return 4;
+                }
+                case GroupActionResult_Tags.LeftGroup: {
+                    return 4;
+                }
+                case GroupActionResult_Tags.ClosedGroup: {
+                    return 4;
+                }
+                case GroupActionResult_Tags.DeletedLocalGroup: {
+                    return 4;
+                }
+                case GroupActionResult_Tags.CancelledInvitation: {
+                    return 4;
+                }
+                case GroupActionResult_Tags.DismissedInvitation: {
                     return 4;
                 }
                 case GroupActionResult_Tags.Sent: {
@@ -9604,6 +10376,40 @@ const FfiConverterTypeGroupMember = (() => {
 
         }
     };
+    return new FFIConverter();
+})();
+
+export enum GroupLifecycle {
+    Active,
+    Leaving,
+    Removed,
+    Closed
+}
+
+const FfiConverterTypeGroupLifecycle = (() => {
+    type TypeName = GroupLifecycle;
+    class FFIConverter extends AbstractFfiConverterByteArray<TypeName> {
+        readFromCursor(c: Cursor): TypeName {
+            switch (c.readI32()) {
+                case 1: return GroupLifecycle.Active;
+                case 2: return GroupLifecycle.Leaving;
+                case 3: return GroupLifecycle.Removed;
+                case 4: return GroupLifecycle.Closed;
+                default: throw new UniffiInternalError.UnexpectedEnumCase();
+            }
+        }
+        writeIntoCursor(value: TypeName, c: Cursor): void {
+            switch (value) {
+                case GroupLifecycle.Active: return c.writeI32(1);
+                case GroupLifecycle.Leaving: return c.writeI32(2);
+                case GroupLifecycle.Removed: return c.writeI32(3);
+                case GroupLifecycle.Closed: return c.writeI32(4);
+            }
+        }
+        allocationSize(value: TypeName): number {
+            return 4;
+        }
+    }
     return new FFIConverter();
 })();
 
@@ -9993,6 +10799,12 @@ export type GroupConversation = {
     memberCount: number,
     ownerIdentity?: Bytes16 | undefined,
     canInvite: boolean,
+    lifecycle: GroupLifecycle,
+    canSend: boolean,
+    canRemoveMembers: boolean,
+    canLeave: boolean,
+    canClose: boolean,
+    canDeleteLocal: boolean,
     synchronization: GroupSynchronizationState,
     /**
      * Bounded, transient peer activity; durable delivery evidence remains on records.
@@ -10029,6 +10841,12 @@ const FfiConverterTypeGroupConversation = (() => {
                 memberCount: FfiConverterUInt32.readFromCursor(c),
                 ownerIdentity: FfiConverterOptionalTypeBytes16.readFromCursor(c),
                 canInvite: FfiConverterBool.readFromCursor(c),
+                lifecycle: FfiConverterTypeGroupLifecycle.readFromCursor(c),
+                canSend: FfiConverterBool.readFromCursor(c),
+                canRemoveMembers: FfiConverterBool.readFromCursor(c),
+                canLeave: FfiConverterBool.readFromCursor(c),
+                canClose: FfiConverterBool.readFromCursor(c),
+                canDeleteLocal: FfiConverterBool.readFromCursor(c),
                 synchronization: FfiConverterTypeGroupSynchronizationState.readFromCursor(c),
                 progress: FfiConverterTypeGroupSynchronizationProgress.readFromCursor(c)
             };
@@ -10042,6 +10860,12 @@ const FfiConverterTypeGroupConversation = (() => {
             FfiConverterUInt32.writeIntoCursor(value.memberCount, c);
             FfiConverterOptionalTypeBytes16.writeIntoCursor(value.ownerIdentity, c);
             FfiConverterBool.writeIntoCursor(value.canInvite, c);
+            FfiConverterTypeGroupLifecycle.writeIntoCursor(value.lifecycle, c);
+            FfiConverterBool.writeIntoCursor(value.canSend, c);
+            FfiConverterBool.writeIntoCursor(value.canRemoveMembers, c);
+            FfiConverterBool.writeIntoCursor(value.canLeave, c);
+            FfiConverterBool.writeIntoCursor(value.canClose, c);
+            FfiConverterBool.writeIntoCursor(value.canDeleteLocal, c);
             FfiConverterTypeGroupSynchronizationState.writeIntoCursor(value.synchronization, c);
             FfiConverterTypeGroupSynchronizationProgress.writeIntoCursor(value.progress, c);
         }
@@ -10054,6 +10878,12 @@ const FfiConverterTypeGroupConversation = (() => {
              FfiConverterUInt32.allocationSize(value.memberCount) +
              FfiConverterOptionalTypeBytes16.allocationSize(value.ownerIdentity) +
              FfiConverterBool.allocationSize(value.canInvite) +
+             FfiConverterTypeGroupLifecycle.allocationSize(value.lifecycle) +
+             FfiConverterBool.allocationSize(value.canSend) +
+             FfiConverterBool.allocationSize(value.canRemoveMembers) +
+             FfiConverterBool.allocationSize(value.canLeave) +
+             FfiConverterBool.allocationSize(value.canClose) +
+             FfiConverterBool.allocationSize(value.canDeleteLocal) +
              FfiConverterTypeGroupSynchronizationState.allocationSize(value.synchronization) +
              FfiConverterTypeGroupSynchronizationProgress.allocationSize(value.progress);
 
@@ -10071,7 +10901,8 @@ export enum GroupInvitationState {
      */
     Joined,
     Declined,
-    Expired
+    Expired,
+    Cancelled
 }
 
 const FfiConverterTypeGroupInvitationState = (() => {
@@ -10084,6 +10915,7 @@ const FfiConverterTypeGroupInvitationState = (() => {
                 case 3: return GroupInvitationState.Joined;
                 case 4: return GroupInvitationState.Declined;
                 case 5: return GroupInvitationState.Expired;
+                case 6: return GroupInvitationState.Cancelled;
                 default: throw new UniffiInternalError.UnexpectedEnumCase();
             }
         }
@@ -10094,6 +10926,7 @@ const FfiConverterTypeGroupInvitationState = (() => {
                 case GroupInvitationState.Joined: return c.writeI32(3);
                 case GroupInvitationState.Declined: return c.writeI32(4);
                 case GroupInvitationState.Expired: return c.writeI32(5);
+                case GroupInvitationState.Cancelled: return c.writeI32(6);
             }
         }
         allocationSize(value: TypeName): number {
@@ -10116,7 +10949,9 @@ export type GroupInvitation = {
      * The owner has deferred Add for its own unfinished current-era deliveries.
      * This does not imply that every member's outgoing queue has been checked.
      */
-    waitingForDelivery: boolean
+    waitingForDelivery: boolean,
+    canCancel: boolean,
+    canDismiss: boolean
 }
 
 /**
@@ -10148,7 +10983,9 @@ const FfiConverterTypeGroupInvitation = (() => {
                 expiresAtMillis: FfiConverterUInt64.readFromCursor(c),
                 outgoing: FfiConverterBool.readFromCursor(c),
                 state: FfiConverterTypeGroupInvitationState.readFromCursor(c),
-                waitingForDelivery: FfiConverterBool.readFromCursor(c)
+                waitingForDelivery: FfiConverterBool.readFromCursor(c),
+                canCancel: FfiConverterBool.readFromCursor(c),
+                canDismiss: FfiConverterBool.readFromCursor(c)
             };
         }
         writeIntoCursor(value: TypeName, c: Cursor): void {
@@ -10161,6 +10998,8 @@ const FfiConverterTypeGroupInvitation = (() => {
             FfiConverterBool.writeIntoCursor(value.outgoing, c);
             FfiConverterTypeGroupInvitationState.writeIntoCursor(value.state, c);
             FfiConverterBool.writeIntoCursor(value.waitingForDelivery, c);
+            FfiConverterBool.writeIntoCursor(value.canCancel, c);
+            FfiConverterBool.writeIntoCursor(value.canDismiss, c);
         }
         allocationSize(value: TypeName): number {
             return FfiConverterTypeBytes32.allocationSize(value.invitationId) +
@@ -10171,7 +11010,9 @@ const FfiConverterTypeGroupInvitation = (() => {
              FfiConverterUInt64.allocationSize(value.expiresAtMillis) +
              FfiConverterBool.allocationSize(value.outgoing) +
              FfiConverterTypeGroupInvitationState.allocationSize(value.state) +
-             FfiConverterBool.allocationSize(value.waitingForDelivery);
+             FfiConverterBool.allocationSize(value.waitingForDelivery) +
+             FfiConverterBool.allocationSize(value.canCancel) +
+             FfiConverterBool.allocationSize(value.canDismiss);
 
         }
     };
@@ -26683,6 +27524,7 @@ export default Object.freeze({
     FfiConverterTypeBytes10,
     FfiConverterTypeBytes16,
     FfiConverterTypeBytes32,
+    FfiConverterTypeCancelGroupInvitationInput,
     FfiConverterTypeCancelLxmfMessageInput,
     FfiConverterTypeCancelLxmfMessageOutcome,
     FfiConverterTypeCanonicalHostSnapshot,
@@ -26691,6 +27533,7 @@ export default Object.freeze({
     FfiConverterTypeChangeRemoteNodeOutcome,
     FfiConverterTypeClearNetworkActivityInput,
     FfiConverterTypeClearNetworkActivityOutcome,
+    FfiConverterTypeCloseGroupInput,
     FfiConverterTypeContact,
     FfiConverterTypeContactCard,
     FfiConverterTypeContactCardExportOutcome,
@@ -26704,6 +27547,7 @@ export default Object.freeze({
     FfiConverterTypeCreateGroupOutcome,
     FfiConverterTypeCreateManualContactInput,
     FfiConverterTypeCreateNamedIdentityInput,
+    FfiConverterTypeDeleteLocalGroupInput,
     FfiConverterTypeDescribeRemoteControlTargetInput,
     FfiConverterTypeDevelopmentNodeFailure,
     FfiConverterTypeDevelopmentNodeFailureStage,
@@ -26715,6 +27559,7 @@ export default Object.freeze({
     FfiConverterTypeDevelopmentNodeStartOutcome,
     FfiConverterTypeDevelopmentNodeStopOutcome,
     FfiConverterTypeDevelopmentNodeStopStage,
+    FfiConverterTypeDismissGroupInvitationInput,
     FfiConverterTypeExportContactCardInput,
     FfiConverterTypeFinishRemoteWifiTrialInput,
     FfiConverterTypeGroupAction,
@@ -26733,6 +27578,7 @@ export default Object.freeze({
     FfiConverterTypeGroupInvitation,
     FfiConverterTypeGroupInvitationListOutcome,
     FfiConverterTypeGroupInvitationState,
+    FfiConverterTypeGroupLifecycle,
     FfiConverterTypeGroupMember,
     FfiConverterTypeGroupMessageListOutcome,
     FfiConverterTypeGroupPeerSynchronizationProgress,
@@ -26756,6 +27602,7 @@ export default Object.freeze({
     FfiConverterTypeInspectRemoteWifiTrialInput,
     FfiConverterTypeInviteToGroupInput,
     FfiConverterTypeInviteToGroupOutcome,
+    FfiConverterTypeLeaveGroupInput,
     FfiConverterTypeListGroupMessagesInput,
     FfiConverterTypeListLxmfConversationsInput,
     FfiConverterTypeListLxmfMessagesInput,
@@ -26847,6 +27694,7 @@ export default Object.freeze({
     FfiConverterTypeRemoteWifiOperation,
     FfiConverterTypeRemoteWifiStatus,
     FfiConverterTypeRemoteWifiTransaction,
+    FfiConverterTypeRemoveGroupMemberInput,
     FfiConverterTypeRespondGroupInvitationInput,
     FfiConverterTypeRespondGroupInvitationOutcome,
     FfiConverterTypeRetryLxmfMessageInput,

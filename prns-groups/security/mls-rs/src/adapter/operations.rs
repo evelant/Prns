@@ -298,7 +298,7 @@ impl<B: AtomicBackend + Send> Adapter<B> {
         admission: impl FnOnce(&crate::MemberBinding, &[u8]) -> Admission,
     ) -> Result<Committed, Error<B::Error>> {
         self.execute(operation, |provider| {
-            self.prepare_receive(provider, group, bytes, |binding, data| {
+            self.prepare_receive(provider, group, bytes, None, |binding, data| {
                 Ok::<_, core::convert::Infallible>(admission(binding, data))
             })
             .map_err(CompositionError::into_mls)
@@ -310,6 +310,7 @@ impl<B: AtomicBackend + Send> Adapter<B> {
         provider: &Providers<B>,
         group: GroupId,
         bytes: &[u8],
+        expected: Option<&[crate::MemberBinding]>,
         admission: impl FnOnce(&crate::MemberBinding, &[u8]) -> Result<Admission, A>,
     ) -> Result<Output, CompositionError<B::Error, A>> {
         let message = self.decode(bytes)?;
@@ -320,6 +321,8 @@ impl<B: AtomicBackend + Send> Adapter<B> {
         }
         let received_epoch = message.epoch().ok_or(Error::UnexpectedMessage)?;
         let mut state = self.load(provider, group)?;
+        let prior_roster = expected.map(|_| state.roster().members());
+        let local_index = state.current_member_index();
         let mut sender = None;
         let event = match state.process_incoming_message(message)? {
             ReceivedMessage::ApplicationMessage(data) => {
@@ -361,6 +364,33 @@ impl<B: AtomicBackend + Send> Adapter<B> {
                     .iter()
                     .any(|p| matches!(p.proposal, Proposal::Add(_) | Proposal::Remove(_)));
                 if removed {
+                    if let Some(expected) = expected {
+                        let prior = prior_roster.as_ref().ok_or(Error::CorruptState)?;
+                        let single_local_removal = matches!(
+                            epoch.applied_proposals.as_slice(),
+                            [proposal] if matches!(&proposal.proposal,
+                                Proposal::Remove(remove) if remove.to_remove() == local_index)
+                        );
+                        if !single_local_removal
+                            || expected.len().checked_add(1) != Some(prior.len())
+                            || !expected.contains(&self.policy.owner)
+                            || prior
+                                .iter()
+                                .filter(|member| member.index != local_index)
+                                .any(|member| {
+                                    !expected
+                                        .iter()
+                                        .any(|binding| binding.matches(&member.signing_identity))
+                                })
+                            || expected.iter().enumerate().any(|(index, binding)| {
+                                expected[..index]
+                                    .iter()
+                                    .any(|prior| prior.endpoint == binding.endpoint)
+                            })
+                        {
+                            return Err(PolicyError::Credential.into());
+                        }
+                    }
                     provider.purge_epochs(&group.0)?;
                     provider.delete(&key(b'G', &group.0))?;
                     provider.put(&key(b'R', &group.0), &[1])?;

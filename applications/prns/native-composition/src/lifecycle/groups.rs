@@ -17,6 +17,12 @@ pub(super) fn rejection_reason(error: &Error) -> GroupRejectionReason {
         Some(Reason::NotOwner) => GroupRejectionReason::NotOwner,
         Some(Reason::NotJoined) => GroupRejectionReason::NotJoined,
         Some(Reason::AuthenticationFailed) => GroupRejectionReason::AuthenticationFailed,
+        Some(Reason::AlreadyJoined) => GroupRejectionReason::AlreadyJoined,
+        Some(Reason::GroupClosed) => GroupRejectionReason::GroupClosed,
+        Some(Reason::OwnerMustClose) => GroupRejectionReason::OwnerMustClose,
+        Some(Reason::MemberNotFound) => GroupRejectionReason::MemberNotFound,
+        Some(Reason::StaleMembership) => GroupRejectionReason::StaleMembership,
+        Some(Reason::UnsupportedVersion) => GroupRejectionReason::UnsupportedVersion,
         None => GroupRejectionReason::Unknown,
     }
 }
@@ -85,6 +91,21 @@ async fn conversations_with_supervisor(supervisor: &Supervisor) -> GroupConversa
                         .owner_identity
                         .map(|identity| *identity.as_bytes()),
                     can_invite: conversation.can_invite,
+                    lifecycle: match conversation.lifecycle {
+                        prns_groups_runner_native::GroupLifecycle::Active => GroupLifecycle::Active,
+                        prns_groups_runner_native::GroupLifecycle::Leaving => {
+                            GroupLifecycle::Leaving
+                        }
+                        prns_groups_runner_native::GroupLifecycle::Removed => {
+                            GroupLifecycle::Removed
+                        }
+                        prns_groups_runner_native::GroupLifecycle::Closed => GroupLifecycle::Closed,
+                    },
+                    can_send: conversation.can_send,
+                    can_remove_members: conversation.can_remove_members,
+                    can_leave: conversation.can_leave,
+                    can_close: conversation.can_close,
+                    can_delete_local: conversation.can_delete_local,
                     group_id: conversation.group.0,
                     title: conversation.title,
                     revision: conversation.revision,
@@ -367,12 +388,15 @@ pub(crate) async fn list_group_invitations() -> GroupInvitationListOutcome {
                     expires_at_millis: invitation.expires_at_secs.saturating_mul(1000),
                     outgoing: invitation.outgoing,
                     waiting_for_delivery: invitation.waiting_for_delivery,
+                    can_cancel: invitation.can_cancel,
+                    can_dismiss: invitation.can_dismiss,
                     state: match invitation.state {
                         State::Pending => GroupInvitationState::Offered,
                         State::JoinRequested => GroupInvitationState::Joining,
                         State::Joined => GroupInvitationState::Joined,
                         State::Declined => GroupInvitationState::Declined,
                         State::Expired => GroupInvitationState::Expired,
+                        State::Cancelled => GroupInvitationState::Cancelled,
                     },
                 })
                 .collect(),

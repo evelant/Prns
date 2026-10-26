@@ -3,6 +3,9 @@ import { identifierHex } from "@/features/groups/format";
 import type { RuntimeCommandResult } from "@/native/development-runtime-context";
 
 type Operations = {
+  manage?: (
+    input: Exclude<Bindings.GroupActionInput, { tag: "Create" | "Invite" | "Respond" | "Send" }>,
+  ) => Promise<Bindings.GroupActionResult>;
   create?: (
     input: Bindings.CreateGroupInput,
   ) => Promise<RuntimeCommandResult<Bindings.CreateGroupOutcome>>;
@@ -52,6 +55,18 @@ export function createGroupActionTestStore(operations: Operations) {
       if (action === undefined) throw new Error("Unprepared action");
       if (action.state.tag !== "Pending") return ready(action);
       const input = action.input;
+      if (
+        input.tag !== "Create" &&
+        input.tag !== "Invite" &&
+        input.tag !== "Respond" &&
+        input.tag !== "Send"
+      ) {
+        const result = await operations.manage?.(input);
+        if (result === undefined) throw new Error("Management operation missing");
+        const completed = { ...action, state: Bindings.GroupActionState.Completed.new({ result }) };
+        actions.set(key, completed);
+        return ready(completed);
+      }
       const response =
         input.tag === "Create"
           ? await operations.create?.(input.inner.input)

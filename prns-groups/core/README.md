@@ -38,6 +38,13 @@ constructing a new in-memory value is not permission to change a durable record.
 The [store coordinator](../store/README.md) and [MLS adapter](../security/mls-rs/README.md)
 consume these shared types without adding crypto or allocation to the core.
 
+`enrollment` validates invitation validity intervals and the structural part of
+single-member Add and Remove successors. Both bind the exact predecessor and next
+epoch, require canonical unique endpoints and preserve remaining incarnations.
+Removal must retain the immutable owner. These checks do not authenticate control
+metadata or MLS commits; adapters verify those and commit the resulting state
+atomically. Group closure is a separate terminal decision, not an empty roster.
+
 `retry` provides the allocation-free `PGR1` request-token encoding and a bounded
 retry policy. Callers supply cryptographic entropy and trusted time, authenticate
 requests separately, check exact retained results first, and persist the

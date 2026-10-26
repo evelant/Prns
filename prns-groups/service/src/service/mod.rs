@@ -41,6 +41,8 @@ impl<'a, B: AtomicBackend + Send> GroupService<'a, B> {
     /// The caller supplies a descriptor authenticated and committed with the
     /// MLS transition. Membership may advance; group, local identity and limits
     /// remain immutable. Never construct this from unverified network metadata.
+    /// After local removal or closure, the last active descriptor permits
+    /// retained history queries; the durable MLS terminal fence blocks traffic.
     pub fn new_managed(
         adapter: Adapter<B>,
         descriptor: Descriptor<'a>,
@@ -140,6 +142,7 @@ impl<'a, B: AtomicBackend + Send> GroupService<'a, B> {
         request: &Publication<'_>,
         clock: ClockReading,
     ) -> ServiceResult<Published, B> {
+        self.require_active()?;
         self.check_configuration()?;
         if request
             .targets
@@ -217,6 +220,7 @@ impl<'a, B: AtomicBackend + Send> GroupService<'a, B> {
     /// Recover the exact committed MLS ciphertext. It remains subject to the
     /// adapter's authorization-era fence and receipt-retirement policy.
     pub fn outgoing(&self, operation: OperationId) -> ServiceResult<Option<Zeroizing<Vec<u8>>>, B> {
+        self.require_active()?;
         self.check_configuration()?;
         let Some(bytes) = self.read(&key(b'o', &operation.0))? else {
             return Ok(None);
@@ -252,6 +256,7 @@ impl<'a, B: AtomicBackend + Send> GroupService<'a, B> {
         wire: &[u8],
         clock: ClockReading,
     ) -> ServiceResult<Incoming, B> {
+        self.require_active()?;
         if wire.len() > self.adapter.max_wire_bytes() {
             return Err(Fault::Capacity.into());
         }
@@ -491,6 +496,13 @@ impl<'a, B: AtomicBackend + Send> GroupService<'a, B> {
     /// An authorization change ends forwarding and receipt emission for old
     /// records. Existing plaintext and authentic delivery evidence remain local.
     pub fn in_current_era(&self, id: RecordId) -> ServiceResult<bool, B> {
+        if self
+            .adapter
+            .is_retired(self.group())
+            .map_err(Error::Security)?
+        {
+            return Ok(false);
+        }
         if !self.managed {
             return Ok(true);
         }
@@ -505,6 +517,13 @@ impl<'a, B: AtomicBackend + Send> GroupService<'a, B> {
     /// transport acknowledgements do not. This is local evidence, not a group
     /// drain protocol. Serialize the check with the subsequent membership change.
     pub fn has_pending_authored_deliveries(&self, clock: ClockReading) -> ServiceResult<bool, B> {
+        if self
+            .adapter
+            .is_retired(self.group())
+            .map_err(Error::Security)?
+        {
+            return Ok(false);
+        }
         self.check_configuration()?;
         let clock = self.current_clock(clock)?;
         for position in self.positions(index::CHANGES, b'c', self.limits.max_changes)? {
@@ -560,7 +579,11 @@ impl<'a, B: AtomicBackend + Send> GroupService<'a, B> {
                 } else {
                     ReceiptStatus::Awaiting
                 },
-                RemovalStatus::NotKnownRemoved,
+                if self.managed && !self.readers().contains(target) {
+                    RemovalStatus::Removed
+                } else {
+                    RemovalStatus::NotKnownRemoved
+                },
             ));
         }
         let progress =

@@ -73,5 +73,7 @@ export function invitationStateLabel(invitation: GroupInvitation): string {
       return "Invitation declined";
     case GroupInvitationState.Expired:
       return "Invitation expired";
+    case GroupInvitationState.Cancelled:
+      return "Invitation cancelled";
   }
 }

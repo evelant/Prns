@@ -4,6 +4,7 @@ use crate::{
     development_store::DevelopmentStoreOwner, snapshot::SnapshotStore,
     test_support::foreign_block_on,
 };
+use prns_groups_runner_native::{Clock, SystemClock};
 use prns_host::IdentityHash;
 use std::{
     future::Future,
@@ -14,9 +15,12 @@ use std::{
 
 const IDENTITY: IdentityHash = IdentityHash::new([91; 16]);
 fn open(root: &Path) -> Arc<Supervisor> {
+    open_as(root, IDENTITY)
+}
+fn open_as(root: &Path, identity: IdentityHash) -> Arc<Supervisor> {
     std::fs::create_dir_all(root).unwrap();
     let store = DevelopmentStoreOwner::open(root, &root.join("application.redb")).unwrap();
-    store.initialize_groups_blocking(IDENTITY).unwrap();
+    store.initialize_groups_blocking(identity).unwrap();
     Arc::new(Supervisor {
         snapshots: Arc::new(SnapshotStore::new()),
         operation_admitted: Arc::new(AtomicBool::new(false)),
@@ -25,6 +29,291 @@ fn open(root: &Path) -> Arc<Supervisor> {
             ..Default::default()
         }),
     })
+}
+
+fn exchange_enrollment(sender: &Client, recipient: &Client) {
+    let sender_identity = foreign_block_on(sender.identity()).unwrap();
+    let recipient_identity = foreign_block_on(recipient.identity()).unwrap();
+    for work in foreign_block_on(sender.enrollment_work(now())).unwrap() {
+        if work.recipient != recipient_identity {
+            continue;
+        }
+        let response =
+            foreign_block_on(recipient.enrollment_handle(sender_identity, work.frame, now()))
+                .unwrap();
+        foreign_block_on(sender.enrollment_complete(work.id, response, now())).unwrap();
+    }
+}
+
+fn enroll_peer(owner: &Client, member: &Client, group_id: [u8; 32], request: u8) {
+    let GroupActionResult::Invited { invitation_id } = foreign_block_on(run(
+        owner,
+        GroupActionInput::Invite {
+            input: InviteToGroupInput {
+                group_id,
+                client_request_id: token(request),
+                recipient_identity: foreign_block_on(member.identity()).unwrap().into_bytes(),
+            },
+        },
+    ))
+    .unwrap() else {
+        panic!("invite");
+    };
+    exchange_enrollment(owner, member);
+    foreign_block_on(run(
+        member,
+        GroupActionInput::Respond {
+            input: RespondGroupInvitationInput {
+                invitation_id,
+                client_request_id: token(request + 1),
+                accept: true,
+            },
+        },
+    ))
+    .unwrap();
+    for _ in 0..3 {
+        exchange_enrollment(member, owner);
+        exchange_enrollment(owner, member);
+    }
+    assert_eq!(
+        foreign_block_on(member.conversations()).unwrap()[0].lifecycle,
+        prns_groups_runner_native::GroupLifecycle::Active
+    );
+}
+
+#[test]
+fn rejoin_waits_for_the_previous_memberships_saved_send_to_be_reviewed() {
+    let root = tempfile::tempdir().unwrap();
+    let owner = open(&root.path().join("owner"));
+    let member_identity = IdentityHash::new([92; 16]);
+    let member = open_as(&root.path().join("member"), member_identity);
+    let owner_client = clients(&owner).unwrap().0;
+    let (member_client, actions) = clients(&member).unwrap();
+    let group_id = create(&owner_client, 121);
+    enroll_peer(&owner_client, &member_client, group_id, 122);
+    let saved_send = GroupActionInput::Send {
+        input: SendGroupTextInput {
+            group_id,
+            client_request_id: token(124),
+            text: "Must not cross a fresh membership".into(),
+        },
+    };
+    let saved_id = crate::group_actions::request_id(&saved_send);
+    foreign_block_on(actions.execute(Request::Prepare(saved_send))).unwrap();
+    let current = foreign_block_on(owner_client.conversations())
+        .unwrap()
+        .remove(0);
+    let endpoint = current
+        .members
+        .iter()
+        .find(|m| !m.is_local)
+        .unwrap()
+        .endpoint;
+    foreign_block_on(run(
+        &owner_client,
+        GroupActionInput::RemoveMember {
+            input: RemoveGroupMemberInput {
+                group_id,
+                client_request_id: token(125),
+                endpoint_id: endpoint.id.0,
+                endpoint_incarnation: endpoint.incarnation.get(),
+                expected_control_head: current.control_head.0,
+            },
+        },
+    ))
+    .unwrap();
+    exchange_enrollment(&owner_client, &member_client);
+    let GroupActionResult::Invited { invitation_id } = foreign_block_on(run(
+        &owner_client,
+        GroupActionInput::Invite {
+            input: InviteToGroupInput {
+                group_id,
+                client_request_id: token(126),
+                recipient_identity: member_identity.into_bytes(),
+            },
+        },
+    ))
+    .unwrap() else {
+        panic!("fresh invite")
+    };
+    exchange_enrollment(&owner_client, &member_client);
+    let response = GroupActionInput::Respond {
+        input: RespondGroupInvitationInput {
+            invitation_id,
+            client_request_id: token(127),
+            accept: true,
+        },
+    };
+    assert!(matches!(
+        foreign_block_on(actions.execute(Request::Prepare(response.clone()))),
+        Err(Error::InvalidInput(_))
+    ));
+    let reviewed = ready(foreign_block_on(super::execute_with(
+        &member,
+        GroupActionReference {
+            owner_identity: member_identity.into_bytes(),
+            client_request_id: saved_id,
+        },
+    )));
+    assert!(matches!(
+        reviewed.state,
+        GroupActionState::Completed {
+            result: GroupActionResult::Rejected { .. }
+        }
+    ));
+    foreign_block_on(actions.execute(Request::Remove {
+        request_id: saved_id,
+        reviewed_expiry: false,
+    }))
+    .unwrap();
+    foreign_block_on(actions.execute(Request::Prepare(response))).unwrap();
+    close(&member);
+    close(&owner);
+}
+
+#[test]
+fn member_removal_rejoin_history_and_leave_after_delete_use_public_actions() {
+    use prns_groups_runner_native::GroupLifecycle;
+    use prns_groups_service::{ClockReading, GroupId};
+    let root = tempfile::tempdir().unwrap();
+    let owner = open(&root.path().join("owner"));
+    let member = open_as(&root.path().join("member"), IdentityHash::new([92; 16]));
+    let owner_client = clients(&owner).unwrap().0;
+    let member_client = clients(&member).unwrap().0;
+    let group_id = create(&owner_client, 101);
+    enroll_peer(&owner_client, &member_client, group_id, 102);
+    let prior = foreign_block_on(member_client.conversations())
+        .unwrap()
+        .remove(0);
+    let old_endpoint = prior.members.iter().find(|m| m.is_local).unwrap().endpoint;
+    foreign_block_on(run(
+        &member_client,
+        GroupActionInput::Send {
+            input: SendGroupTextInput {
+                group_id,
+                client_request_id: token(104),
+                text: "Before removal".into(),
+            },
+        },
+    ))
+    .unwrap();
+    let current = foreign_block_on(owner_client.conversations())
+        .unwrap()
+        .remove(0);
+    assert_eq!(
+        foreign_block_on(run(
+            &owner_client,
+            GroupActionInput::RemoveMember {
+                input: RemoveGroupMemberInput {
+                    group_id,
+                    client_request_id: token(105),
+                    endpoint_id: old_endpoint.id.0,
+                    endpoint_incarnation: old_endpoint.incarnation.get(),
+                    expected_control_head: current.control_head.0,
+                },
+            }
+        ))
+        .unwrap(),
+        GroupActionResult::RemovedMember
+    );
+    exchange_enrollment(&owner_client, &member_client);
+    assert_eq!(
+        foreign_block_on(member_client.conversations()).unwrap()[0].lifecycle,
+        GroupLifecycle::Removed
+    );
+    assert!(foreign_block_on(member_client.network_configs())
+        .unwrap()
+        .is_empty());
+    let page = foreign_block_on(member_client.messages(
+        GroupId(group_id),
+        None,
+        100,
+        ClockReading::Unknown,
+    ))
+    .unwrap();
+    assert_eq!(page.messages[0].text, "Before removal");
+    enroll_peer(&owner_client, &member_client, group_id, 106);
+    let current = foreign_block_on(member_client.conversations())
+        .unwrap()
+        .remove(0);
+    assert_ne!(
+        current
+            .members
+            .iter()
+            .find(|m| m.is_local)
+            .unwrap()
+            .endpoint,
+        old_endpoint
+    );
+    foreign_block_on(run(
+        &member_client,
+        GroupActionInput::Send {
+            input: SendGroupTextInput {
+                group_id,
+                client_request_id: token(108),
+                text: "After rejoin".into(),
+            },
+        },
+    ))
+    .unwrap();
+    let page =
+        foreign_block_on(member_client.messages(GroupId(group_id), None, 1, ClockReading::Unknown))
+            .unwrap();
+    assert_eq!(page.messages[0].text, "After rejoin");
+    let older = foreign_block_on(member_client.messages(
+        GroupId(group_id),
+        page.next_before_sequence,
+        1,
+        ClockReading::Unknown,
+    ))
+    .unwrap();
+    assert_eq!(older.messages[0].text, "Before removal");
+    assert_eq!(
+        foreign_block_on(run(
+            &member_client,
+            GroupActionInput::LeaveGroup {
+                input: LeaveGroupInput {
+                    group_id,
+                    client_request_id: token(109)
+                },
+            }
+        ))
+        .unwrap(),
+        GroupActionResult::LeftGroup
+    );
+    assert_eq!(
+        foreign_block_on(member_client.conversations()).unwrap()[0].lifecycle,
+        GroupLifecycle::Leaving
+    );
+    foreign_block_on(run(
+        &member_client,
+        GroupActionInput::DeleteLocalGroup {
+            input: DeleteLocalGroupInput {
+                group_id,
+                client_request_id: token(110),
+            },
+        },
+    ))
+    .unwrap();
+    assert!(foreign_block_on(member_client.conversations())
+        .unwrap()
+        .is_empty());
+    drop(member_client);
+    close(&member);
+    let member = open_as(&root.path().join("member"), IdentityHash::new([92; 16]));
+    let member_client = clients(&member).unwrap().0;
+    exchange_enrollment(&member_client, &owner_client);
+    let current = foreign_block_on(owner_client.conversations())
+        .unwrap()
+        .remove(0);
+    assert_eq!(current.member_count, 1);
+    assert!(foreign_block_on(member_client.conversations())
+        .unwrap()
+        .is_empty());
+    drop(member_client);
+    drop(owner_client);
+    close(&member);
+    close(&owner);
 }
 fn close(supervisor: &Supervisor) {
     supervisor
@@ -79,6 +368,95 @@ fn list_with(supervisor: &Supervisor) -> Vec<GroupAction> {
         panic!("list")
     };
     actions
+}
+
+#[test]
+fn close_and_delete_recover_exact_results_after_the_group_disappears() {
+    let root = tempfile::tempdir().unwrap();
+    let supervisor = open(root.path());
+    let (groups, actions) = clients(&supervisor).unwrap();
+    let GroupActionResult::Created { group_id } = foreign_block_on(run(
+        &groups,
+        GroupActionInput::Create {
+            input: CreateGroupInput {
+                client_request_id: token(81),
+                title: "Management recovery".into(),
+            },
+        },
+    ))
+    .unwrap() else {
+        panic!("create");
+    };
+    let conversation = foreign_block_on(groups.conversations()).unwrap().remove(0);
+    let close_input = GroupActionInput::CloseGroup {
+        input: CloseGroupInput {
+            group_id,
+            client_request_id: token(82),
+            expected_control_head: conversation.control_head.0,
+        },
+    };
+    ready(foreign_block_on(prepare_input(
+        &supervisor,
+        close_input.clone(),
+    )));
+    assert_eq!(
+        foreign_block_on(run(&groups, close_input.clone())).unwrap(),
+        GroupActionResult::ClosedGroup
+    );
+    drop(actions);
+    drop(groups);
+    close(&supervisor);
+    let supervisor = open(root.path());
+    let close_id = crate::group_actions::request_id(&close_input);
+    let closed = ready(foreign_block_on(execute_input(&supervisor, close_id)));
+    assert_eq!(
+        closed.state,
+        GroupActionState::Completed {
+            result: GroupActionResult::ClosedGroup
+        }
+    );
+    let (groups, actions) = clients(&supervisor).unwrap();
+    foreign_block_on(actions.execute(Request::Remove {
+        request_id: close_id,
+        reviewed_expiry: false,
+    }))
+    .unwrap();
+    let delete_input = GroupActionInput::DeleteLocalGroup {
+        input: DeleteLocalGroupInput {
+            group_id,
+            client_request_id: token(83),
+        },
+    };
+    ready(foreign_block_on(prepare_input(
+        &supervisor,
+        delete_input.clone(),
+    )));
+    assert_eq!(
+        foreign_block_on(run(&groups, delete_input.clone())).unwrap(),
+        GroupActionResult::DeletedLocalGroup
+    );
+    assert!(foreign_block_on(groups.conversations()).unwrap().is_empty());
+    drop(actions);
+    drop(groups);
+    close(&supervisor);
+    let supervisor = open(root.path());
+    let deleted = ready(foreign_block_on(execute_input(
+        &supervisor,
+        crate::group_actions::request_id(&delete_input),
+    )));
+    assert_eq!(deleted.input, delete_input);
+    assert_eq!(
+        deleted.state,
+        GroupActionState::Completed {
+            result: GroupActionResult::DeletedLocalGroup
+        }
+    );
+    assert!(
+        foreign_block_on(clients(&supervisor).unwrap().0.conversations())
+            .unwrap()
+            .is_empty()
+    );
+    close(&supervisor);
 }
 
 #[test]

@@ -6,6 +6,7 @@ import { Badge, BodyText, Button, Card, KeyValue, Screen, ScreenHeading } from "
 import { groupDeviceLabel, identifierHex, invitationStateLabel } from "./format";
 import { GroupActionFeedback } from "./group-action-feedback";
 import { GroupDisclosure } from "./group-disclosure";
+import { GroupInvitationManagement } from "./group-invitation-management";
 import { useGroupContacts } from "./use-group-contacts";
 import { useGroupInvitations } from "./use-group-invitations";
 import { useGroupIdentityScope, useGroupMutation } from "./use-group-mutation";
@@ -183,6 +184,11 @@ function GroupInvitationJourney({ invitationId }: { readonly invitationId: Uint8
         </Card>
       ) : null}
       <GroupActionFeedback failure={mutation.failure} result={mutation.result} />
+      <GroupInvitationManagement
+        invitationId={invitationId}
+        invitation={invitation}
+        onSettled={data.refresh}
+      />
       {!mutation.ready ? (
         <Button tone="secondary" onPress={() => void mutation.refresh()}>
           Reload saved actions

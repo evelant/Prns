@@ -30,6 +30,12 @@ pub struct LocalActivity {
     pub groups: Vec<LocalMessageActivity>,
 }
 impl<'db> GroupManager<'db> {
+    /// Stable, read-only invitation scope for a caller's durable action journal.
+    pub fn invitation_group(&self, invitation: [u8; 32]) -> Result<Option<GroupId>, Error> {
+        self.enrollment
+            .invitation_group(invitation)
+            .map_err(enrollment_error)
+    }
     /// Inspect retained text records on the existing storage lane. Does not
     /// notify a runner, announce, publish, or change a membership/read receipt.
     pub fn local_activity(&mut self, now: u64) -> Result<LocalActivity, Error> {
@@ -147,6 +153,84 @@ impl<'db> GroupManager<'db> {
             .provisioned(&mut self.owner, group)
             .map_err(enrollment_error)
     }
+    fn history_messages(
+        &mut self,
+        group: prns_groups::GroupId,
+        before: Option<u64>,
+        limit: usize,
+        clock: prns_groups::ClockReading,
+    ) -> Result<Reply, Error> {
+        if limit == 0 || limit > 100 {
+            return Err(Error::InvalidInput);
+        }
+        let current = self.provisioned(group)?;
+        let mut configs = self
+            .enrollment
+            .archived_configurations(&mut self.owner, group)
+            .map_err(enrollment_error)?;
+        configs.push(current);
+        let mut messages = Vec::new();
+        let mut revision = 0u64;
+        let mut source_more = false;
+        for cfg in configs {
+            let base = u64::from(cfg.history_generation) << 32;
+            if before.is_some_and(|before| before <= base) {
+                let Reply::Conversations(items) = crate::session::execute_with_owner(
+                    self.database,
+                    &mut self.owner,
+                    &cfg,
+                    Command::Conversations,
+                )?
+                else {
+                    return Err(Error::Corrupt);
+                };
+                revision = revision
+                    .checked_add(items.first().ok_or(Error::Corrupt)?.revision)
+                    .ok_or(Error::Corrupt)?;
+                continue;
+            }
+            let local_before = before.and_then(|before| {
+                let local = before - base;
+                (local < (1u64 << 32)).then_some(local)
+            });
+            let Reply::Messages(page) = crate::session::execute_with_owner(
+                self.database,
+                &mut self.owner,
+                &cfg,
+                Command::Messages {
+                    group,
+                    before_sequence: local_before,
+                    limit: 100,
+                    clock,
+                },
+            )?
+            else {
+                return Err(Error::Corrupt);
+            };
+            revision = revision.checked_add(page.revision).ok_or(Error::Corrupt)?;
+            source_more |= page.next_before_sequence.is_some();
+            for mut message in page.messages {
+                if message.sequence >= (1u64 << 32) {
+                    return Err(Error::Corrupt);
+                }
+                message.sequence += base;
+                messages.push(message);
+            }
+        }
+        messages.sort_by_key(|message| std::cmp::Reverse(message.sequence));
+        let more = messages.len() > limit || source_more;
+        messages.truncate(limit);
+        let next_before_sequence = if more {
+            messages.last().map(|m| m.sequence)
+        } else {
+            None
+        };
+        Ok(Reply::Messages(crate::MessagePage {
+            messages,
+            revision,
+            next_before_sequence,
+        }))
+    }
     fn dispatch(
         &mut self,
         scope: Option<GroupId>,
@@ -160,7 +244,11 @@ impl<'db> GroupManager<'db> {
                         .maintain(&mut self.owner, interval.lower().0)
                         .map_err(enrollment_error)?;
                 }
-                for cfg in self.configurations()? {
+                for cfg in self
+                    .configurations()?
+                    .into_iter()
+                    .filter(|cfg| cfg.lifecycle == crate::GroupLifecycle::Active)
+                {
                     crate::session::execute_with_owner(
                         self.database,
                         &mut self.owner,
@@ -174,6 +262,76 @@ impl<'db> GroupManager<'db> {
             Command::Enrollment(request) => {
                 use crate::{EnrollmentRequest as Request, EnrollmentResult as Result};
                 let result = match request {
+                    Request::CancelInvitation {
+                        request_id,
+                        invitation,
+                        now,
+                    } => {
+                        self.enrollment
+                            .cancel_invitation(&mut self.owner, request_id, invitation, now)
+                            .map_err(enrollment_error)?;
+                        Result::Saved
+                    }
+                    Request::DismissInvitation {
+                        request_id,
+                        invitation,
+                        now,
+                    } => {
+                        self.enrollment
+                            .dismiss_invitation(&mut self.owner, request_id, invitation, now)
+                            .map_err(enrollment_error)?;
+                        Result::Saved
+                    }
+                    Request::RemoveMember {
+                        request_id,
+                        group,
+                        member,
+                        expected_head,
+                        now,
+                    } => {
+                        self.enrollment
+                            .remove_member(
+                                &mut self.owner,
+                                request_id,
+                                group,
+                                member,
+                                expected_head,
+                                now,
+                            )
+                            .map_err(enrollment_error)?;
+                        Result::Saved
+                    }
+                    Request::Leave {
+                        request_id,
+                        group,
+                        now,
+                    } => {
+                        self.enrollment
+                            .leave(&mut self.owner, request_id, group, now)
+                            .map_err(enrollment_error)?;
+                        Result::Saved
+                    }
+                    Request::Close {
+                        request_id,
+                        group,
+                        expected_head,
+                        now,
+                    } => {
+                        self.enrollment
+                            .close(&mut self.owner, request_id, group, expected_head, now)
+                            .map_err(enrollment_error)?;
+                        Result::Saved
+                    }
+                    Request::DeleteLocal {
+                        request_id,
+                        group,
+                        now,
+                    } => {
+                        self.enrollment
+                            .delete_local(&mut self.owner, request_id, group, now)
+                            .map_err(enrollment_error)?;
+                        Result::Saved
+                    }
                     Request::Create {
                         request_id,
                         title,
@@ -235,7 +393,11 @@ impl<'db> GroupManager<'db> {
             }
             Command::Configs => {
                 let mut configs = Vec::new();
-                for cfg in self.configurations()? {
+                for cfg in self
+                    .configurations()?
+                    .into_iter()
+                    .filter(|cfg| cfg.lifecycle == crate::GroupLifecycle::Active)
+                {
                     configs.push(crate::session::configuration(&cfg)?);
                 }
                 Ok(Reply::Configs(configs))
@@ -255,6 +417,23 @@ impl<'db> GroupManager<'db> {
                     conversations.append(&mut items);
                 }
                 Ok(Reply::Conversations(conversations))
+            }
+            Command::Messages {
+                group,
+                before_sequence,
+                limit,
+                clock,
+            } => {
+                if scope.is_some_and(|scope| scope != group) {
+                    return Err(Error::Configuration);
+                }
+                if control.is_some_and(|control| {
+                    self.provisioned(group)
+                        .is_ok_and(|cfg| cfg.control != control)
+                }) {
+                    return Err(Error::Configuration);
+                }
+                self.history_messages(group, before_sequence, limit, clock)
             }
             command => {
                 let group = match &command {
@@ -279,6 +458,48 @@ impl<'db> GroupManager<'db> {
                     }
                     configs.remove(0)
                 };
+                if matches!(&command, Command::Publish(_) | Command::SendText(_)) {
+                    if let Some(reply) = crate::session::retained_publication_with_owner(
+                        self.database,
+                        &mut self.owner,
+                        &cfg,
+                        &command,
+                    )? {
+                        return Ok(reply);
+                    }
+                    for archived in self
+                        .enrollment
+                        .archived_configurations(&mut self.owner, cfg.group)
+                        .map_err(enrollment_error)?
+                    {
+                        if let Some(reply) = crate::session::retained_publication_with_owner(
+                            self.database,
+                            &mut self.owner,
+                            &archived,
+                            &command,
+                        )? {
+                            return Ok(reply);
+                        }
+                    }
+                }
+                if cfg.lifecycle != crate::GroupLifecycle::Active
+                    && !matches!(
+                        &command,
+                        Command::Conversations
+                            | Command::Records { .. }
+                            | Command::Record { .. }
+                            | Command::Progress { .. }
+                            | Command::Changes { .. }
+                    )
+                {
+                    return Err(Error::Enrollment(
+                        if cfg.lifecycle == crate::GroupLifecycle::Closed {
+                            crate::enrollment::EnrollmentError::GroupClosed
+                        } else {
+                            crate::enrollment::EnrollmentError::NotJoined
+                        },
+                    ));
+                }
                 if control.is_some_and(|head| head != cfg.control) {
                     return Err(Error::Configuration);
                 }

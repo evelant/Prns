@@ -265,7 +265,7 @@ impl MlsRules for Rules {
         &self,
         _: CommitDirection,
         source: CommitSource,
-        _: &Roster,
+        roster: &Roster,
         _: &GroupContext,
         proposals: ProposalBundle,
     ) -> Result<ProposalBundle, Self::Error> {
@@ -275,10 +275,20 @@ impl MlsRules for Rules {
         if !self.policy.owner.matches(&member.signing_identity) {
             return Err(PolicyError::Owner);
         }
-        if self.policy.is_owner_managed()
-            && (proposals.add_proposals().len() != 1 || proposals.length() != 1)
-        {
-            return Err(PolicyError::UnsupportedControl);
+        if self.policy.is_owner_managed() {
+            if proposals.length() != 1
+                || proposals.add_proposals().len() + proposals.remove_proposals().len() != 1
+            {
+                return Err(PolicyError::UnsupportedControl);
+            }
+            for proposal in proposals.remove_proposals() {
+                let member = roster
+                    .member_with_index(proposal.proposal.to_remove())
+                    .map_err(|_| PolicyError::Credential)?;
+                if self.policy.owner.matches(&member.signing_identity) {
+                    return Err(PolicyError::Owner);
+                }
+            }
         }
         if proposals.length() > self.max_proposals {
             return Err(PolicyError::Proposals);

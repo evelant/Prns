@@ -12,8 +12,8 @@ pub fn native_limits() -> NativeLimits {
     NativeLimits {
         max_changes: 128,
         max_key_bytes: 256,
-        max_value_bytes: 262_144,
-        max_staged_bytes: 2_097_152,
+        max_value_bytes: 2_097_152,
+        max_staged_bytes: 4_194_304,
         max_live_objects: 8192,
         max_live_bytes: 16_777_216,
         max_receipts: 4096,
@@ -48,3 +48,17 @@ pub fn service_limits() -> prns_groups_service::Limits {
         future_skew: Seconds(300),
     }
 }
+
+/// Ordinary traffic leaves enough native space for every current non-owner's
+/// removal and a terminal close. This is independent of the snapshot byte fence.
+pub fn management_reserve() -> prns_groups_store_native::NativeReserve {
+    prns_groups_store_native::NativeReserve {
+        objects: 128,
+        bytes: native_limits().max_value_bytes
+            + mls_limits().max_snapshot_bytes
+            + MAX_MEMBERS * (mls_limits().max_wire_bytes + 8192 + 512),
+        // Each control may also retire the preceding output in a separate commit.
+        receipts: 2 * MAX_MEMBERS + 2,
+    }
+}
+pub const MANAGEMENT_OUTPUT_RESERVE: usize = MAX_MEMBERS + 2;

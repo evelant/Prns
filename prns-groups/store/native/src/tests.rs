@@ -46,6 +46,303 @@ fn receipt(sequence: u64) -> CommitReceipt {
 }
 
 #[test]
+fn ordinary_reserves_reject_atomically_and_preserve_management_capacity() {
+    for reserve in [
+        NativeReserve {
+            objects: 7,
+            bytes: 0,
+            receipts: 0,
+        },
+        NativeReserve {
+            objects: 0,
+            bytes: 248,
+            receipts: 0,
+        },
+        NativeReserve {
+            objects: 0,
+            bytes: 0,
+            receipts: 3,
+        },
+    ] {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("reserve.redb");
+        {
+            let db = Database::create(&path).unwrap();
+            let mut owner = NativeStoreOwner::new(&db);
+            let backend = owner
+                .initialize(NAMESPACE, incarnation(), limits())
+                .unwrap()
+                .reserve_capacity(reserve)
+                .unwrap();
+            let coordinator = Coordinator::new(backend, staging_limits()).unwrap();
+            let first = coordinator
+                .begin(ticket(1).operation_id(), Revision(0))
+                .unwrap();
+            first.put(b"a", b"1234567").unwrap();
+            assert_eq!(
+                first.commit().unwrap(),
+                CommitOutcome::Committed(receipt(1))
+            );
+            let second = coordinator
+                .begin(ticket(2).operation_id(), Revision(1))
+                .unwrap();
+            second.put(b"a", b"changed").unwrap();
+            second.put(b"b", b"v").unwrap();
+            assert_eq!(
+                second.commit().unwrap(),
+                CommitOutcome::Rejected(OperationRejection::ReservedCapacity)
+            );
+            assert_eq!(coordinator.head().unwrap(), Revision(1));
+            assert_eq!(
+                coordinator.recover(ticket(2).operation_id()).unwrap(),
+                RecoveryOutcome::NotCommitted {
+                    revision: Revision(1)
+                }
+            );
+        }
+        let db = Database::open(&path).unwrap();
+        let mut owner = NativeStoreOwner::new(&db);
+        {
+            let mut management = owner.open(NAMESPACE, incarnation(), limits()).unwrap();
+            assert_eq!(
+                management.usage().unwrap(),
+                NativeUsage {
+                    revision: Revision(1),
+                    retired_through: 0,
+                    live_objects: 1,
+                    live_bytes: 8,
+                    receipts: 1,
+                }
+            );
+            assert_eq!(
+                management.read(b"a", 128).unwrap(),
+                Some(b"1234567".to_vec())
+            );
+            assert_eq!(management.read(b"b", 128).unwrap(), None);
+            assert_eq!(
+                management
+                    .commit(Revision(1), ticket(2).operation_id(), &[put(b"b", b"v")])
+                    .unwrap(),
+                CommitOutcome::Committed(receipt(2))
+            );
+        }
+        let mut ordinary = owner
+            .open(NAMESPACE, incarnation(), limits())
+            .unwrap()
+            .reserve_capacity(reserve)
+            .unwrap();
+        assert_eq!(
+            ordinary.recover(ticket(2).operation_id()).unwrap(),
+            RecoveryOutcome::Committed(receipt(2))
+        );
+        assert_eq!(
+            ordinary
+                .commit(
+                    Revision(2),
+                    ticket(2).operation_id(),
+                    &[put(b"b", b"different")]
+                )
+                .unwrap(),
+            CommitOutcome::Committed(receipt(2))
+        );
+        assert_eq!(ordinary.read(b"b", 128).unwrap(), Some(b"v".to_vec()));
+    }
+}
+
+#[test]
+fn reserves_check_final_usage_and_allow_receipt_cleanup() {
+    let directory = tempfile::tempdir().unwrap();
+    let db = Database::create(directory.path().join("reserve-cleanup.redb")).unwrap();
+    let mut owner = NativeStoreOwner::new(&db);
+    let mut backend = owner
+        .initialize(NAMESPACE, incarnation(), limits())
+        .unwrap()
+        .reserve_capacity(NativeReserve {
+            objects: 7,
+            bytes: 248,
+            receipts: 3,
+        })
+        .unwrap();
+    assert_eq!(
+        backend
+            .commit(
+                Revision(0),
+                ticket(1).operation_id(),
+                &[put(b"a", b"1234567")]
+            )
+            .unwrap(),
+        CommitOutcome::Committed(receipt(1))
+    );
+    assert!(matches!(
+        backend
+            .maintain(NativeRequest::FinalizeThrough(ticket(1)))
+            .unwrap(),
+        MaintenanceOutcome::Complete(_)
+    ));
+    assert_eq!(
+        backend
+            .commit(
+                Revision(1),
+                ticket(2).operation_id(),
+                &[
+                    put(b"b", b"1234567"),
+                    Mutation::Delete { key: b"a".to_vec() }
+                ]
+            )
+            .unwrap(),
+        CommitOutcome::Committed(receipt(2))
+    );
+    assert_eq!(
+        backend.usage().unwrap(),
+        NativeUsage {
+            revision: Revision(2),
+            retired_through: 1,
+            live_objects: 1,
+            live_bytes: 8,
+            receipts: 1,
+        }
+    );
+}
+
+#[test]
+fn reserves_cannot_exceed_persisted_limits() {
+    let directory = tempfile::tempdir().unwrap();
+    let db = Database::create(directory.path().join("invalid-reserve.redb")).unwrap();
+    let mut owner = NativeStoreOwner::new(&db);
+    owner
+        .initialize(NAMESPACE, incarnation(), limits())
+        .unwrap();
+    for reserve in [
+        NativeReserve {
+            objects: 9,
+            bytes: 0,
+            receipts: 0,
+        },
+        NativeReserve {
+            objects: 0,
+            bytes: 257,
+            receipts: 0,
+        },
+        NativeReserve {
+            objects: 0,
+            bytes: 0,
+            receipts: 5,
+        },
+    ] {
+        assert!(matches!(
+            owner
+                .open(NAMESPACE, incarnation(), limits())
+                .unwrap()
+                .reserve_capacity(reserve),
+            Err(NativeError::Configuration)
+        ));
+    }
+    assert_eq!(
+        owner
+            .open(NAMESPACE, incarnation(), limits())
+            .unwrap()
+            .head()
+            .unwrap(),
+        Revision(0)
+    );
+}
+
+#[test]
+fn deletion_is_scoped_to_exact_incarnation_and_idempotent_after_reopen() {
+    let directory = tempfile::tempdir().unwrap();
+    let path = directory.path().join("delete.redb");
+    let other = StoreNamespace([4; 16]);
+    {
+        let db = Database::create(&path).unwrap();
+        let mut owner = NativeStoreOwner::new(&db);
+        for namespace in [NAMESPACE, other] {
+            let mut backend = owner
+                .initialize(namespace, incarnation(), limits())
+                .unwrap();
+            backend
+                .commit(
+                    Revision(0),
+                    ticket(1).operation_id(),
+                    &[put(b"history", b"retained")],
+                )
+                .unwrap();
+        }
+        assert!(matches!(
+            owner.validate_delete(NAMESPACE, StoreIncarnation::new([8; 24]).unwrap(), limits()),
+            Err(NativeError::ForeignIncarnation)
+        ));
+        assert!(matches!(
+            owner.delete(NAMESPACE, StoreIncarnation::new([8; 24]).unwrap(), limits()),
+            Err(NativeError::ForeignIncarnation)
+        ));
+        assert!(matches!(
+            owner.delete(
+                NAMESPACE,
+                incarnation(),
+                NativeLimits {
+                    max_receipts: 5,
+                    ..limits()
+                }
+            ),
+            Err(NativeError::Configuration)
+        ));
+        assert_eq!(
+            owner
+                .open(NAMESPACE, incarnation(), limits())
+                .unwrap()
+                .read(b"history", 128)
+                .unwrap(),
+            Some(b"retained".to_vec())
+        );
+        owner
+            .validate_delete(NAMESPACE, incarnation(), limits())
+            .unwrap();
+        owner.delete(NAMESPACE, incarnation(), limits()).unwrap();
+    }
+    let db = Database::open(&path).unwrap();
+    let mut owner = NativeStoreOwner::new(&db);
+    owner
+        .validate_delete(NAMESPACE, incarnation(), limits())
+        .unwrap();
+    owner.delete(NAMESPACE, incarnation(), limits()).unwrap();
+    assert!(matches!(
+        owner.open(NAMESPACE, incarnation(), limits()),
+        Err(NativeError::MissingNamespace)
+    ));
+    assert_eq!(
+        owner
+            .open(other, incarnation(), limits())
+            .unwrap()
+            .read(b"history", 128)
+            .unwrap(),
+        Some(b"retained".to_vec())
+    );
+}
+
+#[test]
+fn deletion_never_formats_or_removes_partial_namespace_evidence() {
+    let directory = tempfile::tempdir().unwrap();
+    let db = Database::create(directory.path().join("partial.redb")).unwrap();
+    let names = TableNames::new(NAMESPACE);
+    let write = db.begin_write().unwrap();
+    write.open_table(names.values()).unwrap();
+    write.commit().unwrap();
+    let mut owner = NativeStoreOwner::new(&db);
+    assert!(matches!(
+        owner.validate_delete(NAMESPACE, incarnation(), limits()),
+        Err(NativeError::MissingNamespace)
+    ));
+    assert!(matches!(
+        owner.delete(NAMESPACE, incarnation(), limits()),
+        Err(NativeError::MissingNamespace)
+    ));
+    assert!(matches!(
+        owner.initialize(NAMESPACE, incarnation(), limits()),
+        Err(NativeError::AlreadyInitialized)
+    ));
+}
+
+#[test]
 fn reopen_preserves_atomic_crypto_outbox_and_projection_without_reapplying() {
     let directory = tempfile::tempdir().unwrap();
     let path = directory.path().join("application.redb");

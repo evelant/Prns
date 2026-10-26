@@ -22,6 +22,7 @@ import { useAppPalette } from "@/ui/theme";
 import { groupDeliveryLabel, groupDeviceLabel, groupUtf8Length, identifierHex } from "./format";
 import { GroupActionFeedback } from "./group-action-feedback";
 import { GroupDetails } from "./group-details";
+import { GroupManagement } from "./group-management";
 import { GroupSyncStatus } from "./group-sync-status";
 import { useGroupContacts } from "./use-group-contacts";
 import { useGroupData } from "./use-group-data";
@@ -109,11 +110,24 @@ function GroupConversationJourney({ groupId }: { readonly groupId: Uint8Array })
               <BodyText>This group is not enrolled on this device.</BodyText>
             </Card>
           ) : null}
+          {conversation?.lifecycle === Bindings.GroupLifecycle.Leaving ? (
+            <BodyText>
+              Leaving group · Waiting for the owner to confirm removal. Saved messages remain
+              available.
+            </BodyText>
+          ) : conversation?.lifecycle === Bindings.GroupLifecycle.Removed ? (
+            <BodyText>
+              You are no longer a member of this group. Saved messages remain available.
+            </BodyText>
+          ) : conversation?.lifecycle === Bindings.GroupLifecycle.Closed ? (
+            <BodyText>The owner closed this group. Saved messages remain available.</BodyText>
+          ) : null}
           <GroupComposer
             groupId={groupId}
             messages={data.messages}
-            visible={conversation !== undefined && conversation.memberCount > 1}
+            visible={conversation?.canSend === true}
             canSend={
+              conversation?.canSend === true &&
               development.canPublish !== false &&
               development.phase === "ready" &&
               development.snapshot?.primaryIdentity?.tag === "Present"
@@ -132,7 +146,7 @@ function GroupConversationJourney({ groupId }: { readonly groupId: Uint8Array })
                   Invite a device
                 </NavigationLink>
               ) : null}
-              {conversation.memberCount === 1 ? (
+              {conversation.canInvite && conversation.memberCount === 1 ? (
                 <BodyText muted>Invite someone to start the conversation.</BodyText>
               ) : null}
               <ActionRow>
@@ -173,6 +187,17 @@ function GroupConversationJourney({ groupId }: { readonly groupId: Uint8Array })
                   </Button>
                 </Card>
               ) : null}
+            </>
+          )}
+          <GroupManagement
+            groupId={groupId}
+            conversation={conversation}
+            contacts={directory.contacts}
+            visible={details === "group"}
+            onSettled={data.refresh}
+          />
+          {conversation === undefined ? null : (
+            <>
               <Subheading>Messages</Subheading>
               {data.messages.length === 0 ? (
                 <BodyText muted>No group messages yet.</BodyText>

@@ -102,8 +102,12 @@ pub enum CommitOutcome {
 pub enum OperationRejection {
     InvalidTicket,
     ForeignIncarnation,
-    OutOfOrder { next: Option<OperationTicket> },
+    OutOfOrder {
+        next: Option<OperationTicket>,
+    },
     RecoveryWindowFull,
+    /// The caller's admission reserve would be consumed by this new write.
+    ReservedCapacity,
     RetiredTicket,
 }
 

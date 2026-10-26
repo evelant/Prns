@@ -1,6 +1,16 @@
 use super::*;
 
 impl<B: AtomicBackend + Send> GroupService<'_, B> {
+    pub(super) fn require_active(&self) -> ServiceResult<(), B> {
+        if self
+            .adapter
+            .is_retired(self.group())
+            .map_err(Error::Security)?
+        {
+            return Err(Error::Security(prns_groups_mls::Error::GroupMissing));
+        }
+        Ok(())
+    }
     pub(super) fn fingerprint(&self, domain: &[u8], bytes: &[u8]) -> [u8; 32] {
         let mut hash = Sha256::new();
         hash.update(b"prns.groups.service.operation.v1\0");

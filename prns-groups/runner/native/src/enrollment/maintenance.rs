@@ -70,15 +70,47 @@ impl<'db> Enrollment<'db> {
         }
 
         let mut committed_adds = Vec::new();
+        let mut closed_groups = Vec::new();
+        let mut cancelled_invites = Vec::new();
         for entry in &catalog.entries {
             if entry.owner.rns != self.local.into_bytes() {
                 continue;
             }
             self.initialize(owner, entry)?;
             self.adapter(owner, entry, None, |_, snapshot| {
-                committed_adds.extend(snapshot.added.iter().map(|added| added.invitation));
+                for proof in &snapshot.terminals { if matches!(proof.statement.kind, TerminalKind::Closed) { closed_groups.push(proof.clone()); } }
+                for added in &snapshot.added {
+                    let terminated = snapshot.lifecycle == GroupLifecycle::Closed || snapshot.terminals.iter().any(|p| matches!(&p.statement.kind, TerminalKind::Removed(member) if member == &added.member));
+                    if terminated { cancelled_invites.push(added.invitation); } else { committed_adds.push(added.invitation); }
+                }
                 Ok(())
             })?;
+        }
+        for proof in closed_groups {
+            if !catalog.closed_groups.contains(&proof) {
+                catalog.closed_groups.push(proof);
+            }
+        }
+        for invite in &mut catalog.invites {
+            if matches!(
+                invite.state,
+                InvitationState::Pending | InvitationState::JoinRequested
+            ) && (cancelled_invites.contains(&invite.offer.id)
+                || catalog
+                    .closed_groups
+                    .iter()
+                    .any(|p| p.statement.group == invite.offer.group))
+            {
+                invite.state = InvitationState::Cancelled;
+                invite.acknowledged = true;
+                invite.deferred_join = None;
+                invite.terminal_at.get_or_insert(now);
+            }
+        }
+        let cancellations_before = catalog.cancellations.len();
+        catalog.cancellations.retain(|c| now < c.expires);
+        if catalog.cancellations.len() != cancellations_before {
+            catalog.invitation_time_floor = now;
         }
         let invitations_before = catalog.invites.len();
         catalog.invites.retain_mut(|invite| {
@@ -127,7 +159,7 @@ impl<'db> Enrollment<'db> {
         owner: &mut NativeStoreOwner<'db>,
         entry: &Entry,
     ) -> Result<usize, EnrollmentError> {
-        self.adapter(owner, entry, None, |adapter, snapshot| {
+        self.management_adapter(owner, entry, None, |adapter, snapshot| {
             let mut completed = Vec::new();
             let pending = adapter
                 .pending_operations()
@@ -252,6 +284,9 @@ impl<'db> Enrollment<'db> {
         }
         match output.event {
             Event::Created | Event::Joined => Ok(output.messages.is_empty()),
+            Event::Retired => {
+                Ok(snapshot.lifecycle != GroupLifecycle::Active && output.messages.is_empty())
+            }
             Event::Control => {
                 let Some(control) = snapshot
                     .controls
@@ -265,6 +300,7 @@ impl<'db> Enrollment<'db> {
                     .verify(entry.group, &entry.owner, &entry.title)?;
                 match output.messages.as_slice() {
                     [] => Ok(true),
+                    [commit] => Ok(commit == &control.commit),
                     [commit, welcome] => Ok(commit == &control.commit
                         && snapshot.added.iter().any(|added| {
                             added.signed == control.signed && &added.welcome == welcome
@@ -285,9 +321,41 @@ impl<'db> Enrollment<'db> {
         fingerprint: [u8; 32],
         now: u64,
     ) -> Result<(Catalog, Option<[u8; 32]>), EnrollmentError> {
+        self.admission_class(owner, request, fingerprint, now, AdmissionClass::Ordinary)
+    }
+    pub(super) fn management_admission(
+        &self,
+        owner: &mut NativeStoreOwner<'db>,
+        request: [u8; 32],
+        fingerprint: [u8; 32],
+        now: u64,
+    ) -> Result<(Catalog, Option<[u8; 32]>), EnrollmentError> {
+        self.admission_class(owner, request, fingerprint, now, AdmissionClass::Management)
+    }
+    fn admission_class(
+        &self,
+        owner: &mut NativeStoreOwner<'db>,
+        request: [u8; 32],
+        fingerprint: [u8; 32],
+        now: u64,
+        class: AdmissionClass,
+    ) -> Result<(Catalog, Option<[u8; 32]>), EnrollmentError> {
         let catalog = self.read()?;
         if let Some(result) = Self::replay(&catalog, request, fingerprint)? {
             return Ok((catalog, Some(result)));
+        }
+        // A namespace result can commit before its catalog receipt. Search every
+        // incarnation so a request token cannot be rebound to another group.
+        for entry in catalog.entries.iter().chain(catalog.archives.iter()) {
+            let prior = self.adapter(owner, entry, None, |_, snapshot| {
+                Ok(snapshot.management.into_iter().find(|r| r.id == request))
+            })?;
+            if let Some(prior) = prior {
+                if prior.fingerprint != fingerprint {
+                    return Err(EnrollmentError::RequestConflict);
+                }
+                return Ok((catalog, Some(prior.result)));
+            }
         }
         self.maintain(owner, now)?;
         let catalog = self.read()?;
@@ -298,6 +366,23 @@ impl<'db> Enrollment<'db> {
                 catalog.request_retired_before,
             )
             .map_err(EnrollmentError::Retry)?;
+        let limit = match class {
+            AdmissionClass::Ordinary => ORDINARY_REQUESTS,
+            AdmissionClass::Management => MAX_REQUESTS,
+        };
+        let reserve = match class {
+            AdmissionClass::Ordinary => CATALOG_MANAGEMENT_RESERVE,
+            AdmissionClass::Management => 0,
+        };
+        if catalog.requests.len() >= limit
+            || encode(&catalog)?
+                .len()
+                .saturating_add(reserve)
+                .saturating_add(MAX_FRAME_BYTES)
+                > MAX_CATALOG_BYTES
+        {
+            return Err(EnrollmentError::Capacity);
+        }
         Ok((catalog, None))
     }
 
@@ -360,29 +445,7 @@ impl<'db> Enrollment<'db> {
                 else {
                     return Ok(None);
                 };
-                let prior = if added.signed.manifest.revision == 1 {
-                    vec![entry.owner.clone()]
-                } else {
-                    snapshot
-                        .controls
-                        .iter()
-                        .find(|control| {
-                            control.signed.head().ok() == Some(added.signed.manifest.parent)
-                        })
-                        .ok_or(EnrollmentError::Corrupt)?
-                        .signed
-                        .manifest
-                        .members
-                        .clone()
-                };
-                let mut new_members = added
-                    .signed
-                    .manifest
-                    .members
-                    .iter()
-                    .filter(|member| !prior.contains(member));
-                let recipient = new_members.next().ok_or(EnrollmentError::Corrupt)?;
-                if new_members.next().is_some() || recipient.rns != requester.into_bytes() {
+                if added.member.rns != requester.into_bytes() {
                     return Err(EnrollmentError::Authentication);
                 }
                 Ok(Some((entry.clone(), snapshot, added)))

@@ -5,6 +5,8 @@
 use crate::contract::{GroupAction, GroupActionInput, GroupActionResult, GroupActionState};
 use redb::{Database, ReadableDatabase, ReadableTable, ReadableTableMetadata, TableDefinition};
 
+pub(crate) mod execution;
+
 const ACTIONS: TableDefinition<&[u8], &[u8]> = TableDefinition::new("group_ui_actions_v1");
 pub(crate) const MAX_ACTIONS: usize = 32;
 const MAX_ACTION_BYTES: usize = 16_384;
@@ -44,22 +46,50 @@ pub(crate) fn request_id(input: &GroupActionInput) -> [u8; 32] {
         GroupActionInput::Invite { input } => input.client_request_id,
         GroupActionInput::Respond { input } => input.client_request_id,
         GroupActionInput::Send { input } => input.client_request_id,
+        GroupActionInput::RemoveMember { input } => input.client_request_id,
+        GroupActionInput::LeaveGroup { input } => input.client_request_id,
+        GroupActionInput::CloseGroup { input } => input.client_request_id,
+        GroupActionInput::DeleteLocalGroup { input } => input.client_request_id,
+        GroupActionInput::CancelInvitation { input } => input.client_request_id,
+        GroupActionInput::DismissInvitation { input } => input.client_request_id,
     }
 }
 
-fn same_scope(left: &GroupActionInput, right: &GroupActionInput) -> bool {
-    match (left, right) {
-        (GroupActionInput::Create { .. }, GroupActionInput::Create { .. }) => true,
-        (GroupActionInput::Invite { input: a }, GroupActionInput::Invite { input: b }) => {
-            a.group_id == b.group_id
-        }
-        (GroupActionInput::Respond { input: a }, GroupActionInput::Respond { input: b }) => {
-            a.invitation_id == b.invitation_id
-        }
-        (GroupActionInput::Send { input: a }, GroupActionInput::Send { input: b }) => {
-            a.group_id == b.group_id
-        }
-        _ => false,
+pub(crate) fn is_local_mutation(input: &GroupActionInput) -> bool {
+    matches!(
+        input,
+        GroupActionInput::DeleteLocalGroup { .. } | GroupActionInput::DismissInvitation { .. }
+    )
+}
+
+#[derive(PartialEq, Eq)]
+enum Scope {
+    Create,
+    Group([u8; 32]),
+    Invitation([u8; 32]),
+}
+
+fn scope(
+    input: &GroupActionInput,
+    resolve_invitation: &mut impl FnMut([u8; 32]) -> Result<Option<[u8; 32]>, Error>,
+) -> Result<Scope, Error> {
+    let scope = match input {
+        GroupActionInput::Create { .. } => Scope::Create,
+        GroupActionInput::Invite { input } => Scope::Group(input.group_id),
+        GroupActionInput::Send { input } => Scope::Group(input.group_id),
+        GroupActionInput::RemoveMember { input } => Scope::Group(input.group_id),
+        GroupActionInput::LeaveGroup { input } => Scope::Group(input.group_id),
+        GroupActionInput::CloseGroup { input } => Scope::Group(input.group_id),
+        GroupActionInput::DeleteLocalGroup { input } => Scope::Group(input.group_id),
+        GroupActionInput::Respond { input } => Scope::Invitation(input.invitation_id),
+        GroupActionInput::CancelInvitation { input } => Scope::Invitation(input.invitation_id),
+        GroupActionInput::DismissInvitation { input } => Scope::Invitation(input.invitation_id),
+    };
+    match scope {
+        Scope::Invitation(id) => Ok(resolve_invitation(id)?
+            .map(Scope::Group)
+            .unwrap_or(Scope::Invitation(id))),
+        scope => Ok(scope),
     }
 }
 
@@ -75,13 +105,20 @@ fn validate(input: &GroupActionInput) -> Result<(), Error> {
             !input.title.trim().is_empty() && input.title.len() <= 128
         }
         GroupActionInput::Send { input } => !input.text.is_empty() && input.text.len() <= 2048,
-        GroupActionInput::Invite { .. } | GroupActionInput::Respond { .. } => true,
+        GroupActionInput::RemoveMember { input } => input.endpoint_incarnation != 0,
+        GroupActionInput::Invite { .. }
+        | GroupActionInput::Respond { .. }
+        | GroupActionInput::LeaveGroup { .. }
+        | GroupActionInput::CloseGroup { .. }
+        | GroupActionInput::DeleteLocalGroup { .. }
+        | GroupActionInput::CancelInvitation { .. }
+        | GroupActionInput::DismissInvitation { .. } => true,
     };
     if valid {
         Ok(())
     } else {
         Err(Error::InvalidInput(
-            "A group title needs 1 to 128 UTF-8 bytes; a message needs 1 to 2048.".into(),
+            "The group action contains an invalid title, message, or member incarnation.".into(),
         ))
     }
 }
@@ -142,10 +179,20 @@ fn write(database: &Database, action: &GroupAction) -> Result<(), Error> {
 
 /// Called only by the existing serialized store owner. The identity comes from
 /// that owner's initialized group manager, never from foreign caller input.
+#[cfg(test)]
 pub(crate) fn execute(
     database: &Database,
     owner: Option<prns_host::IdentityHash>,
     request: Request,
+) -> Result<Reply, Error> {
+    execute_scoped(database, owner, request, |_| Ok(None))
+}
+
+pub(crate) fn execute_scoped(
+    database: &Database,
+    owner: Option<prns_host::IdentityHash>,
+    request: Request,
+    mut resolve_invitation: impl FnMut([u8; 32]) -> Result<Option<[u8; 32]>, Error>,
 ) -> Result<Reply, Error> {
     let owner = *owner
         .ok_or_else(|| unavailable("native identity is not open"))?
@@ -178,14 +225,17 @@ pub(crate) fn execute(
                     ))
                 };
             }
-            if actions
+            let requested_scope = scope(&input, &mut resolve_invitation)?;
+            for action in actions
                 .iter()
-                .any(|action| action.owner_identity == owner && same_scope(&action.input, &input))
+                .filter(|action| action.owner_identity == owner)
             {
-                return Err(Error::InvalidInput(
-                    "Recover the existing action before starting another in this conversation."
-                        .into(),
-                ));
+                if scope(&action.input, &mut resolve_invitation)? == requested_scope {
+                    return Err(Error::InvalidInput(
+                        "Recover the existing action before starting another in this conversation."
+                            .into(),
+                    ));
+                }
             }
             if actions.len() >= MAX_ACTIONS {
                 return Err(Error::StorageFull);
@@ -224,6 +274,24 @@ pub(crate) fn execute(
                     ) | (
                         GroupActionInput::Send { .. },
                         GroupActionResult::Sent { .. }
+                    ) | (
+                        GroupActionInput::RemoveMember { .. },
+                        GroupActionResult::RemovedMember
+                    ) | (
+                        GroupActionInput::LeaveGroup { .. },
+                        GroupActionResult::LeftGroup
+                    ) | (
+                        GroupActionInput::CloseGroup { .. },
+                        GroupActionResult::ClosedGroup
+                    ) | (
+                        GroupActionInput::DeleteLocalGroup { .. },
+                        GroupActionResult::DeletedLocalGroup
+                    ) | (
+                        GroupActionInput::CancelInvitation { .. },
+                        GroupActionResult::CancelledInvitation
+                    ) | (
+                        GroupActionInput::DismissInvitation { .. },
+                        GroupActionResult::DismissedInvitation
                     )
                 ) || matches!(result, GroupActionResult::Rejected { detail, .. } if detail.len() <= 512);
                 if !valid {

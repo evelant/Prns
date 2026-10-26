@@ -94,17 +94,31 @@ local identity while allowing the caller to supply an updated authenticated
 allowlist. Changing the owner, local identity, limits or policy mode still fails
 on reopen. The policy does not authenticate an arbitrary supplied roster.
 
-Use `compose_with_roster` for Create, Add, Welcome and received controls to check
+Use `compose_with_roster` for Create, Add, Remove, Welcome and received controls to check
 that the resulting MLS tree exactly matches the owner-authenticated roster before
 committing. An allowlist alone accepts subsets and is insufficient for this check.
 A mismatch aborts MLS changes and application staging together. The caller also
 checks control parent, epoch, full routing-to-MLS credential mapping and immutable
 owner authority. `key_package_matches` binds a directed recipient's claimed
 credential to its encoded KeyPackage; MLS performs full cryptographic and lifetime
-validation during Add. Add retains the existing authorization barrier and purges
-prior epochs. The managed profile currently accepts exactly one Add per commit;
-its initial enrollment surface does not enable rekey, removal or owner transfer.
-The fixed policy retains those existing operations.
+validation during Add. Add and Remove advance the authorization barrier and purge
+prior epochs. The managed profile accepts exactly one Add or one non-owner Remove
+per commit; routine rekey and owner transfer remain excluded. Use
+`Command::RemoveMember` with the exact endpoint/incarnation/signing-key binding;
+the adapter resolves its current MLS leaf inside the transaction. For removal,
+the authenticated allowlist must still contain the prior roster during processing,
+while the expected roster names exactly the remaining members. A removed receiver
+validates that successor against the authenticated single Remove before erasing
+its live state and returning `Event::Removed`.
+
+`Command::Retire` is a local cryptographic terminal operation for an authenticated
+group closure. The caller verifies the owner-signed control and atomically stages
+its terminal facts and exact notification work with this command. It does not
+create an MLS epoch or empty roster. `Event::Retired` records the outcome; live
+state and retained epochs are deleted, and a durable terminal marker fences
+application/proposal retries and future activity. Application history and retained
+control results remain readable. The group ID stays reserved; fresh enrollment
+uses a fresh credential and store incarnation, not clearing this terminal marker.
 
 `LocalIdentity::sign_enrollment` and `MemberBinding::verify_enrollment` sign and
 verify domain-separated public metadata without exporting private keys. Pin this
@@ -113,6 +127,8 @@ key using an authenticated enrollment channel before trusting it. The native
 manifests and exact Commit/Welcome bytes with MLS operations; its catalog owns
 local identity admission and durable retries. [Managed policy tests](tests/managed_policy.rs)
 exercise configuration stability, exact-roster rollback and signature rejection.
+[Management tests](tests/management.rs) cover owner-only removal, remaining and
+removed recipients, terminal-state recovery and exact retry fences.
 
 ## What is bounded
 

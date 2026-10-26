@@ -9,9 +9,12 @@ destinations, Links, requests and Resources without changing core routing.
 Start with the [architecture](core/docs/design.md),
 [behavioral contract](core/docs/v0.md), [policies](core/docs/policies.md) and
 [security analysis](security/docs/security.md). These distinguish implemented
-behavior from wider design options. Current native enrollment supports one owner
-and ordered additions; removal, ownership transfer and history sharing remain
-separate work.
+behavior from wider design options. Native enrollment uses one immutable owner
+for ordered additions and removals. Management distinguishes cancellation of a
+pending invitation, endpoint departure, owner closure and local history deletion.
+Fresh re-enrollment uses new credentials and storage while retained old history
+remains a separate source. Ownership transfer and authorized history sharing
+remain separate work.
 
 | Component | Boundary |
 | --- | --- |

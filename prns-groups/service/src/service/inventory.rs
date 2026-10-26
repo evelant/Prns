@@ -59,6 +59,7 @@ impl<B: AtomicBackend + Send> GroupService<'_, B> {
         recipient: Endpoint,
         scan_limit: usize,
     ) -> ServiceResult<InventoryPage, B> {
+        self.require_active()?;
         if scan_limit == 0 || scan_limit > self.limits.max_envelopes {
             return Err(Fault::Capacity.into());
         }
@@ -209,6 +210,13 @@ impl<B: AtomicBackend + Send> GroupService<'_, B> {
         after: InventoryCursor,
         clock: ClockReading,
     ) -> ServiceResult<Option<EnvelopeInfo>, B> {
+        if self
+            .adapter
+            .is_retired(self.group())
+            .map_err(Error::Security)?
+        {
+            return Ok(None);
+        }
         self.check_configuration()?;
         if recipient == self.local || !self.descriptor.readers.contains(&recipient) {
             return Err(Fault::InvalidTargets.into());

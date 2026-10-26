@@ -19,6 +19,58 @@ fn input(id: u8, group: u8) -> GroupActionInput {
 fn owner(id: u8) -> Option<prns_host::IdentityHash> {
     Some(prns_host::IdentityHash::new([id; 16]))
 }
+
+#[test]
+fn destructive_actions_cannot_bypass_an_unresolved_send_in_the_same_group() {
+    let directory = tempfile::tempdir().unwrap();
+    let db = Database::create(directory.path().join("management-actions.redb")).unwrap();
+    execute(&db, owner(1), Request::Prepare(input(11, 1))).unwrap();
+    let delete = GroupActionInput::DeleteLocalGroup {
+        input: crate::contract::DeleteLocalGroupInput {
+            group_id: [1; 32],
+            client_request_id: request_id(&input(12, 1)),
+        },
+    };
+    assert!(matches!(
+        execute(&db, owner(1), Request::Prepare(delete.clone())),
+        Err(Error::InvalidInput(_))
+    ));
+    // An independent named identity's group is a different action scope.
+    assert!(matches!(
+        execute(&db, owner(2), Request::Prepare(delete)),
+        Ok(Reply::Action(_))
+    ));
+}
+
+#[test]
+fn fresh_invitation_and_saved_send_share_a_scope_in_both_admission_orders() {
+    let directory = tempfile::tempdir().unwrap();
+    let db = Database::create(directory.path().join("rejoin-actions.redb")).unwrap();
+    let response = GroupActionInput::Respond {
+        input: crate::contract::RespondGroupInvitationInput {
+            invitation_id: [99; 32],
+            client_request_id: request_id(&input(13, 1)),
+            accept: true,
+        },
+    };
+    let resolve = |id| Ok((id == [99; 32]).then_some([1; 32]));
+    execute_scoped(&db, owner(1), Request::Prepare(input(11, 1)), resolve).unwrap();
+    assert!(matches!(
+        execute_scoped(&db, owner(1), Request::Prepare(response.clone()), resolve),
+        Err(Error::InvalidInput(_))
+    ));
+    // A different identity has an independent journal. The reverse admission
+    // order also blocks sending until the saved invitation response is resolved.
+    execute_scoped(&db, owner(2), Request::Prepare(response), resolve).unwrap();
+    assert!(matches!(
+        execute_scoped(&db, owner(2), Request::Prepare(input(12, 1)), resolve),
+        Err(Error::InvalidInput(_))
+    ));
+    assert!(matches!(
+        execute_scoped(&db, owner(2), Request::Prepare(input(14, 2)), resolve),
+        Ok(Reply::Action(_))
+    ));
+}
 fn action(reply: Reply) -> GroupAction {
     let Reply::Action(action) = reply else {
         panic!("missing action")

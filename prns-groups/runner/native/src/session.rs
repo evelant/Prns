@@ -11,7 +11,7 @@ use prns_groups_service::{
 };
 use prns_groups_store::{Coordinator, OperationTicket};
 use prns_groups_store_native::{NativeBackend, NativeRequest, NativeStoreOwner};
-use redb::{Database, Durability, ReadableDatabase, TableDefinition};
+use redb::{Database, Durability, ReadableDatabase, ReadableTable, TableDefinition};
 
 mod records;
 
@@ -97,6 +97,69 @@ pub(crate) fn execute_with_owner(
     }
     .execute(command)
 }
+/// Recover a retained publication without admitting any new work. Used across
+/// membership generations so a retry never publishes a second record on rejoin.
+pub(crate) fn retained_publication_with_owner(
+    database: &Database,
+    owner: &mut NativeStoreOwner<'_>,
+    provisioned: &Provisioned,
+    command: &Command,
+) -> Result<Option<Reply>, Error> {
+    let (nonce, namespace, schema, body, targets) = match command {
+        Command::Publish(request) => (
+            request.client_request_id,
+            request.namespace,
+            request.schema,
+            request.body.clone(),
+            Some(request.targets.as_slice()),
+        ),
+        Command::SendText(request) => {
+            let text =
+                prns_group_text::Text::new(&request.text).map_err(|_| Error::InvalidInput)?;
+            let mut buffer = [0; prns_group_text::MAX_ENCODED_BYTES];
+            let body = text
+                .encode(&mut buffer)
+                .map_err(|_| Error::InvalidInput)?
+                .to_vec();
+            (
+                request.client_request_id,
+                prns_group_text::NAMESPACE,
+                prns_group_text::SCHEMA,
+                body,
+                None,
+            )
+        }
+        _ => return Ok(None),
+    };
+    SessionView {
+        database,
+        owner,
+        provisioned,
+    }
+    .with_service(|service, cfg| {
+        for change in service
+            .changes(ChangeCursor(0), cfg.service_limits.max_changes)?
+            .changes
+        {
+            let ChangeKind::Published(id) = change.kind else {
+                continue;
+            };
+            let record = service.record(id)?.ok_or(Error::Corrupt)?;
+            if record.nonce != nonce {
+                continue;
+            }
+            if record.metadata.namespace != namespace
+                || record.metadata.schema != schema
+                || record.body.as_slice() != body.as_slice()
+                || targets.is_some_and(|targets| record.targets != targets)
+            {
+                return Err(Error::IdempotencyConflict);
+            }
+            return Ok(Some(Reply::Sent(id)));
+        }
+        Ok(None)
+    })
+}
 struct SessionView<'a, 'db> {
     database: &'a Database,
     owner: &'a mut NativeStoreOwner<'db>,
@@ -110,6 +173,13 @@ impl SessionView<'_, '_> {
         &mut self,
         action: impl FnOnce(&mut Service<'_>, &Provisioned) -> Result<T, Error>,
     ) -> Result<T, Error> {
+        self.with_service_capacity(false, action)
+    }
+    fn with_service_capacity<T>(
+        &mut self,
+        management: bool,
+        action: impl FnOnce(&mut Service<'_>, &Provisioned) -> Result<T, Error>,
+    ) -> Result<T, Error> {
         let cfg = &self.provisioned;
         // A request result must outlive its admission window. Otherwise a
         // custom short-retention profile could delete a still-valid request ID
@@ -120,6 +190,11 @@ impl SessionView<'_, '_> {
         let backend = self
             .owner
             .open(cfg.namespace, cfg.incarnation, cfg.native_limits)?;
+        let backend = if cfg.owner_identity.is_some() && !management {
+            backend.reserve_capacity(crate::profile::management_reserve())?
+        } else {
+            backend
+        };
         let coordinator = Coordinator::new(
             backend,
             prns_groups_store::Limits {
@@ -230,7 +305,19 @@ impl SessionView<'_, '_> {
                 let members = conversation_members(cfg)?;
                 Ok(Reply::Conversations(vec![Conversation {
                     owner_identity: cfg.owner_identity,
-                    can_invite: cfg.owner_identity == Some(cfg.local_reticulum_identity),
+                    lifecycle: cfg.lifecycle,
+                    can_send: cfg.lifecycle == crate::GroupLifecycle::Active && members.len() > 1,
+                    can_invite: cfg.lifecycle == crate::GroupLifecycle::Active
+                        && cfg.owner_identity == Some(cfg.local_reticulum_identity),
+                    can_remove_members: cfg.lifecycle == crate::GroupLifecycle::Active
+                        && cfg.owner_identity == Some(cfg.local_reticulum_identity),
+                    can_leave: cfg.lifecycle == crate::GroupLifecycle::Active
+                        && cfg.owner_identity.is_some()
+                        && cfg.owner_identity != Some(cfg.local_reticulum_identity),
+                    can_close: cfg.lifecycle == crate::GroupLifecycle::Active
+                        && cfg.owner_identity == Some(cfg.local_reticulum_identity),
+                    can_delete_local: cfg.owner_identity != Some(cfg.local_reticulum_identity)
+                        || cfg.lifecycle == crate::GroupLifecycle::Closed,
                     group: cfg.group,
                     title: cfg.title.clone(),
                     revision,
@@ -287,7 +374,7 @@ impl SessionView<'_, '_> {
             Command::Publish(request) => {
                 self.with_service(|service, cfg| publish(service, cfg, request).map(Reply::Sent))
             }
-            Command::Maintain(clock) => self.with_service(|service, cfg| {
+            Command::Maintain(clock) => self.with_service_capacity(true, |service, cfg| {
                 maintain(service, cfg, clock)?;
                 Ok(Reply::Done)
             }),
@@ -558,6 +645,15 @@ fn retire_fixture_outputs(
 }
 
 fn next(service: &Service<'_>, cfg: &Provisioned) -> Result<prns_groups::OperationId, Error> {
+    if cfg.owner_identity.is_some()
+        && service.pending_operations()?.len()
+            >= cfg
+                .mls_limits
+                .max_pending_outputs
+                .saturating_sub(crate::profile::MANAGEMENT_OUTPUT_RESERVE)
+    {
+        return Err(Error::StorageFull);
+    }
     let receipts = finalize_prefix(service, cfg)?;
     if receipts >= cfg.native_limits.max_receipts.saturating_sub(2) as u64 {
         return Err(Error::StorageFull);
@@ -727,6 +823,33 @@ fn db_error(error: impl Into<redb::Error>) -> Error {
     Error::Storage(prns_groups_store_native::NativeError::Database(
         error.into(),
     ))
+}
+
+/// Remove only disposable cursor rows owned by the retired namespace.
+pub(crate) fn delete_cursors(database: &Database, namespace: [u8; 16]) -> Result<(), Error> {
+    let mut write = database.begin_write().map_err(db_error)?;
+    write
+        .set_durability(Durability::Immediate)
+        .map_err(db_error)?;
+    {
+        let mut table = write.open_table(CURSORS).map_err(db_error)?;
+        let keys = table
+            .iter()
+            .map_err(db_error)?
+            .filter_map(|row| match row {
+                Ok((key, _)) if key.value().starts_with(&namespace) => {
+                    Some(Ok(key.value().to_vec()))
+                }
+                Ok(_) => None,
+                Err(error) => Some(Err(db_error(error))),
+            })
+            .collect::<Result<Vec<_>, Error>>()?;
+        for key in keys {
+            table.remove(key.as_slice()).map_err(db_error)?;
+        }
+    }
+    write.commit().map_err(db_error)?;
+    Ok(())
 }
 
 #[cfg(test)]

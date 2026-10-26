@@ -2465,6 +2465,8 @@ dependencies = [
  "prns-groups-reticulum",
  "prns-groups-runner-native",
  "prns-groups-service",
+ "prns-groups-store",
+ "prns-groups-store-native",
  "prns-host",
  "prns-host-native",
  "prns-host-uniffi",

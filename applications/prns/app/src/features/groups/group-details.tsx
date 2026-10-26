@@ -1,4 +1,4 @@
-import type { Contact, GroupConversation } from "@prns-internal/expo";
+import { type Contact, type GroupConversation, GroupLifecycle } from "@prns-internal/expo";
 
 import { NavigationLink } from "@/ui/navigation-link";
 import { Badge, BodyText, Card, KeyValue, Subheading } from "@/ui/primitives";
@@ -45,13 +45,13 @@ export function GroupDetails({
         >
           Invite a device
         </NavigationLink>
-      ) : (
+      ) : conversation.lifecycle === GroupLifecycle.Active ? (
         <BodyText muted>
           {conversation.ownerIdentity === undefined
             ? "Invitations are unavailable for this older group."
             : "Ask the group owner to invite another device."}
         </BodyText>
-      )}
+      ) : null}
       {invitations.length > 0 ? <Subheading>Invitations</Subheading> : null}
       {invitations.map((invitation) => (
         <Card key={identifierHex(invitation.invitationId)}>

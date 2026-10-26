@@ -40,6 +40,18 @@ refuses any existing namespace table, including orphaned empty tables. Opening
 requires the exact persisted incarnation and limits. There is no implicit reset,
 replacement incarnation, schema upgrade or format migration.
 
+After the caller durably fences a deleted group's enrollment and network work,
+`owner.delete(namespace, incarnation, limits)` deletes that exact namespace's
+three tables in one transaction. The owner lease excludes live backends. A fully
+missing namespace is an idempotent retry; partial tables, a different incarnation
+or different limits fail without deleting anything. Other groups and application
+tables remain intact. The caller must retain anti-replay evidence outside this
+namespace and must not reuse the old incarnation. This is logical deletion, not
+physical erasure or database compaction.
+`owner.validate_delete(namespace, incarnation, limits)` performs the same checks
+without changing tables, so callers can preflight every owned namespace before
+starting a multi-namespace reset. Each deletion revalidates its own transaction.
+
 ## Durable contract
 
 Each immediate-durability redb transaction publishes all KV mutations, revision
@@ -57,6 +69,18 @@ bytes and retained receipt counts have explicit persisted bounds. Live-capacity
 checks apply to the final transaction contents, so a replacement at capacity can
 insert and delete in either order. A rejected batch leaves every prior value and
 receipt unchanged.
+
+Ordinary writers can open with
+`owner.open(namespace, incarnation, limits)?.reserve_capacity(NativeReserve { objects, bytes, receipts })?`
+to leave part of each hard live-object, live-byte and receipt budget for management.
+The reserve is scoped to that backend lease and does not alter persisted limits.
+A new commit exceeding the resulting admission budget is definitely rejected
+with `OperationRejection::ReservedCapacity`, without changing data or consuming
+its ticket. Checks use the final transaction contents. Reads, exact committed
+retries, recovery and receipt retirement remain available even after management
+has used the reserve. Opening without a reserve can use the full hard budget.
+The caller sizes the reserve for its bounded management sequence and applies it
+to every ordinary writer; disk capacity and per-transaction bounds remain separate.
 
 Any commit error is conservatively uncertain at the coordinator boundary. Call
 `Coordinator::recover` before doing more work; if redb itself requires reopening,

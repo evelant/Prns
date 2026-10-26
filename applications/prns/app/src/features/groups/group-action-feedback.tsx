@@ -18,11 +18,23 @@ export function groupRejectionMessage(reason: GroupRejectionReason): string {
     case GroupRejectionReason.MembershipConflict:
       return "The current membership or invitation state does not allow this action. Refresh and review the group's members and invitations before trying again.";
     case GroupRejectionReason.NotOwner:
-      return "Only the group owner can invite devices. Ask the owner to send an invitation.";
+      return "Only the group owner can perform this action.";
     case GroupRejectionReason.NotJoined:
       return "This device has not finished joining. Keep prns open and reconnect with the owner to confirm membership.";
     case GroupRejectionReason.AuthenticationFailed:
       return "This invitation or membership could not be verified. Confirm the owner's device identity through a trusted channel and ask for a new invitation.";
+    case GroupRejectionReason.AlreadyJoined:
+      return "This device has already been enrolled. Remove the member from Group details instead of cancelling its invitation.";
+    case GroupRejectionReason.GroupClosed:
+      return "The owner has closed this group. Saved messages remain available, but the group cannot accept new activity.";
+    case GroupRejectionReason.OwnerMustClose:
+      return "As the owner, close the group for everyone before deleting it from this device.";
+    case GroupRejectionReason.MemberNotFound:
+      return "This device is no longer in the saved membership. Refresh Group details before starting another action.";
+    case GroupRejectionReason.StaleMembership:
+      return "Membership changed after you reviewed it. Refresh Group details and review the current members before confirming again.";
+    case GroupRejectionReason.UnsupportedVersion:
+      return "This group uses an unsupported version. Check the devices' compatibility before trying again.";
     default:
       return "This action was not accepted. Review the group and its invitations before trying again. More information is available in Error details.";
   }

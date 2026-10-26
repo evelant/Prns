@@ -3143,6 +3143,44 @@ public object FfiConverterTypeBindingContract: FfiConverterRustBuffer<BindingCon
 
 
 
+data class CancelGroupInvitationInput (
+    var `invitationId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeCancelGroupInvitationInput: FfiConverterRustBuffer<CancelGroupInvitationInput> {
+    override fun read(buf: ByteBuffer): CancelGroupInvitationInput {
+        return CancelGroupInvitationInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: CancelGroupInvitationInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`invitationId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`)
+    )
+
+    override fun write(value: CancelGroupInvitationInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`invitationId`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+    }
+}
+
+
+
 data class CancelLxmfMessageInput (
     var `localRecordId`: kotlin.ULong
 
@@ -3280,6 +3318,49 @@ public object FfiConverterTypeClearNetworkActivityInput: FfiConverterRustBuffer<
 
     override fun write(value: ClearNetworkActivityInput, buf: ByteBuffer) {
             FfiConverterULong.write(value.`generationId`, buf)
+    }
+}
+
+
+
+data class CloseGroupInput (
+    var `groupId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32
+    ,
+    var `expectedControlHead`: Bytes32
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeCloseGroupInput: FfiConverterRustBuffer<CloseGroupInput> {
+    override fun read(buf: ByteBuffer): CloseGroupInput {
+        return CloseGroupInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: CloseGroupInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`expectedControlHead`)
+    )
+
+    override fun write(value: CloseGroupInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+            FfiConverterTypeBytes32.write(value.`expectedControlHead`, buf)
     }
 }
 
@@ -3556,6 +3637,44 @@ public object FfiConverterTypeCreateNamedIdentityInput: FfiConverterRustBuffer<C
 
 
 
+data class DeleteLocalGroupInput (
+    var `groupId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeDeleteLocalGroupInput: FfiConverterRustBuffer<DeleteLocalGroupInput> {
+    override fun read(buf: ByteBuffer): DeleteLocalGroupInput {
+        return DeleteLocalGroupInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: DeleteLocalGroupInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`)
+    )
+
+    override fun write(value: DeleteLocalGroupInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+    }
+}
+
+
+
 data class DescribeRemoteControlTargetInput (
     var `targetIdentityFingerprint`: kotlin.ByteArray
 
@@ -3816,6 +3935,44 @@ public object FfiConverterTypeDevelopmentNodeStartInput: FfiConverterRustBuffer<
 
 
 
+data class DismissGroupInvitationInput (
+    var `invitationId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeDismissGroupInvitationInput: FfiConverterRustBuffer<DismissGroupInvitationInput> {
+    override fun read(buf: ByteBuffer): DismissGroupInvitationInput {
+        return DismissGroupInvitationInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: DismissGroupInvitationInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`invitationId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`)
+    )
+
+    override fun write(value: DismissGroupInvitationInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`invitationId`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+    }
+}
+
+
+
 data class ExportContactCardInput (
     var `expectedLocalIdentity`: Bytes16
 
@@ -4029,6 +4186,18 @@ data class GroupConversation (
     ,
     var `canInvite`: kotlin.Boolean
     ,
+    var `lifecycle`: GroupLifecycle
+    ,
+    var `canSend`: kotlin.Boolean
+    ,
+    var `canRemoveMembers`: kotlin.Boolean
+    ,
+    var `canLeave`: kotlin.Boolean
+    ,
+    var `canClose`: kotlin.Boolean
+    ,
+    var `canDeleteLocal`: kotlin.Boolean
+    ,
     var `synchronization`: GroupSynchronizationState
     ,
     /**
@@ -4059,6 +4228,12 @@ public object FfiConverterTypeGroupConversation: FfiConverterRustBuffer<GroupCon
             FfiConverterUInt.read(buf),
             FfiConverterOptionalTypeBytes16.read(buf),
             FfiConverterBoolean.read(buf),
+            FfiConverterTypeGroupLifecycle.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
             FfiConverterTypeGroupSynchronizationState.read(buf),
             FfiConverterTypeGroupSynchronizationProgress.read(buf),
         )
@@ -4073,6 +4248,12 @@ public object FfiConverterTypeGroupConversation: FfiConverterRustBuffer<GroupCon
             FfiConverterUInt.allocationSize(value.`memberCount`) +
             FfiConverterOptionalTypeBytes16.allocationSize(value.`ownerIdentity`) +
             FfiConverterBoolean.allocationSize(value.`canInvite`) +
+            FfiConverterTypeGroupLifecycle.allocationSize(value.`lifecycle`) +
+            FfiConverterBoolean.allocationSize(value.`canSend`) +
+            FfiConverterBoolean.allocationSize(value.`canRemoveMembers`) +
+            FfiConverterBoolean.allocationSize(value.`canLeave`) +
+            FfiConverterBoolean.allocationSize(value.`canClose`) +
+            FfiConverterBoolean.allocationSize(value.`canDeleteLocal`) +
             FfiConverterTypeGroupSynchronizationState.allocationSize(value.`synchronization`) +
             FfiConverterTypeGroupSynchronizationProgress.allocationSize(value.`progress`)
     )
@@ -4086,6 +4267,12 @@ public object FfiConverterTypeGroupConversation: FfiConverterRustBuffer<GroupCon
             FfiConverterUInt.write(value.`memberCount`, buf)
             FfiConverterOptionalTypeBytes16.write(value.`ownerIdentity`, buf)
             FfiConverterBoolean.write(value.`canInvite`, buf)
+            FfiConverterTypeGroupLifecycle.write(value.`lifecycle`, buf)
+            FfiConverterBoolean.write(value.`canSend`, buf)
+            FfiConverterBoolean.write(value.`canRemoveMembers`, buf)
+            FfiConverterBoolean.write(value.`canLeave`, buf)
+            FfiConverterBoolean.write(value.`canClose`, buf)
+            FfiConverterBoolean.write(value.`canDeleteLocal`, buf)
             FfiConverterTypeGroupSynchronizationState.write(value.`synchronization`, buf)
             FfiConverterTypeGroupSynchronizationProgress.write(value.`progress`, buf)
     }
@@ -4115,6 +4302,10 @@ data class GroupInvitation (
      * This does not imply that every member's outgoing queue has been checked.
      */
     var `waitingForDelivery`: kotlin.Boolean
+    ,
+    var `canCancel`: kotlin.Boolean
+    ,
+    var `canDismiss`: kotlin.Boolean
 
 ){
 
@@ -4140,6 +4331,8 @@ public object FfiConverterTypeGroupInvitation: FfiConverterRustBuffer<GroupInvit
             FfiConverterBoolean.read(buf),
             FfiConverterTypeGroupInvitationState.read(buf),
             FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
         )
     }
 
@@ -4152,7 +4345,9 @@ public object FfiConverterTypeGroupInvitation: FfiConverterRustBuffer<GroupInvit
             FfiConverterULong.allocationSize(value.`expiresAtMillis`) +
             FfiConverterBoolean.allocationSize(value.`outgoing`) +
             FfiConverterTypeGroupInvitationState.allocationSize(value.`state`) +
-            FfiConverterBoolean.allocationSize(value.`waitingForDelivery`)
+            FfiConverterBoolean.allocationSize(value.`waitingForDelivery`) +
+            FfiConverterBoolean.allocationSize(value.`canCancel`) +
+            FfiConverterBoolean.allocationSize(value.`canDismiss`)
     )
 
     override fun write(value: GroupInvitation, buf: ByteBuffer) {
@@ -4165,6 +4360,8 @@ public object FfiConverterTypeGroupInvitation: FfiConverterRustBuffer<GroupInvit
             FfiConverterBoolean.write(value.`outgoing`, buf)
             FfiConverterTypeGroupInvitationState.write(value.`state`, buf)
             FfiConverterBoolean.write(value.`waitingForDelivery`, buf)
+            FfiConverterBoolean.write(value.`canCancel`, buf)
+            FfiConverterBoolean.write(value.`canDismiss`, buf)
     }
 }
 
@@ -4678,6 +4875,44 @@ public object FfiConverterTypeInviteToGroupInput: FfiConverterRustBuffer<InviteT
             FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
             FfiConverterTypeBytes32.write(value.`groupId`, buf)
             FfiConverterTypeBytes16.write(value.`recipientIdentity`, buf)
+    }
+}
+
+
+
+data class LeaveGroupInput (
+    var `groupId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeLeaveGroupInput: FfiConverterRustBuffer<LeaveGroupInput> {
+    override fun read(buf: ByteBuffer): LeaveGroupInput {
+        return LeaveGroupInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: LeaveGroupInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`)
+    )
+
+    override fun write(value: LeaveGroupInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
     }
 }
 
@@ -6569,6 +6804,59 @@ public object FfiConverterTypeRemoteWifiOperation: FfiConverterRustBuffer<Remote
             FfiConverterTypeRemoteWifiAction.write(value.`action`, buf)
             FfiConverterOptionalUInt.write(value.`candidateRevision`, buf)
             FfiConverterTypeRemoteWifiStatus.write(value.`status`, buf)
+    }
+}
+
+
+
+data class RemoveGroupMemberInput (
+    var `groupId`: Bytes32
+    ,
+    var `clientRequestId`: Bytes32
+    ,
+    var `endpointId`: Bytes32
+    ,
+    var `endpointIncarnation`: kotlin.ULong
+    ,
+    var `expectedControlHead`: Bytes32
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeRemoveGroupMemberInput: FfiConverterRustBuffer<RemoveGroupMemberInput> {
+    override fun read(buf: ByteBuffer): RemoveGroupMemberInput {
+        return RemoveGroupMemberInput(
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeBytes32.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: RemoveGroupMemberInput) = (
+            FfiConverterTypeBytes32.allocationSize(value.`groupId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`clientRequestId`) +
+            FfiConverterTypeBytes32.allocationSize(value.`endpointId`) +
+            FfiConverterULong.allocationSize(value.`endpointIncarnation`) +
+            FfiConverterTypeBytes32.allocationSize(value.`expectedControlHead`)
+    )
+
+    override fun write(value: RemoveGroupMemberInput, buf: ByteBuffer) {
+            FfiConverterTypeBytes32.write(value.`groupId`, buf)
+            FfiConverterTypeBytes32.write(value.`clientRequestId`, buf)
+            FfiConverterTypeBytes32.write(value.`endpointId`, buf)
+            FfiConverterULong.write(value.`endpointIncarnation`, buf)
+            FfiConverterTypeBytes32.write(value.`expectedControlHead`, buf)
     }
 }
 
@@ -9126,6 +9414,60 @@ sealed class GroupActionInput {
         companion object
     }
 
+    data class RemoveMember(
+        val `input`: rs.reticulum.prns.app.bindings.RemoveGroupMemberInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class LeaveGroup(
+        val `input`: rs.reticulum.prns.app.bindings.LeaveGroupInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class CloseGroup(
+        val `input`: rs.reticulum.prns.app.bindings.CloseGroupInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class DeleteLocalGroup(
+        val `input`: rs.reticulum.prns.app.bindings.DeleteLocalGroupInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class CancelInvitation(
+        val `input`: rs.reticulum.prns.app.bindings.CancelGroupInvitationInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
+    data class DismissInvitation(
+        val `input`: rs.reticulum.prns.app.bindings.DismissGroupInvitationInput) : GroupActionInput()
+
+    {
+
+
+        companion object
+    }
+
 
 
 
@@ -9153,6 +9495,24 @@ public object FfiConverterTypeGroupActionInput : FfiConverterRustBuffer<GroupAct
                 )
             4 -> GroupActionInput.Send(
                 FfiConverterTypeSendGroupTextInput.read(buf),
+                )
+            5 -> GroupActionInput.RemoveMember(
+                FfiConverterTypeRemoveGroupMemberInput.read(buf),
+                )
+            6 -> GroupActionInput.LeaveGroup(
+                FfiConverterTypeLeaveGroupInput.read(buf),
+                )
+            7 -> GroupActionInput.CloseGroup(
+                FfiConverterTypeCloseGroupInput.read(buf),
+                )
+            8 -> GroupActionInput.DeleteLocalGroup(
+                FfiConverterTypeDeleteLocalGroupInput.read(buf),
+                )
+            9 -> GroupActionInput.CancelInvitation(
+                FfiConverterTypeCancelGroupInvitationInput.read(buf),
+                )
+            10 -> GroupActionInput.DismissInvitation(
+                FfiConverterTypeDismissGroupInvitationInput.read(buf),
                 )
             else -> throw RuntimeException("invalid enum value, something is very wrong!!")
         }
@@ -9187,6 +9547,48 @@ public object FfiConverterTypeGroupActionInput : FfiConverterRustBuffer<GroupAct
                 + FfiConverterTypeSendGroupTextInput.allocationSize(value.`input`)
             )
         }
+        is GroupActionInput.RemoveMember -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeRemoveGroupMemberInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.LeaveGroup -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeLeaveGroupInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.CloseGroup -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeCloseGroupInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.DeleteLocalGroup -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeDeleteLocalGroupInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.CancelInvitation -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeCancelGroupInvitationInput.allocationSize(value.`input`)
+            )
+        }
+        is GroupActionInput.DismissInvitation -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeDismissGroupInvitationInput.allocationSize(value.`input`)
+            )
+        }
     }
 
     override fun write(value: GroupActionInput, buf: ByteBuffer) {
@@ -9209,6 +9611,36 @@ public object FfiConverterTypeGroupActionInput : FfiConverterRustBuffer<GroupAct
             is GroupActionInput.Send -> {
                 buf.putInt(4)
                 FfiConverterTypeSendGroupTextInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.RemoveMember -> {
+                buf.putInt(5)
+                FfiConverterTypeRemoveGroupMemberInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.LeaveGroup -> {
+                buf.putInt(6)
+                FfiConverterTypeLeaveGroupInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.CloseGroup -> {
+                buf.putInt(7)
+                FfiConverterTypeCloseGroupInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.DeleteLocalGroup -> {
+                buf.putInt(8)
+                FfiConverterTypeDeleteLocalGroupInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.CancelInvitation -> {
+                buf.putInt(9)
+                FfiConverterTypeCancelGroupInvitationInput.write(value.`input`, buf)
+                Unit
+            }
+            is GroupActionInput.DismissInvitation -> {
+                buf.putInt(10)
+                FfiConverterTypeDismissGroupInvitationInput.write(value.`input`, buf)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
@@ -9474,6 +9906,24 @@ sealed class GroupActionResult {
     object Responded : GroupActionResult()
 
 
+    object RemovedMember : GroupActionResult()
+
+
+    object LeftGroup : GroupActionResult()
+
+
+    object ClosedGroup : GroupActionResult()
+
+
+    object DeletedLocalGroup : GroupActionResult()
+
+
+    object CancelledInvitation : GroupActionResult()
+
+
+    object DismissedInvitation : GroupActionResult()
+
+
     data class Sent(
         val `messageId`: rs.reticulum.prns.app.bindings.Bytes32) : GroupActionResult()
 
@@ -9516,10 +9966,16 @@ public object FfiConverterTypeGroupActionResult : FfiConverterRustBuffer<GroupAc
                 FfiConverterTypeBytes32.read(buf),
                 )
             3 -> GroupActionResult.Responded
-            4 -> GroupActionResult.Sent(
+            4 -> GroupActionResult.RemovedMember
+            5 -> GroupActionResult.LeftGroup
+            6 -> GroupActionResult.ClosedGroup
+            7 -> GroupActionResult.DeletedLocalGroup
+            8 -> GroupActionResult.CancelledInvitation
+            9 -> GroupActionResult.DismissedInvitation
+            10 -> GroupActionResult.Sent(
                 FfiConverterTypeBytes32.read(buf),
                 )
-            5 -> GroupActionResult.Rejected(
+            11 -> GroupActionResult.Rejected(
                 FfiConverterTypeGroupRejectionReason.read(buf),
                 FfiConverterString.read(buf),
                 )
@@ -9543,6 +9999,42 @@ public object FfiConverterTypeGroupActionResult : FfiConverterRustBuffer<GroupAc
             )
         }
         is GroupActionResult.Responded -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionResult.RemovedMember -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionResult.LeftGroup -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionResult.ClosedGroup -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionResult.DeletedLocalGroup -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionResult.CancelledInvitation -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is GroupActionResult.DismissedInvitation -> {
             // Add the size for the Int that specifies the variant plus the size needed for all fields
             (
                 4UL
@@ -9581,13 +10073,37 @@ public object FfiConverterTypeGroupActionResult : FfiConverterRustBuffer<GroupAc
                 buf.putInt(3)
                 Unit
             }
-            is GroupActionResult.Sent -> {
+            is GroupActionResult.RemovedMember -> {
                 buf.putInt(4)
+                Unit
+            }
+            is GroupActionResult.LeftGroup -> {
+                buf.putInt(5)
+                Unit
+            }
+            is GroupActionResult.ClosedGroup -> {
+                buf.putInt(6)
+                Unit
+            }
+            is GroupActionResult.DeletedLocalGroup -> {
+                buf.putInt(7)
+                Unit
+            }
+            is GroupActionResult.CancelledInvitation -> {
+                buf.putInt(8)
+                Unit
+            }
+            is GroupActionResult.DismissedInvitation -> {
+                buf.putInt(9)
+                Unit
+            }
+            is GroupActionResult.Sent -> {
+                buf.putInt(10)
                 FfiConverterTypeBytes32.write(value.`messageId`, buf)
                 Unit
             }
             is GroupActionResult.Rejected -> {
-                buf.putInt(5)
+                buf.putInt(11)
                 FfiConverterTypeGroupRejectionReason.write(value.`reason`, buf)
                 FfiConverterString.write(value.`detail`, buf)
                 Unit
@@ -10167,7 +10683,8 @@ enum class GroupInvitationState {
      */
     JOINED,
     DECLINED,
-    EXPIRED;
+    EXPIRED,
+    CANCELLED;
 
 
 
@@ -10189,6 +10706,42 @@ public object FfiConverterTypeGroupInvitationState: FfiConverterRustBuffer<Group
     override fun allocationSize(value: GroupInvitationState) = 4UL
 
     override fun write(value: GroupInvitationState, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
+
+enum class GroupLifecycle {
+
+    ACTIVE,
+    LEAVING,
+    REMOVED,
+    CLOSED;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeGroupLifecycle: FfiConverterRustBuffer<GroupLifecycle> {
+    override fun read(buf: ByteBuffer) = try {
+        GroupLifecycle.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: GroupLifecycle) = 4UL
+
+    override fun write(value: GroupLifecycle, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
@@ -10356,7 +10909,13 @@ enum class GroupRejectionReason {
     MEMBERSHIP_CONFLICT,
     NOT_OWNER,
     NOT_JOINED,
-    AUTHENTICATION_FAILED;
+    AUTHENTICATION_FAILED,
+    ALREADY_JOINED,
+    GROUP_CLOSED,
+    OWNER_MUST_CLOSE,
+    MEMBER_NOT_FOUND,
+    STALE_MEMBERSHIP,
+    UNSUPPORTED_VERSION;
 
 
 

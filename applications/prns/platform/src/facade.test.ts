@@ -277,6 +277,8 @@ test("group enrollment prepares offline storage and preserves native request ide
     outgoing: false,
     state: Bindings.GroupInvitationState.Joining,
     waitingForDelivery: false,
+    canCancel: false,
+    canDismiss: false,
   };
   const createGroup = jest.fn(async () => Bindings.CreateGroupOutcome.Accepted.new({ groupId }));
   const inviteToGroup = jest.fn(async () =>

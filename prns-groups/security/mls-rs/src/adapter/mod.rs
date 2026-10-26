@@ -1,4 +1,5 @@
 mod composition;
+mod management;
 mod operations;
 
 pub use composition::{
@@ -156,6 +157,12 @@ impl<B: AtomicBackend + Send> Adapter<B> {
     /// The authenticated endpoint identity owned by this adapter.
     pub fn local_binding(&self) -> crate::MemberBinding {
         self.identity.binding()
+    }
+
+    /// A durable terminal fence for local removal or authenticated closure.
+    /// Retained application history remains readable through application_read.
+    pub fn is_retired(&self, group: GroupId) -> Result<bool, Error<B::Error>> {
+        Ok(self.coordinator.read(&key(b'R', &group.0))?.is_some())
     }
     /// Check a directed join claim against the actual encoded KeyPackage.
     /// Full signature/lifetime validation still occurs in the atomic Add operation.

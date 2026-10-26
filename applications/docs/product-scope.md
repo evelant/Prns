@@ -90,16 +90,19 @@ Reticulum compatibility remains the desired network boundary; the group profile
 is not an LXMF extension. Any future core change needs compatibility evidence and
 a clear reason that an application-layer solution is insufficient.
 
-The current group profile has one immutable owner, owner-ordered additions,
-independent endpoint credentials and no earlier-history transfer. Adding a member
-can interrupt unfinished delivery from the previous membership. The
+The current group profile has one immutable owner, owner-ordered additions and
+removals, independent endpoint credentials and no earlier-history transfer.
+Members can request departure; the owner commits their removal when reachable.
+The owner can cancel unused invitations and close the group. Local deletion is
+separate from membership and closure; an owner must close before deleting their
+local copy. Membership changes can interrupt unfinished delivery. The
 [maintainer quickstart](group-maintainer-alpha.md#alpha-limits) lists current
 capacities and user-visible limits. Durable actions, storage maintenance and
 exact retry recovery are implemented; their evidence remains distinct from
 protected storage or sustained phone reliability.
 
 The maintainer alpha uses test data and foreground operation. Protected phone
-storage, supported backup/restore, guaranteed background delivery, member removal,
+storage, supported backup/restore, guaranteed background delivery,
 ownership transfer, attachments and linked-device identity are separate increments.
 These are not prerequisites for refining this bounded demo.
 

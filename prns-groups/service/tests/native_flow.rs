@@ -3,7 +3,7 @@
 #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 use prns_groups::{AuthorizationEra, ControlId};
-use prns_groups_mls::{Adapter, LocalIdentity, MemberBinding, Policy};
+use prns_groups_mls::{Adapter, Admission, Command, LocalIdentity, MemberBinding, Policy};
 use prns_groups_service::{
     ChangeCursor, ChangeKind, ClockInterval, ClockReading, ControlReference, DeliverySummary,
     Descriptor, DurableReceipt, Endpoint, EndpointId, EndpointIncarnation, Error, Fault, GroupId,
@@ -1556,6 +1556,105 @@ fn retained_own_wire_cannot_bypass_retirement_of_its_original_mls_output() {
             Err(Error::Fault(Fault::EvidencePruned))
         ));
     });
+}
+
+#[test]
+fn terminal_groups_keep_history_without_releasing_or_accepting_traffic() {
+    for local in [0, 1] {
+        let peers = Trio::enrolled();
+        let (record, operation, wire) = peers.with_service(0, |service| {
+            let operation = next(0, service.coordinator());
+            let record = service
+                .publish(
+                    operation,
+                    &publication(110, CHAT, &[endpoint(1), endpoint(2)], b"terminal history"),
+                    clock(),
+                )
+                .unwrap()
+                .record;
+            (
+                record,
+                operation,
+                service.outgoing(operation).unwrap().unwrap().to_vec(),
+            )
+        });
+        assert_eq!(peers.receive(1, &wire), Incoming::Record(record));
+        if local == 0 {
+            peers.with_adapter(0, |adapter| {
+                adapter
+                    .compose(
+                        next(0, adapter.coordinator()),
+                        Command::Retire { group: GROUP },
+                        |_, _, _| Ok::<_, ()>(Admission::Accept),
+                        |tx, _| tx.put(b"terminal-control", b"closed").map_err(|_| ()),
+                    )
+                    .unwrap();
+            });
+        } else {
+            let removal = peers.with_adapter(0, |adapter| {
+                adapter
+                    .remove(next(0, adapter.coordinator()), GROUP, 1)
+                    .unwrap()
+            });
+            peers.with_adapter(1, |adapter| {
+                adapter
+                    .receive(
+                        next(1, adapter.coordinator()),
+                        GROUP,
+                        &removal.output.messages[0],
+                        |_| Admission::Accept,
+                    )
+                    .unwrap();
+            });
+        }
+        peers.with_service(local, |service| {
+            let before = service.coordinator().head().unwrap();
+            assert_eq!(
+                service.record(record).unwrap().unwrap().body.as_slice(),
+                b"terminal history"
+            );
+            assert!(!service
+                .changes(ChangeCursor(0), 32)
+                .unwrap()
+                .changes
+                .is_empty());
+            assert_eq!(service.progress(record, clock()).unwrap().received, 0);
+            assert!(!service.in_current_era(record).unwrap());
+            assert!(!service.has_pending_receipt(record).unwrap());
+            assert!(!service.has_pending_authored_deliveries(clock()).unwrap());
+            assert!(service
+                .envelope(service.envelope_id(&wire))
+                .unwrap()
+                .is_none());
+            assert!(service.local_receipt(record).unwrap().is_none());
+            assert!(service
+                .pending_delivery(endpoint(2), InventoryCursor(0), clock())
+                .unwrap()
+                .is_none());
+            assert!(service.outgoing(operation).is_err());
+            let next = next(local, service.coordinator());
+            assert!(service
+                .publish(
+                    next,
+                    &publication(111, CHAT, &[endpoint(2)], b"blocked"),
+                    clock()
+                )
+                .is_err());
+            assert!(service.receive(next, &wire, clock()).is_err());
+            assert!(service.emit_receipt(next, record).is_err());
+            let snapshot = service.snapshot().unwrap().unwrap();
+            assert!(service
+                .inventory(
+                    snapshot,
+                    InventoryCursor(0),
+                    InventoryKind::Record,
+                    endpoint(2),
+                    32
+                )
+                .is_err());
+            assert_eq!(service.coordinator().head().unwrap(), before);
+        });
+    }
 }
 
 #[test]

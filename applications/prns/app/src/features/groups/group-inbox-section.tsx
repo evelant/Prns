@@ -1,4 +1,4 @@
-import { type GroupInvitation, GroupInvitationState } from "@prns-internal/expo";
+import { type GroupInvitation, GroupInvitationState, GroupLifecycle } from "@prns-internal/expo";
 
 import { NavigationLink } from "@/ui/navigation-link";
 import { Badge, BodyText, Button, Card, Subheading } from "@/ui/primitives";
@@ -43,7 +43,15 @@ export function GroupInboxSection() {
       ) : null}
       {data.conversations.map((conversation) => (
         <Card key={identifierHex(conversation.groupId)}>
-          <Badge>Group</Badge>
+          <Badge>
+            {conversation.lifecycle === GroupLifecycle.Leaving
+              ? "Leaving group"
+              : conversation.lifecycle === GroupLifecycle.Removed
+                ? "No longer a member"
+                : conversation.lifecycle === GroupLifecycle.Closed
+                  ? "Closed group"
+                  : "Group"}
+          </Badge>
           <Subheading>{conversation.title}</Subheading>
           <BodyText muted>{conversation.memberCount} members</BodyText>
           {conversation.synchronization.tag === "Unavailable" ? (

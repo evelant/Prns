@@ -6,6 +6,7 @@ import { useDevelopmentRuntime } from "@/native/development-runtime-context";
 import { NavigationLink } from "@/ui/navigation-link";
 import { Badge, BodyText, Card } from "@/ui/primitives";
 import { identifierHex } from "./format";
+import { managementActionLabel } from "./group-management-action";
 
 export function GroupSavedActions() {
   const development = useDevelopmentRuntime();
@@ -77,16 +78,18 @@ export function GroupSavedActions() {
         const href =
           input.tag === "Create"
             ? ("/inbox/group/new" as const)
-            : input.tag === "Respond"
+            : input.tag === "Respond" ||
+                input.tag === "CancelInvitation" ||
+                input.tag === "DismissInvitation"
               ? {
                   pathname: "/inbox/invitation/[invitationId]" as const,
                   params: { invitationId: identifierHex(input.inner.input.invitationId) },
                 }
               : {
                   pathname:
-                    input.tag === "Send"
-                      ? ("/inbox/group/[groupId]" as const)
-                      : ("/inbox/group/[groupId]/invite" as const),
+                    input.tag === "Invite"
+                      ? ("/inbox/group/[groupId]/invite" as const)
+                      : ("/inbox/group/[groupId]" as const),
                   params: { groupId: identifierHex(input.inner.input.groupId) },
                 };
         return (
@@ -107,7 +110,9 @@ export function GroupSavedActions() {
                   ? "invitation"
                   : input.tag === "Respond"
                     ? "invitation decision"
-                    : "message"}
+                    : input.tag === "Send"
+                      ? "message"
+                      : managementActionLabel(input.tag)}
             </NavigationLink>
           </Card>
         );

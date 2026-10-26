@@ -1575,6 +1575,60 @@ public func FfiConverterTypeBindingContract_lower(_ value: BindingContract) -> R
 }
 
 
+public struct CancelGroupInvitationInput: Equatable, Hashable {
+    public var invitationId: Bytes32
+    public var clientRequestId: Bytes32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(invitationId: Bytes32, clientRequestId: Bytes32) {
+        self.invitationId = invitationId
+        self.clientRequestId = clientRequestId
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension CancelGroupInvitationInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeCancelGroupInvitationInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CancelGroupInvitationInput {
+        return
+            try CancelGroupInvitationInput(
+                invitationId: FfiConverterTypeBytes32.read(from: &buf),
+                clientRequestId: FfiConverterTypeBytes32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: CancelGroupInvitationInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes32.write(value.invitationId, into: &buf)
+        FfiConverterTypeBytes32.write(value.clientRequestId, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCancelGroupInvitationInput_lift(_ buf: RustBuffer) throws -> CancelGroupInvitationInput {
+    return try FfiConverterTypeCancelGroupInvitationInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCancelGroupInvitationInput_lower(_ value: CancelGroupInvitationInput) -> RustBuffer {
+    return FfiConverterTypeCancelGroupInvitationInput.lower(value)
+}
+
+
 public struct CancelLxmfMessageInput: Equatable, Hashable {
     public var localRecordId: UInt64
 
@@ -1780,6 +1834,64 @@ public func FfiConverterTypeClearNetworkActivityInput_lift(_ buf: RustBuffer) th
 #endif
 public func FfiConverterTypeClearNetworkActivityInput_lower(_ value: ClearNetworkActivityInput) -> RustBuffer {
     return FfiConverterTypeClearNetworkActivityInput.lower(value)
+}
+
+
+public struct CloseGroupInput: Equatable, Hashable {
+    public var groupId: Bytes32
+    public var clientRequestId: Bytes32
+    public var expectedControlHead: Bytes32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(groupId: Bytes32, clientRequestId: Bytes32, expectedControlHead: Bytes32) {
+        self.groupId = groupId
+        self.clientRequestId = clientRequestId
+        self.expectedControlHead = expectedControlHead
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension CloseGroupInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeCloseGroupInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> CloseGroupInput {
+        return
+            try CloseGroupInput(
+                groupId: FfiConverterTypeBytes32.read(from: &buf),
+                clientRequestId: FfiConverterTypeBytes32.read(from: &buf),
+                expectedControlHead: FfiConverterTypeBytes32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: CloseGroupInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes32.write(value.groupId, into: &buf)
+        FfiConverterTypeBytes32.write(value.clientRequestId, into: &buf)
+        FfiConverterTypeBytes32.write(value.expectedControlHead, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCloseGroupInput_lift(_ buf: RustBuffer) throws -> CloseGroupInput {
+    return try FfiConverterTypeCloseGroupInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeCloseGroupInput_lower(_ value: CloseGroupInput) -> RustBuffer {
+    return FfiConverterTypeCloseGroupInput.lower(value)
 }
 
 
@@ -2142,6 +2254,60 @@ public func FfiConverterTypeCreateNamedIdentityInput_lower(_ value: CreateNamedI
 }
 
 
+public struct DeleteLocalGroupInput: Equatable, Hashable {
+    public var groupId: Bytes32
+    public var clientRequestId: Bytes32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(groupId: Bytes32, clientRequestId: Bytes32) {
+        self.groupId = groupId
+        self.clientRequestId = clientRequestId
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension DeleteLocalGroupInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDeleteLocalGroupInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DeleteLocalGroupInput {
+        return
+            try DeleteLocalGroupInput(
+                groupId: FfiConverterTypeBytes32.read(from: &buf),
+                clientRequestId: FfiConverterTypeBytes32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: DeleteLocalGroupInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes32.write(value.groupId, into: &buf)
+        FfiConverterTypeBytes32.write(value.clientRequestId, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeleteLocalGroupInput_lift(_ buf: RustBuffer) throws -> DeleteLocalGroupInput {
+    return try FfiConverterTypeDeleteLocalGroupInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDeleteLocalGroupInput_lower(_ value: DeleteLocalGroupInput) -> RustBuffer {
+    return FfiConverterTypeDeleteLocalGroupInput.lower(value)
+}
+
+
 public struct DescribeRemoteControlTargetInput: Equatable, Hashable {
     public var targetIdentityFingerprint: Data
 
@@ -2468,6 +2634,60 @@ public func FfiConverterTypeDevelopmentNodeStartInput_lower(_ value: Development
 }
 
 
+public struct DismissGroupInvitationInput: Equatable, Hashable {
+    public var invitationId: Bytes32
+    public var clientRequestId: Bytes32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(invitationId: Bytes32, clientRequestId: Bytes32) {
+        self.invitationId = invitationId
+        self.clientRequestId = clientRequestId
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension DismissGroupInvitationInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeDismissGroupInvitationInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DismissGroupInvitationInput {
+        return
+            try DismissGroupInvitationInput(
+                invitationId: FfiConverterTypeBytes32.read(from: &buf),
+                clientRequestId: FfiConverterTypeBytes32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: DismissGroupInvitationInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes32.write(value.invitationId, into: &buf)
+        FfiConverterTypeBytes32.write(value.clientRequestId, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDismissGroupInvitationInput_lift(_ buf: RustBuffer) throws -> DismissGroupInvitationInput {
+    return try FfiConverterTypeDismissGroupInvitationInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeDismissGroupInvitationInput_lower(_ value: DismissGroupInvitationInput) -> RustBuffer {
+    return FfiConverterTypeDismissGroupInvitationInput.lower(value)
+}
+
+
 public struct ExportContactCardInput: Equatable, Hashable {
     public var expectedLocalIdentity: Bytes16
 
@@ -2756,6 +2976,12 @@ public struct GroupConversation: Equatable, Hashable {
     public var memberCount: UInt32
     public var ownerIdentity: Bytes16?
     public var canInvite: Bool
+    public var lifecycle: GroupLifecycle
+    public var canSend: Bool
+    public var canRemoveMembers: Bool
+    public var canLeave: Bool
+    public var canClose: Bool
+    public var canDeleteLocal: Bool
     public var synchronization: GroupSynchronizationState
     /**
      * Bounded, transient peer activity; durable delivery evidence remains on records.
@@ -2767,7 +2993,7 @@ public struct GroupConversation: Equatable, Hashable {
     public init(groupId: Bytes32, title: String, revision: UInt64,
         /**
          * Current membership provenance, distinct from the record/change revision.
-         */controlHead: Bytes32, members: [GroupMember], memberCount: UInt32, ownerIdentity: Bytes16?, canInvite: Bool, synchronization: GroupSynchronizationState,
+         */controlHead: Bytes32, members: [GroupMember], memberCount: UInt32, ownerIdentity: Bytes16?, canInvite: Bool, lifecycle: GroupLifecycle, canSend: Bool, canRemoveMembers: Bool, canLeave: Bool, canClose: Bool, canDeleteLocal: Bool, synchronization: GroupSynchronizationState,
         /**
          * Bounded, transient peer activity; durable delivery evidence remains on records.
          */progress: GroupSynchronizationProgress) {
@@ -2779,6 +3005,12 @@ public struct GroupConversation: Equatable, Hashable {
         self.memberCount = memberCount
         self.ownerIdentity = ownerIdentity
         self.canInvite = canInvite
+        self.lifecycle = lifecycle
+        self.canSend = canSend
+        self.canRemoveMembers = canRemoveMembers
+        self.canLeave = canLeave
+        self.canClose = canClose
+        self.canDeleteLocal = canDeleteLocal
         self.synchronization = synchronization
         self.progress = progress
     }
@@ -2807,6 +3039,12 @@ public struct FfiConverterTypeGroupConversation: FfiConverterRustBuffer {
                 memberCount: FfiConverterUInt32.read(from: &buf),
                 ownerIdentity: FfiConverterOptionTypeBytes16.read(from: &buf),
                 canInvite: FfiConverterBool.read(from: &buf),
+                lifecycle: FfiConverterTypeGroupLifecycle.read(from: &buf),
+                canSend: FfiConverterBool.read(from: &buf),
+                canRemoveMembers: FfiConverterBool.read(from: &buf),
+                canLeave: FfiConverterBool.read(from: &buf),
+                canClose: FfiConverterBool.read(from: &buf),
+                canDeleteLocal: FfiConverterBool.read(from: &buf),
                 synchronization: FfiConverterTypeGroupSynchronizationState.read(from: &buf),
                 progress: FfiConverterTypeGroupSynchronizationProgress.read(from: &buf)
         )
@@ -2821,6 +3059,12 @@ public struct FfiConverterTypeGroupConversation: FfiConverterRustBuffer {
         FfiConverterUInt32.write(value.memberCount, into: &buf)
         FfiConverterOptionTypeBytes16.write(value.ownerIdentity, into: &buf)
         FfiConverterBool.write(value.canInvite, into: &buf)
+        FfiConverterTypeGroupLifecycle.write(value.lifecycle, into: &buf)
+        FfiConverterBool.write(value.canSend, into: &buf)
+        FfiConverterBool.write(value.canRemoveMembers, into: &buf)
+        FfiConverterBool.write(value.canLeave, into: &buf)
+        FfiConverterBool.write(value.canClose, into: &buf)
+        FfiConverterBool.write(value.canDeleteLocal, into: &buf)
         FfiConverterTypeGroupSynchronizationState.write(value.synchronization, into: &buf)
         FfiConverterTypeGroupSynchronizationProgress.write(value.progress, into: &buf)
     }
@@ -2856,6 +3100,8 @@ public struct GroupInvitation: Equatable, Hashable {
      * This does not imply that every member's outgoing queue has been checked.
      */
     public var waitingForDelivery: Bool
+    public var canCancel: Bool
+    public var canDismiss: Bool
 
     // Default memberwise initializers are never public by default, so we
     // declare one manually.
@@ -2863,7 +3109,7 @@ public struct GroupInvitation: Equatable, Hashable {
         /**
          * The owner has deferred Add for its own unfinished current-era deliveries.
          * This does not imply that every member's outgoing queue has been checked.
-         */waitingForDelivery: Bool) {
+         */waitingForDelivery: Bool, canCancel: Bool, canDismiss: Bool) {
         self.invitationId = invitationId
         self.groupId = groupId
         self.title = title
@@ -2873,6 +3119,8 @@ public struct GroupInvitation: Equatable, Hashable {
         self.outgoing = outgoing
         self.state = state
         self.waitingForDelivery = waitingForDelivery
+        self.canCancel = canCancel
+        self.canDismiss = canDismiss
     }
 
 
@@ -2899,7 +3147,9 @@ public struct FfiConverterTypeGroupInvitation: FfiConverterRustBuffer {
                 expiresAtMillis: FfiConverterUInt64.read(from: &buf),
                 outgoing: FfiConverterBool.read(from: &buf),
                 state: FfiConverterTypeGroupInvitationState.read(from: &buf),
-                waitingForDelivery: FfiConverterBool.read(from: &buf)
+                waitingForDelivery: FfiConverterBool.read(from: &buf),
+                canCancel: FfiConverterBool.read(from: &buf),
+                canDismiss: FfiConverterBool.read(from: &buf)
         )
     }
 
@@ -2913,6 +3163,8 @@ public struct FfiConverterTypeGroupInvitation: FfiConverterRustBuffer {
         FfiConverterBool.write(value.outgoing, into: &buf)
         FfiConverterTypeGroupInvitationState.write(value.state, into: &buf)
         FfiConverterBool.write(value.waitingForDelivery, into: &buf)
+        FfiConverterBool.write(value.canCancel, into: &buf)
+        FfiConverterBool.write(value.canDismiss, into: &buf)
     }
 }
 
@@ -3591,6 +3843,60 @@ public func FfiConverterTypeInviteToGroupInput_lift(_ buf: RustBuffer) throws ->
 #endif
 public func FfiConverterTypeInviteToGroupInput_lower(_ value: InviteToGroupInput) -> RustBuffer {
     return FfiConverterTypeInviteToGroupInput.lower(value)
+}
+
+
+public struct LeaveGroupInput: Equatable, Hashable {
+    public var groupId: Bytes32
+    public var clientRequestId: Bytes32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(groupId: Bytes32, clientRequestId: Bytes32) {
+        self.groupId = groupId
+        self.clientRequestId = clientRequestId
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension LeaveGroupInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeLeaveGroupInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> LeaveGroupInput {
+        return
+            try LeaveGroupInput(
+                groupId: FfiConverterTypeBytes32.read(from: &buf),
+                clientRequestId: FfiConverterTypeBytes32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: LeaveGroupInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes32.write(value.groupId, into: &buf)
+        FfiConverterTypeBytes32.write(value.clientRequestId, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLeaveGroupInput_lift(_ buf: RustBuffer) throws -> LeaveGroupInput {
+    return try FfiConverterTypeLeaveGroupInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeLeaveGroupInput_lower(_ value: LeaveGroupInput) -> RustBuffer {
+    return FfiConverterTypeLeaveGroupInput.lower(value)
 }
 
 
@@ -6048,6 +6354,72 @@ public func FfiConverterTypeRemoteWifiOperation_lower(_ value: RemoteWifiOperati
 }
 
 
+public struct RemoveGroupMemberInput: Equatable, Hashable {
+    public var groupId: Bytes32
+    public var clientRequestId: Bytes32
+    public var endpointId: Bytes32
+    public var endpointIncarnation: UInt64
+    public var expectedControlHead: Bytes32
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(groupId: Bytes32, clientRequestId: Bytes32, endpointId: Bytes32, endpointIncarnation: UInt64, expectedControlHead: Bytes32) {
+        self.groupId = groupId
+        self.clientRequestId = clientRequestId
+        self.endpointId = endpointId
+        self.endpointIncarnation = endpointIncarnation
+        self.expectedControlHead = expectedControlHead
+    }
+
+
+
+
+}
+
+#if compiler(>=6)
+extension RemoveGroupMemberInput: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeRemoveGroupMemberInput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> RemoveGroupMemberInput {
+        return
+            try RemoveGroupMemberInput(
+                groupId: FfiConverterTypeBytes32.read(from: &buf),
+                clientRequestId: FfiConverterTypeBytes32.read(from: &buf),
+                endpointId: FfiConverterTypeBytes32.read(from: &buf),
+                endpointIncarnation: FfiConverterUInt64.read(from: &buf),
+                expectedControlHead: FfiConverterTypeBytes32.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: RemoveGroupMemberInput, into buf: inout [UInt8]) {
+        FfiConverterTypeBytes32.write(value.groupId, into: &buf)
+        FfiConverterTypeBytes32.write(value.clientRequestId, into: &buf)
+        FfiConverterTypeBytes32.write(value.endpointId, into: &buf)
+        FfiConverterUInt64.write(value.endpointIncarnation, into: &buf)
+        FfiConverterTypeBytes32.write(value.expectedControlHead, into: &buf)
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRemoveGroupMemberInput_lift(_ buf: RustBuffer) throws -> RemoveGroupMemberInput {
+    return try FfiConverterTypeRemoveGroupMemberInput.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeRemoveGroupMemberInput_lower(_ value: RemoveGroupMemberInput) -> RustBuffer {
+    return FfiConverterTypeRemoveGroupMemberInput.lower(value)
+}
+
+
 public struct RespondGroupInvitationInput: Equatable, Hashable {
     public var clientRequestId: Bytes32
     public var invitationId: Bytes32
@@ -8467,6 +8839,18 @@ public enum GroupActionInput: Equatable, Hashable {
     )
     case send(input: SendGroupTextInput
     )
+    case removeMember(input: RemoveGroupMemberInput
+    )
+    case leaveGroup(input: LeaveGroupInput
+    )
+    case closeGroup(input: CloseGroupInput
+    )
+    case deleteLocalGroup(input: DeleteLocalGroupInput
+    )
+    case cancelInvitation(input: CancelGroupInvitationInput
+    )
+    case dismissInvitation(input: DismissGroupInvitationInput
+    )
 
 
 
@@ -8500,6 +8884,24 @@ public struct FfiConverterTypeGroupActionInput: FfiConverterRustBuffer {
         case 4: return .send(input: try FfiConverterTypeSendGroupTextInput.read(from: &buf)
         )
 
+        case 5: return .removeMember(input: try FfiConverterTypeRemoveGroupMemberInput.read(from: &buf)
+        )
+
+        case 6: return .leaveGroup(input: try FfiConverterTypeLeaveGroupInput.read(from: &buf)
+        )
+
+        case 7: return .closeGroup(input: try FfiConverterTypeCloseGroupInput.read(from: &buf)
+        )
+
+        case 8: return .deleteLocalGroup(input: try FfiConverterTypeDeleteLocalGroupInput.read(from: &buf)
+        )
+
+        case 9: return .cancelInvitation(input: try FfiConverterTypeCancelGroupInvitationInput.read(from: &buf)
+        )
+
+        case 10: return .dismissInvitation(input: try FfiConverterTypeDismissGroupInvitationInput.read(from: &buf)
+        )
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -8526,6 +8928,36 @@ public struct FfiConverterTypeGroupActionInput: FfiConverterRustBuffer {
         case let .send(input):
             writeInt(&buf, Int32(4))
             FfiConverterTypeSendGroupTextInput.write(input, into: &buf)
+
+
+        case let .removeMember(input):
+            writeInt(&buf, Int32(5))
+            FfiConverterTypeRemoveGroupMemberInput.write(input, into: &buf)
+
+
+        case let .leaveGroup(input):
+            writeInt(&buf, Int32(6))
+            FfiConverterTypeLeaveGroupInput.write(input, into: &buf)
+
+
+        case let .closeGroup(input):
+            writeInt(&buf, Int32(7))
+            FfiConverterTypeCloseGroupInput.write(input, into: &buf)
+
+
+        case let .deleteLocalGroup(input):
+            writeInt(&buf, Int32(8))
+            FfiConverterTypeDeleteLocalGroupInput.write(input, into: &buf)
+
+
+        case let .cancelInvitation(input):
+            writeInt(&buf, Int32(9))
+            FfiConverterTypeCancelGroupInvitationInput.write(input, into: &buf)
+
+
+        case let .dismissInvitation(input):
+            writeInt(&buf, Int32(10))
+            FfiConverterTypeDismissGroupInvitationInput.write(input, into: &buf)
 
         }
     }
@@ -8734,6 +9166,12 @@ public enum GroupActionResult: Equatable, Hashable {
     case invited(invitationId: Bytes32
     )
     case responded
+    case removedMember
+    case leftGroup
+    case closedGroup
+    case deletedLocalGroup
+    case cancelledInvitation
+    case dismissedInvitation
     case sent(messageId: Bytes32
     )
     case rejected(reason: GroupRejectionReason, detail: String
@@ -8767,10 +9205,22 @@ public struct FfiConverterTypeGroupActionResult: FfiConverterRustBuffer {
 
         case 3: return .responded
 
-        case 4: return .sent(messageId: try FfiConverterTypeBytes32.read(from: &buf)
+        case 4: return .removedMember
+
+        case 5: return .leftGroup
+
+        case 6: return .closedGroup
+
+        case 7: return .deletedLocalGroup
+
+        case 8: return .cancelledInvitation
+
+        case 9: return .dismissedInvitation
+
+        case 10: return .sent(messageId: try FfiConverterTypeBytes32.read(from: &buf)
         )
 
-        case 5: return .rejected(reason: try FfiConverterTypeGroupRejectionReason.read(from: &buf), detail: try FfiConverterString.read(from: &buf)
+        case 11: return .rejected(reason: try FfiConverterTypeGroupRejectionReason.read(from: &buf), detail: try FfiConverterString.read(from: &buf)
         )
 
         default: throw UniffiInternalError.unexpectedEnumCase
@@ -8795,13 +9245,37 @@ public struct FfiConverterTypeGroupActionResult: FfiConverterRustBuffer {
             writeInt(&buf, Int32(3))
 
 
-        case let .sent(messageId):
+        case .removedMember:
             writeInt(&buf, Int32(4))
+
+
+        case .leftGroup:
+            writeInt(&buf, Int32(5))
+
+
+        case .closedGroup:
+            writeInt(&buf, Int32(6))
+
+
+        case .deletedLocalGroup:
+            writeInt(&buf, Int32(7))
+
+
+        case .cancelledInvitation:
+            writeInt(&buf, Int32(8))
+
+
+        case .dismissedInvitation:
+            writeInt(&buf, Int32(9))
+
+
+        case let .sent(messageId):
+            writeInt(&buf, Int32(10))
             FfiConverterTypeBytes32.write(messageId, into: &buf)
 
 
         case let .rejected(reason,detail):
-            writeInt(&buf, Int32(5))
+            writeInt(&buf, Int32(11))
             FfiConverterTypeGroupRejectionReason.write(reason, into: &buf)
             FfiConverterString.write(detail, into: &buf)
 
@@ -9282,6 +9756,7 @@ public enum GroupInvitationState: Equatable, Hashable {
     case joined
     case declined
     case expired
+    case cancelled
 
 
 
@@ -9313,6 +9788,8 @@ public struct FfiConverterTypeGroupInvitationState: FfiConverterRustBuffer {
 
         case 5: return .expired
 
+        case 6: return .cancelled
+
         default: throw UniffiInternalError.unexpectedEnumCase
         }
     }
@@ -9340,6 +9817,10 @@ public struct FfiConverterTypeGroupInvitationState: FfiConverterRustBuffer {
         case .expired:
             writeInt(&buf, Int32(5))
 
+
+        case .cancelled:
+            writeInt(&buf, Int32(6))
+
         }
     }
 }
@@ -9357,6 +9838,87 @@ public func FfiConverterTypeGroupInvitationState_lift(_ buf: RustBuffer) throws 
 #endif
 public func FfiConverterTypeGroupInvitationState_lower(_ value: GroupInvitationState) -> RustBuffer {
     return FfiConverterTypeGroupInvitationState.lower(value)
+}
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+
+public enum GroupLifecycle: Equatable, Hashable {
+
+    case active
+    case leaving
+    case removed
+    case closed
+
+
+
+
+
+}
+
+#if compiler(>=6)
+extension GroupLifecycle: Sendable {}
+#endif
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public struct FfiConverterTypeGroupLifecycle: FfiConverterRustBuffer {
+    typealias SwiftType = GroupLifecycle
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> GroupLifecycle {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        case 1: return .active
+
+        case 2: return .leaving
+
+        case 3: return .removed
+
+        case 4: return .closed
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: GroupLifecycle, into buf: inout [UInt8]) {
+        switch value {
+
+
+        case .active:
+            writeInt(&buf, Int32(1))
+
+
+        case .leaving:
+            writeInt(&buf, Int32(2))
+
+
+        case .removed:
+            writeInt(&buf, Int32(3))
+
+
+        case .closed:
+            writeInt(&buf, Int32(4))
+
+        }
+    }
+}
+
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeGroupLifecycle_lift(_ buf: RustBuffer) throws -> GroupLifecycle {
+    return try FfiConverterTypeGroupLifecycle.lift(buf)
+}
+
+#if swift(>=5.8)
+@_documentation(visibility: private)
+#endif
+public func FfiConverterTypeGroupLifecycle_lower(_ value: GroupLifecycle) -> RustBuffer {
+    return FfiConverterTypeGroupLifecycle.lower(value)
 }
 
 
@@ -9478,6 +10040,12 @@ public enum GroupRejectionReason: Equatable, Hashable {
     case notOwner
     case notJoined
     case authenticationFailed
+    case alreadyJoined
+    case groupClosed
+    case ownerMustClose
+    case memberNotFound
+    case staleMembership
+    case unsupportedVersion
 
 
 
@@ -9518,6 +10086,18 @@ public struct FfiConverterTypeGroupRejectionReason: FfiConverterRustBuffer {
         case 9: return .notJoined
 
         case 10: return .authenticationFailed
+
+        case 11: return .alreadyJoined
+
+        case 12: return .groupClosed
+
+        case 13: return .ownerMustClose
+
+        case 14: return .memberNotFound
+
+        case 15: return .staleMembership
+
+        case 16: return .unsupportedVersion
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -9565,6 +10145,30 @@ public struct FfiConverterTypeGroupRejectionReason: FfiConverterRustBuffer {
 
         case .authenticationFailed:
             writeInt(&buf, Int32(10))
+
+
+        case .alreadyJoined:
+            writeInt(&buf, Int32(11))
+
+
+        case .groupClosed:
+            writeInt(&buf, Int32(12))
+
+
+        case .ownerMustClose:
+            writeInt(&buf, Int32(13))
+
+
+        case .memberNotFound:
+            writeInt(&buf, Int32(14))
+
+
+        case .staleMembership:
+            writeInt(&buf, Int32(15))
+
+
+        case .unsupportedVersion:
+            writeInt(&buf, Int32(16))
 
         }
     }

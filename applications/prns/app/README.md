@@ -52,6 +52,21 @@ and invitation history; **Delivery details** contains recent synchronization
 observations. Follow the [quickstart](../../docs/group-maintainer-alpha.md) for
 receipt meanings, recovery and current group limits.
 
+The owner can remove a device or **Close group for everyone** from **Group
+details**. Other members can **Leave group**; sending stops locally while the
+owner receives the request. Closed groups and removed memberships keep readable
+history. **Delete group from this device** removes only local history; other
+devices retain their copies. Owners must close the group first. Other members
+can delete locally while the group is active, but this leaves their remote
+membership unchanged; use **Leave group** first to request removal. Devices
+learn about membership changes and closure when they synchronize.
+
+An outgoing pending invitation can be cancelled from its invitation screen.
+Once enrollment has committed, use member removal instead. Finished invitations
+can be removed from the local list without changing membership. Each destructive
+action requires confirmation and keeps a recoverable result if its screen or
+target disappears.
+
 Pressing a group action stores its exact input and request ID before execution.
 Restarting or leaving a screen does not lose accepted work. An uncertain outcome
 must use the saved action or **Retry same…**, not a replacement message/invitation.

@@ -31,6 +31,15 @@ pub enum Command<'a> {
         group: GroupId,
         leaf: u32,
     },
+    RemoveMember {
+        group: GroupId,
+        member: crate::MemberBinding,
+    },
+    /// The caller must authenticate the terminal control and stage its durable
+    /// facts and exact notification work in the same composition transaction.
+    Retire {
+        group: GroupId,
+    },
     ProposeUpdate {
         group: GroupId,
     },
@@ -353,15 +362,24 @@ impl<B: AtomicBackend + Send> Adapter<B> {
                 } => self.prepare_add(provider, group, packages, now_secs)?,
                 Command::Rekey { group } => self.prepare_rekey(provider, group)?,
                 Command::Remove { group, leaf } => self.prepare_remove(provider, group, leaf)?,
+                Command::RemoveMember { group, member } => {
+                    self.prepare_remove_member(provider, group, &member)?
+                }
+                Command::Retire { group } => {
+                    if expected.is_some() {
+                        return Err(PolicyError::UnsupportedControl.into());
+                    }
+                    self.prepare_retire(provider, group)?
+                }
                 Command::ProposeUpdate { group } => self.prepare_propose_update(provider, group)?,
                 Command::Send { group, body } => self.prepare_send(provider, group, body)?,
                 Command::Receive { group, bytes } => {
-                    self.prepare_receive(provider, group, bytes, |binding, body| {
+                    self.prepare_receive(provider, group, bytes, expected, |binding, body| {
                         admission(&application, binding, body)
                     })?
                 }
             };
-            if let Some(expected) = expected {
+            if let Some(expected) = expected.filter(|_| output.event != Event::Removed) {
                 let context = output.context.ok_or(Error::UnexpectedMessage)?;
                 let state = self.load(provider, context.group)?;
                 let roster = state.roster();
