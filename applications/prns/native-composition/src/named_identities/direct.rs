@@ -110,6 +110,9 @@ pub(super) async fn messages(
         Ok(r) => r,
         Err(o) => return Ok(o),
     };
+    if let Ok(service) = s.direct() {
+        return service_messages(&service, request).await;
+    }
     match s
         .store()
         .map_err(detail)?
@@ -131,6 +134,9 @@ pub(super) async fn conversations(
         Ok(r) => r,
         Err(o) => return Ok(o),
     };
+    if let Ok(service) = s.direct() {
+        return service_conversations(&service, request).await;
+    }
     match s
         .store()
         .map_err(detail)?
@@ -145,6 +151,23 @@ pub(super) async fn conversations(
         }
         _ => Err("Unexpected conversation response.".into()),
     }
+}
+pub(super) async fn service_messages(
+    service: &prns_lxmf::mailbox::DurableDirectLxmfService,
+    request: prns_lxmf::mailbox::MailboxListRequest,
+) -> Result<LxmfMessageListOutcome, String> {
+    let snapshot = service.snapshot(request).await.map_err(detail)?;
+    Ok(crate::lxmf::project_messages(&snapshot.messages))
+}
+pub(super) async fn service_conversations(
+    service: &prns_lxmf::mailbox::DurableDirectLxmfService,
+    request: prns_lxmf::mailbox::MailboxConversationListRequest,
+) -> Result<LxmfMessageListOutcome, String> {
+    let snapshot = service
+        .conversation_snapshot(request)
+        .await
+        .map_err(detail)?;
+    Ok(crate::lxmf::project_messages(&snapshot.messages))
 }
 pub(super) fn now() -> u64 {
     std::time::SystemTime::now()

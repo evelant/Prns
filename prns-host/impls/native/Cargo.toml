@@ -17,6 +17,7 @@ path = "src/lib.rs"
 [features]
 default = []
 android-platform = ["dep:prns-ffi"]
+apple-platform = ["personal-rns/wifi-auto-apple"]
 
 [dependencies]
 prns-ffi = { path = "../../../prns-ffi", optional = true, default-features = false }

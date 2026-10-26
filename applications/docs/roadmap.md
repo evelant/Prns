@@ -48,6 +48,7 @@ stalled action appear successful.
 | Group lifecycle | Design removal, ownership recovery, history sharing and group departure/reclamation. Keep authorization and delayed-content behavior explicit. |
 | Durable phone storage | Protected keys, locked-state behavior, supported backup/recovery, disk-full handling and physical-space reclamation. Logical cleanup is not secure erasure. |
 | Mobile lifecycle | Long idle, natural suspension, repeated restoration, permission transitions and message notification policy. A running service is not a background-delivery guarantee. |
+| Phone IP connections | LAN discovery, saved TCP settings and native recovery are implemented. Follow the [connection guide](ip-connections.md) for distribution, ordinary discovery, mixed-path and group acceptance. Stock iOS multicast requires a separate implementation, approval and provisioning; desktop/browser providers remain later work. |
 | Radio qualification | Repeat isolated E290/LoRa exchanges under movement and load on matching builds. Earlier foreground radio trials do not qualify new app binaries automatically. |
 | Embedded group members | Portable enrollment/reconciliation and durable custody within measured flash/RAM limits. Forwarding a phone's traffic does not make the board a group member. |
 | Remote management | Broader Android/iOS capability-driven controls, successful Wi-Fi Keep, cancellation/uncertain results and complete headless/recipient onboarding. |

@@ -302,6 +302,25 @@ impl PlanAttachments {
         }
     }
 
+    /// Retain attachment metadata until every run future and manifold lane has
+    /// retired. Cancellation does not fabricate a successful shutdown.
+    pub async fn detach_and_wait(
+        &mut self,
+        handle: &PrnsNodeHandle,
+    ) -> Result<(), prns_runtime::runtime::InterfaceDetachError> {
+        for attachment in &mut self.groups {
+            if let Some(task) = attachment.supervisor_task.take() {
+                task.abort();
+                let _ = task.await;
+            }
+            for interface in &attachment.interfaces {
+                handle.remove_interface_and_wait(*interface).await?;
+            }
+        }
+        self.groups.clear();
+        Ok(())
+    }
+
     fn push_interface(&mut self, lifecycle: ConfiguredInterfaceLifecycle, interface: InterfaceId) {
         self.groups.push(PlanAttachmentGroup {
             lifecycle,

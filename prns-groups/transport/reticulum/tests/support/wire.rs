@@ -61,6 +61,7 @@ impl ReportsStatus for ControlledInterface {
         let id = self.descriptor.id;
         Some(Arc::new(move || {
             vec![personal_rns::interfaces::InterfaceVitals {
+                endpoint: None,
                 id,
                 connection: personal_rns::interfaces::ConnectionState::Connected,
                 failure_reason: None,

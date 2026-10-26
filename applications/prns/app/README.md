@@ -22,7 +22,7 @@ try a group demo. Developers should use the [workspace setup](../../README.md),
 
 Established installations open Inbox. The identity control selects the default
 for Inbox and Contacts; an existing conversation keeps its original owner.
-Network inspection is also reachable from Nodes and Connections.
+Network inspection is also reachable from Nodes and Interfaces.
 
 ## Messages and identities
 
@@ -32,6 +32,10 @@ Other Active identities continue receiving while a different one is selected.
 Incoming activity appears in the identity picker; opening a conversation records
 local viewed state. Selection alone does not clear unread messages, and viewed
 state is not a receipt sent to the other phone.
+
+Contacts separates **Saved**, **Discovered** and **My profile** into tabs.
+My profile holds your public messaging name and contact sharing; discovery
+controls stay with the Discovered list. Switching tabs preserves unfinished edits.
 
 Contacts keep private aliases separate from names people publish. **My contact
 QR** and **Share contact link** carry the same signed portable contact card.
@@ -58,12 +62,30 @@ must use the saved action or **Retry same…**, not a replacement message/invita
 Text not yet submitted is still a volatile draft. Changing membership can
 interrupt unfinished delivery from the previous membership.
 
-## Connections, announcements and network inspection
+## Interfaces, announcements and network inspection
 
-**Nodes → This phone → Connections** shows Bluetooth permission/radio state and
-actual physical peers. Enable/disable preserves identities and messages and does
-not stop the shared node. A ready radio, a saved route and an authorized pairing
-are different from a current connection to the intended recipient.
+**More → Interfaces** (also available through **Nodes → This phone**) shows
+separate **Bluetooth** and **LAN & TCP** tabs. Bluetooth access and discovery
+groups stay with Bluetooth; LAN discovery, saved TCP peers and live connections
+stay together under LAN & TCP. Turning a connection off preserves identities, contacts and messages.
+A saved route and an authorized pairing are different from a current connection
+to the intended recipient.
+
+Enable **LAN discovery** to find compatible peers on the local network. Allow
+local-network access when the phone requests it. iOS uses declared Bonjour
+services independently of Apple's pending multicast entitlement; discovering
+stock multicast-only Reticulum peers on iOS remains pending approval and
+qualification. Android supports stock Reticulum discovery and Bonjour. Wi-Fi
+membership alone does not establish a Reticulum connection.
+
+Use **Add TCP peer** for a hostname or IP address and port, with an optional name.
+Profiles can be saved while offline, edited, enabled, disabled or removed.
+Settings belong to this installation and apply to every messaging identity.
+Saved and applied settings are shown separately when a change is still taking
+effect. Enabled profiles return when the native node restarts and reconnect
+without keeping Interfaces open. **Retry** requests another attempt; an
+unavailable peer does not stop the other connections. Connection details show
+the actual endpoint and traffic; a connected peer is not a delivery receipt.
 
 **Advanced Bluetooth discovery** accepts one to four shared discovery-group names.
 The default is `reticulum`; phones need a matching name to discover one another.

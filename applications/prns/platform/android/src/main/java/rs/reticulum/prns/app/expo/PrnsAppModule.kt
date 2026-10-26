@@ -36,6 +36,30 @@ class PrnsAppModule : Module() {
     AsyncFunction("requestBluetoothPermissions") { promise: Promise ->
       requestPermissions(PrnsAndroidRuntime.bluetoothPermissions(), promise, trackedPermission = "bluetooth")
     }
+    AsyncFunction("requestLocalNetworkPermission") { promise: Promise ->
+      val application = context
+      if (!rs.reticulum.prns.expo.PrnsLanRuntime.requiresLocalNetworkPermission(application)) {
+        promise.resolve("notRequired")
+      } else if (rs.reticulum.prns.expo.PrnsLanRuntime.hasLocalNetworkPermission(application)) {
+        promise.resolve("granted")
+      } else {
+        val manager = appContext.permissions
+        val activity = appContext.currentActivity
+        if (manager == null || activity == null) {
+          promise.reject("ERR_PRNS_PERMISSION", "Open the app to allow local network access", null)
+        } else activity.runOnUiThread {
+          manager.askForPermissions(PermissionsResponseListener { responses ->
+            val response = responses[rs.reticulum.prns.expo.PrnsLanRuntime.LOCAL_NETWORK_PERMISSION]
+            PrnsAndroidRuntime.refresh(application)
+            promise.resolve(when {
+              response?.status == PermissionsStatus.GRANTED -> "granted"
+              response?.canAskAgain == false -> "blocked"
+              else -> "denied"
+            })
+          }, rs.reticulum.prns.expo.PrnsLanRuntime.LOCAL_NETWORK_PERMISSION)
+        }
+      }
+    }
     AsyncFunction("requestBackgroundBluetoothPermission") { promise: Promise ->
       when {
         Build.VERSION.SDK_INT >= 31 -> promise.resolve(PrnsAndroidRuntime.status(context))

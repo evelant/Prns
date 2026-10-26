@@ -4,8 +4,8 @@ import { CardStack, Screen, ScreenHeading, Subheading } from "@/ui/primitives";
 
 const sections = [
   { title: "Messaging", entries: ["identities.index"] },
-  { title: "Network", entries: ["interfaces.index", "activity.index"] },
-  { title: "App", entries: ["settings.index", "help.index", "settings.about"] },
+  { title: "Connectivity", entries: ["interfaces.index", "activity.index"] },
+  { title: "App & support", entries: ["settings.index", "help.index", "settings.about"] },
 ] as const;
 
 export function MoreScreen() {

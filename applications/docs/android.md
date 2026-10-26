@@ -170,10 +170,13 @@ board without touching the phone UI. Host auto-selection does not request paths
 or opt into path responses. Record this extra discovery traffic when interpreting
 background checks; discovery is not a delivery proof or a passive recovery test.
 
-The standalone Android build has Bluetooth enabled but no runtime TCP editor.
-A connected transport board can forward between Bluetooth and its configured
-TCP interface to reach the peer. Confirm that route and its endpoints before
-starting; do not change normal board or daemon configuration implicitly.
+The current source provides **More → Interfaces → LAN & TCP → Add TCP peer** for a saved
+hostname/IP and port. Enable that profile to reach a controlled listening peer
+directly, without a transport board. See the [LAN/TCP checkpoint](ip-connections.md)
+for build-specific evidence and the [maintainer quickstart](group-maintainer-alpha.md)
+for isolation and recovery checks. Older builds may still require a connected
+transport board forwarding Bluetooth to TCP; confirm the actual route before
+starting and do not change board or daemon configuration implicitly.
 
 In Inbox, select **Share messaging address** and wait for the peer's
 `PINNED_PYTHON_LXMF_RUST_OBSERVED` marker for the expected destination. The

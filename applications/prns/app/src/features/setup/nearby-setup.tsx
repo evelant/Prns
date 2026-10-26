@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Linking } from "react-native";
 import { bluetoothStatus } from "@/features/connections/bluetooth-status";
+import { connectedIpCount } from "@/features/connections/ip-physical-connections";
+import { SetupLanChoice } from "@/features/connections/ip-connections";
 import { useDevelopmentRuntime } from "@/native/development-runtime-context";
 import { InfoDisclosure } from "@/ui/info-disclosure";
 import { NavigationLink } from "@/ui/navigation-link";
@@ -11,7 +13,8 @@ export function NearbySetupStep({ onContinue }: { readonly onContinue: () => voi
   const [pending, setPending] = useState(false);
   const [failure, setFailure] = useState<string | null>(null);
   const status = bluetoothStatus(runtime);
-  const ready = status.label === "Ready" || status.showConnectedPeers === true;
+  const networkReady = connectedIpCount(runtime.connectionSnapshot) > 0;
+  const ready = status.label === "Ready" || status.showConnectedPeers === true || networkReady;
   const android = runtime.androidRuntime;
   const access = android?.status;
   const authorization = runtime.bluetoothAuthorization?.authorization;
@@ -48,15 +51,25 @@ export function NearbySetupStep({ onContinue }: { readonly onContinue: () => voi
 
   return (
     <Card>
-      <CardHeader title="Connect nearby" />
+      <CardHeader title="Choose your connections" />
       <Badge tone={ready ? "neutral" : status.warning ? "warning" : "neutral"}>
         {ready
           ? status.showConnectedPeers
             ? status.label
-            : "Ready for nearby phones"
+            : networkReady
+              ? "Network connected"
+              : "Ready for nearby phones"
           : status.label}
       </Badge>
-      <BodyText>{ready ? "Keep prns open on both phones." : status.description}</BodyText>
+      <BodyText>
+        {networkReady
+          ? "Your LAN or TCP connection is ready. Message delivery is shown in each conversation."
+          : ready
+            ? "Keep prns open on both phones."
+            : status.description}
+      </BodyText>
+      <NavigationLink href="/more/interfaces">Set up local network or TCP</NavigationLink>
+      <SetupLanChoice />
       {blocked ? (
         <Button disabled={pending} onPress={() => void act(Linking.openSettings)}>
           Open app settings
@@ -107,6 +120,14 @@ export function NearbySetupStep({ onContinue }: { readonly onContinue: () => voi
       <Button disabled={!ready || pending} onPress={onContinue}>
         Continue to your identity
       </Button>
+      {!ready ? (
+        <>
+          <BodyText>You can set up your identity now and connect later.</BodyText>
+          <Button disabled={pending} tone="secondary" onPress={onContinue}>
+            Continue offline
+          </Button>
+        </>
+      ) : null}
       <InfoDisclosure label="Other connections and details">
         <BodyText>
           No pairing is needed between phones. Bluetooth readiness does not mean a message has been
@@ -116,7 +137,7 @@ export function NearbySetupStep({ onContinue }: { readonly onContinue: () => voi
           Your current discovery group and radio settings are kept. Phones using different discovery
           groups will not find each other.
         </BodyText>
-        <NavigationLink href="/more/interfaces">Connection settings</NavigationLink>
+        <NavigationLink href="/more/interfaces">Interface settings</NavigationLink>
         <NavigationLink href="/nodes/pair">Pair a radio node</NavigationLink>
       </InfoDisclosure>
     </Card>

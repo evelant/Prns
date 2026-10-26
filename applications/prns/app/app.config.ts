@@ -91,7 +91,8 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         NSBluetoothAlwaysUsageDescription:
           "prns uses Bluetooth to connect to nearby Reticulum nodes.",
         NSLocalNetworkUsageDescription:
-          "prns uses the local network for an explicitly configured development LXMF peer.",
+          "prns uses your local network to find nearby Reticulum nodes and connect to saved peers.",
+        NSBonjourServices: ["_reticulum._tcp", "_reticulum._udp"],
         PRNSCoreBluetoothCentralRestorationIdentifier: `${bluetoothRestorationPrefix}.central.v1`,
         PRNSCoreBluetoothPeripheralRestorationIdentifier: `${bluetoothRestorationPrefix}.peripheral.v1`,
         UIBackgroundModes: ["bluetooth-central", "bluetooth-peripheral"],

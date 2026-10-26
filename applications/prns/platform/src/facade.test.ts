@@ -111,6 +111,7 @@ function nativeModule(overrides: Partial<PrnsAppNativeModule> = {}): PrnsAppNati
       ),
     ),
     prepareOutbound: jest.fn(async () => undefined),
+    requestLocalNetworkPermission: jest.fn(async () => "notRequired"),
     ...overrides,
   };
 }
@@ -165,6 +166,47 @@ test("does not wrap a host when the native owner is absent", async () => {
 
   await expect(runtime.attachHost()).resolves.toBeUndefined();
   expect(api.borrowHost).not.toHaveBeenCalled();
+});
+
+test("connection settings and retries use the retained native owner without starting a JS host", async () => {
+  const snapshot = { ownerId: 7n, revision: 3n, settings: { lanEnabled: false, tcpPeers: [] } };
+  const outcome = Bindings.ConnectionSettingsOutcome.Ready.new({ snapshot });
+  const query = Bindings.ConnectionSnapshotOutcome.Busy.new();
+  const readConnectionSettings = jest.fn(async () => outcome);
+  const updateConnectionSettings = jest.fn(
+    async (_input: Bindings.ConnectionSettingsUpdateInput) => outcome,
+  );
+  const readConnectionSnapshot = jest.fn(async () => query);
+  const retryConnection = jest.fn(async (_input: Bindings.RetryConnectionInput) => query);
+  const { runtime, native, api } = setup({
+    readConnectionSettings,
+    updateConnectionSettings,
+    readConnectionSnapshot,
+    retryConnection,
+  });
+  const input = { ownerId: 7n, expectedRevision: 3n, settings: snapshot.settings };
+  const retry = { ownerId: 7n, expectedRevision: 3n, generationId: 2n, profileId: "lan" };
+  expect(await runtime.readConnectionSettings()).toBe(outcome);
+  expect(await runtime.updateConnectionSettings(input)).toBe(outcome);
+  expect(await runtime.readConnectionSnapshot()).toBe(query);
+  expect(await runtime.retryConnection(retry)).toBe(query);
+  expect(updateConnectionSettings).toHaveBeenCalledWith(input);
+  expect(retryConnection).toHaveBeenCalledWith(retry);
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.start).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  expect(api.borrowHost).not.toHaveBeenCalled();
+});
+
+test("local network permission observations are validated without requesting outbound preparation", async () => {
+  const native = nativeModule({ requestLocalNetworkPermission: jest.fn(async () => "denied") });
+  const { runtime } = setup({}, native);
+  expect(await runtime.requestLocalNetworkPermission()).toBe("denied");
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  jest.mocked(native.requestLocalNetworkPermission).mockResolvedValueOnce("unknown");
+  await expect(runtime.requestLocalNetworkPermission()).rejects.toThrow(
+    "Local network permission could not be checked.",
+  );
 });
 
 test("checks both semantic contracts once and uses generated startup codecs", async () => {
@@ -986,6 +1028,42 @@ test("named clients capture immutable local references and never consult global 
   expect(a).toHaveBeenCalledTimes(2);
   expect(b).toHaveBeenCalledTimes(1);
   expect(api.listContacts).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
+test("named live messaging waits forward the exact cursor and cancellation without outbound preparation", async () => {
+  const reference: Bindings.NamedIdentityReference = {
+    incarnation: new Uint8Array(16).fill(1),
+    sequence: 2n,
+    publicHash: new Uint8Array(16).fill(3),
+  };
+  const waitLxmfChange = jest.fn(async () => snapshot().lxmf);
+  const openNamedIdentity = jest.fn(
+    () => ({ waitLxmfChange }) as unknown as Bindings.NamedIdentityClient,
+  );
+  const { runtime, native } = setup({ openNamedIdentity });
+  const client = runtime.forIdentity(reference);
+  const controller = new AbortController();
+  expect(await client.waitLxmfChange(undefined, controller.signal)).toEqual(snapshot().lxmf);
+  await client.waitLxmfChange(9_007_199_254_740_993n, controller.signal);
+  expect(waitLxmfChange).toHaveBeenNthCalledWith(1, undefined, { signal: controller.signal });
+  expect(waitLxmfChange).toHaveBeenNthCalledWith(2, 9_007_199_254_740_993n, {
+    signal: controller.signal,
+  });
+  expect(openNamedIdentity).toHaveBeenCalledTimes(1);
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  controller.abort();
+  await expect(client.waitLxmfChange(1n, controller.signal)).rejects.toMatchObject({
+    name: "AbortError",
+  });
+  expect(waitLxmfChange).toHaveBeenCalledTimes(2);
+});
+
+test("legacy runtime leaves live messaging on its existing snapshot without opening a named client", async () => {
+  const openNamedIdentity = jest.fn();
+  const { runtime, native } = setup({ openNamedIdentity });
+  expect(await runtime.waitLxmfChange()).toBeUndefined();
+  expect(openNamedIdentity).not.toHaveBeenCalled();
   expect(native.prepareOutbound).not.toHaveBeenCalled();
 });
 

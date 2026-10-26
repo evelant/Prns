@@ -735,6 +735,8 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_native_stop(
     ): Int
+    external fun uniffi_prns_app_checksum_func_notify_connection_network_changed(
+    ): Int
     external fun uniffi_prns_app_checksum_func_prepare_group_action(
     ): Int
     external fun uniffi_prns_app_checksum_func_preview_contact_card(
@@ -745,6 +747,10 @@ internal object IntegrityCheckingUniffiLib {
     ): Int
     external fun uniffi_prns_app_checksum_func_read_bluetooth_settings(
     ): Int
+    external fun uniffi_prns_app_checksum_func_read_connection_settings(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_read_connection_snapshot(
+    ): Int
     external fun uniffi_prns_app_checksum_func_read_messaging_profile(
     ): Int
     external fun uniffi_prns_app_checksum_func_read_remote_node(
@@ -754,6 +760,8 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_prns_app_checksum_func_reject_pairing(
     ): Int
     external fun uniffi_prns_app_checksum_func_respond_group_invitation(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_retry_connection(
     ): Int
     external fun uniffi_prns_app_checksum_func_retry_lxmf_message(
     ): Int
@@ -780,6 +788,8 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_prns_app_checksum_func_shared_host(
     ): Int
     external fun uniffi_prns_app_checksum_func_start_remote_wifi_trial(
+    ): Int
+    external fun uniffi_prns_app_checksum_func_update_connection_settings(
     ): Int
     external fun uniffi_prns_app_checksum_func_change_named_identity(
     ): Int
@@ -866,6 +876,8 @@ internal object IntegrityCheckingUniffiLib {
     external fun uniffi_prns_app_checksum_method_namedidentityclient_set_contact_pinned(
     ): Int
     external fun uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name(
+    ): Int
+    external fun uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change(
     ): Int
     external fun ffi_prns_app_uniffi_contract_version(
     ): Int
@@ -966,6 +978,8 @@ external fun uniffi_prns_app_fn_method_namedidentityclient_set_contact_pinned(`p
 ): Long
 external fun uniffi_prns_app_fn_method_namedidentityclient_set_messaging_name(`ptr`: Long,`name`: RustBuffer.ByValue,
 ): Long
+external fun uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change(`ptr`: Long,`afterProjectionRevision`: RustBuffer.ByValue,
+): Long
 external fun uniffi_prns_app_fn_func_acknowledge_group_action(`reference`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_announce_groups(
@@ -1052,6 +1066,8 @@ external fun uniffi_prns_app_fn_func_native_start_with_apple_bluetooth_restorati
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_native_stop(uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
+external fun uniffi_prns_app_fn_func_notify_connection_network_changed(uniffi_out_err: UniffiRustCallStatus,
+): Unit
 external fun uniffi_prns_app_fn_func_prepare_group_action(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_preview_contact_card(`uri`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus,
@@ -1062,6 +1078,10 @@ external fun uniffi_prns_app_fn_func_read_bluetooth_discovery_groups(
 ): Long
 external fun uniffi_prns_app_fn_func_read_bluetooth_settings(
 ): Long
+external fun uniffi_prns_app_fn_func_read_connection_settings(
+): Long
+external fun uniffi_prns_app_fn_func_read_connection_snapshot(
+): Long
 external fun uniffi_prns_app_fn_func_read_messaging_profile(
 ): Long
 external fun uniffi_prns_app_fn_func_read_remote_node(`input`: RustBuffer.ByValue,
@@ -1071,6 +1091,8 @@ external fun uniffi_prns_app_fn_func_read_snapshot(
 external fun uniffi_prns_app_fn_func_reject_pairing(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_respond_group_invitation(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_retry_connection(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_retry_lxmf_message(`input`: RustBuffer.ByValue,
 ): Long
@@ -1097,6 +1119,8 @@ external fun uniffi_prns_app_fn_func_set_messaging_name(`name`: RustBuffer.ByVal
 external fun uniffi_prns_app_fn_func_shared_host(uniffi_out_err: UniffiRustCallStatus,
 ): RustBuffer.ByValue
 external fun uniffi_prns_app_fn_func_start_remote_wifi_trial(`input`: RustBuffer.ByValue,
+): Long
+external fun uniffi_prns_app_fn_func_update_connection_settings(`input`: RustBuffer.ByValue,
 ): Long
 external fun uniffi_prns_app_fn_func_change_named_identity(`input`: RustBuffer.ByValue,
 ): Long
@@ -1356,6 +1380,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_native_stop() != 41536) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_notify_connection_network_changed() != 29413) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_prepare_group_action() != 9779) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1371,6 +1398,12 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
     if (lib.uniffi_prns_app_checksum_func_read_bluetooth_settings() != 48522) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_prns_app_checksum_func_read_connection_settings() != 39602) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_read_connection_snapshot() != 40867) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_prns_app_checksum_func_read_messaging_profile() != 32931) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1384,6 +1417,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_respond_group_invitation() != 50214) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_retry_connection() != 34106) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_retry_lxmf_message() != 20310) {
@@ -1423,6 +1459,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_start_remote_wifi_trial() != 55182) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_func_update_connection_settings() != 9081) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_func_change_named_identity() != 19035) {
@@ -1552,6 +1591,9 @@ private fun uniffiCheckApiChecksums(lib: IntegrityCheckingUniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_prns_app_checksum_method_namedidentityclient_set_messaging_name() != 31566) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_prns_app_checksum_method_namedidentityclient_wait_lxmf_change() != 2709) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
 }
@@ -2169,6 +2211,14 @@ public interface NamedIdentityClientInterface {
     suspend fun `setContactPinned`(`input`: SetContactPinnedInput): ContactMutationOutcome
 
     suspend fun `setMessagingName`(`name`: kotlin.String): LocalMessagingProfileOutcome
+
+    /**
+     * Read the initial projection, or wait until this owner's LXMF state changes.
+     * Cancel the wait when its screen, identity or host generation is replaced.
+     * A stopped projection or `None` ends this subscription; resume with no cursor
+     * after the identity becomes available again.
+     */
+    suspend fun `waitLxmfChange`(`afterProjectionRevision`: kotlin.ULong?): LxmfHealth?
 
     companion object
 }
@@ -3030,6 +3080,32 @@ open class NamedIdentityClient: Disposable, AutoCloseable, NamedIdentityClientIn
     }
 
 
+    /**
+     * Read the initial projection, or wait until this owner's LXMF state changes.
+     * Cancel the wait when its screen, identity or host generation is replaced.
+     * A stopped projection or `None` ends this subscription; resume with no cursor
+     * after the identity becomes available again.
+     */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+    override suspend fun `waitLxmfChange`(`afterProjectionRevision`: kotlin.ULong?) : LxmfHealth? {
+        return uniffiRustCallAsync(
+        callWithHandle { uniffiHandle ->
+            UniffiLib.uniffi_prns_app_fn_method_namedidentityclient_wait_lxmf_change(
+                uniffiHandle,
+                FfiConverterOptionalULong.lower(`afterProjectionRevision`),
+            )
+        },
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterOptionalTypeLxmfHealth.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+
 
 
 
@@ -3280,6 +3356,188 @@ public object FfiConverterTypeClearNetworkActivityInput: FfiConverterRustBuffer<
 
     override fun write(value: ClearNetworkActivityInput, buf: ByteBuffer) {
             FfiConverterULong.write(value.`generationId`, buf)
+    }
+}
+
+
+
+data class ConnectionSettings (
+    var `lanEnabled`: kotlin.Boolean
+    ,
+    var `tcpPeers`: List<TcpPeerProfile>
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeConnectionSettings: FfiConverterRustBuffer<ConnectionSettings> {
+    override fun read(buf: ByteBuffer): ConnectionSettings {
+        return ConnectionSettings(
+            FfiConverterBoolean.read(buf),
+            FfiConverterSequenceTypeTcpPeerProfile.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ConnectionSettings) = (
+            FfiConverterBoolean.allocationSize(value.`lanEnabled`) +
+            FfiConverterSequenceTypeTcpPeerProfile.allocationSize(value.`tcpPeers`)
+    )
+
+    override fun write(value: ConnectionSettings, buf: ByteBuffer) {
+            FfiConverterBoolean.write(value.`lanEnabled`, buf)
+            FfiConverterSequenceTypeTcpPeerProfile.write(value.`tcpPeers`, buf)
+    }
+}
+
+
+
+data class ConnectionSettingsSnapshot (
+    var `ownerId`: kotlin.ULong
+    ,
+    var `revision`: kotlin.ULong
+    ,
+    var `settings`: ConnectionSettings
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeConnectionSettingsSnapshot: FfiConverterRustBuffer<ConnectionSettingsSnapshot> {
+    override fun read(buf: ByteBuffer): ConnectionSettingsSnapshot {
+        return ConnectionSettingsSnapshot(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeConnectionSettings.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ConnectionSettingsSnapshot) = (
+            FfiConverterULong.allocationSize(value.`ownerId`) +
+            FfiConverterULong.allocationSize(value.`revision`) +
+            FfiConverterTypeConnectionSettings.allocationSize(value.`settings`)
+    )
+
+    override fun write(value: ConnectionSettingsSnapshot, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`ownerId`, buf)
+            FfiConverterULong.write(value.`revision`, buf)
+            FfiConverterTypeConnectionSettings.write(value.`settings`, buf)
+    }
+}
+
+
+
+data class ConnectionSettingsUpdateInput (
+    var `ownerId`: kotlin.ULong
+    ,
+    var `expectedRevision`: kotlin.ULong
+    ,
+    var `settings`: ConnectionSettings
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeConnectionSettingsUpdateInput: FfiConverterRustBuffer<ConnectionSettingsUpdateInput> {
+    override fun read(buf: ByteBuffer): ConnectionSettingsUpdateInput {
+        return ConnectionSettingsUpdateInput(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterTypeConnectionSettings.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ConnectionSettingsUpdateInput) = (
+            FfiConverterULong.allocationSize(value.`ownerId`) +
+            FfiConverterULong.allocationSize(value.`expectedRevision`) +
+            FfiConverterTypeConnectionSettings.allocationSize(value.`settings`)
+    )
+
+    override fun write(value: ConnectionSettingsUpdateInput, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`ownerId`, buf)
+            FfiConverterULong.write(value.`expectedRevision`, buf)
+            FfiConverterTypeConnectionSettings.write(value.`settings`, buf)
+    }
+}
+
+
+
+data class ConnectionSnapshot (
+    var `generationId`: kotlin.ULong
+    ,
+    var `settings`: ConnectionSettingsSnapshot
+    ,
+    var `appliedRevision`: kotlin.ULong?
+    ,
+    var `lan`: LanConnectionSnapshot
+    ,
+    var `tcpPeers`: List<TcpPeerConnectionSnapshot>
+    ,
+    var `physicalConnections`: List<PhysicalConnectionSnapshot>
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeConnectionSnapshot: FfiConverterRustBuffer<ConnectionSnapshot> {
+    override fun read(buf: ByteBuffer): ConnectionSnapshot {
+        return ConnectionSnapshot(
+            FfiConverterULong.read(buf),
+            FfiConverterTypeConnectionSettingsSnapshot.read(buf),
+            FfiConverterOptionalULong.read(buf),
+            FfiConverterTypeLanConnectionSnapshot.read(buf),
+            FfiConverterSequenceTypeTcpPeerConnectionSnapshot.read(buf),
+            FfiConverterSequenceTypePhysicalConnectionSnapshot.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ConnectionSnapshot) = (
+            FfiConverterULong.allocationSize(value.`generationId`) +
+            FfiConverterTypeConnectionSettingsSnapshot.allocationSize(value.`settings`) +
+            FfiConverterOptionalULong.allocationSize(value.`appliedRevision`) +
+            FfiConverterTypeLanConnectionSnapshot.allocationSize(value.`lan`) +
+            FfiConverterSequenceTypeTcpPeerConnectionSnapshot.allocationSize(value.`tcpPeers`) +
+            FfiConverterSequenceTypePhysicalConnectionSnapshot.allocationSize(value.`physicalConnections`)
+    )
+
+    override fun write(value: ConnectionSnapshot, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`generationId`, buf)
+            FfiConverterTypeConnectionSettingsSnapshot.write(value.`settings`, buf)
+            FfiConverterOptionalULong.write(value.`appliedRevision`, buf)
+            FfiConverterTypeLanConnectionSnapshot.write(value.`lan`, buf)
+            FfiConverterSequenceTypeTcpPeerConnectionSnapshot.write(value.`tcpPeers`, buf)
+            FfiConverterSequenceTypePhysicalConnectionSnapshot.write(value.`physicalConnections`, buf)
     }
 }
 
@@ -4683,6 +4941,64 @@ public object FfiConverterTypeInviteToGroupInput: FfiConverterRustBuffer<InviteT
 
 
 
+data class LanConnectionSnapshot (
+    var `desiredEnabled`: kotlin.Boolean
+    ,
+    var `state`: LocalConnectionState
+    ,
+    var `discoveryMethod`: LanDiscoveryMethod
+    ,
+    var `detail`: kotlin.String?
+    ,
+    var `stockMulticastAvailable`: kotlin.Boolean
+    ,
+    var `connectedPeerCount`: kotlin.UInt
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeLanConnectionSnapshot: FfiConverterRustBuffer<LanConnectionSnapshot> {
+    override fun read(buf: ByteBuffer): LanConnectionSnapshot {
+        return LanConnectionSnapshot(
+            FfiConverterBoolean.read(buf),
+            FfiConverterTypeLocalConnectionState.read(buf),
+            FfiConverterTypeLanDiscoveryMethod.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterUInt.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: LanConnectionSnapshot) = (
+            FfiConverterBoolean.allocationSize(value.`desiredEnabled`) +
+            FfiConverterTypeLocalConnectionState.allocationSize(value.`state`) +
+            FfiConverterTypeLanDiscoveryMethod.allocationSize(value.`discoveryMethod`) +
+            FfiConverterOptionalString.allocationSize(value.`detail`) +
+            FfiConverterBoolean.allocationSize(value.`stockMulticastAvailable`) +
+            FfiConverterUInt.allocationSize(value.`connectedPeerCount`)
+    )
+
+    override fun write(value: LanConnectionSnapshot, buf: ByteBuffer) {
+            FfiConverterBoolean.write(value.`desiredEnabled`, buf)
+            FfiConverterTypeLocalConnectionState.write(value.`state`, buf)
+            FfiConverterTypeLanDiscoveryMethod.write(value.`discoveryMethod`, buf)
+            FfiConverterOptionalString.write(value.`detail`, buf)
+            FfiConverterBoolean.write(value.`stockMulticastAvailable`, buf)
+            FfiConverterUInt.write(value.`connectedPeerCount`, buf)
+    }
+}
+
+
+
 data class ListGroupMessagesInput (
     var `groupId`: Bytes32
     ,
@@ -5677,6 +5993,89 @@ public object FfiConverterTypeNamedIdentitySummary: FfiConverterRustBuffer<Named
 
 
 
+data class PhysicalConnectionSnapshot (
+    var `interfaceId`: kotlin.ByteArray
+    ,
+    var `logicalInterfaceId`: kotlin.ByteArray
+    ,
+    var `parentInterfaceId`: kotlin.ByteArray?
+    ,
+    var `profileId`: kotlin.String?
+    ,
+    var `kind`: kotlin.String
+    ,
+    var `name`: kotlin.String?
+    ,
+    var `state`: LocalConnectionState
+    ,
+    var `rxBytes`: kotlin.ULong
+    ,
+    var `txBytes`: kotlin.ULong
+    ,
+    var `endpoint`: kotlin.String?
+    ,
+    var `localOnly`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypePhysicalConnectionSnapshot: FfiConverterRustBuffer<PhysicalConnectionSnapshot> {
+    override fun read(buf: ByteBuffer): PhysicalConnectionSnapshot {
+        return PhysicalConnectionSnapshot(
+            FfiConverterByteArray.read(buf),
+            FfiConverterByteArray.read(buf),
+            FfiConverterOptionalByteArray.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterTypeLocalConnectionState.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: PhysicalConnectionSnapshot) = (
+            FfiConverterByteArray.allocationSize(value.`interfaceId`) +
+            FfiConverterByteArray.allocationSize(value.`logicalInterfaceId`) +
+            FfiConverterOptionalByteArray.allocationSize(value.`parentInterfaceId`) +
+            FfiConverterOptionalString.allocationSize(value.`profileId`) +
+            FfiConverterString.allocationSize(value.`kind`) +
+            FfiConverterOptionalString.allocationSize(value.`name`) +
+            FfiConverterTypeLocalConnectionState.allocationSize(value.`state`) +
+            FfiConverterULong.allocationSize(value.`rxBytes`) +
+            FfiConverterULong.allocationSize(value.`txBytes`) +
+            FfiConverterOptionalString.allocationSize(value.`endpoint`) +
+            FfiConverterBoolean.allocationSize(value.`localOnly`)
+    )
+
+    override fun write(value: PhysicalConnectionSnapshot, buf: ByteBuffer) {
+            FfiConverterByteArray.write(value.`interfaceId`, buf)
+            FfiConverterByteArray.write(value.`logicalInterfaceId`, buf)
+            FfiConverterOptionalByteArray.write(value.`parentInterfaceId`, buf)
+            FfiConverterOptionalString.write(value.`profileId`, buf)
+            FfiConverterString.write(value.`kind`, buf)
+            FfiConverterOptionalString.write(value.`name`, buf)
+            FfiConverterTypeLocalConnectionState.write(value.`state`, buf)
+            FfiConverterULong.write(value.`rxBytes`, buf)
+            FfiConverterULong.write(value.`txBytes`, buf)
+            FfiConverterOptionalString.write(value.`endpoint`, buf)
+            FfiConverterBoolean.write(value.`localOnly`, buf)
+    }
+}
+
+
+
 data class PrepareGroupActionInput (
     /**
      * Caller-visible identity; mismatches fail before any durable mutation.
@@ -6617,6 +7016,57 @@ public object FfiConverterTypeRespondGroupInvitationInput: FfiConverterRustBuffe
 
 
 
+data class RetryConnectionInput (
+    var `ownerId`: kotlin.ULong
+    ,
+    var `generationId`: kotlin.ULong
+    ,
+    var `expectedRevision`: kotlin.ULong
+    ,
+    /**
+     * "lan" or the saved TCP profile ID.
+     */
+    var `profileId`: kotlin.String
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeRetryConnectionInput: FfiConverterRustBuffer<RetryConnectionInput> {
+    override fun read(buf: ByteBuffer): RetryConnectionInput {
+        return RetryConnectionInput(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: RetryConnectionInput) = (
+            FfiConverterULong.allocationSize(value.`ownerId`) +
+            FfiConverterULong.allocationSize(value.`generationId`) +
+            FfiConverterULong.allocationSize(value.`expectedRevision`) +
+            FfiConverterString.allocationSize(value.`profileId`)
+    )
+
+    override fun write(value: RetryConnectionInput, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`ownerId`, buf)
+            FfiConverterULong.write(value.`generationId`, buf)
+            FfiConverterULong.write(value.`expectedRevision`, buf)
+            FfiConverterString.write(value.`profileId`, buf)
+    }
+}
+
+
+
 data class RetryLxmfMessageInput (
     var `localRecordId`: kotlin.ULong
 
@@ -6897,6 +7347,120 @@ public object FfiConverterTypeStartRemoteWifiTrialInput: FfiConverterRustBuffer<
             FfiConverterByteArray.write(value.`targetIdentityFingerprint`, buf)
             FfiConverterString.write(value.`ssid`, buf)
             FfiConverterString.write(value.`password`, buf)
+    }
+}
+
+
+
+data class TcpPeerConnectionSnapshot (
+    var `profile`: TcpPeerProfile
+    ,
+    var `interfaceId`: kotlin.ByteArray?
+    ,
+    var `state`: LocalConnectionState
+    ,
+    var `detail`: kotlin.String?
+    ,
+    var `rxBytes`: kotlin.ULong
+    ,
+    var `txBytes`: kotlin.ULong
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeTcpPeerConnectionSnapshot: FfiConverterRustBuffer<TcpPeerConnectionSnapshot> {
+    override fun read(buf: ByteBuffer): TcpPeerConnectionSnapshot {
+        return TcpPeerConnectionSnapshot(
+            FfiConverterTypeTcpPeerProfile.read(buf),
+            FfiConverterOptionalByteArray.read(buf),
+            FfiConverterTypeLocalConnectionState.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: TcpPeerConnectionSnapshot) = (
+            FfiConverterTypeTcpPeerProfile.allocationSize(value.`profile`) +
+            FfiConverterOptionalByteArray.allocationSize(value.`interfaceId`) +
+            FfiConverterTypeLocalConnectionState.allocationSize(value.`state`) +
+            FfiConverterOptionalString.allocationSize(value.`detail`) +
+            FfiConverterULong.allocationSize(value.`rxBytes`) +
+            FfiConverterULong.allocationSize(value.`txBytes`)
+    )
+
+    override fun write(value: TcpPeerConnectionSnapshot, buf: ByteBuffer) {
+            FfiConverterTypeTcpPeerProfile.write(value.`profile`, buf)
+            FfiConverterOptionalByteArray.write(value.`interfaceId`, buf)
+            FfiConverterTypeLocalConnectionState.write(value.`state`, buf)
+            FfiConverterOptionalString.write(value.`detail`, buf)
+            FfiConverterULong.write(value.`rxBytes`, buf)
+            FfiConverterULong.write(value.`txBytes`, buf)
+    }
+}
+
+
+
+data class TcpPeerProfile (
+    /**
+     * Empty on creation; native assigns a stable opaque identifier before commit.
+     */
+    var `id`: kotlin.String
+    ,
+    var `label`: kotlin.String
+    ,
+    var `host`: kotlin.String
+    ,
+    var `port`: kotlin.UShort
+    ,
+    var `enabled`: kotlin.Boolean
+
+){
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeTcpPeerProfile: FfiConverterRustBuffer<TcpPeerProfile> {
+    override fun read(buf: ByteBuffer): TcpPeerProfile {
+        return TcpPeerProfile(
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterUShort.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: TcpPeerProfile) = (
+            FfiConverterString.allocationSize(value.`id`) +
+            FfiConverterString.allocationSize(value.`label`) +
+            FfiConverterString.allocationSize(value.`host`) +
+            FfiConverterUShort.allocationSize(value.`port`) +
+            FfiConverterBoolean.allocationSize(value.`enabled`)
+    )
+
+    override fun write(value: TcpPeerProfile, buf: ByteBuffer) {
+            FfiConverterString.write(value.`id`, buf)
+            FfiConverterString.write(value.`label`, buf)
+            FfiConverterString.write(value.`host`, buf)
+            FfiConverterUShort.write(value.`port`, buf)
+            FfiConverterBoolean.write(value.`enabled`, buf)
     }
 }
 
@@ -7447,6 +8011,286 @@ public object FfiConverterTypeClearNetworkActivityOutcome : FfiConverterRustBuff
             }
             is ClearNetworkActivityOutcome.Busy -> {
                 buf.putInt(4)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class ConnectionSettingsOutcome {
+
+    data class Ready(
+        val `snapshot`: rs.reticulum.prns.app.bindings.ConnectionSettingsSnapshot) : ConnectionSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Conflict(
+        val `snapshot`: rs.reticulum.prns.app.bindings.ConnectionSettingsSnapshot) : ConnectionSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class Invalid(
+        val `detail`: kotlin.String) : ConnectionSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    data class InvalidSaved(
+        val `detail`: kotlin.String) : ConnectionSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : ConnectionSettingsOutcome()
+
+
+    object OwnerChanged : ConnectionSettingsOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : ConnectionSettingsOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeConnectionSettingsOutcome : FfiConverterRustBuffer<ConnectionSettingsOutcome>{
+    override fun read(buf: ByteBuffer): ConnectionSettingsOutcome {
+        return when(buf.getInt()) {
+            1 -> ConnectionSettingsOutcome.Ready(
+                FfiConverterTypeConnectionSettingsSnapshot.read(buf),
+                )
+            2 -> ConnectionSettingsOutcome.Conflict(
+                FfiConverterTypeConnectionSettingsSnapshot.read(buf),
+                )
+            3 -> ConnectionSettingsOutcome.Invalid(
+                FfiConverterString.read(buf),
+                )
+            4 -> ConnectionSettingsOutcome.InvalidSaved(
+                FfiConverterString.read(buf),
+                )
+            5 -> ConnectionSettingsOutcome.Busy
+            6 -> ConnectionSettingsOutcome.OwnerChanged
+            7 -> ConnectionSettingsOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: ConnectionSettingsOutcome) = when(value) {
+        is ConnectionSettingsOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeConnectionSettingsSnapshot.allocationSize(value.`snapshot`)
+            )
+        }
+        is ConnectionSettingsOutcome.Conflict -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeConnectionSettingsSnapshot.allocationSize(value.`snapshot`)
+            )
+        }
+        is ConnectionSettingsOutcome.Invalid -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is ConnectionSettingsOutcome.InvalidSaved -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+        is ConnectionSettingsOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ConnectionSettingsOutcome.OwnerChanged -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ConnectionSettingsOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: ConnectionSettingsOutcome, buf: ByteBuffer) {
+        when(value) {
+            is ConnectionSettingsOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeConnectionSettingsSnapshot.write(value.`snapshot`, buf)
+                Unit
+            }
+            is ConnectionSettingsOutcome.Conflict -> {
+                buf.putInt(2)
+                FfiConverterTypeConnectionSettingsSnapshot.write(value.`snapshot`, buf)
+                Unit
+            }
+            is ConnectionSettingsOutcome.Invalid -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is ConnectionSettingsOutcome.InvalidSaved -> {
+                buf.putInt(4)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+            is ConnectionSettingsOutcome.Busy -> {
+                buf.putInt(5)
+                Unit
+            }
+            is ConnectionSettingsOutcome.OwnerChanged -> {
+                buf.putInt(6)
+                Unit
+            }
+            is ConnectionSettingsOutcome.Unavailable -> {
+                buf.putInt(7)
+                FfiConverterString.write(value.`detail`, buf)
+                Unit
+            }
+        }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+sealed class ConnectionSnapshotOutcome {
+
+    data class Ready(
+        val `snapshot`: rs.reticulum.prns.app.bindings.ConnectionSnapshot) : ConnectionSnapshotOutcome()
+
+    {
+
+
+        companion object
+    }
+
+    object Busy : ConnectionSnapshotOutcome()
+
+
+    data class Unavailable(
+        val `detail`: kotlin.String) : ConnectionSnapshotOutcome()
+
+    {
+
+
+        companion object
+    }
+
+
+
+
+
+
+
+
+    companion object
+}
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeConnectionSnapshotOutcome : FfiConverterRustBuffer<ConnectionSnapshotOutcome>{
+    override fun read(buf: ByteBuffer): ConnectionSnapshotOutcome {
+        return when(buf.getInt()) {
+            1 -> ConnectionSnapshotOutcome.Ready(
+                FfiConverterTypeConnectionSnapshot.read(buf),
+                )
+            2 -> ConnectionSnapshotOutcome.Busy
+            3 -> ConnectionSnapshotOutcome.Unavailable(
+                FfiConverterString.read(buf),
+                )
+            else -> throw RuntimeException("invalid enum value, something is very wrong!!")
+        }
+    }
+
+    override fun allocationSize(value: ConnectionSnapshotOutcome) = when(value) {
+        is ConnectionSnapshotOutcome.Ready -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterTypeConnectionSnapshot.allocationSize(value.`snapshot`)
+            )
+        }
+        is ConnectionSnapshotOutcome.Busy -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+            )
+        }
+        is ConnectionSnapshotOutcome.Unavailable -> {
+            // Add the size for the Int that specifies the variant plus the size needed for all fields
+            (
+                4UL
+                + FfiConverterString.allocationSize(value.`detail`)
+            )
+        }
+    }
+
+    override fun write(value: ConnectionSnapshotOutcome, buf: ByteBuffer) {
+        when(value) {
+            is ConnectionSnapshotOutcome.Ready -> {
+                buf.putInt(1)
+                FfiConverterTypeConnectionSnapshot.write(value.`snapshot`, buf)
+                Unit
+            }
+            is ConnectionSnapshotOutcome.Busy -> {
+                buf.putInt(2)
+                Unit
+            }
+            is ConnectionSnapshotOutcome.Unavailable -> {
+                buf.putInt(3)
+                FfiConverterString.write(value.`detail`, buf)
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
@@ -11462,6 +12306,42 @@ public object FfiConverterTypeInviteToGroupOutcome : FfiConverterRustBuffer<Invi
 
 
 
+
+enum class LanDiscoveryMethod {
+
+    UNAVAILABLE,
+    BONJOUR,
+    STOCK_MULTICAST,
+    COMBINED;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeLanDiscoveryMethod: FfiConverterRustBuffer<LanDiscoveryMethod> {
+    override fun read(buf: ByteBuffer) = try {
+        LanDiscoveryMethod.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: LanDiscoveryMethod) = 4UL
+
+    override fun write(value: LanDiscoveryMethod, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
+    }
+}
+
+
+
+
+
 sealed class LocalBluetoothDiscoveryGroupsOutcome {
 
     data class Ready(
@@ -11896,6 +12776,48 @@ public object FfiConverterTypeLocalBluetoothState : FfiConverterRustBuffer<Local
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+
+
+
+
+
+enum class LocalConnectionState {
+
+    STOPPED,
+    DISABLED,
+    APPLYING,
+    DISCOVERING,
+    CONNECTING,
+    CONNECTED,
+    RECONNECTING,
+    UNAVAILABLE,
+    FAILED,
+    RETIRING;
+
+
+
+
+    companion object
+}
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterTypeLocalConnectionState: FfiConverterRustBuffer<LocalConnectionState> {
+    override fun read(buf: ByteBuffer) = try {
+        LocalConnectionState.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
+
+    override fun allocationSize(value: LocalConnectionState) = 4UL
+
+    override fun write(value: LocalConnectionState, buf: ByteBuffer) {
+        buf.putInt(value.ordinal + 1)
     }
 }
 
@@ -17537,6 +18459,38 @@ public object FfiConverterOptionalTypeDevelopmentNodeOperation: FfiConverterRust
 /**
  * @suppress
  */
+public object FfiConverterOptionalTypeLxmfHealth: FfiConverterRustBuffer<LxmfHealth?> {
+    override fun read(buf: ByteBuffer): LxmfHealth? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterTypeLxmfHealth.read(buf)
+    }
+
+    override fun allocationSize(value: LxmfHealth?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterTypeLxmfHealth.allocationSize(value)
+        }
+    }
+
+    override fun write(value: LxmfHealth?, buf: ByteBuffer) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterTypeLxmfHealth.write(value, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterOptionalTypeNamedIdentityReference: FfiConverterRustBuffer<NamedIdentityReference?> {
     override fun read(buf: ByteBuffer): NamedIdentityReference? {
         if (buf.get().toInt() == 0) {
@@ -18365,6 +19319,34 @@ public object FfiConverterSequenceTypeNamedIdentitySummary: FfiConverterRustBuff
 /**
  * @suppress
  */
+public object FfiConverterSequenceTypePhysicalConnectionSnapshot: FfiConverterRustBuffer<List<PhysicalConnectionSnapshot>> {
+    override fun read(buf: ByteBuffer): List<PhysicalConnectionSnapshot> {
+        val len = buf.getInt()
+        return List<PhysicalConnectionSnapshot>(len) {
+            FfiConverterTypePhysicalConnectionSnapshot.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<PhysicalConnectionSnapshot>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypePhysicalConnectionSnapshot.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<PhysicalConnectionSnapshot>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypePhysicalConnectionSnapshot.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
 public object FfiConverterSequenceTypeRemoteControlPairingCandidate: FfiConverterRustBuffer<List<RemoteControlPairingCandidate>> {
     override fun read(buf: ByteBuffer): List<RemoteControlPairingCandidate> {
         val len = buf.getInt()
@@ -18467,6 +19449,62 @@ public object FfiConverterSequenceTypeRemotePeerEntry: FfiConverterRustBuffer<Li
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeRemotePeerEntry.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeTcpPeerConnectionSnapshot: FfiConverterRustBuffer<List<TcpPeerConnectionSnapshot>> {
+    override fun read(buf: ByteBuffer): List<TcpPeerConnectionSnapshot> {
+        val len = buf.getInt()
+        return List<TcpPeerConnectionSnapshot>(len) {
+            FfiConverterTypeTcpPeerConnectionSnapshot.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<TcpPeerConnectionSnapshot>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeTcpPeerConnectionSnapshot.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<TcpPeerConnectionSnapshot>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeTcpPeerConnectionSnapshot.write(it, buf)
+        }
+    }
+}
+
+
+
+
+/**
+ * @suppress
+ */
+public object FfiConverterSequenceTypeTcpPeerProfile: FfiConverterRustBuffer<List<TcpPeerProfile>> {
+    override fun read(buf: ByteBuffer): List<TcpPeerProfile> {
+        val len = buf.getInt()
+        return List<TcpPeerProfile>(len) {
+            FfiConverterTypeTcpPeerProfile.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<TcpPeerProfile>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeTcpPeerProfile.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(value: List<TcpPeerProfile>, buf: ByteBuffer) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeTcpPeerProfile.write(it, buf)
         }
     }
 }
@@ -19169,6 +20207,18 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
 
 
         /**
+         * Native platform callback only; wakes existing discovery without changing saved intent.
+         */ fun `notifyConnectionNetworkChanged`()
+        =
+    uniffiRustCall() { _status ->
+    UniffiLib.uniffi_prns_app_fn_func_notify_connection_network_changed(
+
+        _status)
+}
+
+
+
+        /**
          * Commit immutable UI recovery input before submitting a group operation.
          */
     @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
@@ -19237,6 +20287,34 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeLocalBluetoothSettingsOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `readConnectionSettings`() : ConnectionSettingsOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_read_connection_settings(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeConnectionSettingsOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `readConnectionSnapshot`() : ConnectionSnapshotOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_read_connection_snapshot(),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeConnectionSnapshotOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -19313,6 +20391,20 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeRespondGroupInvitationOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `retryConnection`(`input`: RetryConnectionInput) : ConnectionSnapshotOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_retry_connection(FfiConverterTypeRetryConnectionInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeConnectionSnapshotOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )
@@ -19500,6 +20592,23 @@ public typealias FfiConverterTypeSnapshotBox = FfiConverterTypeDevelopmentNodeSn
         { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
         // lift function
         { FfiConverterTypeRemoteWifiCommandOutcome.lift(it) },
+        // Error FFI converter
+        UniffiNullRustCallStatusErrorHandler,
+    )
+    }
+
+        /**
+         * Persist installation intent first; the exact native owner reconciles it independently of this waiter.
+         */
+    @Suppress("ASSIGNED_BUT_NEVER_ACCESSED_VARIABLE")
+     suspend fun `updateConnectionSettings`(`input`: ConnectionSettingsUpdateInput) : ConnectionSettingsOutcome {
+        return uniffiRustCallAsync(
+        UniffiLib.uniffi_prns_app_fn_func_update_connection_settings(FfiConverterTypeConnectionSettingsUpdateInput.lower(`input`),),
+        { future, callback, continuation -> UniffiLib.ffi_prns_app_rust_future_poll_rust_buffer(future, callback, continuation) },
+        { future, continuation -> UniffiLib.ffi_prns_app_rust_future_complete_rust_buffer(future, continuation) },
+        { future -> UniffiLib.ffi_prns_app_rust_future_free_rust_buffer(future) },
+        // lift function
+        { FfiConverterTypeConnectionSettingsOutcome.lift(it) },
         // Error FFI converter
         UniffiNullRustCallStatusErrorHandler,
     )

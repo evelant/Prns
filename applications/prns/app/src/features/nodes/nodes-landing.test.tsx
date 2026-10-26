@@ -132,7 +132,7 @@ test("puts this phone, its connections and controls before paired nodes", () => 
   expect(headings.slice(0, 2)).toEqual(["Nodes", "This phone"]);
   expect(headings.indexOf("Bluetooth access")).toBeLessThan(headings.indexOf("Paired nodes"));
   expect(headings.indexOf("Node controls")).toBeLessThan(headings.indexOf("Paired nodes"));
-  expect(view.getByRole("link", { name: "Connections" })).toBeTruthy();
+  expect(view.getByRole("link", { name: "Interfaces" })).toBeTruthy();
   expect(view.getByRole("link", { name: "Network" })).toBeTruthy();
   expect(view.UNSAFE_getAllByType(Link).map((link) => link.props.href)).toContain(
     "/more/interfaces",
@@ -187,7 +187,7 @@ test("keeps stopped nodes unavailable rather than describing them as an empty pa
   expect(headings.indexOf("This device's node is stopped")).toBeLessThan(
     headings.indexOf("Paired nodes"),
   );
-  expect(view.getByRole("link", { name: "Connections" })).toBeTruthy();
+  expect(view.getByRole("link", { name: "Interfaces" })).toBeTruthy();
   fireEvent.press(view.getByRole("button", { name: "Start node" }));
   expect(mockRuntime.startNode).toHaveBeenCalledTimes(1);
 });
@@ -240,7 +240,7 @@ test("retains startup diagnostics and recovery when no snapshot is available", (
   expect(view.getByText("This device's node failed to start")).toBeTruthy();
   expect(view.getByRole("button", { name: "Start node" })).toBeEnabled();
   expect(view.getByRole("link", { name: "View diagnostics" })).toBeTruthy();
-  expect(view.getByRole("link", { name: "Connections" })).toBeTruthy();
+  expect(view.getByRole("link", { name: "Interfaces" })).toBeTruthy();
   expect(view.getByRole("link", { name: "Pair a node" })).toBeTruthy();
   expect(view.queryByRole("link", { name: "Remote access" })).toBeNull();
   expect(view.queryByRole("button", { name: "Refresh now" })).toBeNull();

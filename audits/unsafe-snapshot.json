@@ -24236,7 +24236,8 @@
           "weave",
           "websocket",
           "websocket-server",
-          "wifi-auto"
+          "wifi-auto",
+          "wifi-auto-apple"
         ],
         "sdk-native-linux": [
           "alloc",
@@ -26069,6 +26070,7 @@
           "default"
         ],
         "prns-app-ios": [
+          "apple-platform",
           "default"
         ],
         "sdk-native-linux": [
@@ -26930,7 +26932,8 @@
           "weave",
           "websocket",
           "websocket-server",
-          "wifi-auto"
+          "wifi-auto",
+          "wifi-auto-apple"
         ],
         "sdk-native-linux": [
           "ax25",

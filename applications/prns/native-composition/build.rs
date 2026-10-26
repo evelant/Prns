@@ -4,6 +4,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     const CONTRACT_SOURCES: &[&str] = &[
         "src/contract.rs",
         "src/contract/bluetooth_discovery.rs",
+        "src/contract/connections.rs",
         "src/contract/contact_cards.rs",
         "src/contract/remote_management.rs",
         "src/contract/remote_wifi.rs",

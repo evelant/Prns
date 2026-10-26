@@ -25,6 +25,7 @@ mod direct;
 mod groups;
 mod jobs;
 mod receipts;
+mod refresh;
 
 pub const MAX_IDENTITIES: usize = 8;
 const OPERATIONS: usize = 64;
@@ -175,6 +176,19 @@ impl NamedIdentityClient {
             + Send
             + 'static,
     ) -> Result<T, String> {
+        self.call_with_owner(&global()?, class, action).await
+    }
+    async fn call_with_owner<T: Send + 'static>(
+        &self,
+        owner: &Arc<NamedRuntime>,
+        class: core::AdmissionClass,
+        action: impl for<'a> FnOnce(
+                &'a mut MessagingIdentity,
+            )
+                -> Pin<Box<dyn Future<Output = Result<T, String>> + Send + 'a>>
+            + Send
+            + 'static,
+    ) -> Result<T, String> {
         let (reply, receive) = oneshot::channel();
         let work: Work = Box::new(move |services| {
             Box::pin(async move {
@@ -185,7 +199,7 @@ impl NamedIdentityClient {
                 let _ = reply.send(result);
             })
         });
-        global()?
+        owner
             .commands
             .try_send(Request::Service {
                 identity: self.identity.clone(),

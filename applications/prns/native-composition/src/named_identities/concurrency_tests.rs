@@ -86,6 +86,163 @@ fn unread(entry: &NamedIdentityActivity) -> u32 {
         _ => panic!("unavailable"),
     }
 }
+
+#[tokio::test(flavor = "multi_thread", worker_threads = 2)]
+async fn named_change_client_keeps_owner_after_selection_and_does_not_block_pause() {
+    let root = tempfile::tempdir().unwrap();
+    let events = MessagingEvents::new(MAX_IDENTITIES).unwrap();
+    let host = host(&events).await;
+    let owner = NamedRuntime::open(root.path(), host.client(), events)
+        .await
+        .unwrap();
+    let first = catalog(&owner).await.identities[0].reference.clone();
+    let first_client = NamedIdentityClient {
+        identity: first.clone(),
+    };
+    let initial = first_client
+        .wait_lxmf_change_with_owner(owner.clone(), None)
+        .await
+        .unwrap();
+    let first_service = first_client
+        .call_with_owner(&owner, core::AdmissionClass::History, |services| {
+            Box::pin(async move { services.direct().map_err(detail) })
+        })
+        .await
+        .unwrap();
+    let created = owner
+        .catalog_request(|reply| {
+            Request::Create(
+                CreateNamedIdentityInput {
+                    request_id: [152; 32],
+                    label: "Second".into(),
+                    published_name: None,
+                },
+                reply,
+            )
+        })
+        .await;
+    let NamedIdentityCatalogOutcome::Ready { catalog: created } = created else {
+        panic!("create")
+    };
+    let second = created.identities[1].reference.clone();
+    let second_client = NamedIdentityClient {
+        identity: second.clone(),
+    };
+    let second_before = second_client
+        .wait_lxmf_change_with_owner(owner.clone(), None)
+        .await
+        .unwrap();
+    let mut waiting = Box::pin(
+        first_client.wait_lxmf_change_with_owner(owner.clone(), Some(initial.projection_revision)),
+    );
+    assert!(
+        tokio::time::timeout(Duration::from_millis(20), &mut waiting)
+            .await
+            .is_err()
+    );
+    let selected = owner
+        .catalog_request(|reply| {
+            Request::Change(
+                ChangeNamedIdentityInput {
+                    identity: second,
+                    change: NamedIdentityChange::Select,
+                },
+                reply,
+            )
+        })
+        .await;
+    assert!(
+        matches!(selected, NamedIdentityCatalogOutcome::Ready { .. }),
+        "an idle change wait must release its admitted job"
+    );
+    let remote = prns_lxmf::direct::LocalLxmfIdentity::from_secret_bytes(
+        &prns_core::identity::vault::IdentitySecretKey::new([96; 64]),
+    )
+    .unwrap();
+    let mut wire = [0; prns_lxmf::wire::MAX_BASIC_LXMF_WIRE_BYTES];
+    let prepared = prns_lxmf::wire::compose_basic_direct_lxmf(
+        first_service.local_destination(),
+        remote.destination(),
+        1_700_000_000_000,
+        b"",
+        b"immutable owner",
+        None,
+        &remote,
+        &mut wire,
+    )
+    .unwrap();
+    assert_eq!(
+        first_service
+            .callbacks()
+            .on_host_link_delivery(&prns_host::LinkDelivery {
+                link_id: prns_host::LinkId::new([13; 16]),
+                local_destination: Some(prns_host::DestinationHash::new(
+                    first_service.local_destination()
+                )),
+                arrived_at_millis: 1_700_000_000_005,
+                source_interface: prns_host::InterfaceId::new([14; 8]),
+                plaintext: wire[..usize::from(prepared.wire_len())].to_vec(),
+            }),
+        prns_lxmf::direct::CallbackOutcome::Enqueued
+    );
+    let received = tokio::time::timeout(Duration::from_secs(2), waiting)
+        .await
+        .unwrap()
+        .unwrap();
+    assert_eq!(received.mailbox_revision, 1);
+    assert_eq!(
+        second_client
+            .wait_lxmf_change_with_owner(owner.clone(), None)
+            .await
+            .unwrap(),
+        second_before,
+        "changing UI selection must not retarget a captured client's stream"
+    );
+    let mut invalid = first.clone();
+    invalid.public_hash = [0; 16];
+    assert!(NamedIdentityClient { identity: invalid }
+        .wait_lxmf_change_with_owner(owner.clone(), None)
+        .await
+        .is_none());
+
+    let mut retiring = Box::pin(
+        first_client.wait_lxmf_change_with_owner(owner.clone(), Some(received.projection_revision)),
+    );
+    assert!(
+        tokio::time::timeout(Duration::from_millis(20), &mut retiring)
+            .await
+            .is_err()
+    );
+    let paused = tokio::time::timeout(
+        Duration::from_secs(2),
+        owner.catalog_request(|reply| {
+            Request::Change(
+                ChangeNamedIdentityInput {
+                    identity: first,
+                    change: NamedIdentityChange::Pause,
+                },
+                reply,
+            )
+        }),
+    )
+    .await
+    .unwrap();
+    assert!(
+        matches!(paused, NamedIdentityCatalogOutcome::Ready { .. }),
+        "pause must not wait for the foreign change waiter"
+    );
+    let terminal = tokio::time::timeout(Duration::from_secs(2), retiring)
+        .await
+        .unwrap();
+    assert!(terminal.is_none_or(|health| health.state == LxmfHealthState::Stopped));
+    assert!(first_client
+        .wait_lxmf_change_with_owner(owner.clone(), None)
+        .await
+        .is_none());
+    owner.stop().await.unwrap();
+    host.stop().await.unwrap();
+}
+
 #[tokio::test(flavor = "multi_thread", worker_threads = 2)]
 async fn named_activity_selection_paused_seen_and_restart_are_scoped() {
     let root = tempfile::tempdir().unwrap();

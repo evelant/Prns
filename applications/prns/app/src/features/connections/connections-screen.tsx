@@ -20,11 +20,20 @@ import {
   Screen,
   ScreenHeading,
 } from "@/ui/primitives";
+import { SectionPanel } from "@/ui/section-panel";
+import { SectionTabs } from "@/ui/section-tabs";
 import { bluetoothStatus } from "./bluetooth-status";
 import { DiscoveryGroupsSettings } from "./discovery-groups-settings";
+import { IpConnections } from "./ip-connections";
+import { IpPhysicalConnections } from "./ip-physical-connections";
 
-export function ConnectionsScreen() {
+export function ConnectionsScreen({
+  initialSection = "bluetooth",
+}: {
+  readonly initialSection?: "bluetooth" | "ip";
+}) {
   const runtime = useDevelopmentRuntime();
+  const [section, setSection] = useState(initialSection);
   const [pending, setPending] = useState(false);
   const [failure, setFailure] = useState<string | null>(null);
   const bluetooth = runtime.snapshot?.bluetooth;
@@ -70,21 +79,28 @@ export function ConnectionsScreen() {
     <Screen>
       <ScreenHeading
         trailing={
-          <InfoDisclosure label="About connections">
-            <BodyText>Connect to nearby phones and nodes using Bluetooth.</BodyText>
+          <InfoDisclosure label="About interfaces">
+            <BodyText>
+              Connect using Bluetooth, local network discovery or saved TCP peers.
+            </BodyText>
             <BodyText>
               Turning connections off keeps your identities, contacts and messages saved.
               {runtime.snapshot?.runtime === DevelopmentNodeRuntime.Running
                 ? " Your node keeps running."
                 : ""}
             </BodyText>
-            <BodyText>Both phones need matching discovery groups to find each other.</BodyText>
+            <BodyText>
+              Bluetooth peers need matching Bluetooth discovery groups. Connected peers do not
+              confirm that a message was delivered.
+            </BodyText>
           </InfoDisclosure>
         }
       >
-        Connections
+        Interfaces
       </ScreenHeading>
-      <NavigationLink href="/setup">Connection setup</NavigationLink>
+      <BodyText muted>
+        Choose how this phone connects. Settings apply to all your identities.
+      </BodyText>
       <Card>
         <CardHeader title="This phone">
           <Badge>
@@ -92,20 +108,30 @@ export function ConnectionsScreen() {
           </Badge>
         </CardHeader>
         {runtime.canStartNode ? <Button onPress={runtime.startNode}>Start node</Button> : null}
-        <Disclosure label="Node details">
+        <Disclosure label="Setup and diagnostics">
+          <NavigationLink href="/setup">Connection setup</NavigationLink>
           <ActionRow>
             <NavigationLink href="/nodes/local">Node diagnostics</NavigationLink>
             <NavigationLink href="/more/activity">Network details</NavigationLink>
           </ActionRow>
         </Disclosure>
       </Card>
-      <Card>
-        <CardHeader title="Bluetooth connections">
-          <Badge tone={status.warning ? "warning" : "neutral"}>{status.label}</Badge>
-        </CardHeader>
-        <BodyText>{status.description}</BodyText>
-        {runtime.availability.type === "available" ? (
-          <>
+      <SectionTabs
+        label="Interface types"
+        options={[
+          { value: "bluetooth", label: "Bluetooth" },
+          { value: "ip", label: "LAN & TCP" },
+        ]}
+        value={section}
+        onChange={setSection}
+      />
+      <SectionPanel active={section === "bluetooth"}>
+        <Card>
+          <CardHeader title="Bluetooth connections">
+            <Badge tone={status.warning ? "warning" : "neutral"}>{status.label}</Badge>
+          </CardHeader>
+          <BodyText>{status.description}</BodyText>
+          {runtime.availability.type === "available" ? (
             <ActionRow>
               <Button disabled={disabled} onPress={() => void changeBluetooth()} tone="secondary">
                 {pending
@@ -118,43 +144,50 @@ export function ConnectionsScreen() {
                 Refresh connections
               </Button>
             </ActionRow>
-          </>
-        ) : null}
-        {failure === null ? null : <BodyText>{failure}</BodyText>}
-        {status.showConnectedPeers
-          ? bluetooth?.peers
-              .filter((peer) => peer.connected)
-              .map((peer, index) => (
-                <CardSection
-                  key={formatBytes(peer.interfaceId)}
-                  title={peer.name ?? "Nearby device"}
-                >
-                  <Badge>Connected</Badge>
-                  <Disclosure
-                    label="Connection details"
-                    accessibilityLabel={`Connection details for ${peer.name ?? "nearby device"} ${index + 1}`}
+          ) : null}
+          {failure === null ? null : <BodyText>{failure}</BodyText>}
+          {status.showConnectedPeers
+            ? bluetooth?.peers
+                .filter((peer) => peer.connected)
+                .map((peer, index) => (
+                  <CardSection
+                    key={formatBytes(peer.interfaceId)}
+                    title={peer.name ?? "Nearby device"}
                   >
-                    <KeyValue label="Connection ID" value={formatBytes(peer.interfaceId)} />
-                    {peer.details === undefined ? null : <BodyText>{peer.details}</BodyText>}
-                    {peer.rssiDbm === undefined ? null : (
-                      <KeyValue label="Signal" value={`${peer.rssiDbm} dBm`} />
-                    )}
-                    <KeyValue
-                      label="Received on this connection"
-                      value={`${peer.rxBytes.toString()} bytes`}
-                    />
-                    <KeyValue
-                      label="Sent on this connection"
-                      value={`${peer.txBytes.toString()} bytes`}
-                    />
-                  </Disclosure>
-                </CardSection>
-              ))
-          : null}
-      </Card>
-      <DiscoveryGroupsSettings />
-      <AndroidBluetoothCard />
-      <IosBluetoothCard />
+                    <Badge>Connected</Badge>
+                    <Disclosure
+                      label="Connection details"
+                      accessibilityLabel={`Connection details for ${peer.name ?? "nearby device"} ${index + 1}`}
+                    >
+                      <KeyValue label="Connection ID" value={formatBytes(peer.interfaceId)} />
+                      {peer.details === undefined ? null : <BodyText>{peer.details}</BodyText>}
+                      {peer.rssiDbm === undefined ? null : (
+                        <KeyValue label="Signal" value={`${peer.rssiDbm} dBm`} />
+                      )}
+                      <KeyValue
+                        label="Received on this connection"
+                        value={`${peer.rxBytes.toString()} bytes`}
+                      />
+                      <KeyValue
+                        label="Sent on this connection"
+                        value={`${peer.txBytes.toString()} bytes`}
+                      />
+                    </Disclosure>
+                  </CardSection>
+                ))
+            : null}
+        </Card>
+        <AndroidBluetoothCard />
+        <IosBluetoothCard />
+        <DiscoveryGroupsSettings />
+      </SectionPanel>
+      <SectionPanel active={section === "ip"}>
+        <IpConnections />
+        <Card>
+          <CardHeader title="Live LAN and TCP connections" />
+          <IpPhysicalConnections snapshot={runtime.connectionSnapshot} />
+        </Card>
+      </SectionPanel>
       <NavigationLink href="/nodes" direction="back">
         Back to Nodes
       </NavigationLink>

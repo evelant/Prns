@@ -72,8 +72,8 @@ use tokio::sync::{mpsc, oneshot, watch, Semaphore};
 
 pub mod embedding;
 pub use embedding::{
-    ApplicationEventDispatch, AuthenticatedAnnounce, NativeEmbedding, NativeLinkDiagnostics,
-    NativePreparedAttachment, NativeServiceClient,
+    ApplicationEventDispatch, AuthenticatedAnnounce, NativeAttachmentCleanup, NativeAutoLanFactory,
+    NativeEmbedding, NativeLinkDiagnostics, NativePreparedAttachment, NativeServiceClient,
 };
 pub mod owner;
 pub mod platform;
@@ -91,7 +91,8 @@ pub use session::{
 #[cfg(unix)]
 mod supplied_pipe;
 pub use prns_host_snapshot::{
-    assemble_host_snapshot, HostInterfaceAttachment, HostSnapshotAssemblyError,
+    assemble_host_snapshot, detailed_interface_topology, HostConnectionRole,
+    HostConnectionSnapshot, HostInterfaceAttachment, HostSnapshotAssemblyError,
 };
 
 /// One native inspection capture, before logical fleet folding discards member rows.
@@ -173,6 +174,7 @@ pub enum NativeStopError {
     WorkerPanicked,
     NodeFailed(personal_rns::runtime::NodeRunError),
     EventBackpressure,
+    InterfaceCleanupFailed,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -1393,6 +1395,7 @@ async fn run(
         accepted_announces,
         link_diagnostics,
         prepare_interfaces,
+        auto_lan_factory,
         application_events,
     } = embedding;
     let resolved = match resolve_config(config) {
@@ -1595,6 +1598,15 @@ async fn run(
                 NativePreparedAttachment::Supervisor { attachment, kind } => {
                     Attachment::Supervisor { attachment, kind }
                 }
+                NativePreparedAttachment::ManagedSupervisor {
+                    attachment,
+                    kind,
+                    cleanup,
+                } => Attachment::ManagedSupervisor {
+                    attachment,
+                    kind,
+                    cleanup,
+                },
             };
             if let Some(interface) = attachment.interfaces().first().copied() {
                 let key = host_interface(interface);
@@ -1622,14 +1634,16 @@ async fn run(
     {
         return Ok(());
     }
-    let commands = tokio::spawn(command_loop(
+    let (command_stop, command_stopped) = watch::channel(false);
+    let mut commands = tokio::spawn(command_loop(
         handle.clone(),
         CommandLoopInputs {
             commands: command_rx,
             controls: control_rx,
             snapshots: snapshot_rx,
             plan_context,
-            shutdown: shutdown_rx.clone(),
+            auto_lan_factory,
+            shutdown: command_stopped,
             persistence: persistence_snapshot,
             started_at: Instant::now(),
             prepared_attachments,
@@ -1644,26 +1658,37 @@ async fn run(
     ));
     let uploads = tokio::spawn(upload_loop(upload_rx, handle, shutdown_rx.clone()));
     let overloaded = AtomicBool::new(false);
+    let mut commands_joined = false;
+    let mut interface_cleanup_failed = false;
     let exit = node
         .run_until(async {
             tokio::select! {
                 () = shutdown_requested(shutdown_rx) => {},
                 () = backpressure.notified() => { overloaded.store(true, Ordering::Release); },
             }
+            let _ = command_stop.send(true);
+            // Keep driving the manifold while accepted interface retirements
+            // and platform-provider shutdown acknowledgements complete.
+            interface_cleanup_failed = !matches!((&mut commands).await, Ok(Ok(())));
+            commands_joined = true;
         })
         .await
         .map_err(NativeStopError::NodeFailed)
         .and_then(|()| {
             if overloaded.load(Ordering::Acquire) {
                 Err(NativeStopError::EventBackpressure)
+            } else if interface_cleanup_failed {
+                Err(NativeStopError::InterfaceCleanupFailed)
             } else {
                 Ok(())
             }
         });
     let _ = preview_stop.send(());
     let _ = previews.await;
-    commands.abort();
-    let _ = commands.await;
+    if !commands_joined {
+        commands.abort();
+        let _ = commands.await;
+    }
     uploads.abort();
     let _ = uploads.await;
     match exit {
@@ -1703,6 +1728,11 @@ enum Attachment {
         attachment: AttachedSupervisor,
         kind: InterfaceKind,
     },
+    ManagedSupervisor {
+        attachment: AttachedSupervisor,
+        kind: InterfaceKind,
+        cleanup: NativeAttachmentCleanup,
+    },
     Plan {
         attachments: PlanAttachments,
         interfaces: Vec<personal_rns::interfaces::InterfaceId>,
@@ -1718,6 +1748,7 @@ impl Attachment {
             Self::Registered { kind, .. }
             | Self::Interface { kind, .. }
             | Self::Supervisor { kind, .. }
+            | Self::ManagedSupervisor { kind, .. }
             | Self::Plan { kind, .. } => *kind,
             #[cfg(unix)]
             Self::SuppliedPipe { .. } => InterfaceKind::Pipe,
@@ -1733,33 +1764,56 @@ impl Attachment {
             #[cfg(unix)]
             Self::SuppliedPipe { attachment, .. } => vec![attachment.id()],
             Self::Supervisor { attachment, .. } => vec![attachment.id()],
+            Self::ManagedSupervisor { attachment, .. } => vec![attachment.id()],
             Self::Plan { interfaces, .. } => interfaces.clone(),
         }
     }
 
-    async fn teardown(self, handle: &PrnsNodeHandle) {
+    async fn teardown(&mut self, handle: &PrnsNodeHandle) -> Result<(), CommandFailure> {
+        let retired = |error: personal_rns::InterfaceDetachError| CommandFailure::BackendFailed {
+            detail: error.to_string(),
+        };
         match self {
             #[cfg(all(target_os = "android", feature = "android-platform"))]
-            Self::AndroidBluetooth {
-                attachment,
-                session,
-            } => {
-                attachment.teardown();
-                drop(session);
-            }
-            Self::Registered { interface, .. } => handle.remove_interface(interface),
-            Self::Interface { attachment, .. } => attachment.teardown(),
+            Self::AndroidBluetooth { attachment, .. } => handle
+                .remove_interface_and_wait(attachment.id())
+                .await
+                .map_err(retired)?,
+            Self::Registered { interface, .. } => handle
+                .remove_interface_and_wait(*interface)
+                .await
+                .map_err(retired)?,
+            Self::Interface { attachment, .. } => handle
+                .remove_interface_and_wait(attachment.id())
+                .await
+                .map_err(retired)?,
             #[cfg(unix)]
-            Self::SuppliedPipe {
+            Self::SuppliedPipe { attachment, .. } => handle
+                .remove_interface_and_wait(attachment.id())
+                .await
+                .map_err(retired)?,
+            Self::Supervisor { attachment, .. } => handle
+                .remove_interface_and_wait(attachment.id())
+                .await
+                .map_err(retired)?,
+            Self::ManagedSupervisor {
                 attachment,
-                lifetime,
+                cleanup,
+                ..
             } => {
-                drop(lifetime);
-                attachment.teardown();
+                handle
+                    .remove_interface_and_wait(attachment.id())
+                    .await
+                    .map_err(retired)?;
+                cleanup()
+                    .await
+                    .map_err(|detail| CommandFailure::BackendFailed { detail })?;
             }
-            Self::Supervisor { attachment, .. } => attachment.teardown(),
-            Self::Plan { attachments, .. } => attachments.detach(handle).await,
+            Self::Plan { attachments, .. } => {
+                attachments.detach_and_wait(handle).await.map_err(retired)?
+            }
         }
+        Ok(())
     }
 }
 
@@ -1768,18 +1822,23 @@ struct CommandLoopInputs {
     controls: mpsc::UnboundedReceiver<NativeControl>,
     snapshots: mpsc::Receiver<SnapshotJob>,
     plan_context: PlanRuntimeContext,
+    auto_lan_factory: Option<NativeAutoLanFactory>,
     shutdown: watch::Receiver<bool>,
     persistence: Arc<Mutex<PersistenceSnapshot>>,
     started_at: Instant,
     prepared_attachments: BTreeMap<InterfaceId, Attachment>,
 }
 
-async fn command_loop(handle: PrnsNodeHandle, inputs: CommandLoopInputs) {
+async fn command_loop(
+    handle: PrnsNodeHandle,
+    inputs: CommandLoopInputs,
+) -> Result<(), CommandFailure> {
     let CommandLoopInputs {
         mut commands,
         mut controls,
         mut snapshots,
         plan_context,
+        auto_lan_factory,
         mut shutdown,
         persistence,
         started_at,
@@ -1806,7 +1865,14 @@ async fn command_loop(handle: PrnsNodeHandle, inputs: CommandLoopInputs) {
             HostWork::Command(mut job) => {
                 let result = match &mut job.command {
                     NativeCommand::Contract(command) => {
-                        execute_command(&handle, &plan_context, &mut attachments, command).await
+                        execute_command(
+                            &handle,
+                            &plan_context,
+                            auto_lan_factory.as_ref(),
+                            &mut attachments,
+                            command,
+                        )
+                        .await
                     }
                     #[cfg(unix)]
                     NativeCommand::AttachSuppliedPipe(attach) => {
@@ -1832,11 +1898,15 @@ async fn command_loop(handle: PrnsNodeHandle, inputs: CommandLoopInputs) {
             }
         }
     }
-    for (_, attachment) in attachments {
-        attachment.teardown(&handle).await;
+    let mut cleanup_failure = None;
+    for (_, mut attachment) in attachments {
+        if let Err(error) = attachment.teardown(&handle).await {
+            cleanup_failure.get_or_insert(error);
+        }
     }
     tokio::task::yield_now().await;
     tokio::task::yield_now().await;
+    cleanup_failure.map_or(Ok(()), Err)
 }
 
 enum HostWork {
@@ -2480,11 +2550,36 @@ fn plan_failure(config: &InterfaceConfig, failure: PlanFailure) -> CommandFailur
 async fn attach_typed_interface(
     handle: &PrnsNodeHandle,
     context: &PlanRuntimeContext,
+    auto_lan_factory: Option<&NativeAutoLanFactory>,
     config: &InterfaceConfig,
     routing: Option<InterfaceRoutingPolicy>,
 ) -> Result<Attachment, CommandFailure> {
     if !native_interface_kinds().contains(&config.kind()) {
         return Err(CommandFailure::UnsupportedByBackend);
+    }
+    if matches!(config, InterfaceConfig::AutoLan { .. }) {
+        if let Some(factory) = auto_lan_factory {
+            return match factory(handle, config, routing)? {
+                NativePreparedAttachment::Registered { interface, kind } => {
+                    Ok(Attachment::Registered { interface, kind })
+                }
+                NativePreparedAttachment::Interface { attachment, kind } => {
+                    Ok(Attachment::Interface { attachment, kind })
+                }
+                NativePreparedAttachment::Supervisor { attachment, kind } => {
+                    Ok(Attachment::Supervisor { attachment, kind })
+                }
+                NativePreparedAttachment::ManagedSupervisor {
+                    attachment,
+                    kind,
+                    cleanup,
+                } => Ok(Attachment::ManagedSupervisor {
+                    attachment,
+                    kind,
+                    cleanup,
+                }),
+            };
+        }
     }
     #[cfg(all(target_os = "android", feature = "android-platform"))]
     if matches!(config, InterfaceConfig::AutomaticBluetoothLe) {
@@ -2563,6 +2658,7 @@ async fn execute_control(
 async fn execute_command(
     handle: &PrnsNodeHandle,
     plan_context: &PlanRuntimeContext,
+    auto_lan_factory: Option<&NativeAutoLanFactory>,
     attachments: &mut BTreeMap<InterfaceId, Attachment>,
     command: &HostCommand,
 ) -> Result<CommandOutcome, CommandFailure> {
@@ -2675,7 +2771,9 @@ async fn execute_command(
                 .map_err(|error| CommandFailure::InvalidConfiguration {
                     detail: format!("{error:?}"),
                 })?;
-            let attachment = attach_typed_interface(handle, plan_context, config, *routing).await?;
+            let attachment =
+                attach_typed_interface(handle, plan_context, auto_lan_factory, config, *routing)
+                    .await?;
             let interface = attachment
                 .interfaces()
                 .first()
@@ -2688,10 +2786,11 @@ async fn execute_command(
             Ok(CommandOutcome::InterfaceAttached { interface })
         }
         HostCommand::DetachInterface { interface } => {
-            let Some(attachment) = attachments.remove(interface) else {
+            let Some(attachment) = attachments.get_mut(interface) else {
                 return Err(CommandFailure::UnknownInterface);
             };
-            attachment.teardown(handle).await;
+            attachment.teardown(handle).await?;
+            attachments.remove(interface);
             Ok(CommandOutcome::InterfaceDetached {
                 interface: *interface,
             })
