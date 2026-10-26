@@ -50,6 +50,7 @@ cargo_lock_workspaces = [
     "personal-hopspot/mobile/ios/rust",
     "prns-config",
     "prns-ffi",
+    "prns-groups",
     "prns-host/abi/c",
     "prns-host/bindings/uniffi",
     "prns-host/bindings/uniffi/image",
@@ -121,6 +122,10 @@ cargo_manifests = [
     "prns-core/Cargo.toml",
     "prns-ffi/Cargo.toml",
     "prns-flash-manifest/Cargo.toml",
+    "prns-groups/Cargo.toml",
+    "prns-groups/core/Cargo.toml",
+    "prns-groups/store/Cargo.toml",
+    "prns-groups/store/native/Cargo.toml",
     "prns-host/abi/c/Cargo.toml",
     "prns-host/bindings/uniffi/Cargo.toml",
     "prns-host/bindings/uniffi/image/Cargo.toml",
@@ -164,6 +169,7 @@ format_manifests = [
     "personal-hopspot/mobile/ios/rust/Cargo.toml",
     "prns-config/Cargo.toml",
     "prns-ffi/Cargo.toml",
+    "prns-groups/Cargo.toml",
     "prns-host/abi/c/Cargo.toml",
     "prns-host/bindings/uniffi/Cargo.toml",
     "prns-host/bindings/uniffi/image/Cargo.toml",
@@ -199,6 +205,30 @@ reason = "The complete Nordic board and SoftDevice matrix is compiled for thumbv
 [[registry.asset_exemptions]]
 path = "prns-wasm/smoke/smoke.ts"
 reason = "Interactive browser-and-device smoke page; the automatable TypeScript smokes are registered suites."
+
+[[suite]]
+id = "group-communication-tests"
+domain = "native"
+group = "group-communication"
+tiers = ["pr"]
+platform = "any"
+toolchain = "stable"
+timeout_seconds = 1200
+command = ["cargo", "test", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--features", "prns-groups-store/secure"]
+inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store"]
+artifacts = "validation-artifacts/results/group-communication-tests"
+
+[[suite]]
+id = "group-communication-clippy"
+domain = "native"
+group = "group-communication"
+tiers = ["pr"]
+platform = "any"
+toolchain = "stable"
+timeout_seconds = 1200
+command = ["cargo", "clippy", "--locked", "--manifest-path", "prns-groups/Cargo.toml", "--workspace", "--all-targets", "--features", "prns-groups-store/secure", "--", "-D", "warnings"]
+inputs = ["prns-groups/Cargo.toml", "prns-groups/Cargo.lock", "prns-groups/core", "prns-groups/store"]
+artifacts = "validation-artifacts/results/group-communication-clippy"
 
 [[suite]]
 id = "cargo-locks"
