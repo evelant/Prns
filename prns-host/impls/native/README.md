@@ -34,7 +34,9 @@ one local identity generation. Feed it lifecycle events even after fencing new
 work. The node's `ServiceEndpoint` API stages registration with ingress closed,
 then supports explicit activation and retryable scoped retirement. These are
 trusted native integration primitives, not caller authentication or a substitute
-for catalog admission.
+for catalog admission. See the
+[messaging embedding contract](../../../applications/prns/native-composition/src/identity_services/README.md)
+for a complete composition and the limits of buffer/Link completion evidence.
 
 Each event lane has one active `NativeEventStream`. Await `ready` without
 consuming, then call `try_next` for a bounded synchronous drain. Cancelling

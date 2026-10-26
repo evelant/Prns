@@ -1,5 +1,3 @@
-import { StoragePreparationFailure } from "@/native/storage-preparation-failure";
-import * as Bindings from "@prns-internal/expo";
 import type {
   CancelLxmfMessageOutcome,
   DevelopmentNodeSnapshot,
@@ -8,21 +6,25 @@ import type {
   RetryLxmfMessageOutcome,
   SendDirectTextOutcome,
 } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import type { Href } from "expo-router";
-import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Text } from "react-native";
-
 import { formatContactHash, parseDestinationHash } from "@/features/contacts/format";
 import { lastHeardLabel, useMessagingDirectory } from "@/features/contacts/messaging-directory";
+import { GroupInboxSection } from "@/features/groups/group-inbox-section";
 import {
   type RuntimeCommandResult,
   useDevelopmentRuntime,
 } from "@/native/development-runtime-context";
+import { useIdentityRouter } from "@/native/identity-navigation";
+import { StoragePreparationFailure } from "@/native/storage-preparation-failure";
+import { useVisibleIdentityActivity } from "@/native/use-visible-identity-activity";
+import { InfoDisclosure } from "@/ui/info-disclosure";
 import { NavigationLink } from "@/ui/navigation-link";
 import {
-  Badge,
   ActionRow,
+  Badge,
   BodyText,
   Button,
   Card,
@@ -49,19 +51,38 @@ export function InboxScreen() {
   const development = useDevelopmentRuntime();
   const data = useLxmfData(null);
   const nodeRunning =
+    development.canPublish !== false &&
     development.phase === "ready" &&
     development.snapshot?.runtime === Bindings.DevelopmentNodeRuntime.Running;
 
   return (
     <Screen>
-      <ScreenHeading>Inbox</ScreenHeading>
-      <BodyText muted>Keep prns open for reliable message delivery.</BodyText>
+      <ScreenHeading
+        trailing={
+          <InfoDisclosure label="About your inbox">
+            <BodyText>
+              Keep prns open to send and receive. A device receipt confirms delivery, not that
+              someone read your message.
+            </BodyText>
+          </InfoDisclosure>
+        }
+      >
+        Inbox
+      </ScreenHeading>
       <LxmfHealthCard />
       {development.availability.type !== "available" ? (
         <UnavailableCard platform={development.availability.platform} />
       ) : (
         <>
           {nodeRunning ? null : <MessagingOfflineCard />}
+          {nodeRunning &&
+          (development.snapshot?.bluetooth?.desiredEnabled === false ||
+            ["Unavailable", "RadioOff", "Stopped"].includes(
+              development.snapshot?.bluetooth?.state.tag ?? "",
+            )) ? (
+            <NavigationLink href="/setup">Set up connections</NavigationLink>
+          ) : null}
+          <GroupInboxSection />
           <ActionRow>
             {nodeRunning ? (
               <NavigationLink href="/inbox/compose">New message</NavigationLink>
@@ -78,14 +99,7 @@ export function InboxScreen() {
           ) : null}
           {data.messages.length === 0 ? (
             data.messagesLoaded && data.failure === null && !data.pending ? (
-              <Card>
-                <Badge>No conversations</Badge>
-                <BodyText>
-                  {nodeRunning
-                    ? "Start a new message or discover people in Contacts."
-                    : "No messages are saved on this device."}
-                </BodyText>
-              </Card>
+              <BodyText muted>No conversations</BodyText>
             ) : null
           ) : (
             data.messages.map((latest) => {
@@ -127,7 +141,9 @@ export function InboxScreen() {
           ) : null}
           {nodeRunning ? null : (
             <BodyText muted>
-              Open Nodes to check this device&apos;s connection before writing a new message.
+              {development.canPublish === false
+                ? "Resume this identity to write a new message."
+                : "Open Nodes to check this device’s connection before writing a new message."}
             </BodyText>
           )}
         </>
@@ -137,12 +153,33 @@ export function InboxScreen() {
 }
 
 export function ConversationScreen({ destination }: { readonly destination: Uint8Array }) {
-  return <ConversationJourney key={formatContactHash(destination)} destination={destination} />;
+  return (
+    <ConversationJourney
+      key={`${useDevelopmentRuntime().ownerKey ?? "legacy"}:${formatContactHash(destination)}`}
+      destination={destination}
+    />
+  );
 }
 
 function ConversationJourney({ destination }: { readonly destination: Uint8Array }) {
   const development = useDevelopmentRuntime();
   const data = useLxmfData(destination);
+  const visibleThrough =
+    data.messagesLoaded && data.failure === null
+      ? data.messages
+          .filter((message) => message.direction === Bindings.LxmfDirection.Inbound)
+          .reduce<bigint | undefined>(
+            (latest, message) =>
+              latest === undefined || message.localRecordId > latest
+                ? message.localRecordId
+                : latest,
+            undefined,
+          )
+      : undefined;
+  useVisibleIdentityActivity(
+    Bindings.IdentityActivityScope.Direct.new({ destination }),
+    visibleThrough,
+  );
   const [mutationStatus, setMutationStatus] = useState<string | null>(null);
   const [activeMutationId, setActiveMutationId] = useState<bigint | null>(null);
   const mounted = useRef(false);
@@ -155,6 +192,7 @@ function ConversationJourney({ destination }: { readonly destination: Uint8Array
   const encoded = formatContactHash(destination);
   const peer = data.peers.find((candidate) => formatContactHash(candidate.destination) === encoded);
   const nodeRunning =
+    development.canPublish !== false &&
     development.phase === "ready" &&
     development.snapshot?.runtime === Bindings.DevelopmentNodeRuntime.Running;
 
@@ -189,8 +227,15 @@ function ConversationJourney({ destination }: { readonly destination: Uint8Array
   return (
     <Screen>
       <Badge>Messages</Badge>
-      <ScreenHeading>{peerLabel(destination, data.peers, data.contacts)}</ScreenHeading>
-      <KeyValue label="Destination" value={encoded} />
+      <ScreenHeading
+        trailing={
+          <InfoDisclosure label="Conversation details">
+            <KeyValue label="Destination" value={encoded} />
+          </InfoDisclosure>
+        }
+      >
+        {peerLabel(destination, data.peers, data.contacts)}
+      </ScreenHeading>
       {nodeRunning ? null : <MessagingOfflineCard />}
       {peer?.requiredStampCost === undefined ? null : (
         <Card>
@@ -210,7 +255,9 @@ function ConversationJourney({ destination }: { readonly destination: Uint8Array
         <Composer destination={destination} onSettled={data.refresh} />
       ) : (
         <BodyText muted>
-          Open Nodes to check this device&apos;s connection before writing a new message.
+          {development.canPublish === false
+            ? "Resume this identity to write a new message."
+            : "Open Nodes to check this device’s connection before writing a new message."}
         </BodyText>
       )}
       <Subheading>Messages</Subheading>
@@ -232,6 +279,7 @@ function ConversationJourney({ destination }: { readonly destination: Uint8Array
             message={message}
             pending={activeMutationId === message.localRecordId}
             onRetry={
+              development.canPublish !== false &&
               message.deliveryState.tag === Bindings.LxmfDeliveryState_Tags.Failed
                 ? () => mutate("retry", message.localRecordId)
                 : undefined
@@ -265,13 +313,16 @@ export function ComposeScreen({
   // A reused route is a new recipient intent; old native work may finish, but
   // its departed composer must not navigate or write into the new form.
   return (
-    <ComposeJourney key={initialDestination ?? "choose"} initialDestination={initialDestination} />
+    <ComposeJourney
+      key={`${useDevelopmentRuntime().ownerKey ?? "legacy"}:${initialDestination ?? "choose"}`}
+      initialDestination={initialDestination}
+    />
   );
 }
 
 function ComposeJourney({ initialDestination }: { readonly initialDestination: string | null }) {
   const development = useDevelopmentRuntime();
-  const router = useRouter();
+  const router = useIdentityRouter();
   const directory = useMessagingDirectory();
   const [destinationText, setDestinationText] = useState(initialDestination ?? "");
   const [recipientMode, setRecipientMode] = useState<"saved" | "discovered" | "manual">("saved");
@@ -639,16 +690,14 @@ function Measurement({
   switch (outcome.tag) {
     case Bindings.MeasureLxmfTextOutcome_Tags.Measured:
       return (
-        <BodyText muted>
-          {outcome.inner.wireBytes} bytes used · {outcome.inner.remainingBytes} bytes available
-        </BodyText>
+        <InfoDisclosure label="Message size">
+          <BodyText muted>
+            {outcome.inner.wireBytes} bytes used · {outcome.inner.remainingBytes} bytes available
+          </BodyText>
+        </InfoDisclosure>
       );
     case Bindings.MeasureLxmfTextOutcome_Tags.NeedsResource:
-      return (
-        <BodyText>
-          {outcome.inner.wireBytes} bytes used. This message is too large for direct delivery.
-        </BodyText>
-      );
+      return <BodyText>Message too long. Shorten it before sending.</BodyText>;
     case Bindings.MeasureLxmfTextOutcome_Tags.InvalidMessage:
       return <BodyText>This message cannot be sent.</BodyText>;
     case Bindings.MeasureLxmfTextOutcome_Tags.LocalNodeStopped:
@@ -726,6 +775,17 @@ function mailboxMutationLabel(
 
 function MessagingOfflineCard() {
   const development = useDevelopmentRuntime();
+  if (
+    development.canPublish === false &&
+    development.snapshot?.runtime === Bindings.DevelopmentNodeRuntime.Running
+  )
+    return (
+      <Card>
+        <Badge>Identity paused or unavailable</Badge>
+        <BodyText>Resume this identity to send and receive.</BodyText>
+        <NavigationLink href="/more/identities">Manage identities</NavigationLink>
+      </Card>
+    );
   const accessNeeded =
     development.bluetoothAuthorization?.authorization === "denied" ||
     development.bluetoothAuthorization?.authorization === "restricted";
@@ -738,16 +798,17 @@ function MessagingOfflineCard() {
             ? "Getting ready"
             : "Messaging offline"}
       </Badge>
-      <BodyText>
-        You can still read saved messages, retry failed messages, or cancel queued messages.
-      </BodyText>
-      {accessNeeded ? <NavigationLink href="/nodes">Check Bluetooth access</NavigationLink> : null}
+      <NavigationLink href="/setup">
+        {accessNeeded ? "Allow Bluetooth" : "Set up connections"}
+      </NavigationLink>
     </Card>
   );
 }
 
 function LxmfHealthCard() {
   const development = useDevelopmentRuntime();
+  // This snapshot describes the installation singleton, not a named messaging client.
+  if (development.ownerKey !== undefined) return null;
   const health = development.snapshot?.lxmf;
   if (
     health === undefined &&

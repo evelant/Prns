@@ -21,10 +21,14 @@ mod enabled {
     #[cfg(all(feature = "ios-restoration-probe", target_os = "ios"))]
     impl Log for RestorationLogger {
         fn enabled(&self, metadata: &Metadata<'_>) -> bool {
-            metadata.level() <= Level::Debug && is_bluetooth_target(metadata.target())
+            crate::group_diagnostics::accepts(metadata)
+                || (metadata.level() <= Level::Debug && is_bluetooth_target(metadata.target()))
         }
 
         fn log(&self, record: &Record<'_>) {
+            if crate::group_diagnostics::write_record(record) {
+                return;
+            }
             if !self.enabled(record.metadata()) {
                 return;
             }

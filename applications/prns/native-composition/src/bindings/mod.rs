@@ -23,12 +23,18 @@ uniffi::custom_type!(SnapshotBox, DevelopmentNodeSnapshot, {
 });
 
 type Bytes16 = [u8; 16];
+type Bytes10 = [u8; 10];
 type Bytes32 = [u8; 32];
 
 uniffi::custom_type!(Bytes16, Vec<u8>, {
     remote,
     lower: |value| value.to_vec(),
     try_lift: |value| value.try_into().map_err(|_| uniffi::deps::anyhow::anyhow!("expected 16 bytes")),
+});
+uniffi::custom_type!(Bytes10, Vec<u8>, {
+    remote,
+    lower: |value| value.to_vec(),
+    try_lift: |value| value.try_into().map_err(|_| uniffi::deps::anyhow::anyhow!("expected 10 bytes")),
 });
 uniffi::custom_type!(Bytes32, Vec<u8>, {
     remote,
@@ -64,14 +70,120 @@ pub async fn set_bluetooth_enabled(enabled: bool) -> LocalBluetoothSettingsOutco
     crate::lifecycle::bluetooth_settings(Some(enabled)).await
 }
 
+/// Read saved names and separately confirmed current supervisor configuration.
+#[uniffi::export]
+pub async fn read_bluetooth_discovery_groups() -> LocalBluetoothDiscoveryGroupsOutcome {
+    crate::lifecycle::bluetooth_discovery::settings(None).await
+}
+
+/// Persist first, then await old-peer teardown and replacement. Cancellation only drops the waiter.
+#[uniffi::export]
+pub async fn set_bluetooth_discovery_groups(
+    input: SetBluetoothDiscoveryGroupsInput,
+) -> LocalBluetoothDiscoveryGroupsOutcome {
+    crate::lifecycle::bluetooth_discovery::settings(Some(input)).await
+}
+
 #[uniffi::export]
 pub async fn read_messaging_profile() -> LocalMessagingProfileOutcome {
     crate::lifecycle::profile::messaging_profile(None).await
 }
 
+/// Sign public contact information using the native identity owner, including offline.
+#[uniffi::export]
+pub async fn export_contact_card(input: ExportContactCardInput) -> ContactCardExportOutcome {
+    crate::lifecycle::contact_cards::export(input).await
+}
+
+/// Bounded local validation; never imports a contact, authorizes a peer or contacts the network.
+#[uniffi::export]
+pub fn preview_contact_card(uri: String) -> ContactCardPreviewOutcome {
+    crate::contact_cards::preview(&uri)
+}
+
+/// Call only after explicit confirmation. Native validation is repeated at import.
+#[uniffi::export]
+pub async fn import_contact_card(input: ImportContactCardInput) -> ContactCardImportOutcome {
+    crate::lifecycle::contact_cards::import(input).await
+}
+
 #[uniffi::export]
 pub async fn set_messaging_name(name: String) -> LocalMessagingProfileOutcome {
     crate::lifecycle::profile::messaging_profile(Some(name)).await
+}
+
+#[uniffi::export]
+pub async fn create_group_request_id() -> GroupRequestIdOutcome {
+    crate::groups::create_request_id()
+}
+
+/// Commit immutable UI recovery input before submitting a group operation.
+#[uniffi::export]
+pub async fn prepare_group_action(input: PrepareGroupActionInput) -> GroupActionOutcome {
+    crate::lifecycle::group_actions::prepare(input).await
+}
+
+#[uniffi::export]
+pub async fn list_group_actions() -> GroupActionListOutcome {
+    crate::lifecycle::group_actions::list().await
+}
+
+#[uniffi::export]
+pub async fn execute_group_action(reference: GroupActionReference) -> GroupActionOutcome {
+    crate::lifecycle::group_actions::execute(reference).await
+}
+
+/// Remove a confirmed result after the UI has displayed or reconciled it.
+#[uniffi::export]
+pub async fn acknowledge_group_action(
+    reference: GroupActionReference,
+) -> GroupActionAcknowledgeOutcome {
+    crate::lifecycle::group_actions::acknowledge(reference, false).await
+}
+
+/// Explicit user review is required; a discarded operation may have executed.
+#[uniffi::export]
+pub async fn discard_expired_group_action(
+    reference: GroupActionReference,
+) -> GroupActionAcknowledgeOutcome {
+    crate::lifecycle::group_actions::acknowledge(reference, true).await
+}
+
+#[uniffi::export]
+pub async fn list_group_conversations() -> GroupConversationListOutcome {
+    crate::lifecycle::groups::list_conversations().await
+}
+
+#[uniffi::export]
+pub async fn list_group_messages(input: ListGroupMessagesInput) -> GroupMessageListOutcome {
+    crate::lifecycle::groups::list_messages(input).await
+}
+
+#[uniffi::export]
+pub async fn send_group_text(input: SendGroupTextInput) -> GroupTextSendOutcome {
+    crate::lifecycle::groups::send_text(input).await
+}
+
+#[uniffi::export]
+pub async fn create_group(input: CreateGroupInput) -> CreateGroupOutcome {
+    crate::lifecycle::groups::create_group(input).await
+}
+
+#[uniffi::export]
+pub async fn invite_to_group(input: InviteToGroupInput) -> InviteToGroupOutcome {
+    crate::lifecycle::groups::invite_to_group(input).await
+}
+
+#[uniffi::export]
+pub async fn list_group_invitations() -> GroupInvitationListOutcome {
+    crate::lifecycle::groups::list_group_invitations().await
+}
+
+#[uniffi::export]
+pub async fn respond_group_invitation(
+    input: RespondGroupInvitationInput,
+) -> RespondGroupInvitationOutcome {
+    crate::lifecycle::groups::respond_group_invitation(input).await
 }
 
 /// The same SDK host used by native services. Stop remains the app owner's operation.
@@ -322,4 +434,21 @@ pub async fn measure_lxmf_text(input: MeasureLxmfTextInput) -> MeasureLxmfTextOu
 #[uniffi::export]
 pub async fn send_direct_text(input: SendDirectTextInput) -> SendDirectTextOutcome {
     crate::lifecycle::admission::send_direct_text(input).await
+}
+
+#[uniffi::export]
+pub async fn get_group_announce_settings() -> GroupAnnounceSettingsOutcome {
+    crate::lifecycle::group_announces::settings(None).await
+}
+
+#[uniffi::export]
+pub async fn set_group_announce_settings(
+    input: GroupAnnounceSettings,
+) -> GroupAnnounceSettingsOutcome {
+    crate::lifecycle::group_announces::settings(Some(input)).await
+}
+
+#[uniffi::export]
+pub async fn announce_groups() -> GroupAnnounceOutcome {
+    crate::lifecycle::group_announces::announce().await
 }

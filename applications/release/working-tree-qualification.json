@@ -9,6 +9,8 @@
     "applications",
     "prns-react-native",
     "prns-host",
+    "prns-groups",
+    "prns-identities",
     "personal-rns",
     "prns-core",
     "prns-config",

@@ -24,6 +24,7 @@ import { TextField } from "@/ui/text-field";
 import { useAppPalette } from "@/ui/theme";
 import { AndroidBluetoothCard } from "./android-bluetooth-card";
 import { IosBluetoothCard } from "./ios-bluetooth-card";
+import { formatBytes } from "./format";
 import { PairingConfirmationCard } from "./pairing-confirmation-card";
 
 type RemoteControlPairingState = DevelopmentNodeSnapshot["pairing"];
@@ -40,7 +41,25 @@ export function PairNodeScreen({
   const [pending, setPending] = useState<"approve" | "initiate" | "reject" | null>(null);
   const [commandFailure, setCommandFailure] = useState<string | null>(null);
   const [candidateId, setCandidateId] = useState<string | undefined>(selectedCandidateId);
+  const [searchAgainFor, setSearchAgainFor] = useState<string | null>(null);
   const pairing = runtime.snapshot?.pairing;
+  const identity = runtime.snapshot?.primaryIdentity;
+  const ownerKey = `${identity?.tag === Bindings.PrimaryIdentityState_Tags.Present ? formatBytes(identity.inner.identityHash) : "unknown"}:${runtime.snapshot?.generationId ?? "none"}`;
+  const terminalKey = isTerminalPairingType(pairing?.tag)
+    ? `${ownerKey}:${JSON.stringify(pairing)}`
+    : null;
+  const showSearchAgain = terminalKey !== null && searchAgainFor === terminalKey;
+  const alreadyPaired =
+    pairing?.tag === Bindings.RemoteControlPairingState_Tags.ConfirmationRequired &&
+    runtime.snapshot?.pairedTargets.some(
+      (target) =>
+        formatBytes(target.targetIdentityFingerprint) ===
+        formatBytes(pairing.inner.targetIdentityFingerprint),
+    ) === true;
+  const requestOwner = useRef({ ownerKey, request: 0, busy: false });
+  if (requestOwner.current.ownerKey !== ownerKey) {
+    requestOwner.current = { ownerKey, request: requestOwner.current.request + 1, busy: false };
+  }
   const confirming = pairing?.tag === Bindings.RemoteControlPairingState_Tags.ConfirmationRequired;
   const candidates = runtime.snapshot?.pairingCandidates ?? [];
   const selectedCandidateIsPresent = candidates.some(
@@ -48,6 +67,25 @@ export function PairNodeScreen({
   );
   const candidateSelectionKey = `${candidateId ?? "none"}:${selectedCandidateIsPresent ? "present" : "missing"}`;
   const previousCandidateSelectionKey = useRef(candidateSelectionKey);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: owner changes discard local UI state without changing the retained native attempt.
+  useEffect(() => {
+    setInvitationCode("");
+    setCommandFailure(null);
+    setPending(null);
+    setSearchAgainFor(null);
+  }, [ownerKey]);
+
+  useEffect(
+    () => () => {
+      requestOwner.current.request += 1;
+    },
+    [],
+  );
+
+  useEffect(() => {
+    if (terminalKey === null) setSearchAgainFor(null);
+  }, [terminalKey]);
 
   useEffect(() => {
     if (pairing?.tag !== Bindings.RemoteControlPairingState_Tags.Searching) {
@@ -90,12 +128,20 @@ export function PairNodeScreen({
   }, [candidateSelectionKey]);
 
   const initiate = async (selected: RemoteControlPairingCandidate) => {
+    const owner = requestOwner.current;
+    if (owner.busy) return;
+    owner.busy = true;
+    const request = ++owner.request;
+    // A fast failure may arrive before polling observes an active attempt.
+    setSearchAgainFor(null);
     setPending("initiate");
     setCommandFailure(null);
     const result = await runtime.initiatePairing({
       candidateId: selected.candidateId,
       invitationCode,
     });
+    if (requestOwner.current !== owner || owner.request !== request) return;
+    owner.busy = false;
     setCommandFailure(pairingCommandFailure(result));
     setPending(null);
   };
@@ -104,11 +150,17 @@ export function PairNodeScreen({
     decision: "approve" | "reject",
     state: Extract<RemoteControlPairingState, { tag: "ConfirmationRequired" }>,
   ) => {
+    const owner = requestOwner.current;
+    if (owner.busy) return;
+    owner.busy = true;
+    const request = ++owner.request;
     setPending(decision);
     setCommandFailure(null);
     const result = await (decision === "approve" ? runtime.approvePairing : runtime.rejectPairing)({
       attemptId: state.inner.attemptId,
     });
+    if (requestOwner.current !== owner || owner.request !== request) return;
+    owner.busy = false;
     setCommandFailure(pairingCommandFailure(result));
     setPending(null);
   };
@@ -119,8 +171,8 @@ export function PairNodeScreen({
       <ScreenHeading>Pair a node</ScreenHeading>
       {confirming ? null : (
         <BodyText>
-          Open secure pairing on the node you want to manage. When it appears below, enter its
-          invitation and compare the confirmation code on both devices.
+          Use the node&apos;s pairing instructions to get an invitation. When it appears below,
+          enter its invitation and compare the confirmation codes.
         </BodyText>
       )}
 
@@ -157,6 +209,7 @@ export function PairNodeScreen({
 
       {runtime.snapshot === null ? null : (
         <PairingStateCard
+          alreadyPaired={alreadyPaired}
           commandFailure={commandFailure}
           candidates={candidates}
           invitationCode={invitationCode}
@@ -171,11 +224,19 @@ export function PairNodeScreen({
           }
           onInitiate={(selected) => void initiate(selected)}
           onReject={(state) => void decide("reject", state)}
+          onSearchAgain={() => {
+            if (terminalKey === null || pending !== null) return;
+            setSearchAgainFor(terminalKey);
+            setCandidateId(undefined);
+            setInvitationCode("");
+            setCommandFailure(null);
+          }}
           onSelectCandidate={setCandidateId}
           palette={palette}
           pairing={runtime.snapshot.pairing}
           pending={pending}
           selectedCandidateId={candidateId}
+          showSearchAgain={showSearchAgain}
         />
       )}
 
@@ -187,6 +248,7 @@ export function PairNodeScreen({
 }
 
 function PairingStateCard({
+  alreadyPaired,
   candidates,
   commandFailure,
   invitationCode,
@@ -194,12 +256,15 @@ function PairingStateCard({
   onInitiate,
   onInvitationCode,
   onReject,
+  onSearchAgain,
   onSelectCandidate,
   palette,
   pairing,
   pending,
   selectedCandidateId,
+  showSearchAgain,
 }: {
+  readonly alreadyPaired: boolean;
   readonly candidates: readonly RemoteControlPairingCandidate[];
   readonly commandFailure: string | null;
   readonly invitationCode: string;
@@ -212,14 +277,16 @@ function PairingStateCard({
     pairing: Extract<RemoteControlPairingState, { tag: "ConfirmationRequired" }>,
   ) => void;
   readonly onSelectCandidate: (candidateId: string) => void;
+  readonly onSearchAgain: () => void;
   readonly palette: ReturnType<typeof useAppPalette>;
   readonly pairing: RemoteControlPairingState;
   readonly pending: "approve" | "initiate" | "reject" | null;
   readonly selectedCandidateId: string | undefined;
+  readonly showSearchAgain: boolean;
 }) {
   const feedback = commandFailure === null ? null : <BodyText>{commandFailure}</BodyText>;
   const remainingCandidateChooser =
-    candidates.length === 0 ? null : (
+    candidates.length === 0 && !showSearchAgain ? null : (
       <CandidateSelectionCard
         candidates={candidates}
         commandFeedback={feedback}
@@ -232,6 +299,17 @@ function PairingStateCard({
         selectedCandidateId={selectedCandidateId}
       />
     );
+
+  if (showSearchAgain && isTerminalPairingType(pairing.tag)) {
+    return remainingCandidateChooser;
+  }
+  const searchAgain = (
+    <Button disabled={pending !== null} onPress={onSearchAgain} tone="secondary">
+      {pairing.tag === Bindings.RemoteControlPairingState_Tags.Paired
+        ? "Pair another node"
+        : "Search for a node"}
+    </Button>
+  );
 
   switch (pairing.tag) {
     case Bindings.RemoteControlPairingState_Tags.BluetoothUnavailable:
@@ -262,7 +340,9 @@ function PairingStateCard({
         <Card>
           <Subheading>Invitation sent</Subheading>
           <Badge>Waiting for confirmation</Badge>
-          <BodyText>Check both devices for a confirmation code.</BodyText>
+          <BodyText>
+            Follow the node&apos;s pairing instructions to compare confirmation codes.
+          </BodyText>
           {feedback}
         </Card>
       );
@@ -270,6 +350,7 @@ function PairingStateCard({
       return (
         <PairingConfirmationCard
           key={pairing.inner.attemptId}
+          alreadyPaired={alreadyPaired}
           commandFailure={commandFailure}
           onApprove={onApprove}
           onReject={onReject}
@@ -302,6 +383,7 @@ function PairingStateCard({
             <Subheading>Paired</Subheading>
             <Badge>Ready</Badge>
             <BodyText>This node is now available in Nodes.</BodyText>
+            {searchAgain}
             {candidates.length === 0 ? feedback : null}
           </Card>
           {remainingCandidateChooser}
@@ -314,6 +396,7 @@ function PairingStateCard({
             detail="Pairing was declined on one of the devices."
             label="Rejected"
           />
+          {searchAgain}
           {remainingCandidateChooser}
         </>
       );
@@ -324,6 +407,7 @@ function PairingStateCard({
             detail="The invitation expired. Reopen pairing on the node and try again."
             label="Expired"
           />
+          {searchAgain}
           {remainingCandidateChooser}
         </>
       );
@@ -331,6 +415,7 @@ function PairingStateCard({
       return (
         <>
           <TerminalPairingCard detail="Pairing was cancelled." label="Cancelled" />
+          {searchAgain}
           {remainingCandidateChooser}
         </>
       );
@@ -341,6 +426,7 @@ function PairingStateCard({
             detail={pairingFailureMessage(pairing.inner.stage)}
             label="Pairing failed"
           />
+          {searchAgain}
           {remainingCandidateChooser}
         </>
       );
@@ -373,7 +459,7 @@ function CandidateSelectionCard({
       <Card>
         <Subheading>Looking for nearby nodes</Subheading>
         <Badge>Searching</Badge>
-        <BodyText>Open the pairing screen on the node you want to add.</BodyText>
+        <BodyText>Enable pairing on the node you want to add.</BodyText>
         {commandFeedback}
       </Card>
     );
@@ -399,8 +485,15 @@ function CandidateSelectionCard({
             : "Ready to pair"}
       </Badge>
       {candidates.length > 1 ? (
-        <BodyText>Choose the node showing the invitation you want to enter.</BodyText>
+        <BodyText>
+          Names may match. A pairing session label identifies this list entry, not the physical
+          node.
+        </BodyText>
       ) : null}
+      <BodyText muted>
+        Pairing sessions change when pairing is reopened. We can check whether a node is already
+        paired after you submit its invitation.
+      </BodyText>
       <CardStack>
         {candidates.map((candidate) => {
           const selected = candidate.candidateId === selectedCandidateId;
@@ -411,7 +504,7 @@ function CandidateSelectionCard({
               style={selected ? { borderColor: palette.focus } : undefined}
             >
               <Subheading>{name}</Subheading>
-              <KeyValue label="Node ID" value={shortCandidateId(candidate.candidateId)} />
+              <KeyValue label="Pairing session" value={shortCandidateId(candidate.candidateId)} />
               <BodyText muted>{formatExpiry(candidate.expiresInMillis)}</BodyText>
               <Button
                 accessibilityLabel={`${selected ? "Selected" : "Select"} ${name} ${shortCandidateId(candidate.candidateId)}`}
@@ -431,7 +524,7 @@ function CandidateSelectionCard({
       ) : null}
       {selectedCandidate !== undefined ? (
         <>
-          <BodyText>Enter the 8-character invitation shown on the selected node.</BodyText>
+          <BodyText>Enter the 8-character invitation provided by the selected node.</BodyText>
           <TextField
             label="Invitation code"
             autoCapitalize="characters"
@@ -527,7 +620,7 @@ function pairingFailureMessage(stage: PairingFailureStage): string {
     case Bindings.RemoteControlPairingFailureStage.Expired:
       return "The node is no longer available. Reopen pairing on the node and try again.";
     case Bindings.RemoteControlPairingFailureStage.Route:
-      return "No connection path to the node is available yet. Keep its pairing screen open and try again.";
+      return "No connection path to the node is available yet. Keep pairing enabled on the node and try again.";
     case Bindings.RemoteControlPairingFailureStage.Link:
       return "A secure connection to the node could not be opened. Make sure it is on and nearby, then try again.";
     case Bindings.RemoteControlPairingFailureStage.Identification:

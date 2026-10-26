@@ -1,6 +1,6 @@
 # Group addressing and synchronization
 
-Status: implementation in progress. The [group core](../README.md)
+Status: implementation in progress. The [group workspace](../../README.md)
 contains an allocation-free core, bounded transaction and record services,
 a bounded MLS adapter, and native transport and runner implementations. Earlier
 host models and crypto experiments are retained separately from this publication.

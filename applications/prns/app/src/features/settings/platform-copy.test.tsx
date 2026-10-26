@@ -1,30 +1,26 @@
-import { render } from "@testing-library/react-native";
+import { fireEvent, render } from "@testing-library/react-native";
 
 import { AboutScreen } from "./about-screen";
 import { HelpScreen } from "./help-screen";
 
 describe("unsupported-platform capability copy", () => {
-  it("identifies the web preview without showing a native identifier or native capabilities", () => {
+  it("identifies the web preview and keeps unavailable native sharing out of the flow", () => {
     const view = render(<AboutScreen />);
-
     expect(view.getByText("Web preview")).toBeTruthy();
-    expect(view.queryByText("Native identifier")).toBeNull();
     expect(
-      view.getByText(/This web preview lets you explore the app's layout, navigation, settings/iu),
+      view.getByText(/Messaging and node connections are available in the iOS and Android apps/u),
     ).toBeTruthy();
-    expect(view.getByText(/not available on web yet/iu)).toBeTruthy();
-    expect(view.queryByText(/pair and check nearby nodes/iu)).toBeNull();
+    fireEvent.press(view.getByRole("button", { name: "Diagnostics" }));
+    expect(
+      view.getByText(/Diagnostic sharing is available in the iOS and Android apps/u),
+    ).toBeTruthy();
+    expect(view.queryByRole("button", { name: "Share diagnostics" })).toBeNull();
   });
 
-  it("limits web help to the interactions that web actually supports", () => {
+  it("limits web help to the interactions that web supports", () => {
     const view = render(<HelpScreen />);
-
-    expect(
-      view.getByText(/Browse the responsive app shell, navigate planned pages/iu),
-    ).toBeTruthy();
-    expect(view.getByText(/Identity setup, node pairing and status/iu)).toBeTruthy();
-    expect(view.getByText(/cannot create, import, or reset app data on web/iu)).toBeTruthy();
-    expect(view.queryByText(/Create or import an identity, pair and check nodes/iu)).toBeNull();
-    expect(view.queryByText(/Preview data can be reset/iu)).toBeNull();
+    expect(view.getByText(/This web preview shows the app layout/u)).toBeTruthy();
+    expect(view.queryByRole("link", { name: "Start a group" })).toBeNull();
+    expect(view.queryByText(/NomadNet|planned pages|Coming later/iu)).toBeNull();
   });
 });

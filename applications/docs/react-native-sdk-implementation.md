@@ -5,10 +5,10 @@ host and SDK in one native image, using app-owned package staging. This is a
 development implementation, not a release-qualified distribution.
 
 The [product scope](product-scope.md) separates the host SDK from application
-services. This app composition exposes direct LXMF messaging. The separate
-group crates provide bounded foundation, storage and MLS mechanisms; group
-transport, enrollment and app integration are outside this app boundary. The
-SDK supplies host/runtime and platform mechanics rather than messaging policy.
+services. Reusable groups, named identities and contact cards are implemented in
+their own libraries. The LXMF service is reusable groundwork; refining its
+mailbox/storage boundary remains separate work. The SDK supplies host/runtime
+and platform mechanics rather than messaging policy.
 
 ## Ownership
 
@@ -25,7 +25,8 @@ SDK supplies host/runtime and platform mechanics rather than messaging policy.
 `applications/prns/platform` owns the product platform facade. Product bindings
 import the shared SDK converters and borrow its `HostClientHandle`. The app delegates runtime construction to `OwnedSession`;
 its native dispatcher owns application events and drains services before host
-shutdown. Offline product storage remains available while networking is stopped.
+shutdown. Disabling network interfaces preserves saved data. Paused named-identity
+history still requires the shared local node to run.
 
 The standalone SDK image is `prns_host_mobile`; the aggregate image is
 `prns_app`. The canonical `prns-react-native` package keeps the standalone
@@ -55,7 +56,8 @@ JavaScript loss. Received resources retain their bytes independently of the
 event stream. Persisted host directories remain locked until runtime shutdown
 has joined.
 
-The app owns its local identity, contacts and mailbox storage. LXMF consumes
+The app owns identity-scoped contacts, groups and mailbox storage independently
+of the installation's Bluetooth and management credentials. LXMF consumes
 authenticated announce facts and routes link deliveries by local destination;
 its signer stays in Rust. General RemoteControl exchanges, pairing and access
 operations project the existing protocol types, while combined app queries,

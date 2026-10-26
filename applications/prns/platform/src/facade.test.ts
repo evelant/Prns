@@ -214,6 +214,226 @@ test("clears only native network activity without storage or outbound preparatio
   expect(clearNetworkActivity).toHaveBeenCalledTimes(1);
 });
 
+test("group history and durable sends prepare storage while leaving node ownership native", async () => {
+  const groupId = new Uint8Array(32).fill(4);
+  const clientRequestId = new Uint8Array(32).fill(7);
+  const sendInput = { groupId, clientRequestId, text: "Hello group" };
+  const pageInput = { groupId, beforeSequence: 9_007_199_254_740_993n, limit: 50 };
+  const sendOutcome = Bindings.GroupTextSendOutcome.Accepted.new({
+    messageId: new Uint8Array(32).fill(8),
+  });
+  const pageOutcome = Bindings.GroupMessageListOutcome.Ready.new({
+    messages: [],
+    revision: 18_446_744_073_709_551_615n,
+    nextBeforeSequence: undefined,
+  });
+  const sendGroupText = jest.fn(async () => sendOutcome);
+  const listGroupMessages = jest.fn(async () => pageOutcome);
+  const listGroupConversations = jest.fn(async () =>
+    Bindings.GroupConversationListOutcome.NotProvisioned.new(),
+  );
+  const createGroupRequestId = jest.fn(async () =>
+    Bindings.GroupRequestIdOutcome.Ready.new({ clientRequestId }),
+  );
+  const { runtime, native } = setup({
+    sendGroupText,
+    listGroupMessages,
+    listGroupConversations,
+    createGroupRequestId,
+  });
+  const controller = new AbortController();
+  await runtime.createGroupRequestId(controller.signal);
+  expect(native.prepareStorage).not.toHaveBeenCalled();
+  await runtime.listGroupConversations(controller.signal);
+  await expect(runtime.listGroupMessages(pageInput, controller.signal)).resolves.toEqual(
+    pageOutcome,
+  );
+  await expect(runtime.sendGroupText(sendInput, controller.signal)).resolves.toEqual(sendOutcome);
+  expect(listGroupMessages).toHaveBeenCalledWith(pageInput, { signal: controller.signal });
+  expect(sendGroupText).toHaveBeenCalledWith(sendInput, { signal: controller.signal });
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.start).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  controller.abort();
+  await expect(runtime.sendGroupText(sendInput, controller.signal)).rejects.toThrow();
+  expect(sendGroupText).toHaveBeenCalledTimes(1);
+});
+
+test("group enrollment prepares offline storage and preserves native request identifiers", async () => {
+  const groupId = new Uint8Array(32).fill(4);
+  const invitationId = new Uint8Array(32).fill(5);
+  const clientRequestId = new Uint8Array(32).fill(6);
+  const recipientIdentity = new Uint8Array(16).fill(7);
+  const createInput = { clientRequestId, title: "Field crew" };
+  const inviteInput = { clientRequestId, groupId, recipientIdentity };
+  const respondInput = { clientRequestId, invitationId, accept: false };
+  const invitation: Bindings.GroupInvitation = {
+    invitationId,
+    groupId,
+    title: "Field crew",
+    recipientIdentity,
+    inviterIdentity: new Uint8Array(16).fill(8),
+    expiresAtMillis: 9_007_199_254_740_993n,
+    outgoing: false,
+    state: Bindings.GroupInvitationState.Joining,
+    waitingForDelivery: false,
+  };
+  const createGroup = jest.fn(async () => Bindings.CreateGroupOutcome.Accepted.new({ groupId }));
+  const inviteToGroup = jest.fn(async () =>
+    Bindings.InviteToGroupOutcome.Queued.new({ invitationId }),
+  );
+  const listGroupInvitations = jest.fn(async () =>
+    Bindings.GroupInvitationListOutcome.Ready.new({ invitations: [invitation] }),
+  );
+  const respondGroupInvitation = jest.fn(async () =>
+    Bindings.RespondGroupInvitationOutcome.Saved.new(),
+  );
+  const { runtime, native } = setup({
+    createGroup,
+    inviteToGroup,
+    listGroupInvitations,
+    respondGroupInvitation,
+  });
+  const controller = new AbortController();
+  await runtime.createGroup(createInput, controller.signal);
+  await runtime.inviteToGroup(inviteInput, controller.signal);
+  await runtime.respondGroupInvitation(respondInput, controller.signal);
+  await expect(runtime.listGroupInvitations(controller.signal)).resolves.toEqual(
+    Bindings.GroupInvitationListOutcome.Ready.new({ invitations: [invitation] }),
+  );
+  expect(createGroup).toHaveBeenCalledWith(createInput, { signal: controller.signal });
+  expect(inviteToGroup).toHaveBeenCalledWith(inviteInput, { signal: controller.signal });
+  expect(respondGroupInvitation).toHaveBeenCalledWith(respondInput, { signal: controller.signal });
+  expect(listGroupInvitations).toHaveBeenCalledWith({ signal: controller.signal });
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  expect(native.start).not.toHaveBeenCalled();
+  controller.abort();
+  await expect(runtime.createGroup(createInput, controller.signal)).rejects.toThrow();
+  await expect(runtime.inviteToGroup(inviteInput, controller.signal)).rejects.toThrow();
+  await expect(runtime.respondGroupInvitation(respondInput, controller.signal)).rejects.toThrow();
+  expect(createGroup).toHaveBeenCalledTimes(1);
+  expect(inviteToGroup).toHaveBeenCalledTimes(1);
+  expect(respondGroupInvitation).toHaveBeenCalledTimes(1);
+  const encoded = codecs.FfiConverterTypeGroupInvitation.lower(
+    invitation,
+    (size) => new Uint8Array(size),
+  );
+  expect(codecs.FfiConverterTypeGroupInvitation.lift(encoded)).toEqual(invitation);
+});
+
+test("prepared group actions use offline storage and retain immutable intent across the bridge", async () => {
+  const clientRequestId = new Uint8Array(32).fill(6);
+  const input = Bindings.GroupActionInput.Send.new({
+    input: { clientRequestId, groupId: new Uint8Array(32).fill(9), text: "Retain this exact text" },
+  });
+  const action: Bindings.GroupAction = {
+    ownerIdentity: new Uint8Array(16).fill(7),
+    input,
+    state: Bindings.GroupActionState.Pending.new(),
+  };
+  const prepared = { ownerIdentity: action.ownerIdentity, input };
+  const reference = { ownerIdentity: action.ownerIdentity, clientRequestId };
+  const ready = Bindings.GroupActionOutcome.Ready.new({ action });
+  const listGroupActions = jest.fn(async () =>
+    Bindings.GroupActionListOutcome.Ready.new({ actions: [action] }),
+  );
+  const prepareGroupAction = jest.fn(async () => ready);
+  const executeGroupAction = jest.fn(async () => ready);
+  const acknowledgeGroupAction = jest.fn(async () =>
+    Bindings.GroupActionAcknowledgeOutcome.NeedsReview.new(),
+  );
+  const discardExpiredGroupAction = jest.fn(async () =>
+    Bindings.GroupActionAcknowledgeOutcome.Removed.new(),
+  );
+  const { runtime, native } = setup({
+    listGroupActions,
+    prepareGroupAction,
+    executeGroupAction,
+    acknowledgeGroupAction,
+    discardExpiredGroupAction,
+  });
+  const controller = new AbortController();
+  await expect(runtime.listGroupActions(controller.signal)).resolves.toEqual(
+    Bindings.GroupActionListOutcome.Ready.new({ actions: [action] }),
+  );
+  await expect(runtime.prepareGroupAction(prepared, controller.signal)).resolves.toEqual(ready);
+  await expect(runtime.executeGroupAction(reference, controller.signal)).resolves.toEqual(ready);
+  await runtime.acknowledgeGroupAction(reference, controller.signal);
+  await runtime.discardExpiredGroupAction(reference, controller.signal);
+  expect(prepareGroupAction).toHaveBeenCalledWith(prepared, { signal: controller.signal });
+  for (const operation of [executeGroupAction, acknowledgeGroupAction, discardExpiredGroupAction]) {
+    expect(operation).toHaveBeenCalledWith(reference, { signal: controller.signal });
+  }
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  expect(native.start).not.toHaveBeenCalled();
+  const bytes = codecs.FfiConverterTypeGroupAction.lower(action, (size) => new Uint8Array(size));
+  expect(codecs.FfiConverterTypeGroupAction.lift(bytes)).toEqual(action);
+  controller.abort();
+  await expect(runtime.prepareGroupAction(prepared, controller.signal)).rejects.toThrow();
+  await expect(runtime.executeGroupAction(reference, controller.signal)).rejects.toThrow();
+  await expect(runtime.acknowledgeGroupAction(reference, controller.signal)).rejects.toThrow();
+  expect(prepareGroupAction).toHaveBeenCalledTimes(1);
+  expect(executeGroupAction).toHaveBeenCalledTimes(1);
+  expect(acknowledgeGroupAction).toHaveBeenCalledTimes(1);
+});
+
+test("group announcement preferences stay offline while manual requests use outbound admission", async () => {
+  const settings = { intervalMinutes: undefined };
+  const ready = Bindings.GroupAnnounceSettingsOutcome.Ready.new({ settings });
+  const getGroupAnnounceSettings = jest.fn(async () => ready);
+  const setGroupAnnounceSettings = jest.fn(async () => ready);
+  const announceGroups = jest.fn(async () => Bindings.GroupAnnounceOutcome.Requested.new());
+  const { runtime, native } = setup({
+    getGroupAnnounceSettings,
+    setGroupAnnounceSettings,
+    announceGroups,
+  });
+  const controller = new AbortController();
+  await expect(runtime.getGroupAnnounceSettings(controller.signal)).resolves.toEqual(ready);
+  await expect(runtime.setGroupAnnounceSettings(settings, controller.signal)).resolves.toEqual(
+    ready,
+  );
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+  await expect(runtime.announceGroups(controller.signal)).resolves.toEqual(
+    Bindings.GroupAnnounceOutcome.Requested.new(),
+  );
+  expect(native.prepareOutbound).toHaveBeenCalledTimes(1);
+  expect(native.start).not.toHaveBeenCalled();
+  expect(announceGroups).toHaveBeenCalledWith({ signal: controller.signal });
+  controller.abort();
+  await expect(runtime.announceGroups(controller.signal)).rejects.toThrow();
+  expect(announceGroups).toHaveBeenCalledTimes(1);
+});
+
+test("cancellation during announcement preflight cannot enqueue a later broadcast", async () => {
+  let finish: (() => void) | undefined;
+  let entered: (() => void) | undefined;
+  const preflight = new Promise<void>((resolve) => {
+    finish = resolve;
+  });
+  const started = new Promise<void>((resolve) => {
+    entered = resolve;
+  });
+  const native = nativeModule({
+    prepareOutbound: jest.fn(() => {
+      entered?.();
+      return preflight;
+    }),
+  });
+  const announceGroups = jest.fn(async () => Bindings.GroupAnnounceOutcome.Requested.new());
+  const { runtime } = setup({ announceGroups }, native);
+  const controller = new AbortController();
+  const result = runtime.announceGroups(controller.signal);
+  await started;
+  controller.abort();
+  finish?.();
+  await expect(result).rejects.toThrow();
+  expect(announceGroups).not.toHaveBeenCalled();
+});
+
 test("generated network codecs preserve full-width durations and activity IDs", () => {
   const maximum = 18_446_744_073_709_551_615n;
   const network: Bindings.LocalNetworkSnapshot = {
@@ -365,6 +585,26 @@ test("Bluetooth preferences use prepared offline storage without starting or adm
   expect(native.prepareOutbound).not.toHaveBeenCalled();
 });
 
+test("discovery group settings preserve generation fences and prepare only offline storage", async () => {
+  const native = nativeModule();
+  const input = { ownerId: 11n, generationId: 7n, groups: ["camp-a", " trail "] };
+  const outcome = Bindings.LocalBluetoothDiscoveryGroupsOutcome.Ready.new({
+    settings: { ...input, appliedGroups: undefined },
+  });
+  const readBluetoothDiscoveryGroups = jest.fn(async () => outcome);
+  const setBluetoothDiscoveryGroups = jest.fn(async () => {
+    expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+    return outcome;
+  });
+  const { runtime } = setup({ readBluetoothDiscoveryGroups, setBluetoothDiscoveryGroups }, native);
+  expect(await runtime.readBluetoothDiscoveryGroups()).toBe(outcome);
+  expect(await runtime.setBluetoothDiscoveryGroups(input)).toBe(outcome);
+  expect(setBluetoothDiscoveryGroups).toHaveBeenCalledWith(input);
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.start).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
 test("messaging profile reads and writes prepare storage without starting or broadcasting", async () => {
   const native = nativeModule();
   const outcome = Bindings.LocalMessagingProfileOutcome.Ready.new({
@@ -410,6 +650,67 @@ test("cold retry does not refresh outbound or submit when storage preparation fa
     expect(retryLxmfMessage).not.toHaveBeenCalled();
     expect(native.start).not.toHaveBeenCalled();
   }
+});
+
+test("contact cards validate offline and use the prepared native storage owner for export and confirmed import", async () => {
+  const native = nativeModule();
+  const card = {
+    uri: "rns-contact://v1/fixture",
+    displayName: "Other maintainer",
+    identity: new Uint8Array(16).fill(3),
+    destination: new Uint8Array(16).fill(4),
+    serviceNameHash: new Uint8Array(10).fill(5),
+  };
+  const preview = Bindings.ContactCardPreviewOutcome.Valid.new({ card });
+  const exported = Bindings.ContactCardExportOutcome.Ready.new({ card });
+  const imported = Bindings.ContactCardImportOutcome.IdentityConflict.new({
+    existing: new Uint8Array(16).fill(6),
+    attempted: card.identity,
+  });
+  const previewContactCard = jest.fn((_uri: string) => preview);
+  const exportContactCard = jest.fn(async () => exported);
+  const importContactCard = jest.fn(async () => imported);
+  const { runtime } = setup({ previewContactCard, exportContactCard, importContactCard }, native);
+  expect(await runtime.previewContactCard(card.uri)).toBe(preview);
+  expect(native.prepareStorage).not.toHaveBeenCalled();
+  expect(importContactCard).not.toHaveBeenCalled();
+  const controller = new AbortController();
+  const exportInput = { expectedLocalIdentity: card.identity };
+  expect(await runtime.exportContactCard(exportInput, controller.signal)).toBe(exported);
+  const importInput = { uri: card.uri, expectedLocalIdentity: card.identity, alias: "My nickname" };
+  expect(await runtime.importContactCard(importInput, controller.signal)).toBe(imported);
+  expect(previewContactCard).toHaveBeenCalledWith(card.uri);
+  expect(exportContactCard).toHaveBeenCalledWith(exportInput, { signal: controller.signal });
+  expect(importContactCard).toHaveBeenCalledWith(importInput, { signal: controller.signal });
+  expect(native.prepareStorage).toHaveBeenCalledTimes(1);
+  expect(native.start).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
+test("contact-card import does not submit after preparation is cancelled", async () => {
+  const controller = new AbortController();
+  const native = nativeModule({
+    prepareStorage: jest.fn(async () => {
+      controller.abort();
+      return encode(
+        codecs.FfiConverterTypeNativeStoragePreparationOutcome,
+        Bindings.NativeStoragePreparationOutcome.Prepared.new(),
+      );
+    }),
+  });
+  const importContactCard = jest.fn(async () => Bindings.ContactCardImportOutcome.Busy.new());
+  const { runtime } = setup({ importContactCard }, native);
+  await expect(
+    runtime.importContactCard(
+      {
+        uri: "rns-contact://v1/fixture",
+        expectedLocalIdentity: new Uint8Array(16),
+        alias: undefined,
+      },
+      controller.signal,
+    ),
+  ).rejects.toBeDefined();
+  expect(importContactCard).not.toHaveBeenCalled();
 });
 
 test("passes optional fields, bytes, exact integers, and results unchanged", async () => {
@@ -650,4 +951,85 @@ test("supports React Native's actual AbortSignal polyfill without modern conveni
     name: "AbortError",
   });
   expect(api.readSnapshot).toHaveBeenCalledTimes(1);
+});
+
+test("named clients capture immutable local references and never consult global selection", async () => {
+  const first: Bindings.NamedIdentityReference = {
+    incarnation: new Uint8Array(16).fill(1),
+    sequence: 1n,
+    publicHash: new Uint8Array(16).fill(2),
+  };
+  const second = { ...first, sequence: 2n, publicHash: new Uint8Array(16).fill(3) };
+  const captured = {
+    ...first,
+    incarnation: first.incarnation.slice(),
+    publicHash: first.publicHash.slice(),
+  };
+  const a = jest.fn(async () => Bindings.ContactListOutcome.Listed.new({ contacts: [] }));
+  const b = jest.fn(async () => Bindings.ContactListOutcome.Listed.new({ contacts: [] }));
+  const openNamedIdentity = jest.fn(
+    (reference: Bindings.NamedIdentityReference) =>
+      ({
+        listContacts: reference.sequence === 1n ? a : b,
+      }) as unknown as Bindings.NamedIdentityClient,
+  );
+  const { runtime, api, native } = setup({ openNamedIdentity });
+  const clientA = runtime.forIdentity(first);
+  first.incarnation.fill(99);
+  first.publicHash.fill(99);
+  const clientB = runtime.forIdentity(second);
+  await clientB.listContacts();
+  await clientA.listContacts();
+  await clientA.listContacts();
+  expect(openNamedIdentity).toHaveBeenCalledWith(captured);
+  expect(openNamedIdentity).toHaveBeenCalledTimes(2);
+  expect(a).toHaveBeenCalledTimes(2);
+  expect(b).toHaveBeenCalledTimes(1);
+  expect(api.listContacts).not.toHaveBeenCalled();
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
+});
+
+test("activity inspection and captured seen cursors use local scoped storage without outbound preparation", async () => {
+  const identity: Bindings.NamedIdentityReference = {
+    incarnation: new Uint8Array(16).fill(1),
+    sequence: 2n,
+    publicHash: new Uint8Array(16).fill(3),
+  };
+  const summary = {
+    actionableInvitations: 1,
+    unreadGroups: 2,
+    unreadDirect: 3,
+    conversations: [],
+    partial: false,
+  };
+  const readIdentityActivity = jest.fn(async () =>
+    Bindings.IdentityActivityOutcome.Ready.new({ summary }),
+  );
+  const markIdentityActivitySeen = jest.fn(async () =>
+    Bindings.IdentityActivitySeenOutcome.Saved.new(),
+  );
+  const openNamedIdentity = jest.fn(
+    () =>
+      ({
+        readIdentityActivity,
+        markIdentityActivitySeen,
+      }) as unknown as Bindings.NamedIdentityClient,
+  );
+  const listNamedIdentityActivity = jest.fn(async () =>
+    Bindings.NamedIdentityActivityListOutcome.Ready.new({ activities: [] }),
+  );
+  const { runtime, native } = setup({ openNamedIdentity, listNamedIdentityActivity });
+  const client = runtime.forIdentity(identity);
+  const input = {
+    scope: Bindings.IdentityActivityScope.Group.new({ groupId: new Uint8Array(32).fill(7) }),
+    throughSequence: 42n,
+  };
+  await runtime.listNamedIdentityActivity();
+  await client.readIdentityActivity();
+  expect(markIdentityActivitySeen).not.toHaveBeenCalled();
+  await client.markIdentityActivitySeen(input);
+  expect(markIdentityActivitySeen).toHaveBeenCalledWith(input);
+  expect(openNamedIdentity).toHaveBeenCalledWith(identity);
+  expect(openNamedIdentity).toHaveBeenCalledTimes(1);
+  expect(native.prepareOutbound).not.toHaveBeenCalled();
 });

@@ -13,24 +13,36 @@ that identity's groups, with empty announce application data. Observers can
 associate the two services with the same public identity, but learn no group list,
 membership or inventory head from their announce payloads.
 
-The standalone native runner defaults to startup and six hours plus 0–25%
-positive jitter. A caller-owned `AnnounceControl` supplies optional intervals
-and manual requests; its 60-second cooldown is local to the runner lifetime.
+| Consumer | Automatic policy | Ownership |
+| --- | --- | --- |
+| Standalone native runner | Startup and six hours plus 0–25% positive jitter by default | Caller-owned `AnnounceControl`; cooldown is local to the runner lifetime. |
+| Named-identity app | One hour plus 0–25% jitter by default; manual only, 15/30 minutes and one/three/six hours are selectable | One durable shared scheduler across enabled identities/services; each group runner's automatic timer is disabled. |
+
 Manual only disables startup and periodic work, while explicit manual requests
-and requested path responses remain available. Changing a preference does not
-itself announce. `Requested`, `Throttled`, `Busy` and `Unavailable` describe local
-admission, not transmission or recipient reachability.
+and requested path responses remain available. Changing a preference, selecting
+an identity or renaming it does not itself announce. All groups for one identity
+share the same pair of destinations; adding identities increases potential service
+traffic, while adding groups does not add destinations.
 
-Applications own preference persistence and any shared budget across local
-identities. Pausing an identity must fence its future work. The [portable identity scheduler](../../../../prns-identities/runtime/README.md#shared-announce-scheduling)
-can reserve attempts durably before dispatch and coordinate a shared budget.
-Composing it with the runner and a phone lifecycle is separate application work;
-disable per-runner automatic timers when a shared owner schedules the same services.
-Do not infer durable restart behavior from the process-local runner cooldown.
+The [portable shared scheduler](../../../../prns-identities/runtime/README.md#shared-announce-scheduling)
+reserves attempts durably before dispatch, shares a 60-second batch budget across
+owners, and applies owner cooldown and fair selection. Failed or uncertain host
+submission still spends the reservation. Reboot waits conservatively and does not
+replay an incomplete attempt. Manual intent is coalesced and volatile; a queued or
+throttled result is not transmission. Pausing clears fresh pending work for that
+owner. Storage failure fences dispatch until recovery.
 
-All groups for one identity share the same pair of destinations. Adding identities
-increases potential service traffic; adding groups does not add destinations.
-A fast BLE first hop does not justify unrestricted announces over a LoRa path.
+The standalone runner instead uses a one-slot manual lane and a process-local
+60-second cooldown. Its `Requested`, `Throttled`, `Busy` and `Unavailable` outcomes
+describe local admission. Do not infer the app's durable restart behavior from
+this lower-level adapter. See the [named-identity integration](../../../../applications/docs/named-identities.md#announce-policy)
+for app-facing outcomes and lifecycle admission.
+
+The one-hour app default is a mobility tradeoff, not a measured optimum or a sync
+deadline. Shorter intervals are explicit discovery choices and may be suppressed
+by normal Reticulum interface rate control. Stable or constrained deployments can
+retain six hours or manual only. A fast local BLE interface does not justify
+unrestricted announces on a path that continues over LoRa.
 
 Sparse refresh helps maintain discoverable cached routes across intermittent
 transport contacts. Unknown-destination path requests are not recursively
@@ -69,16 +81,18 @@ is separate from unsolicited service refresh. Stock
 also distinguish path responses from unsolicited announcements.
 
 The [native runner](../../../runner/native/src/announces.rs) supplies standalone
-controls. Destination registration itself starts no timer. Requested path
-responses remain outside the application scheduler and pass through ordinary
-interface pacing.
+controls. The app's [identity service composition](../../../../applications/prns/native-composition/src/identity_services/README.md)
+uses the shared announce owner instead. Destination registration itself does not
+start a second timer. Requested path responses remain outside the application
+scheduler and still pass through ordinary interface pacing.
 
 ## Qualification
 
-Host tests cover disabled startup, interval changes, positive jitter and bounded
-manual admission. Cold group/enrollment tests exercise requested discovery without
-unsolicited announces. These are scheduling and protocol checks, not physical
-airtime or battery measurements.
+Host tests cover disabled startup, interval changes, positive jitter, bounded
+manual admission, durable reservation/restart, partial host outcomes, identity
+isolation and fairness. Cold group/enrollment tests exercise requested discovery
+without unsolicited announces. These are scheduling and protocol checks, not
+physical airtime or battery measurements.
 
 For an [isolated LoRa trial](lora-qualification.md), count unsolicited announces
 separately from requested path responses and measure bytes at startup, idle,

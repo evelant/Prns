@@ -1,60 +1,54 @@
 # Group development tools
 
-These tools support fixed-membership regression trials. They are not the normal
-app onboarding or production backup flow; use [authenticated enrollment](enrollment.md)
-for new groups and invitations. Fixture snapshots contain private MLS state.
+These tools support fixed-membership native regression trials. Use
+[authenticated enrollment](enrollment.md) for app groups and invitations. The
+phone app uses identity-scoped stores and does not load these fixtures into a
+named identity. Copying a primary-identity fixture into an app container cannot
+provision a group in the current app.
 
 ## Fixed-membership fixtures
 
-The headless peer below is the independent consumer available in this boundary.
-Phone fixture import and generated application bindings belong to the following
-app integration. A fixture is deliberate development provisioning, not a normal
-invitation or production backup.
-
 No public test identity or globally shared private group key is baked in. Obtain
-the **primary Reticulum identity hash** from each intended device's node details
-(not its LXMF destination). Generate one private fixture per endpoint:
+the public Reticulum identity hash from each independently initialized native
+endpoint, then generate one private fixture per endpoint:
 
 ```sh
 cargo run --locked --manifest-path prns-groups/Cargo.toml -p prns-groups-runner-native --bin dev-group-fixture -- NEW_OUTPUT_DIRECTORY "Development group" FIRST_IDENTITY_HEX SECOND_IDENTITY_HEX
 ```
 
-Identity hashes are 32 hexadecimal characters. The directory must not already
-exist. The generator uses OS entropy, independently enrolls 2–8 MLS members and
-derives the `prns.groups` destinations from their supplied Reticulum identities.
-It emits `member-1.json`, `member-2.json`, etc. in the same order as the arguments,
-with restricted Unix file permissions. Each fixture contains only that endpoint's
-private MLS state plus the authenticated group and peer configuration.
+Identity hashes are 32 hexadecimal characters, not LXMF destination hashes. The
+directory must not already exist. The generator uses OS entropy, independently
+enrolls 2–8 MLS members and derives the `prns.groups` destinations from their
+supplied Reticulum identities. It emits `member-1.json`, `member-2.json`, etc. in
+argument order, with restricted Unix permissions. Each fixture contains only
+that endpoint's private MLS state and authenticated group/peer configuration.
 
-Install each generated fixture only into its intended endpoint. The headless
-peer accepts the file at its private `group-fixture.json` path as described below.
-Other consumers must implement atomic import, identity validation and refusal to
-restore initial secrets over an already-used database. Phone import is not part
-of this library boundary.
+The native fixture loader validates the supplied identity and atomically imports
+into an empty namespace. Later opens verify the configuration and load current
+ratchets; they never restore the initial snapshot over existing state. Corrupt
+or mismatched fixtures fail closed. The headless peer below retains the fixture
+for subsequent starts; independent test consumers supply it through the fixture
+API and own their storage lifecycle.
 
 Fixtures contain plaintext secrets. Transfer them privately, install each on
-exactly one device and do not commit or publish them. Cloning a fixture or
+exactly one endpoint and do not commit or publish them. Cloning a fixture or
 restoring it after deleting a used database can fork/reuse MLS ratchet state.
-Generate a fresh group for a deliberate reset. Fixture snapshots are enrollment
-artifacts, not recovery backups. Keeping enrollment snapshots also keeps their
-initial ratchet secrets: this development path does not establish at-rest forward
-secrecy. It does not yet qualify private production conversations or protected key
-retirement on phones.
+Generate a fresh group for a deliberate reset. Fixtures are enrollment artifacts,
+not recovery backups. Retaining them also retains initial ratchet secrets; this
+path does not establish at-rest forward secrecy or protected key retirement.
 
-The first development policy is fixed membership, text up to 2048 UTF-8 bytes,
-256 retained records and a maximum 14-day delivery window. Bounds are part of the
-fixture format; changing them requires an explicit migration or fresh enrollment.
-They are logical capacity limits, not memory/file-size guarantees.
-
-Record, output, receipt and backend object limits are independent ceilings.
-Admission and maintenance must respect each bound; a record-count ceiling is not
-a guarantee that every possible receipt pattern fits. Retire only eligible work
-through the runner/store APIs, preserving replay floors and exact pending output.
+The fixed profile permits text up to 2048 UTF-8 bytes, 256 retained records and
+a maximum 14-day delivery window. These are logical bounds in the fixture format,
+not memory/file-size guarantees. Changing them requires explicit migration or
+fresh enrollment. Record, output, receipt and backend object limits are separate:
+a record-count ceiling does not guarantee every receipt pattern fits. Retire
+eligible work through the runner/store APIs while preserving replay floors and
+exact pending output.
 
 ## Headless development peer
 
 The optional `dev-group-peer` executable is a native consumer of the same runner,
-store lane and shared host used by the app. Its `headless` feature adds TCP and
+store lane and shared host APIs used by the app. Its `headless` feature adds TCP and
 executable host ownership; it does not change the reusable
 runner or embedded dependencies. Build from the repository root:
 
@@ -66,7 +60,7 @@ prns-groups/target/debug/dev-group-peer init /private/tmp/group-peer
 `init` prints the public `identity` and `destination` as JSON. It generates and
 persists a private identity using OS entropy only on the first invocation; later
 invocations return the same public identity. Include this identity hash along with
-the other endpoints' primary identity hashes when running `dev-group-fixture` above. Copy
+the other native endpoints' identity hashes when running `dev-group-fixture` above. Copy
 **only this peer's** fixture to `/private/tmp/group-peer/group-fixture.json`, then
 start it:
 
@@ -74,8 +68,8 @@ start it:
 prns-groups/target/debug/dev-group-peer run /private/tmp/group-peer --listen 0.0.0.0:4242
 ```
 
-Connect other endpoints' TCP interfaces to this computer's reachable LAN address and
-port 4242. The listener enables Reticulum Transport, allowing connected members
+Connect the other test peers to this computer's reachable LAN address and port
+4242. The listener enables Reticulum Transport, allowing connected members
 to establish links through it as well as exchange stored group envelopes with it.
 Use a private test network and allow the port through the host firewall. A second
 headless endpoint can use `run ITS_ROOT --connect HOST:4242`. This is ordinary
@@ -125,8 +119,9 @@ regular files (normally 0600). Symlink roots, directories and private files are
 refused; existing permissions are never silently changed. `init` creates new
 roots with 0700 permissions, and `run` requires an existing identity and fixture
 and never mints a replacement. The development fixture/key limitations described above apply.
-The default poll interval is 15 seconds, with bounded retry backoff; development
-measurements can set `--poll-ms 100..60000`. Fast polling is for controlled tests,
+The default caller poll interval is 15 seconds; the runner also applies its
+interface-aware policy floors and bounded retry backoff. Development measurements
+can set `--poll-ms 100..60000`. Fast polling is for controlled tests,
 not a radio or battery policy.
 
 The `headless_process` suite runs three independent executables over real TCP:

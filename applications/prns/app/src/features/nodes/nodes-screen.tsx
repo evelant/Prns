@@ -4,6 +4,7 @@ import type { Href } from "expo-router";
 import { useState } from "react";
 
 import { useDevelopmentRuntime } from "@/native/development-runtime-context";
+import { InfoDisclosure } from "@/ui/info-disclosure";
 import { NavigationLink } from "@/ui/navigation-link";
 import {
   ActionRow,
@@ -41,8 +42,19 @@ export function NodesScreen() {
 
   return (
     <Screen>
-      <ScreenHeading>Nodes</ScreenHeading>
-      <BodyText>Manage this phone and your paired nodes.</BodyText>
+      <ScreenHeading
+        trailing={
+          <InfoDisclosure label="About nodes">
+            <BodyText>Manage this phone and your paired nodes.</BodyText>
+            <BodyText>
+              Nearby phones can message without a paired node. Pairing gives this phone access to a
+              node's supported controls; it does not enroll that node in your groups.
+            </BodyText>
+          </InfoDisclosure>
+        }
+      >
+        Nodes
+      </ScreenHeading>
 
       <Card>
         <CardHeader title="This phone">
@@ -79,7 +91,6 @@ export function NodesScreen() {
           <ActionRow>
             <NavigationLink href="/more/interfaces">Connections</NavigationLink>
             <NavigationLink href="/more/activity">Network</NavigationLink>
-            <NavigationLink href="/nodes/local/grants">Remote access</NavigationLink>
           </ActionRow>
         </CardSection>
       </Card>

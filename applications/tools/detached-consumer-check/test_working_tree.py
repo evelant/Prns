@@ -164,11 +164,38 @@ class WorkingTreeTests(unittest.TestCase):
             self.assertIn('git = "file:///recorded"', (jni / 'Cargo.toml').read_text())
             self.assertIn('path="../prns-react-native/platform/android"', (app / 'Cargo.toml').read_text())
 
-    def test_checked_policy_covers_facade_native_and_android_jni(self):
+    def test_checked_policy_covers_facade_native_android_jni_and_identities(self):
         policy = working_tree.load_policy(mobility.REPOSITORY_ROOT)
         packages = working_tree.validate_dependencies(mobility.REPOSITORY_ROOT, policy, mobility)
         for name in ('prns-host-uniffi','prns-host-native','prns-expo-android','prns-app-native'):
             self.assertIn(name, packages)
+        for component in ('core', 'codec', 'runtime', 'native'):
+            with self.subTest(component=component):
+                self.assertEqual(packages[f'prns-identities-{component}'],
+                                 f'prns-identities/{component}/Cargo.toml')
+
+    def test_checked_policy_rejects_missing_identity_source_root(self):
+        policy = working_tree.load_policy(mobility.REPOSITORY_ROOT)
+        policy['sourceRoots'].remove('prns-identities')
+        with self.assertRaisesRegex(ValueError, r'Cargo dependency prns-identities-.* escapes source snapshot'):
+            working_tree.validate_dependencies(mobility.REPOSITORY_ROOT, policy, mobility)
+
+    def test_checked_policy_covers_group_native_dependency_closure(self):
+        policy = working_tree.load_policy(mobility.REPOSITORY_ROOT)
+        packages = working_tree.validate_dependencies(mobility.REPOSITORY_ROOT, policy, mobility)
+        for name, manifest in (
+            ('prns-groups-runner-native', 'prns-groups/runner/native/Cargo.toml'),
+            ('prns-groups-reticulum', 'prns-groups/transport/reticulum/Cargo.toml'),
+            ('prns-groups-service', 'prns-groups/service/Cargo.toml'),
+        ):
+            with self.subTest(package=name):
+                self.assertEqual(packages[name], manifest)
+
+    def test_checked_policy_rejects_missing_group_source_root(self):
+        policy = working_tree.load_policy(mobility.REPOSITORY_ROOT)
+        policy['sourceRoots'].remove('prns-groups')
+        with self.assertRaisesRegex(ValueError, r'Cargo dependency prns-groups.* escapes source snapshot'):
+            working_tree.validate_dependencies(mobility.REPOSITORY_ROOT, policy, mobility)
 
     def test_workspace_projection_preserves_inherited_policy(self):
         with tempfile.TemporaryDirectory() as temporary:

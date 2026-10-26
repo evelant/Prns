@@ -1,21 +1,28 @@
-import * as Bindings from "@prns-internal/expo";
+jest.mock("@/native/use-visible-identity-activity", () => ({
+  useVisibleIdentityActivity: jest.fn(),
+}));
+
 import type {
   Contact,
   DevelopmentNodeSnapshot,
+  ListLxmfMessagesInput,
   LxmfMessage,
   LxmfMessageListOutcome,
-  ListLxmfMessagesInput,
   LxmfPeerSummary,
   MeasureLxmfTextOutcome,
   SendDirectTextOutcome,
 } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import { act, fireEvent, render, renderHook, waitFor } from "@testing-library/react-native";
 import { destinationHash } from "personal-rns/contract";
 import type { ReactNode } from "react";
 import type { RuntimeCommandResult } from "@/native/development-runtime-context";
+import { useVisibleIdentityActivity } from "@/native/use-visible-identity-activity";
 import { ComposeScreen, ConversationScreen, InboxScreen } from "./inbox-screen.native";
 import { useLxmfData } from "./use-lxmf-data";
+
 const mockReplace = jest.fn();
+jest.mock("@/features/groups/group-inbox-section", () => ({ GroupInboxSection: () => null }));
 const mockDestination = destinationHash(Uint8Array.from({ length: 16 }, (_, index) => index));
 const mockPeer: LxmfPeerSummary = {
   destination: mockDestination,
@@ -196,6 +203,7 @@ let mockActiveSnapshot: DevelopmentNodeSnapshot | null = mockSnapshot;
 let mockBluetoothAuthorization: Bindings.BluetoothAuthorizationStatus | null = null;
 let mockLifecycleFailure: string | null = null;
 let mockAvailable = true;
+let mockOwnerKey: string | undefined;
 jest.mock("expo-router", () => ({
   Link: ({ children }: { readonly children: ReactNode }) => children,
   useRouter: () => ({ replace: mockReplace }),
@@ -204,6 +212,7 @@ jest.mock("@/native/development-runtime-context", () => ({
   useDevelopmentRuntime: () => ({
     availability: { type: mockAvailable ? "available" : "unavailable", platform: "ios" },
     phase: mockPhase,
+    ownerKey: mockOwnerKey,
     snapshot: mockActiveSnapshot,
     bluetoothAuthorization: mockBluetoothAuthorization,
     lifecycleFailure: mockLifecycleFailure,
@@ -232,6 +241,7 @@ beforeEach(() => {
   mockBluetoothAuthorization = null;
   mockLifecycleFailure = null;
   mockAvailable = true;
+  mockOwnerKey = undefined;
   mockListContacts.mockResolvedValue(
     Bindings.ContactListOutcome.Listed.new({ contacts: [mockContact] }),
   );
@@ -281,7 +291,10 @@ describe("durable LXMF screens", () => {
   test("keeps the Inbox focused on conversations with no network announce action", async () => {
     const screen = render(<InboxScreen />);
     expect(await screen.findByText("Claims to be Saved alias")).toBeTruthy();
-    expect(screen.getByText("Keep prns open for reliable message delivery.")).toBeTruthy();
+    expect(screen.queryByText(/Keep prns open to send and receive/u)).toBeNull();
+    fireEvent.press(screen.getByRole("button", { name: "About your inbox" }));
+    expect(screen.getByText(/Keep prns open to send and receive/u)).toBeTruthy();
+    fireEvent.press(screen.getByRole("button", { name: "Close About your inbox" }));
     expect(screen.queryByRole("button", { name: "Messaging options" })).toBeNull();
     expect(screen.queryByText("Share messaging address")).toBeNull();
     expect(mockAnnounceLxmf).not.toHaveBeenCalled();
@@ -350,8 +363,11 @@ describe("durable LXMF screens", () => {
       expect(screen.getByText("Unreadable text")).toBeTruthy();
     });
     expect(screen.getByText("Unverified — invalid signature")).toBeTruthy();
+    expect(screen.queryByText("Destination")).toBeNull();
+    fireEvent.press(screen.getByRole("button", { name: "Conversation details" }));
     expect(screen.getByText("Destination")).toBeTruthy();
     expect(screen.getByText("000102030405060708090a0b0c0d0e0f")).toBeTruthy();
+    fireEvent.press(screen.getByRole("button", { name: "Close Conversation details" }));
     expect(screen.getAllByText("Received")).toHaveLength(2);
     expect(screen.getByText(/ · Received$/u)).toBeTruthy();
     expect(screen.queryByText("Message ID")).toBeNull();
@@ -368,7 +384,7 @@ describe("durable LXMF screens", () => {
     fireEvent.changeText(screen.getByLabelText("Title (optional)"), "Hello");
     fireEvent.changeText(screen.getByLabelText("Message"), "Proof please");
     await waitFor(() => {
-      expect(screen.getByText("140 bytes used · 291 bytes available")).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Send message" })).toBeEnabled();
     });
     fireEvent.press(screen.getByText("Send message"));
     await waitFor(() => {
@@ -381,7 +397,24 @@ describe("durable LXMF screens", () => {
     expect(await screen.findByText("Message queued.")).toBeTruthy();
     expect(screen.queryByText(/^Delivered$/u)).toBeNull();
   });
-  test("shows the measured byte budget and blocks an oversized direct message", async () => {
+  test("acknowledges only the observed incoming cursor and hides routine size details", async () => {
+    mockListLxmfMessages.mockResolvedValue({
+      type: "outcome",
+      outcome: Bindings.LxmfMessageListOutcome.Listed.new({
+        messages: [mockMessage, mockQueuedMessage],
+      }),
+    });
+    const screen = render(<ConversationScreen destination={mockDestination} />);
+    await screen.findByText("Unreadable text");
+    expect(useVisibleIdentityActivity).toHaveBeenLastCalledWith(
+      Bindings.IdentityActivityScope.Direct.new({ destination: mockDestination }),
+      1n,
+    );
+    expect(screen.queryByText("140 bytes used · 291 bytes available")).toBeNull();
+    fireEvent.press(await screen.findByRole("button", { name: "Message size" }));
+    expect(screen.getByText("140 bytes used · 291 bytes available")).toBeTruthy();
+  });
+  test("blocks oversized messages with an actionable error", async () => {
     mockMeasureLxmfText.mockResolvedValue({
       type: "outcome",
       outcome: Bindings.MeasureLxmfTextOutcome.NeedsResource.new({
@@ -390,9 +423,7 @@ describe("durable LXMF screens", () => {
     });
     const screen = render(<ConversationScreen destination={mockDestination} />);
     fireEvent.changeText(screen.getByLabelText("Message"), "Too large");
-    expect(
-      await screen.findByText("432 bytes used. This message is too large for direct delivery."),
-    ).toBeTruthy();
+    expect(await screen.findByText("Message too long. Shorten it before sending.")).toBeTruthy();
     expect(screen.getByRole("button", { name: "Send message" }).props.accessibilityState).toEqual(
       expect.objectContaining({ disabled: true }),
     );
@@ -432,7 +463,7 @@ describe("durable LXMF screens", () => {
     fireEvent.changeText(screen.getByLabelText("Title (optional)"), "Hello");
     fireEvent.changeText(screen.getByLabelText("Message"), "Proof please");
     await waitFor(() => {
-      expect(screen.getByText("140 bytes used · 291 bytes available")).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Send message" })).toBeEnabled();
     });
     fireEvent.press(screen.getByText("Send message"));
     await waitFor(() => {
@@ -453,7 +484,7 @@ describe("durable LXMF screens", () => {
     const screen = render(<ComposeScreen initialDestination={destination} />);
     fireEvent.changeText(screen.getByLabelText("Message"), "No observed peer");
     await waitFor(() => {
-      expect(screen.getByText("140 bytes used · 291 bytes available")).toBeTruthy();
+      expect(screen.getByRole("button", { name: "Send message" })).toBeEnabled();
     });
     fireEvent.press(screen.getByText("Send message"));
     expect(
@@ -520,12 +551,11 @@ describe("durable LXMF screens", () => {
     const screen = render(<InboxScreen />);
     expect(await screen.findByText("Claims to be Saved alias")).toBeTruthy();
     expect(screen.getByText("Open conversation")).toBeTruthy();
-    expect(screen.getByText("Check Bluetooth access")).toBeTruthy();
+    expect(screen.getByText("Allow Bluetooth")).toBeTruthy();
     expect(screen.getAllByText("Bluetooth access needed")).toHaveLength(1);
     expect(screen.queryByText("Messaging status")).toBeNull();
     expect(screen.queryByText("Getting ready")).toBeNull();
     expect(screen.queryByText("No conversations")).toBeNull();
-    expect(screen.queryByText("No messages are saved on this device.")).toBeNull();
     expect(screen.queryByText("New message")).toBeNull();
     expect(screen.queryByText("Share messaging address")).toBeNull();
     expect(mockListContacts).toHaveBeenCalled();
@@ -597,7 +627,6 @@ describe("durable LXMF screens", () => {
       );
       expect(screen.getByText("Loading saved messages…")).toBeTruthy();
       expect(screen.queryByText("No conversations")).toBeNull();
-      expect(screen.queryByText("No messages are saved on this device.")).toBeNull();
       expect(screen.queryByText("No messages with this contact yet.")).toBeNull();
       await act(async () =>
         complete?.({
@@ -607,9 +636,7 @@ describe("durable LXMF screens", () => {
       );
       expect(
         await screen.findByText(
-          surface === "inbox"
-            ? "No messages are saved on this device."
-            : "No messages with this contact yet.",
+          surface === "inbox" ? "No conversations" : "No messages with this contact yet.",
         ),
       ).toBeTruthy();
     },
@@ -629,7 +656,6 @@ test("retains the native storage reset outcome through an offline mailbox read",
   expect(screen.getByText("Open recovery")).toBeTruthy();
   expect(screen.queryByText(/private storage detail|storage bootstrap failed/)).toBeNull();
   expect(screen.queryByText("No conversations")).toBeNull();
-  expect(screen.queryByText("No messages are saved on this device.")).toBeNull();
 });
 
 describe("messaging recipient journey", () => {
@@ -663,7 +689,7 @@ describe("messaging recipient journey", () => {
     expect(view.queryByLabelText("Recipient")).toBeNull();
     fireEvent.press(view.getByRole("button", { name: "Choose Saved alias" }));
     expect(view.getByLabelText("Message")).toBeTruthy();
-    await view.findByText("140 bytes used · 291 bytes available");
+    await view.findByRole("button", { name: "Message size" });
     expect(mockSendDirectText).not.toHaveBeenCalled();
   });
   test("selects a discovered recipient without saving or announcing", async () => {
@@ -672,7 +698,7 @@ describe("messaging recipient journey", () => {
     fireEvent.press(view.getByRole("button", { name: "Discovered" }));
     fireEvent.press(await view.findByRole("button", { name: "Choose Announced peer" }));
     expect(view.getByLabelText("Message")).toBeTruthy();
-    await view.findByText("140 bytes used · 291 bytes available");
+    await view.findByRole("button", { name: "Message size" });
     expect(mockAnnounceLxmf).not.toHaveBeenCalled();
     expect(mockSendDirectText).not.toHaveBeenCalled();
   });
@@ -1167,4 +1193,22 @@ test("stopping during a lookup releases recipient controls on restart without re
   expect(view.getByLabelText("Message").props.value).toBe("New generation draft");
   expect(mockReplace).not.toHaveBeenCalled();
   expect(view.queryByText(/This contact could not be found/)).toBeNull();
+});
+
+test("named identities never display singleton LXMF health as their messaging status", async () => {
+  mockOwnerKey = "named-personal";
+  mockActiveSnapshot = {
+    ...mockSnapshot,
+    lxmf: {
+      state: Bindings.LxmfHealthState.Stopped,
+      inboundOverflowCount: 0n,
+      mailboxRevision: 0n,
+      projectionRevision: 0n,
+    },
+  };
+  const screen = render(<InboxScreen />);
+  await waitFor(() => expect(mockListLxmfConversations).toHaveBeenCalled());
+  expect(screen.queryByText("Messaging status")).toBeNull();
+  expect(screen.queryByText("Messaging ready")).toBeNull();
+  expect(screen.queryByText("Offline")).toBeNull();
 });

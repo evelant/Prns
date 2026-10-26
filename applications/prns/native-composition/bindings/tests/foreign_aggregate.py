@@ -22,9 +22,40 @@ async def run():
     with tempfile.TemporaryDirectory(prefix="prns-aggregate-") as directory:
         root = str(Path(directory) / "prns" / "development")
         assert isinstance(app.native_prepare_storage(root), app.NativeStoragePreparationOutcome.PREPARED)
+        request_id = await app.create_group_request_id()
+        assert isinstance(request_id, app.GroupRequestIdOutcome.READY)
+        assert len(request_id.client_request_id) == 32
+        assert isinstance(await app.list_group_conversations(), app.GroupConversationListOutcome.NOT_PROVISIONED)
+        assert isinstance(await app.list_group_messages(app.ListGroupMessagesInput(
+            group_id=bytes([1] * 32), before_sequence=None, limit=50,
+        )), app.GroupMessageListOutcome.NOT_PROVISIONED)
+        assert isinstance(await app.send_group_text(app.SendGroupTextInput(
+            group_id=bytes([1] * 32), client_request_id=request_id.client_request_id, text="Explicit enrollment required",
+        )), app.GroupTextSendOutcome.NOT_PROVISIONED)
+        assert app.shared_host() is None
         created = app.native_create_generated_identity(root)
         assert isinstance(created, app.IdentityCreationOutcome.CREATED), created
         identity = created.identity_hash
+        exported = await app.export_contact_card(app.ExportContactCardInput(
+            expected_local_identity=identity,
+        ))
+        assert isinstance(exported, app.ContactCardExportOutcome.READY), exported
+        assert exported.card.uri.startswith("rns-contact://v1/")
+        assert exported.card.identity == identity
+        assert len(exported.card.service_name_hash) == 10
+        preview = app.preview_contact_card(exported.card.uri)
+        assert isinstance(preview, app.ContactCardPreviewOutcome.VALID), preview
+        assert preview.card.destination == exported.card.destination
+        assert isinstance(app.preview_contact_card(exported.card.uri + "?x=1"), app.ContactCardPreviewOutcome.INVALID)
+        import_input = app.ImportContactCardInput(
+            uri=exported.card.uri, expected_local_identity=identity, alias="Private card alias",
+        )
+        imported = await app.import_contact_card(import_input)
+        assert isinstance(imported, app.ContactCardImportOutcome.SAVED), imported
+        assert imported.contact.identity == identity and imported.contact.is_messaging
+        assert imported.contact.alias == "Private card alias"
+        assert imported.contact.announced_name is None and not imported.contact.pinned
+        assert app.shared_host() is None
         for _ in range(2):
             started = app.native_start(root, app.DevelopmentNodeStartInput(development_tcp_target=None))
             assert isinstance(started, app.DevelopmentNodeStartOutcome.STARTED), started
@@ -51,12 +82,15 @@ async def run():
                 assert isinstance(app.native_stop(), app.DevelopmentNodeStopOutcome.STOPPED)
             assert app.shared_host() is None
             assert app.native_inspect_identity(root).identity_hash == identity
+            repeated = await app.import_contact_card(import_input)
+            assert isinstance(repeated, app.ContactCardImportOutcome.EXISTING), repeated
+            assert repeated.contact.alias == "Private card alias"
         assert isinstance(app.native_reset(root), (
             app.DevelopmentNodeStopOutcome.STOPPED,
             app.DevelopmentNodeStopOutcome.ALREADY_STOPPED,
         ))
         assert isinstance(app.native_inspect_identity(root), app.PrimaryIdentityState.MISSING)
-    print("Aggregate foreign ownership, native event claim, retained identity, restart and reset passed")
+    print("Aggregate foreign ownership, offline signed contact cards, retained identity, restart and reset passed")
 
 
 asyncio.run(run())

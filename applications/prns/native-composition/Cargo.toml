@@ -32,6 +32,8 @@ apple = [
     "personal-rns/bluetooth-auto",
     "personal-rns/tcp",
     "prns-interfaces-tokio/bluetooth-auto",
+    # Safe metadata target remains disabled unless the application explicitly opts in.
+    "prns-interfaces-tokio/log",
 ]
 host-test = ["personal-rns/tcp"]
 android = [
@@ -40,19 +42,27 @@ android = [
     "personal-rns/bluetooth-auto",
     "personal-rns/tcp",
 ]
-ios-restoration-probe = ["apple", "dep:log", "prns-interfaces-tokio/log"]
+ios-restoration-probe = ["apple", "prns-interfaces-tokio/log"]
 
 [dependencies]
+prns-identities-runtime = { path = "../../../prns-identities/runtime" }
+prns-identities-native = { path = "../../../prns-identities/native", features = ["redb-store"] }
+prns-identities-core = { path = "../../../prns-identities/core" }
+prns-contact-card = { path = "../../services/contact-card" }
 futures-timer = "=3.0.3"
+getrandom = "0.2"
 uniffi = { version = "=0.31.2", optional = true, default-features = false }
 personal-rns = { path = "../../../personal-rns", default-features = false, features = ["tokio-host"] }
 prns-lxmf = { path = "../../services/lxmf", default-features = false, features = ["redb-mailbox", "tokio-host"] }
-prns-core = { path = "../../../prns-core", default-features = false, features = ["std"] }
+prns-core = { path = "../../../prns-core", default-features = false, features = ["std", "path-diagnostics"] }
 prns-host = { path = "../../../prns-host/core" }
 prns-host-native = { path = "../../../prns-host/impls/native" }
+prns-groups-runner-native = { path = "../../../prns-groups/runner/native" }
+prns-groups-reticulum = { path = "../../../prns-groups/transport/reticulum" }
+prns-groups-service = { path = "../../../prns-groups/service" }
 prns-host-uniffi = { path = "../../../prns-host/bindings/uniffi", optional = true }
 prns-interfaces-tokio = { path = "../../../prns-interfaces/impls/tokio", default-features = false, optional = true }
-log = { version = "0.4", default-features = false, optional = true }
+log = { version = "0.4", default-features = false }
 prns-expo-android = { path = "../../../prns-react-native/platform/android", optional = true }
 redb = "=4.2.0"
 serde = { version = "1", features = ["derive"] }

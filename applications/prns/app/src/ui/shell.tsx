@@ -1,11 +1,17 @@
-import { Link, Slot, usePathname } from "expo-router";
+import * as Bindings from "@prns-internal/expo";
+import { Link, Slot, usePathname, useRouter } from "expo-router";
 import { type PropsWithChildren, useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { IdentityBanner } from "@/features/identities/identity-banner";
+import { IdentityPicker } from "@/features/identities/identity-picker";
+import { identityHref } from "@/native/identity-navigation";
+import { identityReferenceKey, useNamedIdentity } from "@/native/named-identity-context";
 import { navigationEntries, type ScreenCatalogEntry } from "@/navigation/catalog";
 import { useScaffoldState } from "@/state/scaffold-state-context";
-import { Badge } from "./primitives";
+import { InfoDisclosure } from "./info-disclosure";
+import { NavigationIcon } from "./navigation-icon";
+import { BodyText } from "./primitives";
 import { layoutModeForWidth, radius, space, useAppPalette } from "./theme";
 
 export function ShellLayout() {
@@ -24,6 +30,7 @@ export function ShellLayout() {
   return (
     <SafeAreaView style={[styles.safeArea, { backgroundColor: useAppPalette().background }]}>
       <ShellHeader />
+      <IdentityBanner />
       <View style={styles.shellBody}>
         {layout === "compact" ? null : <NavigationRail active={active} entries={entries} />}
         <View role="main" style={styles.content}>
@@ -37,6 +44,9 @@ export function ShellLayout() {
 
 function ShellHeader() {
   const palette = useAppPalette();
+  const identities = useNamedIdentity();
+  const router = useRouter();
+  const [selectionFailed, setSelectionFailed] = useState(false);
   return (
     <View
       style={[styles.header, { backgroundColor: palette.surface, borderColor: palette.border }]}
@@ -45,7 +55,42 @@ function ShellHeader() {
       <Text accessibilityRole="header" style={[styles.brand, { color: palette.text }]}>
         prns
       </Text>
-      <Badge>Development preview</Badge>
+      {identities?.identity == null ? null : (
+        <View style={styles.identityControl}>
+          <IdentityPicker
+            selectedKey={identities.ownerKey}
+            label="Messaging identity"
+            disabled={identities.loading}
+            onSelect={(identity) => {
+              setSelectionFailed(false);
+              void identities
+                .change(identity.reference, Bindings.NamedIdentityChange.Select.new())
+                .then((changed) => {
+                  if (changed)
+                    router.replace({
+                      pathname: "/inbox",
+                      params: { owner: identityReferenceKey(identity.reference) },
+                    });
+                  else setSelectionFailed(true);
+                });
+            }}
+          />
+        </View>
+      )}
+      <InfoDisclosure label="About this alpha">
+        <BodyText>
+          Keep prns open for reliable delivery. Use test data; saved messages are not yet protected.
+        </BodyText>
+        <BodyText>
+          Choose an identity to keep its contacts and conversations separate. Other active
+          identities keep receiving.
+        </BodyText>
+      </InfoDisclosure>
+      {selectionFailed ? (
+        <Text accessibilityRole="alert" style={{ color: palette.warning }}>
+          Couldn’t switch identity. Try again.
+        </Text>
+      ) : null}
     </View>
   );
 }
@@ -117,10 +162,15 @@ function ShellNavigationItem({
   readonly entry: ScreenCatalogEntry;
 }) {
   const palette = useAppPalette();
+  const selected = useNamedIdentity()?.catalog?.selected;
+  const href = identityHref(
+    entry.path,
+    selected === undefined ? undefined : identityReferenceKey(selected),
+  );
   const [focused, setFocused] = useState(false);
   const [pressed, setPressed] = useState(false);
   return (
-    <Link href={entry.path} asChild>
+    <Link href={href} asChild>
       <Pressable
         accessibilityLabel={active ? `${entry.label}, current page` : entry.label}
         aria-current={active ? "page" : undefined}
@@ -154,6 +204,12 @@ function ShellNavigationItem({
             },
           ]}
         >
+          {compact ? (
+            <NavigationIcon
+              section={entry.section}
+              color={active ? palette.selectedText : palette.textMuted}
+            />
+          ) : null}
           <Text
             style={[
               styles.navigationLabel,
@@ -185,6 +241,13 @@ const styles = StyleSheet.create({
     minHeight: 48,
     paddingHorizontal: space.md,
     paddingVertical: space.xs,
+  },
+  identityControl: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 8,
   },
   brand: { fontSize: 22, fontWeight: "800", letterSpacing: -0.5, lineHeight: 28 },
   shellBody: { flex: 1, flexDirection: "row", minHeight: 0 },
@@ -230,6 +293,7 @@ const styles = StyleSheet.create({
   },
   compactNavigationItem: {
     alignItems: "center",
+    gap: 3,
     flexGrow: 1,
     flexShrink: 0,
     minWidth: 0,

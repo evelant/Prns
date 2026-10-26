@@ -3,7 +3,7 @@
 ## Scope and use
 
 A device can create a group locally, invite a specific primary Reticulum identity,
-and accept or decline invitations through the native runner API. Each device generates its own MLS
+and accept or decline invitations in the app. Each device generates its own MLS
 credential locally; joining devices generate their own KeyPackage. No private enrollment fixture is transferred.
 Group creation and the user's decisions are durable while offline. Invitation
 delivery, joining and control catch-up require a running node and eventual contact
@@ -21,22 +21,22 @@ intermediate eras. Removal, ownership transfer, transferable invitation links,
 history sharing and concurrent administrators are outside this slice. Existing fixture
 groups remain readable and usable in their original namespaces.
 
-Application bindings and UI are a following integration. Runner mutations take a native-generated 32-byte request token:
+The app consumes `createGroup`, `inviteToGroup`, `listGroupInvitations` and
+`respondGroupInvitation`. Mutations take a native-generated 32-byte request token:
 `PGR1`, its creation time in seconds, and 20 random bytes. Retry the same immutable
 input and token after an ambiguous result. Tokens are not authentication credentials.
 `Queued` or a saved
 acceptance means local durable intent, not enrollment at the remote device. A
 group becomes usable after committing MLS state through its required membership
-checkpoint. Consumer bindings should retain MLS keys, KeyPackages and Welcome bytes below
-their public application API.
+checkpoint. MLS keys, KeyPackages and Welcome bytes never cross the JavaScript API.
 
 `Client::conversations` also returns the complete current `members` roster and
 its `control_head`. Each member carries its exact endpoint and incarnation,
 Reticulum identity, and local/owner flags. The roster is taken from the same
 validated configuration as the group title and authority; duplicate identities,
 missing endpoint mappings and exceeded membership limits fail rather than produce
-a partial roster. Legacy fixed fixtures have no owner. Consumer projections must preserve these fields and resolve contact names
-locally without replacing authenticated membership evidence. Neither a
+a partial roster. Legacy fixed fixtures have no owner. The app's `GroupMember`
+projection preserves these fields and resolves contact names locally. Neither a
 contact name nor inclusion in this roster means a device is connected. The
 existing conversation `revision` is a record/change revision, not a membership
 revision; use `control_head` for membership provenance. Cached membership can
@@ -51,10 +51,12 @@ busy, uncertain storage/transport outcomes and expired retry evidence retain
 their existing distinct recovery paths. Never infer that an uncertain action did
 not commit or replace its request token automatically.
 
-Consumers must preserve definite rejection categories and durable completed
-results. A replay returns its original result; new error typing must not execute
-an action again. An ambiguous result must retain the original token and input,
-and fresh admission after rejection or expired retry evidence requires review.
+The app carries these categories in `GroupRejectionReason` on direct rejected
+input outcomes and durable `GroupActionResult::Rejected` records. Previously
+saved rejections decode as `Unknown`, preserving their original input and detail.
+A replay of a saved completed action returns that result; adding typed reasons
+does not execute it again. New action admission after rejection or expired retry
+evidence still requires the existing explicit review step.
 
 ## Authentication and ordering
 
@@ -88,7 +90,8 @@ a compromised owner from presenting separate histories to disconnected members.
 The owner retains the exact Welcome and membership result for a consumed invite.
 A retry cannot enroll a second member or substitute another KeyPackage. A delayed
 Welcome includes the owner's current signed tip; the joining device stays out of
-the conversation list until it applies the chain through that tip. Consumers may show “Device joined” only after an authenticated acknowledgement from that device's
+the conversation list until it applies the chain through that tip. The owner shows
+“Device joined” only after an authenticated acknowledgement from that device's
 durable joined state. Control catch-up transfers one bounded transition at a time. The network runner refreshes
 membership from durable state and fences each asynchronous content operation to
 its starting control head. A membership change committed locally during that

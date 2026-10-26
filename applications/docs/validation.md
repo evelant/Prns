@@ -1,70 +1,74 @@
-# Application validation and limits
+# Validation and known limits
 
-This is a development application. Host tests, source exports, packaged builds
-and device trials establish different things. A later checkout does not inherit
-physical acceptance from an older binary. Consult the actual CI run and retain
-source/package hashes with each result.
+This is a maintainer alpha. Host tests, source exports, packaged builds and
+physical trials establish different things. A later source tree does not inherit
+phone or board acceptance from an older binary. Consult the actual CI run for
+current status.
 
-Use the [workspace guide](../README.md) for setup, the
-[SDK guide](react-native-sdk-implementation.md) for ownership, and the
-[roadmap](roadmap.md) for remaining work. The app at this boundary supports direct
-LXMF messaging and node/network controls; group and named-identity app journeys
-are not integrated. Separate group libraries and firmware experiments do not
-establish those app capabilities.
+Start with the [maintainer quickstart](group-maintainer-alpha.md),
+[build guide](../README.md) and [roadmap](roadmap.md).
+
+## Evidence boundaries
+
+| Evidence | Establishes | Does not establish |
+| --- | --- | --- |
+| Host and controlled-time tests | The tested contracts, recovery paths and bounded policies on that source | Phone lifecycle or physical radio behavior |
+| Source export and detached consumer checks | Dependency closure, generated interfaces and supported consumer integration | A signed APK, TestFlight installation or public distribution |
+| Firmware build/resource checks | Linked fit under the selected configuration | Peak stack/heap use, energy or physical recovery |
+| Packaged-build and device trials | The recorded scenarios on the identified binaries/devices | Acceptance of a later source tree or untested lifecycle states |
+
+Keep source revisions, package hashes, commands and results together in CI/release
+artifacts or an external trial record. Historical counts and machine-local paths
+are not current qualification. Preserve failed attempts when comparing recovery;
+clearing data is not a successful retry.
+
+The app's native owner surviving JavaScript replacement differs from the
+standalone SDK's JavaScript-owned session reopening after reload; see the
+[SDK qualification guide](../../prns-react-native/docs/qualification.md).
 
 ## Repeatable checks
+
+Run the [workspace setup](../README.md#setup) first, then select checks for the
+boundary changed:
 
 | Gate | What it establishes |
 | --- | --- |
 | `api:check` | Generated contracts match source |
-| `verify` | Portable native, SDK/platform, UI, route, configuration and web-export checks |
-| `mobility:verify -- --working-tree` | Isolated source export, packed dependencies and supported native/Python LXMF exchange |
-| `mobility:verify` | Recorded-release contract; promotion requires review |
+| `verify` | Portable native, SDK/platform, UI, routes, configuration and web-export checks |
+| `mobility:verify -- --working-tree` | Isolated current-source export, packed dependencies and supported native/Python LXMF exchange |
+| `mobility:verify` | Historical recorded-release contract; promotion requires review |
 | `native:ios:test` | Swift lifecycle and release-symbol checks |
 | `native:android:standalone` / `native:ios:build` | Embedded-JavaScript packages; installation and physical acceptance are separate |
 
-The standalone SDK's JavaScript-owned session reopens after reload; the app's
-native owner can outlive JavaScript replacement. Test each separately using the
-[SDK qualification guide](../../prns-react-native/docs/qualification.md).
-Current-source export is not recorded-release or public-distribution qualification.
-Preserve the [release contract](../release/README.md) until a containing revision
-and matching artifacts are reviewed.
+From the repository root, reusable group checks include:
 
-Firmware changes require the configured resource gates on their exact source.
-Linked fit is not peak stack/heap measurement or physical recovery. Retain
-reports, source hashes and maps with the qualification run rather than copying
-temporary file paths or historical headroom into current guides.
+```sh
+cargo test --locked --manifest-path prns-groups/Cargo.toml --workspace --features prns-groups-store/secure
+cargo check --locked --manifest-path prns-groups/Cargo.toml -p prns-groups -p prns-group-text --target thumbv7em-none-eabihf
+npm --prefix applications run native:test
+npm --prefix applications/prns/app run test
+```
 
-## Foreground phone check
+The [runner guide](../../prns-groups/runner/native/README.md) explains independent
+host/process tests. The core, text/contact formats and portable identity lifecycle
+remain allocation-free `no_std`; MLS and record-service layers use bounded
+allocation, and native composition requires a host runtime.
 
-1. Install the intended package on each phone without clearing retained data.
-   Record build/source identity, signing method and device/OS versions.
-2. Keep only one app variant participating in Bluetooth per phone. Enable nearby
-   connections through normal app permission; no board pairing or OS bond is
-   needed for phone-to-phone messaging.
-3. Announce distinct messaging names, discover and save contacts, then send short
-   direct messages in both directions. Check the original message and its
-   proof-backed result; sender verification is a separate observation.
-4. Restart one app while the other remains running. Send to the saved contact,
-   then test a temporary connection outage and recovery without replacing pending
-   work or clearing data. Record actual delivery and duplicates, not just routes.
-5. Inspect physical connections, routes and accepted announcements. Clearing
-   discovery/history must preserve saved contacts and messages.
+## Before handing out a build
 
-Keep test text unique, preserve failed attempts and record any manual intervention.
-Follow [iOS](ios.md) and [Android](android.md) procedures for platform checks.
+- Record source and package hashes, build identifiers, signer/distribution method
+  and supported devices. Verify the actual APK and TestFlight installation/update.
+- Repeat fresh setup, explicit contact ownership, invitation/joining and two-way
+  messaging. Check original pending sends across identity pause and app restart.
+- Demonstrate three independently running participants, partial receipts, an
+  offline participant and catch-up while the author or owner is unavailable.
+- Keep one app variant participating in Bluetooth on each phone. Preserve data
+  during recovery; clearing it is not a successful retry.
 
-## Separate acceptance still required
-
-- Long locked/unplugged idle, natural suspension, repeated restoration,
-  silent-peer expiry and permission/radio transitions on supported OS versions.
-- Fresh pairing and capability-driven node reads/writes, successful Wi-Fi Keep,
-  denied/Busy results, cancellation and uncertain-write recovery on matching
-  Android/iOS and firmware builds. Retained grants do not prove fresh pairing.
-- Complete detached aggregate iOS consumption, public package distribution,
-  signed release installation/update, protected keys and supported backup/recovery.
-
-Neither an Android foreground service nor iOS event-driven Bluetooth windows
-guarantees continuous execution or background delivery. Reproduce old faults on
-relevant builds before prescribing fixes. Keep generated logs, screenshots and
-per-run narratives outside the source documentation.
+Protected phone storage is deferred for this maintainer alpha. Wider deployment
+still needs protected keys, backup policy, storage-full and crash-at-write checks,
+removal/owner recovery, sustained reclamation and mobile lifecycle qualification.
+Embedded transit forwarding is not durable group custody. The
+[radio procedure](../../prns-groups/transport/reticulum/docs/lora-qualification.md)
+and [participant plan](../../prns-groups/core/docs/embedded-participants.md)
+set those separate gates.

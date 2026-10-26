@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { readFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -400,8 +401,13 @@ assert.match(
 );
 assert.match(
   nativeCargo,
-  /ios-restoration-probe = \["apple", "dep:log", "prns-interfaces-tokio\/log"\]/,
+  /ios-restoration-probe = \["apple", "prns-interfaces-tokio\/log"\]/,
   "the private restoration logger must remain an explicit app feature",
+);
+assert.match(
+  nativeRestorationProbe,
+  /pub\(crate\) fn install\(\) \{\s*#\[cfg\(feature = "ios-restoration-probe"\)\]\s*enabled::install\(\);/,
+  "the shared logging dependency must not enable restoration diagnostics by itself",
 );
 assert.match(
   bindingsBuild,
@@ -464,6 +470,60 @@ assert.equal(
   "bash prns/platform/ios/build-development-client.sh --device",
   "the physical development-client helper must be registered explicitly",
 );
+assert.match(
+  developmentClient,
+  /--device-standalone\) MODE="device"; CONFIGURATION="Release"/,
+  "standalone phone builds must select the signed physical Release path",
+);
+assert.match(
+  developmentClient,
+  /DEVICE_RUST_ARGUMENTS=\(ios --targets aarch64-apple-ios\)[\s\S]*?CONFIGURATION\}" == "Release"[\s\S]*?DEVICE_RUST_ARGUMENTS\+=\(--release\)[\s\S]*?"\$\{DEVICE_RUST_ARGUMENTS\[@\]\}"/,
+  "standalone builds must pair Release native code with Release JavaScript",
+);
+assert.match(
+  developmentClient,
+  /-configuration "\$\{CONFIGURATION\}"[\s\S]*?Build\/Products\/\$\{CONFIGURATION\}-iphoneos\/prnsdev\.app/,
+  "the selected physical configuration must also select its output bundle",
+);
+assert.match(
+  developmentClient,
+  /assert_device_javascript "\$\{APP_BUNDLE\}"[\s\S]*?codesign --verify --deep --strict "\$\{APP_BUNDLE\}"[\s\S]*?xcrun devicectl device install app/,
+  "physical installation must follow JavaScript and code signature validation",
+);
+const javascriptValidator = developmentClient.match(
+  /assert_device_javascript\(\) \{\n[\s\S]*?\n\}/,
+)?.[0];
+assert.ok(javascriptValidator, "physical builds must validate their JavaScript source");
+for (const [name, configuration, files, valid] of [
+  ["standalone embedded bundle", "Release", { "main.jsbundle": "bundled code" }, true],
+  ["standalone empty bundle", "Release", { "main.jsbundle": "" }, false],
+  ["standalone Metro-only bundle", "Release", { "ip.txt": "localhost" }, false],
+  ["debug Metro source", "Debug", { "ip.txt": "localhost" }, true],
+  ["debug missing Metro source", "Debug", { "main.jsbundle": "bundled code" }, false],
+  ["debug blank Metro source", "Debug", { "ip.txt": " \n\t" }, false],
+]) {
+  const directory = mkdtempSync(resolve(tmpdir(), "prns-ios-javascript-"));
+  try {
+    for (const [file, contents] of Object.entries(files)) {
+      writeFileSync(resolve(directory, file), contents);
+    }
+    const result = spawnSync(
+      "bash",
+      [
+        "-c",
+        `set -eu; fail() { exit 1; }; ${javascriptValidator}\nCONFIGURATION="$1"; assert_device_javascript "$2"`,
+        "javascript-validation",
+        configuration,
+        directory,
+      ],
+      { encoding: "utf8" },
+    );
+    assert.ifError(result.error);
+    assert.equal(result.status === 0, valid, `physical JavaScript guard: ${name}`);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+}
 assert.match(
   developmentClient,
   /\[\[ -n "\$\{DEVICE_ID\}" \]\] \|\| fail "PRNS_IOS_DEVICE_UDID is required with --device"/,

@@ -10,7 +10,7 @@ The app exposes capability-driven overview, interfaces, configuration, peers,
 discovery groups and typed ordinary/disruptive changes. Guided Wi-Fi trials and
 controller inventory/removal are implemented. Authorizing another controller and
 the separately advertised legacy Wi-Fi setter remain planned. The
-[app management guide](../prns/app/README.md#reading-and-changing-a-paired-node) describes the user flow;
+[node management guide](node-management.md) describes the user flow;
 [validation](validation.md) separates source checks from physical acceptance.
 
 ## Ownership and product rules

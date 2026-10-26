@@ -9,8 +9,8 @@ crate implements the binary, token and URI formats, not those transports.
 
 The codec accepts any supplied identity/signer, so separate named identities can
 each export this same format. A card does not list or link sibling identities.
-Selection, activation and relationship storage belong to consumers; these are
-not codec features. The named-identity phone journey is a following integration.
+The [named identities design](../../docs/named-identities.md) assigns selection,
+activation and relationship storage to consumers; these are not codec features.
 
 Version one is a **draft application-level format**, not an established Reticulum
 standard or a change to Reticulum packets. The `rns-contact` URI scheme is part

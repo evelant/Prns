@@ -3,8 +3,14 @@ use std::path::PathBuf;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     const CONTRACT_SOURCES: &[&str] = &[
         "src/contract.rs",
+        "src/contract/bluetooth_discovery.rs",
+        "src/contract/contact_cards.rs",
         "src/contract/remote_management.rs",
         "src/contract/remote_wifi.rs",
+        "src/contract/groups.rs",
+        "src/contract/group_announces.rs",
+        "src/contract/group_actions.rs",
+        "src/contract/named_identities.rs",
     ];
     for source in CONTRACT_SOURCES {
         println!("cargo:rerun-if-changed={source}");

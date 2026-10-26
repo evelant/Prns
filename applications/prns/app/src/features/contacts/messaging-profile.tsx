@@ -1,13 +1,14 @@
-import * as Bindings from "@prns-internal/expo";
 import type { LocalMessagingProfile, LocalMessagingProfileOutcome } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Share } from "react-native";
 
 import {
-  useDevelopmentRuntime,
   type RuntimeCommandResult,
+  useDevelopmentRuntime,
 } from "@/native/development-runtime-context";
 import { StoragePreparationFailure } from "@/native/storage-preparation-failure";
+import { InfoDisclosure } from "@/ui/info-disclosure";
 import { NavigationLink } from "@/ui/navigation-link";
 import {
   ActionRow,
@@ -123,13 +124,22 @@ export function MessagingProfileCard({
 
   return (
     <Card>
-      <CardHeader title="Your messaging name" />
+      <CardHeader title="My contact">
+        <InfoDisclosure label="About your contact">
+          <BodyText>
+            Your messaging name appears on your contact card and announcements. Your private
+            identity name is only for you.
+          </BodyText>
+          <BodyText>Sharing a card does not announce you on the network.</BodyText>
+        </InfoDisclosure>
+      </CardHeader>
       <BodyText>
         {profile?.displayName ??
           (failure !== null || resetRequired
             ? "Messaging name unavailable"
             : "Loading messaging name…")}
       </BodyText>
+      <NavigationLink href="/contacts/card">My contact QR</NavigationLink>
       <ActionRow>
         <Button
           disabled={pending || profile === null}
@@ -153,10 +163,6 @@ export function MessagingProfileCard({
       </ActionRow>
       {editing ? (
         <CardSection>
-          <BodyText muted>
-            This name accompanies your messaging announcements. It does not change your identity or
-            anyone&apos;s private name for you.
-          </BodyText>
           <TextField
             label="Messaging name"
             value={name}
@@ -176,9 +182,6 @@ export function MessagingProfileCard({
           ) : (
             <>
               <KeyValue label="Messaging address" value={formatContactHash(profile.destination)} />
-              <BodyText muted>
-                Share this address using another app. This does not announce you on the network.
-              </BodyText>
               <Button tone="secondary" onPress={() => void share()}>
                 Share address
               </Button>

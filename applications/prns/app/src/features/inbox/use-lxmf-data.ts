@@ -29,11 +29,12 @@ export function useLxmfData(peer: Uint8Array | null) {
   const available = development.availability.type === "available";
   const { listLxmfMessages, listLxmfConversations } = development;
   const phase = development.phase;
+  const identityOwner = development.ownerKey;
   const generationId = development.snapshot?.generationId;
   // Runtime replacement and recipient changes invalidate every outstanding read.
   const owner = useMemo(
-    () => ({ peerKey, available, phase, generationId }),
-    [peerKey, available, phase, generationId],
+    () => ({ peerKey, available, phase, generationId, identityOwner }),
+    [peerKey, available, phase, generationId, identityOwner],
   );
   const [page, setPage] = useState<Page>({ owner, peerKey, messages: [], hasMore: false });
   const pageRef = useRef(page);

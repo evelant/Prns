@@ -21,6 +21,12 @@ Rust dependency inventory (including the host facade/native crates), and record
 the actual built JavaScript artifact digest. Source migration or local tests
 alone do not perform that promotion.
 
+The development group integration adds the native group runner, Reticulum
+carrier, service, text profile, storage and MLS dependency closure. These packages
+also postdate the recorded release and must be included in a future reviewed
+promotion. They are covered by the current-source export policy, without
+rewriting the historical package inventory or claiming publication.
+
 For work before release promotion, use the separate current-source gate:
 
 ```sh

@@ -12,6 +12,7 @@ jest.mock("expo-router", () => ({
   Link: ({ children }: { readonly children: ReactNode }) => children,
   Slot: () => null,
   usePathname: () => mockPathname,
+  useRouter: () => ({ replace: jest.fn() }),
 }));
 
 jest.mock("react-native/Libraries/Utilities/useWindowDimensions", () => ({
@@ -44,10 +45,11 @@ describe("shell accessibility", () => {
 
     expect(view.getByRole("link", { name: "Inbox, current page" })).toBeTruthy();
     expect(view.getByRole("link", { name: "Contacts" })).toBeTruthy();
+    expect(view.getAllByRole("link")).toHaveLength(4);
   });
 
   it("uses the wide rail without adding a generic context panel", () => {
-    mockPathname = "/explore/nomadnet/page";
+    mockPathname = "/more/activity";
     mockWidth = 1200;
 
     const view = render(<ShellLayout />);
@@ -59,7 +61,14 @@ describe("shell accessibility", () => {
     expect(view.UNSAFE_queryAllByProps({ accessibilityLabel: "Workspace context" })).toHaveLength(
       0,
     );
-    expect(view.getByRole("link", { name: "NomadNet, current page" })).toBeTruthy();
+    expect(view.getByRole("link", { name: "Network, current page" })).toBeTruthy();
+  });
+
+  it("keeps network inspection under More on phones", () => {
+    mockPathname = "/more/activity";
+    const view = render(<ShellLayout />);
+    expect(view.getByRole("link", { name: "More, current page" })).toBeTruthy();
+    expect(view.getAllByRole("link")).toHaveLength(4);
   });
 
   it("gives enlarged navigation labels more width instead of shrinking their text", () => {

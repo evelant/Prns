@@ -1,4 +1,5 @@
 import { ContactsScreen } from "@/features/contacts/contacts-screen";
+import { MessagingJourney } from "@/native/messaging-journey";
 import { MasterDetailLayout } from "@/ui/master-detail-layout";
 
 export default function ContactsLayout() {
@@ -6,7 +7,11 @@ export default function ContactsLayout() {
     <MasterDetailLayout
       emptyDescription="Choose a contact from the list to view or edit it."
       emptyTitle="Select a contact"
-      master={<ContactsScreen />}
+      master={
+        <MessagingJourney>
+          <ContactsScreen />
+        </MessagingJourney>
+      }
       rootPath="/contacts"
       sectionLabel="Contacts"
     />

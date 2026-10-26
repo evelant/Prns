@@ -1,61 +1,74 @@
 import { runtimeProvider } from "@/native/runtime-provider";
-import { BodyText, Card, Screen, ScreenHeading, Subheading } from "@/ui/primitives";
+import { Disclosure } from "@/ui/disclosure";
+import { NavigationLink } from "@/ui/navigation-link";
+import { BodyText, Card, Screen, ScreenHeading } from "@/ui/primitives";
 
 export function HelpScreen() {
-  const { availability } = runtimeProvider;
-  const platformName =
-    availability.platform === "ios"
-      ? "iOS"
-      : availability.platform === "android"
-        ? "Android"
-        : "web";
-
+  const available = runtimeProvider.availability.type === "available";
   return (
     <Screen>
       <ScreenHeading>Help</ScreenHeading>
-      <Card>
-        <Subheading>What works</Subheading>
-        {availability.type === "available" ? (
-          <BodyText>
-            Create or import an identity, pair and check nearby nodes, save contacts, exchange
-            direct messages, change a paired node&apos;s supported settings, set up its Wi-Fi,
-            review and remove other devices&apos; access, inspect this phone&apos;s Bluetooth
-            connections, turn them on or off without stopping its node, choose a messaging name,
-            announce yourself, discover and save messaging contacts, and reset preview data.
-          </BodyText>
-        ) : (
-          <BodyText>
-            Browse the responsive app shell, navigate planned pages, choose whether upcoming
-            features appear, and view app information.
-          </BodyText>
-        )}
-      </Card>
-      <Card>
-        <Subheading>Coming later</Subheading>
-        {availability.type === "available" ? (
-          <BodyText>
-            Contact merging, identity management, other transport settings, inviting other devices,
-            NomadNet, location, notifications, background delivery, storage details, recovery tools,
-            activity history, and support for more platforms.
-          </BodyText>
-        ) : (
-          <BodyText>
-            Identity setup, node pairing and status, contacts, direct messaging, app-data reset,
-            message details, contact merging, identity and connection management, remote-access
-            controls, NomadNet, location, notifications, background delivery, storage details,
-            recovery tools, and activity history are not available on {platformName} yet.
-          </BodyText>
-        )}
-      </Card>
-      {availability.type === "available" ? (
-        <BodyText muted>
-          Preview data can be reset and cannot be backed up or recovered yet.
-        </BodyText>
+      {available ? (
+        <>
+          <NavigationLink href="/setup">Connect this phone</NavigationLink>
+          <NavigationLink href="/contacts">Share or add a contact</NavigationLink>
+          <NavigationLink href="/inbox/group/new">Start a group</NavigationLink>
+          <NavigationLink href="/more/identities">Manage identities</NavigationLink>
+          <NavigationLink href="/nodes">Manage nodes</NavigationLink>
+          <NavigationLink href="/more/activity">Inspect the network</NavigationLink>
+          <Card>
+            <Disclosure label="A message is waiting">
+              <BodyText>
+                Keep prns open on both phones and check Connections. Saved messages retry when a
+                path becomes available; a receipt confirms that a device received them.
+              </BodyText>
+              <BodyText>
+                Open Delivery details in the conversation to inspect progress. Keep the original
+                message instead of sending a replacement or clearing app data.
+              </BodyText>
+              <NavigationLink href="/more/interfaces">Check connections</NavigationLink>
+            </Disclosure>
+          </Card>
+          <Card>
+            <Disclosure label="Using named identities">
+              <BodyText>
+                Choose an identity from the top of the screen. Contacts and conversations stay with
+                their original identity, and other active identities can keep receiving.
+              </BodyText>
+              <BodyText>
+                Pausing stops messaging for that identity while preserving its history. Resume it
+                from Identities to continue.
+              </BodyText>
+            </Disclosure>
+          </Card>
+          <Card>
+            <Disclosure label="Maintainer demo limits">
+              <BodyText>
+                Use test messages and keep prns open. Background delivery, protected phone storage
+                and backup recovery are not ready.
+              </BodyText>
+              <BodyText>
+                Use one prns app variant with Bluetooth enabled per phone and the same discovery
+                group on nearby phones.
+              </BodyText>
+              <BodyText>
+                Each identity supports four groups, with up to eight devices per group. Reuse a demo
+                group; removal and ownership transfer are not available.
+              </BodyText>
+              <BodyText>
+                Enroll everyone before sending. New members receive future messages, and adding
+                members can interrupt unfinished delivery.
+              </BodyText>
+            </Disclosure>
+          </Card>
+        </>
       ) : (
-        <BodyText muted>
-          This preview cannot create, import, or reset app data on {platformName}.
+        <BodyText>
+          This web preview shows the app layout. Use the iOS or Android app to set up identities,
+          connect nodes and exchange messages.
         </BodyText>
       )}
+      <NavigationLink href="/more/settings/about">Build details and diagnostics</NavigationLink>
     </Screen>
   );
 }

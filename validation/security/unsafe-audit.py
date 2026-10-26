@@ -118,6 +118,9 @@ GRAPH_FEATURES = {
     "prns-app-ios": ("apple",),
 }
 UNSAFE_EXCEPTIONS = {
+    # Android diagnostic property/log calls live in the native app adapter.
+    # Its workspace must deny unsafe operations and undocumented unsafe blocks.
+    "prns-app-native",
     "prns-core",
     "prns-ffi",
     "prns-runtime",

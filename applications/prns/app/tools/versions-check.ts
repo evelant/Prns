@@ -19,6 +19,7 @@ const expectedDependencies = {
   "@react-native-async-storage/async-storage": "2.2.0",
   expo: "~57.0.31",
   "expo-build-properties": "~57.0.22",
+  "expo-camera": "~57.0.6",
   "expo-constants": "~57.0.22",
   "expo-document-picker": "~57.0.3",
   "expo-file-system": "~57.0.7",
@@ -31,8 +32,10 @@ const expectedDependencies = {
   react: "19.2.3",
   "react-dom": "19.2.3",
   "react-native": "0.86.3",
+  "react-native-qrcode-svg": "6.3.26",
   "react-native-safe-area-context": "~5.7.0",
   "react-native-screens": "~4.26.0",
+  "react-native-svg": "15.15.4",
   "react-native-web": "~0.21.0",
 } as const;
 

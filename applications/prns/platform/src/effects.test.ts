@@ -49,7 +49,24 @@ function snapshot(revision: bigint): DevelopmentNodeSnapshot {
 }
 function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRuntime {
   return {
+    readIdentityActivity: async () =>
+      Bindings.IdentityActivityOutcome.Unavailable.new({ detail: "fixture" }),
+    markIdentityActivitySeen: async () =>
+      Bindings.IdentityActivitySeenOutcome.Unavailable.new({ detail: "fixture" }),
+    listNamedIdentityActivity: async () => Bindings.NamedIdentityActivityListOutcome.Busy.new(),
+    listNamedIdentities: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    createNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    changeNamedIdentity: async () => Bindings.NamedIdentityCatalogOutcome.Busy.new(),
+    forIdentity: () => fakeRuntime(overrides),
     attachHost: async () => undefined,
+    exportContactCard: async () => Bindings.ContactCardExportOutcome.Busy.new(),
+    previewContactCard: async () =>
+      Bindings.ContactCardPreviewOutcome.Invalid.new({ detail: "fixture" }),
+    importContactCard: async () => Bindings.ContactCardImportOutcome.Busy.new(),
+    readBluetoothDiscoveryGroups: async () =>
+      Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
+    setBluetoothDiscoveryGroups: async () =>
+      Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
     readBluetoothSettings: jest.fn(async () =>
       Bindings.LocalBluetoothSettingsOutcome.Ready.new({ enabled: true }),
     ),
@@ -121,6 +138,36 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
         peers: [],
       }),
     ),
+    listGroupActions: jest.fn(async () =>
+      Bindings.GroupActionListOutcome.Ready.new({ actions: [] }),
+    ),
+    getGroupAnnounceSettings: jest.fn(async () =>
+      Bindings.GroupAnnounceSettingsOutcome.Ready.new({ settings: { intervalMinutes: 60 } }),
+    ),
+    setGroupAnnounceSettings: jest.fn(async () => Bindings.GroupAnnounceSettingsOutcome.Busy.new()),
+    announceGroups: jest.fn(async () => Bindings.GroupAnnounceOutcome.Requested.new()),
+    prepareGroupAction: jest.fn(async () => Bindings.GroupActionOutcome.Busy.new()),
+    executeGroupAction: jest.fn(async () => Bindings.GroupActionOutcome.Busy.new()),
+    acknowledgeGroupAction: jest.fn(async () =>
+      Bindings.GroupActionAcknowledgeOutcome.NeedsReview.new(),
+    ),
+    discardExpiredGroupAction: jest.fn(async () =>
+      Bindings.GroupActionAcknowledgeOutcome.NeedsReview.new(),
+    ),
+    createGroupRequestId: jest.fn(async () =>
+      Bindings.GroupRequestIdOutcome.Ready.new({ clientRequestId: new Uint8Array(32).fill(1) }),
+    ),
+    createGroup: jest.fn(async () => Bindings.CreateGroupOutcome.Busy.new()),
+    inviteToGroup: jest.fn(async () => Bindings.InviteToGroupOutcome.Busy.new()),
+    listGroupInvitations: jest.fn(async () =>
+      Bindings.GroupInvitationListOutcome.Ready.new({ invitations: [] }),
+    ),
+    respondGroupInvitation: jest.fn(async () => Bindings.RespondGroupInvitationOutcome.Busy.new()),
+    listGroupConversations: jest.fn(async () =>
+      Bindings.GroupConversationListOutcome.NotProvisioned.new(),
+    ),
+    listGroupMessages: jest.fn(async () => Bindings.GroupMessageListOutcome.NotProvisioned.new()),
+    sendGroupText: jest.fn(async () => Bindings.GroupTextSendOutcome.NotProvisioned.new()),
     listLxmfConversations: jest.fn(async () =>
       Bindings.LxmfMessageListOutcome.Listed.new({ messages: [] }),
     ),
