@@ -1,5 +1,9 @@
 import { Data, Effect, type Scope } from "effect";
 import type {
+  ControllerSetupCardOutcome,
+  TargetAccessCardPreviewOutcome,
+  ImportTargetAccessCardInput,
+  TargetAccessCardImportOutcome,
   ClearNetworkActivityInput,
   ClearNetworkActivityOutcome,
   StartRemoteWifiTrialInput,
@@ -34,6 +38,9 @@ export type DevelopmentRuntimeOperationName =
   | "startRemoteWifiTrial"
   | "inspectRemoteWifiTrial"
   | "finishRemoteWifiTrial"
+  | "exportControllerSetupCard"
+  | "previewTargetAccessCard"
+  | "importTargetAccessCard"
   | "initiatePairing"
   | "rejectPairing"
   | "reset"
@@ -102,6 +109,16 @@ export type EffectDevelopmentRuntime = {
     DevelopmentNodeSnapshot,
     DevelopmentRuntimeOperationError
   >;
+  readonly exportControllerSetupCard: () => Effect.Effect<
+    ControllerSetupCardOutcome,
+    DevelopmentRuntimeOperationError
+  >;
+  readonly previewTargetAccessCard: (
+    card: string,
+  ) => Effect.Effect<TargetAccessCardPreviewOutcome, DevelopmentRuntimeOperationError>;
+  readonly importTargetAccessCard: (
+    input: ImportTargetAccessCardInput,
+  ) => Effect.Effect<TargetAccessCardImportOutcome, DevelopmentRuntimeOperationError>;
   readonly initiateRemoteControlPairing: (
     input: InitiateRemoteControlPairingInput,
   ) => Effect.Effect<RemoteControlPairingCommandOutcome, DevelopmentRuntimeOperationError>;
@@ -165,6 +182,18 @@ export function makeEffectDevelopmentRuntime(
     startDevelopmentNode: (input) =>
       runtimeCall("start", () => runtime.startDevelopmentNode(input)),
     readDevelopmentNodeSnapshot: runtimeCall("snapshot", runtime.readDevelopmentNodeSnapshot),
+    exportControllerSetupCard: () =>
+      runtimeCall("exportControllerSetupCard", (signal) =>
+        runtime.exportControllerSetupCard(signal),
+      ),
+    previewTargetAccessCard: (card) =>
+      runtimeCall("previewTargetAccessCard", (signal) =>
+        runtime.previewTargetAccessCard(card, signal),
+      ),
+    importTargetAccessCard: (input) =>
+      runtimeCall("importTargetAccessCard", (signal) =>
+        runtime.importTargetAccessCard(input, signal),
+      ),
     initiateRemoteControlPairing: (input) =>
       runtimeCall("initiatePairing", (signal) =>
         runtime.initiateRemoteControlPairing(input, signal),

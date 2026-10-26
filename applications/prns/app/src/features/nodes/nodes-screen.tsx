@@ -42,7 +42,7 @@ export function NodesScreen() {
   return (
     <Screen>
       <ScreenHeading>Nodes</ScreenHeading>
-      <BodyText>Manage this phone and your paired nodes.</BodyText>
+      <BodyText>Manage this phone and your saved nodes.</BodyText>
 
       <Card>
         <CardHeader title="This phone">
@@ -107,23 +107,27 @@ export function NodesScreen() {
       <AndroidNodeControls />
 
       <Card>
-        <CardHeader title="Paired nodes">
+        <CardHeader title="Saved nodes">
           {runtime.snapshot?.runtime === Bindings.DevelopmentNodeRuntime.Running &&
           runtime.snapshot.pairedTargets.length > 0 ? (
-            <Badge>Paired</Badge>
+            <Badge>Access saved</Badge>
           ) : null}
         </CardHeader>
+        <BodyText muted>
+          Saved access does not confirm a current connection or authorization. Open a node to check
+          its access.
+        </BodyText>
         {runtime.snapshot === null ? null : runtime.snapshot.runtime !==
           Bindings.DevelopmentNodeRuntime.Running ? (
           <>
-            <Badge>Paired nodes unavailable</Badge>
+            <Badge>Saved nodes unavailable</Badge>
             <BodyText>
-              Your paired nodes will appear when this device&apos;s node is running.
+              Your saved nodes will appear when this device&apos;s node is running.
             </BodyText>
           </>
         ) : runtime.snapshot.pairedTargets.length === 0 ? (
           <>
-            <Badge>No paired nodes</Badge>
+            <Badge>No saved nodes</Badge>
             <BodyText>Pair a node to manage it from this device.</BodyText>
           </>
         ) : (
@@ -196,7 +200,7 @@ function NodeRecoveryCard({
       <Badge tone={stopped ? "neutral" : "warning"}>{stopped ? "Stopped" : "Startup failed"}</Badge>
       <BodyText>
         {stopped
-          ? "Start it to reconnect and manage your paired nodes."
+          ? "Start it to reconnect and manage your saved nodes."
           : "This device's node could not start. Open its diagnostics for more details."}
       </BodyText>
       {runtime.canStartNode ? <Button onPress={runtime.startNode}>Start node</Button> : null}

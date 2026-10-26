@@ -158,6 +158,12 @@ export function createDevelopmentRuntime(
       if (host === undefined) return undefined;
       return api.borrowHost(host);
     },
+    exportControllerSetupCard: (signal?: AbortSignal) =>
+      call((api) => api.exportControllerSetupCard(asyncOptions(signal)), signal),
+    previewTargetAccessCard: (card: string, signal?: AbortSignal) =>
+      call((api) => api.previewTargetAccessCard(card), signal),
+    importTargetAccessCard: (input: Bindings.ImportTargetAccessCardInput, signal?: AbortSignal) =>
+      call((api) => api.importTargetAccessCard(input, asyncOptions(signal)), signal),
     initiateRemoteControlPairing: (
       input: Bindings.InitiateRemoteControlPairingInput,
       signal?: AbortSignal,

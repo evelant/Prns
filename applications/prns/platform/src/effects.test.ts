@@ -85,6 +85,10 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
       }),
     ),
     readDevelopmentNodeSnapshot: jest.fn(async () => snapshot(1n)),
+    exportControllerSetupCard: async () => Bindings.ControllerSetupCardOutcome.Busy.new(),
+    previewTargetAccessCard: async () =>
+      Bindings.TargetAccessCardPreviewOutcome.Invalid.new({ detail: "fixture" }),
+    importTargetAccessCard: async () => Bindings.TargetAccessCardImportOutcome.Busy.new(),
     initiateRemoteControlPairing: jest.fn(async () =>
       Bindings.RemoteControlPairingCommandOutcome.Busy.new(),
     ),

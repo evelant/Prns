@@ -28,6 +28,10 @@ pub mod host_test {
         announce_target as announce_self, approve_pairing as approve, describe_target as describe,
         initiate_pairing as initiate, reject_pairing as reject,
     };
+    pub use crate::lifecycle::remote_setup::{
+        export as export_controller_setup_card, import as import_target_access_card,
+        preview as preview_target_access_card,
+    };
     pub use crate::lifecycle::snapshot_async as snapshot;
     pub use crate::lifecycle::{create_generated_identity, start_configured, stop};
 

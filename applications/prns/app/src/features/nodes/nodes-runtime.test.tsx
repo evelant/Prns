@@ -1,26 +1,27 @@
-import * as Bindings from "@prns-internal/expo";
 import type {
+  AndroidRuntimeStatus,
   BluetoothAuthorizationRuntime,
   BluetoothAuthorizationStatus,
-  AndroidRuntimeStatus,
   DevelopmentNodeSnapshot,
   DevelopmentRuntime,
   DevelopmentRuntimeScopeOptions,
   EffectDevelopmentRuntime,
 } from "@prns-internal/expo";
+import * as Bindings from "@prns-internal/expo";
 import {
   DevelopmentRuntimeStartError as StartError,
   scopedDevelopmentRuntime,
 } from "@prns-internal/expo";
 import { act, fireEvent, render, waitFor } from "@testing-library/react-native";
 import { Effect } from "effect";
-import { destinationHash, identityHash, interfaceId } from "personal-rns/contract";
 import { useLocalSearchParams } from "expo-router";
+import { destinationHash, identityHash, interfaceId } from "personal-rns/contract";
 import { type EffectCallback, type ReactNode, useEffect } from "react";
 import { AppState, type AppStateStatus } from "react-native";
 import { ContactsScreen } from "@/features/contacts/contacts-screen";
 import { ConversationScreen, InboxScreen } from "@/features/inbox/inbox-screen.native";
 import { ContactRuntimeProvider } from "@/native/contact-runtime-context";
+import * as developmentRuntimeContext from "@/native/development-runtime-context";
 import {
   DevelopmentRuntimeProvider,
   type DevelopmentRuntimeView,
@@ -28,11 +29,11 @@ import {
   useDevelopmentRuntime,
 } from "@/native/development-runtime-context";
 import type { RuntimeProvider } from "@/native/runtime-provider.types";
-import * as developmentRuntimeContext from "@/native/development-runtime-context";
 import { ManagedNodeScreen } from "./managed-node-screen";
 import { LocalNodeScreen, NodesScreen } from "./nodes-screen";
 import { PairNodeScreen } from "./pair-node-screen";
 import { appendPage, reconcileRemoteChange } from "./remote-management-panel";
+
 let mockRouteFocused = true;
 jest.mock("expo-router", () => ({
   Link: ({ children }: { readonly children: ReactNode }) => children,
@@ -192,6 +193,10 @@ function fakeProvider(
       }),
     readDevelopmentNodeSnapshot: async () =>
       snapshot(1n, false, pairing, pairedTargets, pairingCandidates),
+    exportControllerSetupCard: async () => Bindings.ControllerSetupCardOutcome.Busy.new(),
+    previewTargetAccessCard: async () =>
+      Bindings.TargetAccessCardPreviewOutcome.Invalid.new({ detail: "fixture" }),
+    importTargetAccessCard: async () => Bindings.TargetAccessCardImportOutcome.Busy.new(),
     initiateRemoteControlPairing: async () =>
       Bindings.RemoteControlPairingCommandOutcome.Busy.new(),
     approveRemoteControlPairing: async () => Bindings.RemoteControlPairingCommandOutcome.Busy.new(),
@@ -245,6 +250,10 @@ function fakeProvider(
     ...overrides,
   };
   const effectRuntime: EffectDevelopmentRuntime = {
+    exportControllerSetupCard:
+      Bindings.makeEffectDevelopmentRuntime(runtime).exportControllerSetupCard,
+    previewTargetAccessCard: Bindings.makeEffectDevelopmentRuntime(runtime).previewTargetAccessCard,
+    importTargetAccessCard: Bindings.makeEffectDevelopmentRuntime(runtime).importTargetAccessCard,
     clearNetworkActivity: Bindings.makeEffectDevelopmentRuntime(runtime).clearNetworkActivity,
     startDevelopmentNode: (input) => Effect.promise(() => runtime.startDevelopmentNode(input)),
     readDevelopmentNodeSnapshot: Effect.promise(runtime.readDevelopmentNodeSnapshot),
@@ -806,6 +815,52 @@ describe("Foundation 1 Nodes runtime binding", () => {
     expect(fixture.release).not.toHaveBeenCalled();
     view.unmount();
   });
+  it("fences an access-import success when Stop occurs during its follow-up refresh", async () => {
+    const fixture = androidRestartFixture();
+    const imported = jest.spyOn(fixture.runtime, "importTargetAccessCard").mockResolvedValue(
+      Bindings.TargetAccessCardImportOutcome.Saved.new({
+        targetIdentityFingerprint: observedIdentity,
+      }),
+    );
+    const publish = jest.fn<void, [DevelopmentRuntimeView]>();
+    const view = render(
+      <DevelopmentRuntimeProvider provider={fixture.provider} refreshIntervalMillis={60000}>
+        <RuntimeViewProbe publish={publish} />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(publish.mock.calls.at(-1)?.[0].phase).toBe("ready"));
+    let finishRefresh: ((next: DevelopmentNodeSnapshot) => void) | undefined;
+    fixture.runtime.readDevelopmentNodeSnapshot.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          finishRefresh = resolve;
+        }),
+    );
+    const pending = publish.mock.calls.at(-1)?.[0].importTargetAccessCard({
+      card: "reviewed access card",
+      expectedControllerIdentity: new Uint8Array(16).fill(0x55),
+      trustedSourceConfirmed: true,
+    });
+    await waitFor(() => expect(finishRefresh).toBeDefined());
+    expect(imported).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      fixture.emit(stoppedSnapshot());
+      await publish.mock.calls.at(-1)?.[0].stopNode();
+    });
+    await act(async () => {
+      finishRefresh?.(snapshot(99n));
+      expect(await pending).toEqual({
+        type: "operationFailure",
+        detail: expect.stringMatching(/changed.*saved access/iu),
+      });
+    });
+    expect(publish.mock.calls.at(-1)?.[0].snapshot?.runtime).toBe(
+      Bindings.DevelopmentNodeRuntime.Stopped,
+    );
+    expect(publish.mock.calls.at(-1)?.[0].snapshot?.revision).toBe(3n);
+    expect(imported).toHaveBeenCalledTimes(1);
+    view.unmount();
+  });
   it("does not publish or restart when a pending Android Stop completes after unmount", async () => {
     const fixture = androidRestartFixture();
     let finishStop:
@@ -856,7 +911,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
         fixture.status("stopped");
       });
       expect(view.getByText("This device's node is stopped")).toBeTruthy();
-      expect(view.queryByText("No paired nodes")).toBeNull();
+      expect(view.queryByText("No saved nodes")).toBeNull();
       const stoppedView = publish.mock.calls.at(-1)?.[0];
       await act(async () => {
         fireEvent.press(view.getByRole("button", { name: "Start node" }));
@@ -894,7 +949,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
         <NodesScreen />
       </DevelopmentRuntimeProvider>,
     );
-    await waitFor(() => expect(view.getByText("No paired nodes")).toBeTruthy());
+    await waitFor(() => expect(view.getByText("No saved nodes")).toBeTruthy());
     await act(async () => {
       fixture.emit(stoppedSnapshot());
       fixture.status("stopped");
@@ -910,8 +965,8 @@ describe("Foundation 1 Nodes runtime binding", () => {
     expect(view.queryByRole("button", { name: "Start node" })).toBeNull();
     await act(async () => fixture.status("stopped"));
     expect(view.getByRole("button", { name: "Start node" })).toBeTruthy();
-    expect(view.getByText("Paired nodes unavailable")).toBeTruthy();
-    expect(view.queryByText("No paired nodes")).toBeNull();
+    expect(view.getByText("Saved nodes unavailable")).toBeTruthy();
+    expect(view.queryByText("No saved nodes")).toBeNull();
     expect(fixture.start).toHaveBeenCalledTimes(1);
     view.unmount();
     if (originalSubscribe !== undefined) subscription.mockImplementation(originalSubscribe);
@@ -926,7 +981,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
         <RuntimeViewProbe publish={publish} />
       </DevelopmentRuntimeProvider>,
     );
-    await waitFor(() => expect(view.getByText("No paired nodes")).toBeTruthy());
+    await waitFor(() => expect(view.getByText("No saved nodes")).toBeTruthy());
     await act(async () => fixture.emit(stoppedSnapshot(90n)));
     fixture.release.mockImplementationOnce(() =>
       Effect.promise(
@@ -983,7 +1038,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
         <RuntimeViewProbe publish={publish} />
       </DevelopmentRuntimeProvider>,
     );
-    await waitFor(() => expect(view.getByText("No paired nodes")).toBeTruthy());
+    await waitFor(() => expect(view.getByText("No saved nodes")).toBeTruthy());
     await act(async () => fixture.emit(stoppedSnapshot()));
     fireEvent.press(view.getByRole("button", { name: "Start node" }));
     await waitFor(() => expect(view.getByText("This device's node failed to start")).toBeTruthy());
@@ -992,7 +1047,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
     expect(view.getByRole("button", { name: "Start node" })).toBeTruthy();
     expect(fixture.start).toHaveBeenCalledTimes(2);
     fireEvent.press(view.getByRole("button", { name: "Start node" }));
-    await waitFor(() => expect(view.getByText("No paired nodes")).toBeTruthy());
+    await waitFor(() => expect(view.getByText("No saved nodes")).toBeTruthy());
     expect(fixture.start).toHaveBeenCalledTimes(3);
     expect(publish.mock.calls.at(-1)?.[0].lifecycleFailure).toBeNull();
     expect(fixture.stop).not.toHaveBeenCalled();
@@ -1018,7 +1073,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
           <RuntimeViewProbe publish={publish} />
         </DevelopmentRuntimeProvider>,
       );
-      await waitFor(() => expect(view.getByText("No paired nodes")).toBeTruthy());
+      await waitFor(() => expect(view.getByText("No saved nodes")).toBeTruthy());
       const read = publish.mock.calls.at(-1)?.[0].refreshSnapshot();
       await waitFor(() =>
         expect(fixture.runtime.readDevelopmentNodeSnapshot).toHaveBeenCalledTimes(1),
@@ -1062,7 +1117,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
         <RuntimeViewProbe publish={publish} />
       </DevelopmentRuntimeProvider>,
     );
-    await waitFor(() => expect(view.getByText("No paired nodes")).toBeTruthy());
+    await waitFor(() => expect(view.getByText("No saved nodes")).toBeTruthy());
     await act(async () => fixture.emit(stoppedSnapshot()));
     fireEvent.press(view.getByRole("button", { name: "Start node" }));
     await waitFor(() => expect(fixture.start).toHaveBeenCalledTimes(2));
@@ -1244,7 +1299,9 @@ describe("Foundation 1 Nodes runtime binding", () => {
         expect(publish).toHaveBeenLastCalledWith(expect.objectContaining({ phase: "ready" })),
       );
       expect(view.queryByText("Choose a Bluetooth node")).toBeNull();
-      expect(view.getByText(/Open secure pairing on the node you want to manage/u)).toBeTruthy();
+      expect(
+        view.getByText(/Use the node's pairing instructions to get an invitation/u),
+      ).toBeTruthy();
       if (authorization === "denied")
         expect(view.getByRole("button", { name: "Open Settings" })).toBeTruthy();
       if (authorization === "restricted")
@@ -1664,13 +1721,13 @@ describe("Foundation 1 Nodes runtime binding", () => {
         <NodesScreen />
       </DevelopmentRuntimeProvider>,
     );
-    await waitFor(() => expect(view.getByText("No paired nodes")).toBeTruthy());
+    await waitFor(() => expect(view.getByText("No saved nodes")).toBeTruthy());
     expect(view.getByRole("link", { name: "View this device" })).toBeTruthy();
     expect(view.queryByText("Host runtime")).toBeNull();
     view.unmount();
     await waitFor(() => expect(stop).toHaveBeenCalledTimes(1));
   });
-  it("labels saved nodes as paired without implying current connectivity", async () => {
+  it("labels saved access without implying current connectivity or authorization", async () => {
     const stop = jest.fn();
     const describeRemoteControlTarget = jest.fn(async () =>
       Bindings.RemoteControlDescribeOutcome.Busy.new(),
@@ -1697,7 +1754,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
         <NodesScreen />
       </DevelopmentRuntimeProvider>,
     );
-    await waitFor(() => expect(view.getByText("Paired")).toBeTruthy());
+    await waitFor(() => expect(view.getByText("Access saved")).toBeTruthy());
     expect(view.getByText("Manage node")).toBeTruthy();
     expect(view.queryByText("Available controls")).toBeNull();
     expect(
@@ -1791,6 +1848,40 @@ describe("Foundation 1 Nodes runtime binding", () => {
     expect(view.getByLabelText("Invitation code")).toBeTruthy();
     view.unmount();
     await waitFor(() => expect(stop).toHaveBeenCalledTimes(1));
+  });
+  it("describes temporary search entries without assuming a board display or headless approval channel", async () => {
+    const view = render(
+      <DevelopmentRuntimeProvider
+        provider={fakeProvider(
+          jest.fn(),
+          {},
+          false,
+          Bindings.RemoteControlPairingState.Searching.new(),
+          [],
+          [
+            pairingCandidate("aa".repeat(16), "Remote node"),
+            pairingCandidate("bb".repeat(16), "Remote node"),
+          ],
+        )}
+      >
+        <PairNodeScreen selectedCandidateId="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(view.getAllByText("Pairing session")).toHaveLength(2));
+    expect(
+      view.getByText(
+        "Names may match. A pairing session label identifies this list entry, not the physical node.",
+      ),
+    ).toBeTruthy();
+    expect(
+      view.getByText("Enter the 8-character invitation provided by the selected node."),
+    ).toBeTruthy();
+    expect(view.queryByText("Node ID")).toBeNull();
+    expect(view.queryByText("Already paired with this device")).toBeNull();
+    expect(JSON.stringify(view.toJSON())).not.toMatch(
+      /pairing screen|session shown on|management console/iu,
+    );
+    view.unmount();
   });
   it("honors a live route selection without switching to another observed node", async () => {
     const stop = jest.fn();
@@ -1901,7 +1992,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
     );
     await waitFor(() => expect(view.getByText("Node no longer available")).toBeTruthy());
     expect(view.getByText("Nearby node")).toBeTruthy();
-    expect(view.getByText("Node ID")).toBeTruthy();
+    expect(view.getByText("Pairing session")).toBeTruthy();
     expect(view.getByText("2 minutes remaining")).toBeTruthy();
     expect(view.queryByLabelText("Invitation code")).toBeNull();
     fireEvent.press(view.getByLabelText("Select Nearby node BBBBBBBB"));
@@ -1909,6 +2000,338 @@ describe("Foundation 1 Nodes runtime binding", () => {
     expect(view.getByLabelText("Invitation code")).toBeTruthy();
     view.unmount();
     await waitFor(() => expect(stop).toHaveBeenCalledTimes(1));
+  });
+  it("opens a live search after success and pairs a candidate that arrives later", async () => {
+    const stop = jest.fn();
+    const paired = Bindings.RemoteControlPairingState.Paired.new({ attemptId: "first-attempt" });
+    const second = pairingCandidate("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", "Remote node");
+    const saved = {
+      targetIdentityFingerprint: observedIdentity,
+      destination: observedDestination,
+      controllerIdentityFingerprint: identityHash(new Uint8Array(16).fill(0x55)),
+      permittedRequests: [Bindings.RemoteControlRequestKind.Describe],
+    };
+    let current = snapshot(3n, false, paired, [saved], []);
+    const initiateRemoteControlPairing = jest.fn(async () =>
+      Bindings.RemoteControlPairingCommandOutcome.Accepted.new({
+        snapshot: snapshot(
+          5n,
+          false,
+          Bindings.RemoteControlPairingState.InvitationSubmitted.new({
+            candidateId: second.candidateId,
+          }),
+          [saved],
+          [second],
+        ),
+      }),
+    );
+    let runtimeView: DevelopmentRuntimeView | undefined;
+    const view = render(
+      <DevelopmentRuntimeProvider
+        provider={fakeProvider(
+          stop,
+          { readDevelopmentNodeSnapshot: async () => current, initiateRemoteControlPairing },
+          false,
+          paired,
+          [saved],
+        )}
+      >
+        <PairNodeScreen selectedCandidateId="aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
+        <RuntimeViewProbe
+          publish={(next) => {
+            runtimeView = next;
+          }}
+        />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() =>
+      expect(view.getByRole("button", { name: "Pair another node" })).toBeTruthy(),
+    );
+    fireEvent.press(view.getByRole("button", { name: "Pair another node" }));
+    expect(view.getByText("Looking for nearby nodes")).toBeTruthy();
+    expect(view.queryByText("This node is now available in Nodes.")).toBeNull();
+    // Ordinary snapshots may retain the native terminal state while discovery continues.
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    expect(view.getByText("Looking for nearby nodes")).toBeTruthy();
+    current = snapshot(4n, false, paired, [saved], [second]);
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    await waitFor(() => expect(view.getByLabelText("Invitation code")).toBeTruthy());
+    fireEvent.changeText(view.getByLabelText("Invitation code"), "1234abcd");
+    fireEvent.press(view.getByRole("button", { name: "Submit invitation" }));
+    await waitFor(() => expect(view.getByText("Invitation sent")).toBeTruthy());
+    expect(initiateRemoteControlPairing).toHaveBeenCalledWith({
+      candidateId: second.candidateId,
+      invitationCode: "1234ABCD",
+    });
+    expect(runtimeView?.snapshot?.pairedTargets).toEqual([saved]);
+    expect(view.queryByRole("button", { name: "Pair another node" })).toBeNull();
+    expect(view.queryByRole("button", { name: "Search for a node" })).toBeNull();
+    expect(stop).not.toHaveBeenCalled();
+    view.unmount();
+  });
+  it.each([
+    Bindings.RemoteControlPairingState.Rejected.new({ detail: "declined" }),
+    Bindings.RemoteControlPairingState.Expired.new({ detail: "expired" }),
+    Bindings.RemoteControlPairingState.Cancelled.new(),
+    Bindings.RemoteControlPairingState.Failed.new({
+      stage: Bindings.RemoteControlPairingFailureStage.Request,
+      detail: "failed",
+    }),
+  ])("offers a fresh empty search after terminal $tag", async (pairing) => {
+    const stop = jest.fn();
+    const view = render(
+      <DevelopmentRuntimeProvider provider={fakeProvider(stop, {}, false, pairing)}>
+        <PairNodeScreen selectedCandidateId="old-session" />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() =>
+      expect(view.getByRole("button", { name: "Search for a node" })).toBeTruthy(),
+    );
+    fireEvent.press(view.getByRole("button", { name: "Search for a node" }));
+    expect(view.getByText("Looking for nearby nodes")).toBeTruthy();
+    expect(view.queryByText("Node no longer available")).toBeNull();
+    expect(stop).not.toHaveBeenCalled();
+    view.unmount();
+  });
+  it("shows a repeated identical failure after the next active attempt", async () => {
+    const failure = Bindings.RemoteControlPairingState.Failed.new({
+      stage: Bindings.RemoteControlPairingFailureStage.Timeout,
+      detail: "same failure",
+    });
+    const candidate = pairingCandidate("bb".repeat(16), "Remote node");
+    let current = snapshot(3n, false, failure, [], [candidate]);
+    let runtimeView: DevelopmentRuntimeView | undefined;
+    const view = render(
+      <DevelopmentRuntimeProvider
+        provider={fakeProvider(
+          jest.fn(),
+          { readDevelopmentNodeSnapshot: async () => current },
+          false,
+          failure,
+        )}
+      >
+        <PairNodeScreen selectedCandidateId={undefined} />
+        <RuntimeViewProbe
+          publish={(next) => {
+            runtimeView = next;
+          }}
+        />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(view.getByText("Pairing failed")).toBeTruthy());
+    fireEvent.press(view.getByRole("button", { name: "Search for a node" }));
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    expect(view.queryByText("Pairing failed")).toBeNull();
+    current = snapshot(
+      4n,
+      false,
+      Bindings.RemoteControlPairingState.InvitationSubmitted.new({
+        candidateId: candidate.candidateId,
+      }),
+    );
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    expect(view.getByText("Invitation sent")).toBeTruthy();
+    current = snapshot(5n, false, failure);
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    expect(view.getByText("Pairing failed")).toBeTruthy();
+    expect(view.getByRole("button", { name: "Search for a node" })).toBeEnabled();
+    view.unmount();
+  });
+  it("shows an identical retry failure when polling misses the intermediate active attempt", async () => {
+    const failure = Bindings.RemoteControlPairingState.Failed.new({
+      stage: Bindings.RemoteControlPairingFailureStage.Link,
+      detail: "same failure",
+    });
+    const candidate = pairingCandidate("bb".repeat(16), "Remote node");
+    let current = snapshot(3n, false, failure, [], [candidate]);
+    const initiateRemoteControlPairing = jest.fn(async () =>
+      Bindings.RemoteControlPairingCommandOutcome.Failed.new({
+        stage: Bindings.RemoteControlPairingFailureStage.Link,
+        detail: "same failure",
+      }),
+    );
+    let runtimeView: DevelopmentRuntimeView | undefined;
+    const view = render(
+      <DevelopmentRuntimeProvider
+        provider={fakeProvider(
+          jest.fn(),
+          { readDevelopmentNodeSnapshot: async () => current, initiateRemoteControlPairing },
+          false,
+          failure,
+          [],
+          [candidate],
+        )}
+        refreshIntervalMillis={60000}
+      >
+        <PairNodeScreen selectedCandidateId={undefined} />
+        <RuntimeViewProbe
+          publish={(next) => {
+            runtimeView = next;
+          }}
+        />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(view.getByText("Pairing failed")).toBeTruthy());
+    fireEvent.press(view.getByRole("button", { name: "Search for a node" }));
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    await waitFor(() => expect(view.getByLabelText("Invitation code")).toBeTruthy());
+    fireEvent.changeText(view.getByLabelText("Invitation code"), "1234abcd");
+    fireEvent.press(view.getByRole("button", { name: "Submit invitation" }));
+    await waitFor(() => expect(initiateRemoteControlPairing).toHaveBeenCalledTimes(1));
+    // The Failed command carries no snapshot. A fast native failure can remove
+    // the candidate before the next poll, without React seeing InvitationSubmitted.
+    current = snapshot(4n, false, failure, [], []);
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    await waitFor(() => expect(view.getByText("Pairing failed")).toBeTruthy());
+    expect(view.getByRole("button", { name: "Search for a node" })).toBeEnabled();
+    expect(view.queryByText("Looking for nearby nodes")).toBeNull();
+    view.unmount();
+  });
+  it("does not carry a dismissed outcome or late submission failure into a new runtime", async () => {
+    const stop = jest.fn();
+    const paired = Bindings.RemoteControlPairingState.Paired.new({ attemptId: "old-attempt" });
+    const candidate = pairingCandidate("bb".repeat(16), "Remote node");
+    let finish!: (value: Bindings.RemoteControlPairingCommandOutcome) => void;
+    const initiateRemoteControlPairing = jest.fn(
+      () =>
+        new Promise<Bindings.RemoteControlPairingCommandOutcome>((resolve) => {
+          finish = resolve;
+        }),
+    );
+    let current = snapshot(3n, false, paired, [], [candidate]);
+    let runtimeView: DevelopmentRuntimeView | undefined;
+    const view = render(
+      <DevelopmentRuntimeProvider
+        provider={fakeProvider(
+          stop,
+          { readDevelopmentNodeSnapshot: async () => current, initiateRemoteControlPairing },
+          false,
+          paired,
+        )}
+      >
+        <PairNodeScreen selectedCandidateId={undefined} />
+        <RuntimeViewProbe
+          publish={(next) => {
+            runtimeView = next;
+          }}
+        />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() =>
+      expect(view.getByRole("button", { name: "Pair another node" })).toBeTruthy(),
+    );
+    fireEvent.press(view.getByRole("button", { name: "Pair another node" }));
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    fireEvent.changeText(view.getByLabelText("Invitation code"), "1234abcd");
+    fireEvent.press(view.getByRole("button", { name: "Submit invitation" }));
+    await waitFor(() => expect(initiateRemoteControlPairing).toHaveBeenCalledTimes(1));
+    current = { ...snapshot(4n, false, paired), generationId: 1n };
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    await waitFor(() =>
+      expect(view.getByRole("button", { name: "Pair another node" })).toBeEnabled(),
+    );
+    await act(async () => {
+      finish(Bindings.RemoteControlPairingCommandOutcome.Busy.new());
+    });
+    expect(
+      view.queryByText("Another node operation is in progress. Try again shortly."),
+    ).toBeNull();
+    expect(view.queryByLabelText("Invitation code")).toBeNull();
+    expect(view.queryByText("Looking for nearby nodes")).toBeNull();
+    view.unmount();
+  });
+  it.each([
+    Bindings.RemoteControlPairingState.InvitationSubmitted.new({ candidateId: "active" }),
+    Bindings.RemoteControlPairingState.AwaitingTargetApproval.new({ attemptId: "active" }),
+    Bindings.RemoteControlPairingState.Persisting.new({ attemptId: "active" }),
+  ])("preserves active $tag instead of exposing search reset", async (pairing) => {
+    const view = render(
+      <DevelopmentRuntimeProvider provider={fakeProvider(jest.fn(), {}, false, pairing)}>
+        <PairNodeScreen selectedCandidateId={undefined} />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(view.queryByText("Getting ready")).toBeNull());
+    expect(view.queryByRole("button", { name: "Search for a node" })).toBeNull();
+    expect(view.queryByRole("button", { name: "Pair another node" })).toBeNull();
+    expect(view.queryByText("Looking for nearby nodes")).toBeNull();
+    view.unmount();
+  });
+  it("matches already-paired status using authenticated target identity, never session ID", async () => {
+    const stop = jest.fn();
+    const saved = {
+      targetIdentityFingerprint: observedIdentity,
+      destination: observedDestination,
+      controllerIdentityFingerprint: identityHash(new Uint8Array(16).fill(0x55)),
+      permittedRequests: [Bindings.RemoteControlRequestKind.Describe],
+    };
+    // Deliberately use a candidate ID identical to the saved stable identity.
+    const candidate = pairingCandidate("44".repeat(16), "Remote node");
+    const confirm = (targetIdentityFingerprint: Uint8Array) =>
+      Bindings.RemoteControlPairingState.ConfirmationRequired.new({
+        attemptId: "second-attempt",
+        authority: Bindings.RemoteControlControllerAuthority.Operator,
+        confirmationCode: "123456",
+        targetIdentityFingerprint,
+        permissions: [Bindings.RemoteControlRequestKind.Describe],
+      });
+    let current = snapshot(3n, false, confirm(new Uint8Array(16).fill(0x66)), [saved], []);
+    let runtimeView: DevelopmentRuntimeView | undefined;
+    const view = render(
+      <DevelopmentRuntimeProvider
+        provider={fakeProvider(
+          stop,
+          { readDevelopmentNodeSnapshot: async () => current },
+          false,
+          Bindings.RemoteControlPairingState.Searching.new(),
+          [saved],
+          [candidate, pairingCandidate("bb".repeat(16), "Remote node")],
+        )}
+      >
+        <PairNodeScreen selectedCandidateId={undefined} />
+        <RuntimeViewProbe
+          publish={(next) => {
+            runtimeView = next;
+          }}
+        />
+      </DevelopmentRuntimeProvider>,
+    );
+    await waitFor(() => expect(view.getAllByText("Remote node")).toHaveLength(2));
+    expect(view.getAllByText("Pairing session")).toHaveLength(2);
+    expect(view.getByText("BBBBBBBB")).toBeTruthy();
+    expect(view.queryByText("Node ID")).toBeNull();
+    expect(view.queryByText("Already paired with this device")).toBeNull();
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    expect(view.getByText("66".repeat(16))).toBeTruthy();
+    expect(view.queryByText("Already paired with this device")).toBeNull();
+    current = snapshot(4n, false, confirm(observedIdentity), [saved], []);
+    await act(async () => {
+      await runtimeView?.refreshSnapshot();
+    });
+    expect(view.getByText("Already paired with this device")).toBeTruthy();
+    expect(view.getByText("44".repeat(16))).toBeTruthy();
+    expect(view.queryByRole("button", { name: "Search for a node" })).toBeNull();
+    expect(view.queryByRole("button", { name: "Pair another node" })).toBeNull();
+    view.unmount();
   });
   it("leaves another observed node selectable after a terminal pairing result", async () => {
     const terminalStates = [
@@ -2108,7 +2531,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
       );
       await waitFor(() => expect(view.getByText(expectedCopy)).toBeTruthy());
       if (pairing.tag === Bindings.RemoteControlPairingState_Tags.ConfirmationRequired) {
-        expect(view.queryByText("44".repeat(16))).toBeNull();
+        expect(view.getByText("44".repeat(16))).toBeTruthy();
         expect(view.getByText("Operator")).toBeTruthy();
         expect(
           view.queryByText("This device can also grant or remove access for other devices."),
@@ -2158,7 +2581,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
       ],
       [
         Bindings.RemoteControlPairingFailureStage.Route,
-        "No connection path to the node is available yet. Keep its pairing screen open and try again.",
+        "No connection path to the node is available yet. Keep pairing enabled on the node and try again.",
       ],
       [
         Bindings.RemoteControlPairingFailureStage.Link,
@@ -2438,7 +2861,7 @@ describe("Foundation 1 Nodes runtime binding", () => {
     await act(async () => fixture.emit(stoppedSnapshot(5n)));
     expect(view.getByText("This device's node is stopped")).toBeTruthy();
     expect(
-      view.getByText("Return to Nodes and start this device's node to manage your paired nodes."),
+      view.getByText("Return to Nodes and start this device's node to manage your saved nodes."),
     ).toBeTruthy();
     expect(view.queryByText("Not found")).toBeNull();
     expect(view.queryByText("This page is not available")).toBeNull();

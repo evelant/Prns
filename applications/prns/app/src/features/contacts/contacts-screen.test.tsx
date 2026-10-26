@@ -182,6 +182,10 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
       }),
     readDevelopmentNodeSnapshot: async () => snapshot(),
     clearNetworkActivity: async () => Bindings.ClearNetworkActivityOutcome.LocalNodeStopped.new(),
+    exportControllerSetupCard: async () => Bindings.ControllerSetupCardOutcome.Busy.new(),
+    previewTargetAccessCard: async () =>
+      Bindings.TargetAccessCardPreviewOutcome.Invalid.new({ detail: "fixture" }),
+    importTargetAccessCard: async () => Bindings.TargetAccessCardImportOutcome.Busy.new(),
     initiateRemoteControlPairing: async () =>
       Bindings.RemoteControlPairingCommandOutcome.Busy.new(),
     approveRemoteControlPairing: async () => Bindings.RemoteControlPairingCommandOutcome.Busy.new(),

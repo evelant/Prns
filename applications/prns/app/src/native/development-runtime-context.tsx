@@ -117,6 +117,15 @@ export type DevelopmentRuntimeView = {
     input: ContactDestinationInput,
   ) => Promise<RuntimeCommandResult<ContactMutationOutcome>>;
   readonly clearLxmfDiscovery: () => Promise<RuntimeCommandResult<LxmfDiscoveryClearOutcome>>;
+  readonly exportControllerSetupCard: () => Promise<
+    RuntimeCommandResult<Bindings.ControllerSetupCardOutcome>
+  >;
+  readonly previewTargetAccessCard: (
+    card: string,
+  ) => Promise<RuntimeCommandResult<Bindings.TargetAccessCardPreviewOutcome>>;
+  readonly importTargetAccessCard: (
+    input: Bindings.ImportTargetAccessCardInput,
+  ) => Promise<RuntimeCommandResult<Bindings.TargetAccessCardImportOutcome>>;
   readonly initiatePairing: (
     input: InitiateRemoteControlPairingInput,
   ) => Promise<RuntimeCommandResult<RemoteControlPairingCommandOutcome>>;
@@ -570,6 +579,43 @@ export function DevelopmentRuntimeProvider({
     [selectedProvider, publishSnapshot, unavailableResult],
   );
 
+  const exportControllerSetupCard = useCallback(
+    () => run((active) => active.runtime.exportControllerSetupCard()),
+    [run],
+  );
+  const previewTargetAccessCard = useCallback(
+    (card: string) => run((active) => active.runtime.previewTargetAccessCard(card)),
+    [run],
+  );
+  const importTargetAccessCard = useCallback(
+    async (
+      input: Bindings.ImportTargetAccessCardInput,
+    ): Promise<RuntimeCommandResult<Bindings.TargetAccessCardImportOutcome>> => {
+      const owner = session.current;
+      const revision = stopRevision.current;
+      const result = await run((active) => active.runtime.importTargetAccessCard(input));
+      if (
+        result.type === "outcome" &&
+        (result.outcome.tag === "Saved" || result.outcome.tag === "Existing")
+      ) {
+        await refreshSnapshot();
+      }
+      if (
+        session.current !== owner ||
+        acquisitionPending.current ||
+        stopRevision.current !== revision
+      ) {
+        return {
+          type: "operationFailure",
+          detail:
+            "This device's node changed while access was being saved. Inspect saved access before trying again.",
+        };
+      }
+      return result;
+    },
+    [run, refreshSnapshot],
+  );
+
   const initiatePairing = useCallback(
     async (input: InitiateRemoteControlPairingInput) => {
       const result = await run((active) => active.runtime.initiateRemoteControlPairing(input));
@@ -802,6 +848,9 @@ export function DevelopmentRuntimeProvider({
       setMessagingName,
       saveDiscoveredContact,
       clearLxmfDiscovery,
+      exportControllerSetupCard,
+      previewTargetAccessCard,
+      importTargetAccessCard,
       initiatePairing,
       approvePairing,
       rejectPairing,
@@ -842,6 +891,9 @@ export function DevelopmentRuntimeProvider({
       startRemoteWifiTrial,
       inspectRemoteWifiTrial,
       finishRemoteWifiTrial,
+      exportControllerSetupCard,
+      previewTargetAccessCard,
+      importTargetAccessCard,
       initiatePairing,
       lifecycleFailure,
       phase,

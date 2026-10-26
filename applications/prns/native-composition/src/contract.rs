@@ -1,5 +1,7 @@
 mod remote_management;
 pub use remote_management::*;
+mod remote_setup;
+pub use remote_setup::*;
 mod remote_wifi;
 pub use remote_wifi::*;
 
