@@ -717,6 +717,7 @@ async fn usb_device_task(
     tx: UsbSerialJtagTx<'static, Async>,
     seam: UsbSeam,
     status: &'static EmbassyInterfaceStatus,
+    enrollment: personal_rns::usb_auto::UsbAutoControllerEnrollment,
 ) {
     let mut last_sof = 0u16;
     let host_present = move || {
@@ -735,7 +736,8 @@ async fn usb_device_task(
         status,
         bitrate: personal_rns::interfaces::usb_auto::DEVICE_USB_BITRATE_BPS,
         host_presence: PhysicalHostPresence::new(host_present),
-    });
+    })
+    .with_controller_enrollment(enrollment);
     device.run(seam).await
 }
 
@@ -745,6 +747,7 @@ async fn usb_uart_device_task(
     tx: UartTx<'static, Async>,
     seam: UsbSeam,
     status: &'static EmbassyInterfaceStatus,
+    enrollment: personal_rns::usb_auto::UsbAutoControllerEnrollment,
 ) {
     let device = UsbAutoDevice::new(UsbAutoDeviceInput {
         rx: RecoverableUsbUartRx(rx),
@@ -754,8 +757,14 @@ async fn usb_uart_device_task(
         // and the USB Auto liveness protocol own disconnect detection instead.
         host_presence: PhysicalHostPresence::new(|| true),
         bitrate: personal_rns::interfaces::BitrateBps::guess(115_200),
-    });
+    })
+    .with_controller_enrollment(enrollment);
     device.run(seam).await
+}
+
+#[embassy_executor::task]
+async fn controller_enrollment_task() {
+    crate::controller_enrollment::run(PrnsNodeHandle::new(COMMANDS.sender(), &COMPLETION)).await
 }
 
 struct RecoverableUsbUartRx(UartRx<'static, Async>);
