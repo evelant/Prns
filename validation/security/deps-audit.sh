@@ -13,10 +13,12 @@ if [[ "$(cargo about --version 2>/dev/null || true)" != "cargo-about 0.9.1" ]]; 
 fi
 
 python3 "$root/validation/security/license-policy-parity.py"
+python3 "$root/validation/security/mls-source-policy.py"
 
 graphs=(
     "group-libraries|prns-groups/Cargo.toml|x86_64-unknown-linux-gnu"
     "group-secure-storage|prns-groups/Cargo.toml|x86_64-unknown-linux-gnu|prns-groups-store/secure"
+    "group-mls-adapter|prns-groups/security/mls-rs/Cargo.toml|x86_64-unknown-linux-gnu"
     "engine|Cargo.toml|x86_64-unknown-linux-gnu"
     "daemon-linux|prnsd/Cargo.toml|x86_64-unknown-linux-gnu"
     "daemon-macos|prnsd/Cargo.toml|aarch64-apple-darwin"

@@ -405,6 +405,17 @@ class RegistryTests(unittest.TestCase):
                 {".", "first-party"},
             )
 
+    def test_cargo_lock_discovery_includes_only_our_vendor_validation_workspace(self) -> None:
+        validation = "prns-groups/security/mls-rs/vendor/mls-rs/validation"
+        sources = [
+            runner.ROOT / validation / "Cargo.lock",
+            runner.ROOT / "prns-groups/security/mls-rs/vendor/mls-rs/Cargo.lock",
+            runner.ROOT / validation / "nested/Cargo.lock",
+            runner.ROOT / "other/vendor/mls-rs/validation/Cargo.lock",
+        ]
+        with mock.patch.object(runner, "tracked_or_untracked_sources", return_value=sources):
+            self.assertEqual(runner.source_cargo_lock_workspaces(), {validation})
+
     def test_unregistered_interop_asset_is_rejected(self) -> None:
         orphan = runner.ROOT / "validation/interop/peers/runner_self_test_orphan.py"
         orphan.write_text("# temporary registry self-test\n", encoding="utf-8")

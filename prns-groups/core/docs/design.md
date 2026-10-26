@@ -1,7 +1,8 @@
 # Group addressing and synchronization
 
-This source boundary contains the allocation-free core and bounded transaction
-store. MLS, record, transport, runner and app consumers are following integrations. This document describes the wider design, including
+This source boundary contains the allocation-free core, bounded transaction
+store and MLS adapter. Native record, transport, runner and app consumers are
+separate integrations. This document describes the wider design, including
 capabilities that remain planned; it does not establish an interoperable protocol
 or qualified guarantees. Earlier experiments are not shipping dependencies.
 
@@ -18,7 +19,7 @@ cached publication and explicit repair/history rules. It also describes planned
 custody and public-record profiles; the current private implementation uses MLS.
 The [embedded guide](embedded.md) identifies supported layers and remaining
 integration gates without making a member-support promise for every board.
-The security analysis (separate integration) compares Reticulum,
+The [security analysis](../../security/docs/security.md) compares Reticulum,
 LXMF and the proposed group profile, including relay visibility, forward secrecy,
 compromise recovery and retained history.
 The [delayed-delivery options](policies.md#delayed-delivery-across-routine-rekeys)

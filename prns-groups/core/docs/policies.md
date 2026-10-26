@@ -6,7 +6,7 @@ failure cases. The
 the matrices here describe the wider design space, not features all supported
 by v0. This document does not freeze a wire format or establish implementation
 guarantees; consult each component's README for its supported contract.
-See the encryption and privacy analysis (separate integration) for
+See the [encryption and privacy analysis](../../security/docs/security.md) for
 who can read each layer, forward-secrecy conditions and the LXMF comparison.
 
 ## Configuration model

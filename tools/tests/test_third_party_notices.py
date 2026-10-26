@@ -29,6 +29,8 @@ class ThirdPartyNoticeTests(unittest.TestCase):
         self.assertNotIn("Group libraries", notices.GRAPH_FEATURES)
         self.assertEqual(graphs["Group secure storage"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertEqual(notices.GRAPH_FEATURES["Group secure storage"], ("prns-groups-store/secure",))
+        self.assertEqual(graphs["Group MLS adapter"], ("prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertNotIn("Group MLS adapter", notices.GRAPH_FEATURES)
 
     def test_app_graphs_add_only_the_platform_product_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
@@ -136,6 +138,9 @@ class ThirdPartyNoticeTests(unittest.TestCase):
             self.assertEqual(actual, {
                 "Cargo.toml", "Cargo.lock", "member/Cargo.toml",
                 f"{notices.OBJECT_VENDOR}/Cargo.toml",
+                f"{notices.MLS_VENDOR}/Cargo.toml",
+                f"{notices.MLS_VENDOR}/validation/Cargo.toml",
+                f"{notices.MLS_VENDOR}/validation/Cargo.lock",
             })
 
     def test_object_vendor_rejects_unrecorded_manifest_license_and_source_changes(self) -> None:
@@ -178,6 +183,16 @@ class ThirdPartyNoticeTests(unittest.TestCase):
                         path.write_text("reviewed replacement\n")
                         self.assertNotEqual(notices.notice_input_fingerprint(), original)
                         path.write_text("reviewed original\n")
+
+    def test_mls_vendor_and_validation_inputs_are_bound_without_other_vendor_locks(self) -> None:
+        tracked = b"other/vendor/upstream/Cargo.lock\0"
+        with mock.patch.object(notices.subprocess, "run") as run:
+            run.return_value = subprocess.CompletedProcess([], 0, tracked, b"")
+            paths = notices.notice_input_paths()
+        for relative in notices.MLS_NOTICE_INPUTS:
+            with self.subTest(relative=relative):
+                self.assertIn(notices.ROOT / notices.MLS_VENDOR / relative, paths)
+        self.assertNotIn(notices.ROOT / "other/vendor/upstream/Cargo.lock", paths)
 
     def test_unavailable_tracked_inventory_fails_closed(self) -> None:
         with mock.patch.object(notices.subprocess, "run") as run:
