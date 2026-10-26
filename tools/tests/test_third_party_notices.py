@@ -4,6 +4,7 @@ from contextlib import redirect_stderr, redirect_stdout
 import importlib.util
 from io import StringIO
 import json
+import shutil
 from pathlib import Path
 import subprocess
 import sys
@@ -34,6 +35,8 @@ class ThirdPartyNoticeTests(unittest.TestCase):
         self.assertIn("prnsd/Cargo.toml", relative)
         self.assertIn("prnsd/Cargo.lock", relative)
         self.assertIn("about.toml", relative)
+        for name in notices.OBJECT_NOTICE_INPUTS:
+            self.assertIn(f"{notices.OBJECT_VENDOR}/{name}", relative)
         self.assertIn("docs/website/package-lock.json", relative)
         self.assertIn("release/licenses/pako-Zlib.txt", relative)
         self.assertIn("release/licenses/mbedtls-Apache-2.0.txt", relative)
@@ -81,7 +84,51 @@ class ThirdPartyNoticeTests(unittest.TestCase):
                     for path in notices.notice_input_paths()
                     if path.name in {"Cargo.toml", "Cargo.lock"}
                 }
-            self.assertEqual(actual, {"Cargo.toml", "Cargo.lock", "member/Cargo.toml"})
+            self.assertEqual(actual, {
+                "Cargo.toml", "Cargo.lock", "member/Cargo.toml",
+                f"{notices.OBJECT_VENDOR}/Cargo.toml",
+            })
+
+    def test_object_vendor_rejects_unrecorded_manifest_license_and_source_changes(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            vendor = root / notices.OBJECT_VENDOR
+            shutil.copytree(ROOT / notices.OBJECT_VENDOR, vendor)
+            with mock.patch.object(notices, "ROOT", root):
+                notices.verify_object_vendor()
+                for relative in ("Cargo.toml", "LICENSE-MIT", "src/read/mod.rs"):
+                    with self.subTest(relative=relative):
+                        path = vendor / relative
+                        original = path.read_bytes()
+                        path.write_bytes(original + b"\nchanged\n")
+                        try:
+                            with self.assertRaisesRegex(RuntimeError, "differs from recorded provenance"):
+                                notices.verify_object_vendor()
+                        finally:
+                            path.write_bytes(original)
+
+    def test_object_vendor_notice_material_changes_invalidate_fingerprint(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            vendor = root / notices.OBJECT_VENDOR
+            vendor.mkdir(parents=True)
+            paths = tuple(vendor / name for name in notices.OBJECT_NOTICE_INPUTS)
+            for path in paths:
+                path.write_text("reviewed original\n")
+            # Exercise fingerprint coverage independently of the stricter source
+            # provenance check tested above; even a reviewed provenance update
+            # must invalidate the previously generated notice bundle.
+            with (
+                mock.patch.object(notices, "ROOT", root),
+                mock.patch.object(notices, "notice_input_paths", return_value=paths),
+                mock.patch.object(notices, "verify_object_vendor"),
+            ):
+                original = notices.notice_input_fingerprint()
+                for path in paths:
+                    with self.subTest(relative=path.name):
+                        path.write_text("reviewed replacement\n")
+                        self.assertNotEqual(notices.notice_input_fingerprint(), original)
+                        path.write_text("reviewed original\n")
 
     def test_unavailable_tracked_inventory_fails_closed(self) -> None:
         with mock.patch.object(notices.subprocess, "run") as run:

@@ -29,6 +29,7 @@ default-members = [
     "personal-hopspot/core",
 ]
 exclude = [
+    "vendor/object-0.39.1",
     "prnsd",
     "prns-ffi",
     "prns-napi",
@@ -74,3 +75,8 @@ inherits = "dev"
 opt-level = 2
 debug-assertions = true
 overflow-checks = true
+
+# Preserve espflash's object 0.39 API while using the fixed zstd decoder.
+# Provenance and the manifest-only patch are in vendor/object-0.39.1.
+[patch.crates-io]
+object = { path = "vendor/object-0.39.1" }
