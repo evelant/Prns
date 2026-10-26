@@ -27,12 +27,17 @@ class UnsafeAuditTests(unittest.TestCase):
         self.assertEqual(graphs["group-mls-adapter"], ("prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"))
         self.assertNotIn("group-mls-adapter", audit.GRAPH_FEATURES)
 
+    def test_group_headless_peer_graph_selects_its_consumer_features(self) -> None:
+        graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
+        self.assertEqual(graphs["group-headless-peer"], ("prns-groups/runner/native/Cargo.toml", "x86_64-unknown-linux-gnu"))
+        self.assertEqual(audit.GRAPH_FEATURES["group-headless-peer"], ("headless",))
+
     def test_app_graphs_audit_the_shipped_platform_features(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
         self.assertEqual(len(graphs), len(audit.GRAPHS))
         self.assertEqual(
             audit.GRAPH_FEATURES,
-            {"prns-app-android": ("android",), "prns-app-ios": ("apple",), "group-secure-storage": ("prns-groups-store/secure",)},
+            {"group-headless-peer": ("headless",), "prns-app-android": ("android",), "prns-app-ios": ("apple",), "group-secure-storage": ("prns-groups-store/secure",)},
         )
         manifest = "applications/prns/native-composition/Cargo.toml"
         self.assertEqual(graphs["prns-app-android"], (manifest, "aarch64-linux-android"))

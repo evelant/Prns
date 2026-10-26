@@ -1,22 +1,22 @@
 # Embedded group support
 
-This source boundary includes the allocation-free `no_std` group core and the
-bounded `no_std + alloc` transaction coordinator and MLS adapter. The record
-service, text codec, native enrollment/transport and app are separate integrations.
-Reticulum routing and the group application protocol remain separate: a board can
-forward group traffic without joining or holding MLS keys.
+The group core and text codec are allocation-free `no_std` libraries. The record
+service, transaction coordinator and MLS adapter use bounded `no_std + alloc`.
+Native enrollment, transport and scheduling use `std`; they are not embedded
+implementations. Reticulum routing and the group application protocol remain
+separate: a board can forward group traffic without joining or holding MLS keys.
 
 ESP32-S3 with PSRAM is the first full-member integration target. A complete
-networked embedded member is still planned; a separate E290 storage-fixture integration exercises
-local MLS and recovery building blocks. It is not part of this boundary. Neither library compilation nor a normal
+networked embedded member is still planned; the E290 storage fixture exercises
+local MLS and recovery building blocks. Neither library compilation nor a normal
 hotspot resource report qualifies the combined group workload.
 
 ## Support and ownership
 
 | Target or role | Current boundary |
 | --- | --- |
-| Native host | Separate native integration supplies record service, enrollment, transport and runner. The native storage backend here is plaintext; protected phone storage is separate work. |
-| ESP32-S3 with PSRAM | First embedded MLS target. E290 storage fixtures are a separate integration; portable enrollment, network synchronization and a full-member resource contract remain. |
+| Native host | Record service, authenticated owner-ordered additions, transport and runner are implemented. Native storage is plaintext; protected phone storage is separate work. |
+| ESP32-S3 with PSRAM | First embedded MLS target. Local E290 storage fixtures exist; portable enrollment, network synchronization and a full-member resource contract remain. |
 | ESP32-S3 without PSRAM | Conditional expansion after measuring the complete workload; no group-member support promise. |
 | ESP32-C6 | Routing is supported independently of groups. Group membership needs a separate memory, stack and single-core scheduling qualification. |
 | nRF52840 | No initial MLS-member promise. Current hotspot profiles already have tight RAM/flash budgets; removing SoftDevice does not automatically reclaim its reserved layout. |
