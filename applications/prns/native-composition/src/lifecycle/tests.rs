@@ -811,6 +811,7 @@ pub(super) fn test_worker(
         runtime: Arc::new(OnceLock::new()),
         host: Arc::new(OnceLock::new()),
         bluetooth: Arc::new(OnceLock::new()),
+        connections: Arc::new(OnceLock::new()),
         commands,
         shutdown,
         done,

@@ -296,6 +296,7 @@ mod tests {
 
     fn row(id: InterfaceId, membership: Membership) -> InterfaceInventoryEntry {
         InterfaceInventoryEntry {
+            endpoint: None,
             name: None,
             origin: InterfaceOriginKind::Configured,
             attachment_epoch: 1,

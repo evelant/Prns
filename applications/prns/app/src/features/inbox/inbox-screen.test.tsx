@@ -204,6 +204,8 @@ let mockBluetoothAuthorization: Bindings.BluetoothAuthorizationStatus | null = n
 let mockLifecycleFailure: string | null = null;
 let mockAvailable = true;
 let mockOwnerKey: string | undefined;
+let mockMessagingHealth: Bindings.LxmfHealth | null | undefined;
+let mockMessagingRevision: number | undefined;
 jest.mock("expo-router", () => ({
   Link: ({ children }: { readonly children: ReactNode }) => children,
   useRouter: () => ({ replace: mockReplace }),
@@ -213,6 +215,8 @@ jest.mock("@/native/development-runtime-context", () => ({
     availability: { type: mockAvailable ? "available" : "unavailable", platform: "ios" },
     phase: mockPhase,
     ownerKey: mockOwnerKey,
+    messagingHealth: mockMessagingHealth,
+    messagingRevision: mockMessagingRevision,
     snapshot: mockActiveSnapshot,
     bluetoothAuthorization: mockBluetoothAuthorization,
     lifecycleFailure: mockLifecycleFailure,
@@ -242,6 +246,8 @@ beforeEach(() => {
   mockLifecycleFailure = null;
   mockAvailable = true;
   mockOwnerKey = undefined;
+  mockMessagingHealth = undefined;
+  mockMessagingRevision = undefined;
   mockListContacts.mockResolvedValue(
     Bindings.ContactListOutcome.Listed.new({ contacts: [mockContact] }),
   );
@@ -983,6 +989,97 @@ describe("mailbox read ownership and history", () => {
     };
     view.rerender({});
     await waitFor(() => expect(mockListLxmfConversations).toHaveBeenCalledTimes(reads + 2));
+  });
+
+  test("named mailbox and delivery changes refresh without changing global radio revisions", async () => {
+    mockOwnerKey = "personal";
+    mockMessagingHealth = { ...mockSnapshot.lxmf };
+    mockMessagingRevision = 1;
+    mockListLxmfMessages.mockResolvedValueOnce(listed([]));
+    const screen = render(<ConversationScreen destination={mockDestination} />);
+    expect(await screen.findByText("No messages with this contact yet.")).toBeTruthy();
+    mockListLxmfMessages.mockResolvedValue(listed([mockQueuedMessage]));
+    mockMessagingHealth = { ...mockSnapshot.lxmf, mailboxRevision: 1n, projectionRevision: 1n };
+    mockMessagingRevision = 2;
+    screen.rerender(<ConversationScreen destination={mockDestination} />);
+    expect(await screen.findByText("Cancel me")).toBeTruthy();
+    mockListLxmfMessages.mockResolvedValue(
+      listed([
+        {
+          ...mockQueuedMessage,
+          deliveryState: Bindings.LxmfDeliveryState.Delivered.new({
+            deliveredAt: 1700000000200n,
+            rtt: 200n,
+          }),
+        },
+        { ...mockMessage, verification: Bindings.LxmfVerification.Verified },
+      ]),
+    );
+    mockMessagingHealth = { ...mockMessagingHealth, projectionRevision: 2n };
+    mockMessagingRevision = 3;
+    screen.rerender(<ConversationScreen destination={mockDestination} />);
+    expect(await screen.findByText(/Delivered in 200 ms/)).toBeTruthy();
+    expect(await screen.findByText("Questionable message")).toBeTruthy();
+    expect(mockActiveSnapshot).toBe(mockSnapshot);
+    expect(mockRefreshSnapshot).not.toHaveBeenCalled();
+  });
+
+  test("a named mailbox awaiting its service never falls back to another identity's revisions", async () => {
+    mockOwnerKey = "personal";
+    mockMessagingHealth = null;
+    mockMessagingRevision = 0;
+    const view = renderHook(() => useLxmfData(mockDestination));
+    await waitFor(() => expect(view.result.current.messagesLoaded).toBe(true));
+    const reads = mockListLxmfMessages.mock.calls.length;
+    mockActiveSnapshot = {
+      ...mockSnapshot,
+      lxmf: { ...mockSnapshot.lxmf, mailboxRevision: 999n, projectionRevision: 999n },
+    };
+    view.rerender({});
+    await act(async () => undefined);
+    expect(mockListLxmfMessages).toHaveBeenCalledTimes(reads);
+    mockMessagingHealth = { ...mockSnapshot.lxmf };
+    mockMessagingRevision = 1;
+    view.rerender({});
+    await waitFor(() => expect(mockListLxmfMessages).toHaveBeenCalledTimes(reads + 1));
+  });
+
+  test("named live revisions retain loaded pages and refresh their delivery states", async () => {
+    mockOwnerKey = "personal";
+    mockMessagingHealth = { ...mockSnapshot.lxmf };
+    mockMessagingRevision = 1;
+    let messages = Array.from({ length: 75 }, (_, index) => ({
+      ...mockQueuedMessage,
+      localRecordId: BigInt(75 - index),
+    }));
+    mockListLxmfMessages.mockImplementation(async (input) =>
+      listed(
+        messages
+          .filter((message) => input?.before === undefined || message.localRecordId < input.before)
+          .slice(0, input?.limit),
+      ),
+    );
+    const view = renderHook(() => useLxmfData(mockDestination));
+    await waitFor(() => expect(view.result.current.messages).toHaveLength(50));
+    await act(async () => view.result.current.loadOlder());
+    expect(view.result.current.messages).toHaveLength(75);
+    messages = messages.map((message) => ({
+      ...message,
+      deliveryState: Bindings.LxmfDeliveryState.Delivered.new({
+        deliveredAt: 1700000000200n,
+        rtt: 200n,
+      }),
+    }));
+    mockMessagingHealth = { ...mockSnapshot.lxmf, projectionRevision: 1n };
+    mockMessagingRevision = 2;
+    view.rerender({});
+    await waitFor(() =>
+      expect(view.result.current.messages.at(-1)?.deliveryState.tag).toBe("Delivered"),
+    );
+    expect(view.result.current.messages).toHaveLength(75);
+    expect(mockListLxmfMessages.mock.calls.every(([input]) => (input?.limit ?? 0) <= 100)).toBe(
+      true,
+    );
   });
 
   test("pages beyond 100 messages and refreshes delivery states in every loaded page", async () => {

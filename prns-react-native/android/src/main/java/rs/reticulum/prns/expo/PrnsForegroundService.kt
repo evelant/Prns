@@ -23,6 +23,7 @@ abstract class PrnsForegroundService : Service() {
   protected abstract fun createDelegate(): PrnsRuntimeDelegate
   private lateinit var delegate: PrnsRuntimeDelegate
   private var bluetooth: PrnsBluetoothLink? = null
+  private var lanRuntime: PrnsLanRuntime? = null
   @Volatile private var bridgePrepared = false
   @Volatile private var engineRunning = false
   @Volatile private var finishing = false
@@ -41,6 +42,7 @@ abstract class PrnsForegroundService : Service() {
       stopSelf()
       return
     }
+    lanRuntime = PrnsLanRuntime(applicationContext).also { it.start() }
     val filter = IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED).apply {
       addAction(LocationManager.MODE_CHANGED_ACTION)
     }
@@ -116,6 +118,7 @@ abstract class PrnsForegroundService : Service() {
   }
 
   fun refreshBluetooth(): Boolean {
+    lanRuntime?.refresh()
     if (!delegate.bluetoothEnabled) return true
     if (!bridgePrepared || finishing || serviceDestroyed || !runtime.admission.isOwnerActive(this)) return false
     bluetooth?.setAppForeground(runtime.appForeground)
@@ -208,7 +211,8 @@ abstract class PrnsForegroundService : Service() {
     if (drained) {
       bluetooth = null
       val outcome = delegate.stop(false)
-      if (outcome.stopped && (!bridgePrepared || PrnsBluetoothLifecycle.nativeReleaseBluetooth())) {
+      if (outcome.stopped && lanRuntime?.stop() != false && (!bridgePrepared || PrnsBluetoothLifecycle.nativeReleaseBluetooth())) {
+        lanRuntime = null
         bridgePrepared = false
         engineRunning = false
         bluetoothGeneration.nativeStopped()
@@ -227,7 +231,8 @@ abstract class PrnsForegroundService : Service() {
     bluetooth = null
     val outcome = delegate.stop(reset)
     // The delegate must acknowledge joined native teardown before bridge release.
-    if (outcome.stopped && (!bridgePrepared || PrnsBluetoothLifecycle.nativeReleaseBluetooth())) {
+    if (outcome.stopped && lanRuntime?.stop() != false && (!bridgePrepared || PrnsBluetoothLifecycle.nativeReleaseBluetooth())) {
+      lanRuntime = null
       bridgePrepared = false
       engineRunning = false
       bluetoothGeneration.nativeStopped()

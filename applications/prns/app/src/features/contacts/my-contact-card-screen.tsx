@@ -158,7 +158,10 @@ function MyContactCardJourney() {
           </Button>
         )}
       </Card>
-      <NavigationLink href="/contacts" direction="back">
+      <NavigationLink
+        href={{ pathname: "/contacts", params: { section: "profile" } }}
+        direction="back"
+      >
         Back to Contacts
       </NavigationLink>
     </Screen>

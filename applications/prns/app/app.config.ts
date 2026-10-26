@@ -41,6 +41,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   const variant = selectedVariant(process.env.PRNS_APP_VARIANT);
   const selection = variants[variant];
   const iosBuildNumber = selectedIosBuildNumber(process.env.PRNS_IOS_BUILD_NUMBER);
+  const iosMulticastEnabled = variant === "production";
+  const iosEntitlements = { ...config.ios?.entitlements };
+  if (iosMulticastEnabled) {
+    iosEntitlements["com.apple.developer.networking.multicast"] = true;
+  } else {
+    delete iosEntitlements["com.apple.developer.networking.multicast"];
+  }
   const buildLabel = process.env.PRNS_BUILD_ID?.trim();
   if (buildLabel && !/^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/.test(buildLabel)) {
     throw new Error(
@@ -85,13 +92,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       scheme: selection.iosIdentifier,
       buildNumber: iosBuildNumber,
       icon: "./assets/icon.png",
+      entitlements: iosEntitlements,
       infoPlist: {
         ...config.ios?.infoPlist,
         ...(developmentTcpTarget ? { PRNSDevelopmentTcpTarget: developmentTcpTarget } : {}),
         NSBluetoothAlwaysUsageDescription:
           "prns uses Bluetooth to connect to nearby Reticulum nodes.",
         NSLocalNetworkUsageDescription:
-          "prns uses the local network for an explicitly configured development LXMF peer.",
+          "prns uses your local network to find nearby Reticulum nodes and connect to saved peers.",
+        NSBonjourServices: ["_reticulum._tcp", "_reticulum._udp"],
+        PRNSMulticastEnabled: iosMulticastEnabled,
         PRNSCoreBluetoothCentralRestorationIdentifier: `${bluetoothRestorationPrefix}.central.v1`,
         PRNSCoreBluetoothPeripheralRestorationIdentifier: `${bluetoothRestorationPrefix}.peripheral.v1`,
         UIBackgroundModes: ["bluetooth-central", "bluetooth-peripheral"],

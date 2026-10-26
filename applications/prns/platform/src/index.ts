@@ -21,6 +21,7 @@ export {
   NativeStoragePreparationError,
   createDevelopmentRuntime,
   type DevelopmentRuntime,
+  type LocalNetworkPermission,
 } from "./facade";
 export {
   DevelopmentRuntimeConfigurationError,
@@ -43,6 +44,7 @@ export const bluetoothAuthorizationRuntime = createBluetoothAuthorizationRuntime
 export const androidRuntime = createAndroidRuntime(nativeAndroidRuntime);
 
 export const {
+  requestLocalNetworkPermission,
   attachHost,
   listNamedIdentities,
   listNamedIdentityActivity,
@@ -86,6 +88,10 @@ export const {
   measureLxmfText,
   previewIdentityImport,
   readDevelopmentNodeSnapshot,
+  readConnectionSettings,
+  updateConnectionSettings,
+  readConnectionSnapshot,
+  retryConnection,
   readBluetoothDiscoveryGroups,
   setBluetoothDiscoveryGroups,
   readRemoteNode,

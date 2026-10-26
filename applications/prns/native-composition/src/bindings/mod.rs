@@ -64,6 +64,41 @@ pub async fn read_bluetooth_settings() -> LocalBluetoothSettingsOutcome {
     crate::lifecycle::bluetooth_settings(None).await
 }
 
+#[uniffi::export]
+pub async fn read_connection_settings() -> ConnectionSettingsOutcome {
+    crate::lifecycle::connections::settings(None).await
+}
+
+/// Persist installation intent first; the exact native owner reconciles it independently of this waiter.
+#[uniffi::export]
+pub async fn update_connection_settings(
+    input: ConnectionSettingsUpdateInput,
+) -> ConnectionSettingsOutcome {
+    crate::lifecycle::connections::settings(Some(input)).await
+}
+
+#[uniffi::export]
+pub async fn read_connection_snapshot() -> ConnectionSnapshotOutcome {
+    crate::lifecycle::connections::snapshot().await
+}
+
+#[uniffi::export]
+pub async fn retry_connection(input: RetryConnectionInput) -> ConnectionSnapshotOutcome {
+    crate::lifecycle::connections::retry(input).await
+}
+
+/// Native platform callback only; wakes existing discovery without changing saved intent.
+#[uniffi::export]
+pub fn notify_connection_network_changed() {
+    prns_host_native::platform::mobile_auto_lan_network_changed();
+}
+
+/// Native app startup only; matches the app's signed multicast configuration.
+#[uniffi::export]
+pub fn configure_apple_multicast(enabled: bool) {
+    prns_host_native::platform::configure_apple_multicast(enabled);
+}
+
 /// Persist application participation and apply it to the existing native BLE supervisor.
 #[uniffi::export]
 pub async fn set_bluetooth_enabled(enabled: bool) -> LocalBluetoothSettingsOutcome {

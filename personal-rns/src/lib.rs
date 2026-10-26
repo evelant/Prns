@@ -125,10 +125,10 @@ pub use prns_runtime_tokio::runtime::{
     generate_identity_secret, load_or_create_ble_identity, load_or_create_browser_rendezvous_id,
     load_or_create_browser_selection_seed, load_or_create_identity_secret,
     try_generate_identity_secret, AttachIntent, Attachable, AttachedInterface, AttachedSupervisor,
-    Fleet, IdentitySecretFileError, LocalIdentityFileError, OsEntropyError, OsRuntimeEntropy,
-    PrnsNode, PrnsNodeHandle, RemoteControlFileIdentityBootstrapError, RemoteControlHandle,
-    RemoteControlIdentityDirectory, RemoteControlInterfaceWatch, RemoteControlTargetHandle,
-    RemoteControlWatchOpenError, RemoteControlWatchReadError,
+    Fleet, IdentitySecretFileError, InterfaceDetachError, LocalIdentityFileError, OsEntropyError,
+    OsRuntimeEntropy, PrnsNode, PrnsNodeHandle, RemoteControlFileIdentityBootstrapError,
+    RemoteControlHandle, RemoteControlIdentityDirectory, RemoteControlInterfaceWatch,
+    RemoteControlTargetHandle, RemoteControlWatchOpenError, RemoteControlWatchReadError,
 };
 
 #[cfg(all(feature = "embassy-host", not(feature = "tokio-host")))]

@@ -81,6 +81,15 @@ describe("route parameter validation", () => {
     expect(routeParamsAreValid(entry, { filter: ["routes"] })).toBe(false);
   });
 
+  it("accepts only supported interface sections", () => {
+    const entry = screenById("interfaces.index");
+    expect(routeParamsAreValid(entry, {})).toBe(true);
+    expect(routeParamsAreValid(entry, { section: "bluetooth" })).toBe(true);
+    expect(routeParamsAreValid(entry, { section: "ip" })).toBe(true);
+    expect(routeParamsAreValid(entry, { section: "unknown" })).toBe(false);
+    expect(routeParamsAreValid(entry, { section: ["ip"] })).toBe(false);
+  });
+
   it("rejects unknown parameters on routes without parameters", () => {
     const entry = screenById("nodes.index");
 
@@ -117,6 +126,18 @@ describe("route parameter validation", () => {
     }
     expect(routeParamsAreValid(entry, { step: "future-step" })).toBe(false);
     expect(routeParamsAreValid(entry, { step: ["welcome", "complete"] })).toBe(false);
+  });
+
+  it("accepts only supported contact sections while preserving the identity owner", () => {
+    const entry = screenById("contacts.index");
+    const owner = `${"ab".repeat(16)}-1-${"cd".repeat(16)}`;
+    expect(routeParamsAreValid(entry, {})).toBe(true);
+    for (const section of ["saved", "discovered", "profile"]) {
+      expect(routeParamsAreValid(entry, { section, owner })).toBe(true);
+    }
+    expect(routeParamsAreValid(entry, { section: "unknown" })).toBe(false);
+    expect(routeParamsAreValid(entry, { section: ["profile"] })).toBe(false);
+    expect(routeParamsAreValid(entry, { section: "profile", owner: "unknown" })).toBe(false);
   });
 
   it("keeps manual contact creation parameter-free", () => {

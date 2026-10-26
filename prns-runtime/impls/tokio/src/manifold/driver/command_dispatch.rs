@@ -585,6 +585,10 @@ where
                 topology.detach(engine, id, departure, now);
                 CommandEffect::RecomputeWakeSchedules
             }
+            HostCommand::InterfaceLifecycleBarrier { reply } => {
+                let _ = reply.send(());
+                CommandEffect::UNCHANGED
+            }
             HostCommand::DropRoute { destination, reply } => {
                 let effect = engine.drop_route(&destination, topology.view());
                 if let Some(removed) = effect.removed_route() {

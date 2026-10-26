@@ -28,6 +28,7 @@ default = ["uniffi-bindings"]
 uniffi-bindings = ["dep:uniffi", "dep:prns-host-uniffi"]
 uniffi-bindgen = ["uniffi-bindings", "uniffi/cli", "uniffi/cargo-metadata"]
 apple = [
+    "prns-host-native/apple-platform",
     "dep:prns-interfaces-tokio",
     "personal-rns/bluetooth-auto",
     "personal-rns/tcp",

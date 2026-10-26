@@ -44,8 +44,15 @@ impl PeerCache {
     }
 
     pub(crate) fn observe(&mut self, job: PeerJob) -> bool {
-        let Ok(announce) = parse_lxmf_announce(&job.app_data, MAX_DISPLAY_NAME_BYTES) else {
-            return false;
+        // The authenticated lxmf.delivery destination is sufficient for discovery
+        // when metadata is absent. Nonempty metadata must still be well formed.
+        let (advertised_name, required_stamp_cost) = if job.app_data.is_empty() {
+            (None, None)
+        } else {
+            let Ok(announce) = parse_lxmf_announce(&job.app_data, MAX_DISPLAY_NAME_BYTES) else {
+                return false;
+            };
+            (announce.display_name, announce.required_stamp_cost)
         };
         let now = Instant::now();
         self.expire(now);
@@ -75,7 +82,7 @@ impl PeerCache {
             }
         }
         let mut normalized = [0_u8; MAX_DISPLAY_NAME_BYTES];
-        let display_name = announce.display_name.and_then(|bytes| {
+        let display_name = advertised_name.and_then(|bytes| {
             normalize_lxmf_display_name(bytes, &mut normalized)
                 .ok()
                 .map(String::from)
@@ -87,7 +94,7 @@ impl PeerCache {
                     destination: job.destination,
                     announced_identity: job.announced_identity,
                     display_name,
-                    required_stamp_cost: announce.required_stamp_cost,
+                    required_stamp_cost,
                     observed_at_millis: job.observed_at_millis,
                     age_millis: 0,
                     source_interface: job.source_interface,
@@ -222,6 +229,51 @@ mod tests {
             source_interface: [7; 8],
             hops: 3,
             is_path_response: false,
+        }
+    }
+
+    #[tokio::test]
+    async fn nameless_announce_metadata_discovers_a_resolvable_peer_without_replacing_identity() {
+        let mut peers = PeerCache::default();
+        let mut nameless = job(1);
+        nameless.app_data.clear();
+        let destination = nameless.destination;
+        assert!(peers.observe(nameless));
+        let discovered = peers.discovered();
+        assert_eq!(discovered.len(), 1);
+        assert_eq!(discovered[0].destination, destination);
+        assert_eq!(discovered[0].display_name, None);
+        assert_eq!(discovered[0].required_stamp_cost, None);
+        assert_eq!(
+            peers.recipient(&destination).unwrap().announced_identity,
+            [5; 16]
+        );
+
+        let mut conflicting = job(1);
+        conflicting.app_data.clear();
+        conflicting.announced_identity = [9; 16];
+        assert!(!peers.observe(conflicting));
+        assert_eq!(
+            peers.recipient(&destination).unwrap().announced_identity,
+            [5; 16]
+        );
+    }
+
+    #[tokio::test]
+    async fn malformed_nonempty_announce_metadata_does_not_create_a_peer() {
+        let mut peers = PeerCache::default();
+        for data in [
+            b"raw display name".as_slice(),
+            b"\xc0",
+            b"\x90",
+            b"\x91\xc4\x04peer",
+            b"\x93\xc4\x04peer\xc0",
+        ] {
+            let mut malformed = job(1);
+            malformed.app_data = data.to_vec();
+            assert!(!peers.observe(malformed));
+            assert!(peers.discovered().is_empty());
+            assert!(peers.recipient(&job(1).destination).is_none());
         }
     }
 

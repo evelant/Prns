@@ -7,6 +7,14 @@ import UIKit
 @MainActor
 final class PrnsAppLifecycleCoordinator: NSObject {
   static let shared = PrnsAppLifecycleCoordinator()
+  private let network = PrnsLanNetworkMonitor(changed: { notifyConnectionNetworkChanged() })
+
+  func observeNetwork() {
+    // Generated with the app's entitlement. Native code fixes this selection for
+    // the process before any foreground or restoration start creates the host.
+    configureAppleMulticast(enabled: Bundle.main.object(forInfoDictionaryKey: "PRNSMulticastEnabled") as? Bool ?? false)
+    network.start()
+  }
 
   private lazy var protectedData = PrnsProtectedDataCoordinator(
     retry: { [weak self] application in self?.prepareAndStartNativeRuntime(application: application) },
@@ -36,6 +44,7 @@ final class PrnsAppLifecycleCoordinator: NSObject {
   }
 
   func launch(application: UIApplication) {
+    observeNetwork()
     protectedData.observe(application: application)
     let restorationAttempt: Bool
     do {
@@ -65,6 +74,7 @@ final class PrnsAppLifecycleCoordinator: NSObject {
   }
 
   func nativeStopWillBegin(application: UIApplication) {
+    network.stop()
     protectedData.stop(application: application)
   }
 

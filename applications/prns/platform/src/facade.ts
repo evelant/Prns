@@ -9,6 +9,7 @@ import { type FfiConverter, UniffiInternalError } from "@ubjs/core";
 import type { PrnsAppNativeModule } from "./native";
 
 export type * from "@prns-internal/native-bindings";
+export type LocalNetworkPermission = "granted" | "notRequired" | "denied" | "blocked";
 
 export class NativeContractMismatchError extends Error {
   constructor(
@@ -159,7 +160,10 @@ export function createDevelopmentRuntime(
   // nor invoking a method consults the UI's current default identity.
   const identityRuntime = (reference?: Bindings.NamedIdentityReference) => {
     let client: Promise<Bindings.NamedIdentityClientLike> | undefined;
-    const namedCall = <T>(operation: (api: Bindings.NamedIdentityClientLike) => Promise<T>) =>
+    const namedCall = <T>(
+      operation: (api: Bindings.NamedIdentityClientLike) => Promise<T>,
+      signal?: AbortSignal,
+    ) =>
       call(
         async (api) => {
           if (reference === undefined)
@@ -167,7 +171,7 @@ export function createDevelopmentRuntime(
           client ??= Promise.resolve(api.openNamedIdentity(reference));
           return operation(await client);
         },
-        undefined,
+        signal,
         "storage",
       );
     const domainCall = <T>(
@@ -186,6 +190,16 @@ export function createDevelopmentRuntime(
       );
     return {
       readIdentityActivity: () => namedCall((api) => api.readIdentityActivity()),
+      waitLxmfChange: (
+        afterProjectionRevision?: bigint,
+        signal?: AbortSignal,
+      ): Promise<Bindings.LxmfHealth | undefined> =>
+        reference === undefined
+          ? Promise.resolve(undefined)
+          : namedCall(
+              (api) => api.waitLxmfChange(afterProjectionRevision, asyncOptions(signal)),
+              signal,
+            ),
       markIdentityActivitySeen: (input: Bindings.MarkIdentityActivitySeenInput) =>
         namedCall((api) => api.markIdentityActivitySeen(input)),
       readMessagingProfile: () =>
@@ -332,6 +346,18 @@ export function createDevelopmentRuntime(
   };
 
   return {
+    requestLocalNetworkPermission: async (): Promise<LocalNetworkPermission> => {
+      await bindings();
+      const result = await getNativeModule().requestLocalNetworkPermission();
+      if (
+        result !== "granted" &&
+        result !== "notRequired" &&
+        result !== "denied" &&
+        result !== "blocked"
+      )
+        throw new Error("Local network permission could not be checked.");
+      return result;
+    },
     ...identityRuntime(),
     forIdentity: (reference: Bindings.NamedIdentityReference) =>
       identityRuntime({
@@ -373,6 +399,12 @@ export function createDevelopmentRuntime(
     },
     readDevelopmentNodeSnapshot: (signal?: AbortSignal) =>
       call((api) => api.readSnapshot(asyncOptions(signal)), signal),
+    readConnectionSettings: () => call((api) => api.readConnectionSettings(), undefined, "storage"),
+    updateConnectionSettings: (input: Bindings.ConnectionSettingsUpdateInput) =>
+      call((api) => api.updateConnectionSettings(input), undefined, "storage"),
+    readConnectionSnapshot: () => call((api) => api.readConnectionSnapshot(), undefined, "storage"),
+    retryConnection: (input: Bindings.RetryConnectionInput) =>
+      call((api) => api.retryConnection(input), undefined, "storage"),
     clearNetworkActivity: (input: Bindings.ClearNetworkActivityInput, signal?: AbortSignal) =>
       call((api) => api.clearNetworkActivity(input, asyncOptions(signal)), signal),
     readBluetoothSettings: () => call((api) => api.readBluetoothSettings(), undefined, "storage"),

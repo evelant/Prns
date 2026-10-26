@@ -31,6 +31,25 @@ pub type NativeInterfacePreparation = Box<
         + Send,
 >;
 
+/// Reusable platform construction for every automatic LAN attachment, including
+/// re-enable. The host still owns the supervisor and its acknowledged retirement.
+pub type NativeAutoLanFactory = std::sync::Arc<
+    dyn Fn(
+            &PrnsNodeHandle,
+            &prns_host::InterfaceConfig,
+            Option<prns_host::InterfaceRoutingPolicy>,
+        ) -> Result<NativePreparedAttachment, prns_host::CommandFailure>
+        + Send
+        + Sync,
+>;
+
+/// Repeatable cleanup retains platform ownership after an uncertain shutdown.
+pub type NativeAttachmentCleanup = std::sync::Arc<
+    dyn Fn() -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<(), String>> + Send>>
+        + Send
+        + Sync,
+>;
+
 #[derive(Clone, Copy, Debug, Default, PartialEq, Eq)]
 pub enum ApplicationEventDispatch {
     /// The canonical bounded queue owns application messages.
@@ -57,6 +76,7 @@ pub struct NativeEmbedding {
     pub accepted_announces: Option<NativeAnnounceObserver>,
     pub link_diagnostics: Option<NativeLinkDiagnostics>,
     pub prepare_interfaces: Option<NativeInterfacePreparation>,
+    pub auto_lan_factory: Option<NativeAutoLanFactory>,
     pub application_events: ApplicationEventDispatch,
 }
 
@@ -70,6 +90,7 @@ impl Default for NativeEmbedding {
             accepted_announces: None,
             link_diagnostics: None,
             prepare_interfaces: None,
+            auto_lan_factory: None,
             application_events: ApplicationEventDispatch::Queue,
         }
     }
@@ -111,5 +132,10 @@ pub enum NativePreparedAttachment {
     Supervisor {
         attachment: AttachedSupervisor,
         kind: InterfaceKind,
+    },
+    ManagedSupervisor {
+        attachment: AttachedSupervisor,
+        kind: InterfaceKind,
+        cleanup: NativeAttachmentCleanup,
     },
 }

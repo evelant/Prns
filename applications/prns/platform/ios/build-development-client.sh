@@ -14,7 +14,7 @@ SCHEME="prnsdev"
 METRO_PORT="${PRNS_IOS_METRO_PORT:-8088}"
 EXPECTED_BUNDLE_IDENTIFIER="rs.reticulum.prns.dev"
 BLUETOOTH_USAGE="prns uses Bluetooth to connect to nearby Reticulum nodes."
-LOCAL_NETWORK_USAGE="prns uses the local network for an explicitly configured development LXMF peer."
+LOCAL_NETWORK_USAGE="prns uses your local network to find nearby Reticulum nodes and connect to saved peers."
 CENTRAL_RESTORATION_IDENTIFIER="rs.reticulum.prns.dev.bluetooth-auto.central.v1"
 PERIPHERAL_RESTORATION_IDENTIFIER="rs.reticulum.prns.dev.bluetooth-auto.peripheral.v1"
 
@@ -169,6 +169,8 @@ echo "build-development-client.sh: generating a clean development iOS project"
   fail "clean CNG rendered unexpected Bluetooth usage copy"
 [[ "$(plutil -extract NSLocalNetworkUsageDescription raw "${INFO_PLIST}")" == "${LOCAL_NETWORK_USAGE}" ]] ||
   fail "clean CNG rendered unexpected local-network usage copy"
+[[ "$(plutil -extract NSBonjourServices.0 raw "${INFO_PLIST}")" == "_reticulum._tcp" ]] || fail "clean CNG omitted TCP Bonjour declaration"
+[[ "$(plutil -extract NSBonjourServices.1 raw "${INFO_PLIST}")" == "_reticulum._udp" ]] || fail "clean CNG omitted UDP Bonjour declaration"
 assert_bluetooth_metadata "${INFO_PLIST}"
 assert_scene_metadata "${INFO_PLIST}"
 assert_scene_app_delegate

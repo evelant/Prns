@@ -12,6 +12,7 @@ export type PrnsAppNativeModule = {
   readonly stop: () => Promise<number[]>;
   readonly reset: () => Promise<number[]>;
   readonly prepareOutbound: () => Promise<void>;
+  readonly requestLocalNetworkPermission: () => Promise<string>;
 };
 
 export type AppleBluetoothNativeModule = {

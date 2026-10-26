@@ -39,6 +39,24 @@ production variant installed as `rs.reticulum.prns` has a different iOS containe
 and is not automatically migrated by this identifier change. Packaging alone
 does not establish device or TestFlight acceptance.
 
+Apple has approved the multicast capability for the production App ID. The
+production configuration requests `com.apple.developer.networking.multicast`
+and sets `PRNSMulticastEnabled = true` in Info.plist. Native startup reads that
+explicit policy before host creation to enable stock Reticulum multicast
+alongside Bonjour. Development builds omit the multicast entitlement and retain
+Bonjour discovery. Shared SDK consumers default to multicast disabled unless
+their embedding app configures the capability before creating a host; the first
+selection or host creation fixes that policy for the process.
+
+Refresh production provisioning profiles after enabling the capability. Before
+distributing an IPA, verify that both the exported app's signed entitlements and
+its embedded App Store provisioning profile contain
+`com.apple.developer.networking.multicast = true`, and that its Info.plist contains
+`PRNSMulticastEnabled = true`. The configuration flag does not grant permission
+by itself. Local-network access is still required, and multicast adds no
+background execution time. Stock-peer interoperability on a physical iPhone and
+TestFlight installation/update acceptance remain separate checks.
+
 ## Build without installation
 
 After [workspace setup](../README.md#setup), install Xcode, CocoaPods and the

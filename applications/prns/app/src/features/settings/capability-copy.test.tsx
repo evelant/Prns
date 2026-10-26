@@ -63,8 +63,8 @@ describe("preview capability copy", () => {
     const view = render(<MoreScreen />);
 
     expect(view.getByText("Messaging")).toBeTruthy();
-    expect(view.getByRole("header", { name: "Network" })).toBeTruthy();
-    expect(view.getByText("App")).toBeTruthy();
+    expect(view.getByRole("header", { name: "Connectivity" })).toBeTruthy();
+    expect(view.getByText("App & support")).toBeTruthy();
     expect(view.queryByText("Notifications")).toBeNull();
   });
 

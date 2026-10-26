@@ -162,6 +162,7 @@ function snapshot(): DevelopmentNodeSnapshot {
 }
 function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRuntime {
   return {
+    waitLxmfChange: async () => undefined,
     listNamedIdentityActivity: async () =>
       Bindings.NamedIdentityActivityListOutcome.Ready.new({ activities: [] }),
     readIdentityActivity: async () =>
@@ -204,6 +205,19 @@ function fakeRuntime(overrides: Partial<DevelopmentRuntime> = {}): DevelopmentRu
       Bindings.GroupRequestIdOutcome.Ready.new({ clientRequestId: new Uint8Array(32) }),
     sendGroupText: async () => Bindings.GroupTextSendOutcome.NotProvisioned.new(),
     attachHost: async () => undefined,
+    requestLocalNetworkPermission: async () => "notRequired",
+    readConnectionSettings: async () => {
+      throw new Error("No connection settings fixture");
+    },
+    updateConnectionSettings: async () => {
+      throw new Error("No connection settings fixture");
+    },
+    readConnectionSnapshot: async () => {
+      throw new Error("No connection snapshot fixture");
+    },
+    retryConnection: async () => {
+      throw new Error("No connection snapshot fixture");
+    },
     readBluetoothDiscoveryGroups: async () =>
       Bindings.LocalBluetoothDiscoveryGroupsOutcome.Busy.new(),
     setBluetoothDiscoveryGroups: async () =>
@@ -477,9 +491,7 @@ describe("contact screens", () => {
     expect(await view.findByText("00010203…0d0e0f")).toBeTruthy();
     expect(view.getAllByText("00010203…0d0e0f")).toHaveLength(1);
     expect(view.queryByText("000102030405060708090a0b0c0d0e0f")).toBeNull();
-    expect(view.getByRole("button", { name: "Saved" }).props.accessibilityState.selected).toBe(
-      true,
-    );
+    expect(view.getByRole("tab", { name: "Saved" }).props.accessibilityState.selected).toBe(true);
     expect(view.getByRole("link", { name: "Open contact 00010203…0d0e0f" })).toBeTruthy();
   });
   it("distinguishes contacts with matching private or announced names", async () => {
@@ -629,9 +641,12 @@ test.each([
 describe("messaging discovery and local profile", () => {
   test("keeps the profile editable while stopped and never announces on load or save", async () => {
     const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     expect(await view.findByText("prns")).toBeTruthy();
     expect(view.queryByLabelText("Messaging name")).toBeNull();
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     expect(view.getByRole("button", { name: "Announce yourself" })).toBeDisabled();
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     fireEvent.press(view.getByRole("button", { name: "Edit messaging name" }));
     fireEvent.changeText(view.getByLabelText("Messaging name"), "  Trail friend  ");
     fireEvent.press(view.getByRole("button", { name: "Save messaging name" }));
@@ -645,6 +660,7 @@ describe("messaging discovery and local profile", () => {
   test("shares the native LXMF address separately from network announcing", async () => {
     const share = jest.spyOn(Share, "share").mockResolvedValue({ action: Share.sharedAction });
     const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     await view.findByText("prns");
     fireEvent.press(view.getByRole("button", { name: "My address" }));
     expect(view.getByText("aa".repeat(16))).toBeTruthy();
@@ -661,7 +677,7 @@ describe("messaging discovery and local profile", () => {
     ],
     [
       Bindings.AnnounceLxmfOutcome.NoUsableConnection,
-      "No usable connection. Open Connections to connect, then announce again.",
+      "No usable connection. Open Interfaces to connect, then announce again.",
     ],
     [Bindings.AnnounceLxmfOutcome.Busy, "Another messaging action is in progress. Try again."],
   ])("announces only on explicit action with honest outcome %#", async (outcome, expected) => {
@@ -669,6 +685,7 @@ describe("messaging discovery and local profile", () => {
     mockAnnounce.mockResolvedValue({ type: "outcome", outcome });
     const runtime = fakeRuntime();
     const view = withRuntime(runtime, <ContactsScreen />);
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     await view.findByText("prns");
     mockRevision += 1n;
     view.rerender(
@@ -679,6 +696,7 @@ describe("messaging discovery and local profile", () => {
       </ContactRuntimeProvider>,
     );
     expect(mockAnnounce).not.toHaveBeenCalled();
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     fireEvent.press(view.getByRole("button", { name: "Announce yourself" }));
     expect(await view.findByText(expected)).toBeTruthy();
     expect(mockAnnounce).toHaveBeenCalledTimes(1);
@@ -722,8 +740,9 @@ describe("messaging discovery and local profile", () => {
       };
     });
     const view = withRuntime(runtime, <ContactsScreen />);
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     await view.findByText("prns");
-    fireEvent.press(view.getByRole("button", { name: "Discovered" }));
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     expect(await view.findByText("Announced Alice")).toBeTruthy();
     expect(view.getByText(/Heard 2 minutes ago/)).toBeTruthy();
     fireEvent.press(view.getByRole("button", { name: "Save contact Announced Alice" }));
@@ -731,7 +750,7 @@ describe("messaging discovery and local profile", () => {
     expect(mockSaveDiscovered).toHaveBeenCalledWith({ destination });
     expect(view.getByRole("link", { name: "Message Private Alice" })).toBeTruthy();
     expect(view.getByText("Saved contact")).toBeTruthy();
-    fireEvent.press(view.getByRole("button", { name: "Saved" }));
+    fireEvent.press(view.getByRole("tab", { name: "Saved" }));
     expect(view.getByText("Private Alice")).toBeTruthy();
     expect(view.getByText("Pinned")).toBeTruthy();
   });
@@ -764,7 +783,7 @@ describe("messaging discovery and local profile", () => {
     });
     const view = withRuntime(runtime, <ContactsScreen />);
     await view.findByText("Private Alice");
-    fireEvent.press(view.getByRole("button", { name: "Discovered" }));
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     expect(view.getByRole("link", { name: "Open contact" })).toBeTruthy();
     // Flush both the save command and its contact-list refresh before checking the new UI.
     await fireEventAsync.press(
@@ -796,8 +815,9 @@ describe("messaging discovery and local profile", () => {
       }),
     });
     const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     await view.findByText("prns");
-    fireEvent.press(view.getByRole("button", { name: "Discovered" }));
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     fireEvent.press(await view.findByRole("button", { name: "Save contact Announced Alice" }));
     expect(
       await view.findByText("The saved identity differs from the verified network identity."),
@@ -824,7 +844,7 @@ describe("messaging discovery and local profile", () => {
     });
     const view = withRuntime(runtime, <ContactsScreen />);
     await view.findByText("Private Alice");
-    fireEvent.press(view.getByRole("button", { name: "Discovered" }));
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     await view.findByText("Saved contact");
     mockListPeers.mockResolvedValue({
       type: "outcome",
@@ -833,7 +853,7 @@ describe("messaging discovery and local profile", () => {
     fireEvent.press(view.getByRole("button", { name: "Clear discovered contacts" }));
     expect(await view.findByText("No discovered contacts")).toBeTruthy();
     expect(mockClearDiscovery).toHaveBeenCalledTimes(1);
-    fireEvent.press(view.getByRole("button", { name: "Saved" }));
+    fireEvent.press(view.getByRole("tab", { name: "Saved" }));
     expect(view.getByText("Private Alice")).toBeTruthy();
   });
 
@@ -848,8 +868,9 @@ describe("messaging discovery and local profile", () => {
     );
     const runtime = fakeRuntime();
     const view = withRuntime(runtime, <ContactsScreen />);
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     await view.findByText("prns");
-    fireEvent.press(view.getByRole("button", { name: "Discovered" }));
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     mockRunning = false;
     view.rerender(
       <ContactRuntimeProvider
@@ -890,7 +911,9 @@ describe("messaging discovery and local profile", () => {
     async (outcome, expected) => {
       mockSetName.mockResolvedValue({ type: "outcome", outcome });
       const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+      fireEvent.press(view.getByRole("tab", { name: "My profile" }));
       await view.findByText("prns");
+      fireEvent.press(view.getByRole("tab", { name: "My profile" }));
       fireEvent.press(view.getByRole("button", { name: "Edit messaging name" }));
       fireEvent.changeText(view.getByLabelText("Messaging name"), "New name");
       fireEvent.press(view.getByRole("button", { name: "Save messaging name" }));
@@ -946,12 +969,13 @@ test.each([1.5, 2])(
     mockFontScale = fontScale;
     mockWidth = 320;
     const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+    fireEvent.press(view.getByRole("tab", { name: "My profile" }));
     await view.findByText("prns");
     fireEvent.press(view.getByRole("button", { name: "Edit messaging name" }));
     fireEvent.changeText(view.getByLabelText("Messaging name"), "An accessible messaging name");
     fireEvent.press(view.getByRole("button", { name: "Save messaging name" }));
     expect(await view.findByText("An accessible messaging name")).toBeTruthy();
-    fireEvent.press(view.getByRole("button", { name: "Discovered" }));
+    fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
     expect(await view.findByText("Announced Alice")).toBeTruthy();
     expect(view.queryByText("Connection ID")).toBeNull();
     fireEvent.press(
@@ -969,6 +993,57 @@ test.each([1.5, 2])(
   },
 );
 
+test("a return link opens My profile and a changed section selects its requested panel", async () => {
+  const runtime = fakeRuntime();
+  const journey = (initialSection: "saved" | "discovered" | "profile") => (
+    <ContactRuntimeProvider
+      provider={{ availability: { type: "available", platform: "ios" }, runtime }}
+    >
+      <ContactsScreen initialSection={initialSection} />
+    </ContactRuntimeProvider>
+  );
+  const view = render(journey("profile"));
+  await view.findByText("prns");
+  expect(view.getByRole("tab", { name: "My profile" }).props.accessibilityState.selected).toBe(
+    true,
+  );
+  expect(view.getByRole("link", { name: "My contact QR" })).toBeTruthy();
+  expect(view.queryByRole("link", { name: "Scan or paste contact" })).toBeNull();
+  await act(async () => view.rerender(journey("discovered")));
+  expect(view.getByRole("tab", { name: "Discovered" }).props.accessibilityState.selected).toBe(
+    true,
+  );
+  expect(view.queryByRole("link", { name: "My contact QR" })).toBeNull();
+  expect(mockSetName).not.toHaveBeenCalled();
+  expect(mockAnnounce).not.toHaveBeenCalled();
+});
+
+test("contact tabs focus related actions and preserve an unsaved profile draft", async () => {
+  mockRunning = true;
+  const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+  await view.findByText("No saved contacts");
+  expect(view.getByRole("tab", { name: "Saved" }).props.accessibilityState.selected).toBe(true);
+  expect(view.getByRole("link", { name: "Scan or paste contact" })).toBeTruthy();
+  expect(view.queryByRole("button", { name: "Announce yourself" })).toBeNull();
+  expect(view.queryByRole("button", { name: "Edit messaging name" })).toBeNull();
+
+  fireEvent.press(view.getByRole("tab", { name: "My profile" }));
+  await view.findByText("prns");
+  expect(view.queryByRole("link", { name: "Scan or paste contact" })).toBeNull();
+  fireEvent.press(view.getByRole("button", { name: "Edit messaging name" }));
+  fireEvent.changeText(view.getByLabelText("Messaging name"), "Unsubmitted name");
+  fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
+  expect(await view.findByText("Announced Alice")).toBeTruthy();
+  expect(view.getByRole("button", { name: "Announce yourself" })).toBeEnabled();
+  expect(view.queryByLabelText("Messaging name")).toBeNull();
+  fireEvent.press(view.getByRole("tab", { name: "My profile" }));
+  expect(view.getByLabelText("Messaging name").props.value).toBe("Unsubmitted name");
+  expect(mockReadProfile).toHaveBeenCalledTimes(1);
+  expect(mockSetName).not.toHaveBeenCalled();
+  expect(mockAnnounce).not.toHaveBeenCalled();
+  expect(mockClearDiscovery).not.toHaveBeenCalled();
+});
+
 test("prevents announcing the previous name while a profile save is pending", async () => {
   mockRunning = true;
   let finish:
@@ -981,10 +1056,12 @@ test("prevents announcing the previous name while a profile save is pending", as
       }),
   );
   const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+  fireEvent.press(view.getByRole("tab", { name: "My profile" }));
   await view.findByText("prns");
   fireEvent.press(view.getByRole("button", { name: "Edit messaging name" }));
   fireEvent.changeText(view.getByLabelText("Messaging name"), "New name");
   fireEvent.press(view.getByRole("button", { name: "Save messaging name" }));
+  fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
   expect(view.getByRole("button", { name: "Announce yourself" })).toBeDisabled();
   fireEvent.press(view.getByRole("button", { name: "Announce yourself" }));
   expect(mockAnnounce).not.toHaveBeenCalled();
@@ -1055,8 +1132,9 @@ test("resolves recorded Bluetooth ingress by exact physical peer ID despite a fo
     },
   });
   const view = withRuntime(fakeRuntime(), <ContactsScreen />);
+  fireEvent.press(view.getByRole("tab", { name: "My profile" }));
   await view.findByText("prns");
-  fireEvent.press(view.getByRole("button", { name: "Discovered" }));
+  fireEvent.press(view.getByRole("tab", { name: "Discovered" }));
   fireEvent.press(
     await view.findByRole("button", { name: "Show discovery details for Announced Alice" }),
   );

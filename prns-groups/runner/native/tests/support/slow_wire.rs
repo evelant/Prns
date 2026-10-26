@@ -85,6 +85,7 @@ impl ReportsStatus for Carrier {
         let id = self.descriptor.id;
         Some(Arc::new(move || {
             vec![InterfaceVitals {
+                endpoint: None,
                 id,
                 connection: ConnectionState::Connected,
                 failure_reason: None,
