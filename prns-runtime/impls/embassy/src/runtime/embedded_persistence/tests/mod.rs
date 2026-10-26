@@ -8,6 +8,7 @@ use std::vec::Vec;
 
 mod encoding;
 mod power_loss;
+mod replay_compaction;
 
 static DISCOVERY_GROUP_TEST_LOCK: std::sync::Mutex<()> = std::sync::Mutex::new(());
 

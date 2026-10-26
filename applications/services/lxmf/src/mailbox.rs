@@ -49,6 +49,86 @@ pub const INITIAL_NEXT_LXMF_RECORD_ID: u64 = 1;
 /// Initial durable mailbox revision.
 pub const INITIAL_LXMF_REVISION: u64 = 0;
 
+/// Metadata-only projection for local activity consumers. Positions are never
+/// reused; receipt updates and duplicate ingress do not create new activity.
+#[derive(Debug, Clone, Copy)]
+pub struct MailboxActivityRecord {
+    pub position: u64,
+    pub peer: [u8; 16],
+    pub incoming: bool,
+}
+
+/// Scan at most `limit` newest retained records, without mutating the mailbox.
+/// A true second result means older records were deliberately omitted.
+pub fn read_mailbox_activity(
+    database: &Database,
+    limit: usize,
+) -> Result<(Vec<MailboxActivityRecord>, bool), MailboxFailure> {
+    if limit == 0 || limit > 512 {
+        return Err(MailboxFailure::unavailable("activity scan bound"));
+    }
+    let read = database
+        .begin_read()
+        .map_err(|e| classify_redb_error(e.into(), "read activity"))?;
+    let table = read
+        .open_table(LXMF_MESSAGES)
+        .map_err(|e| classify_redb_error(e.into(), "read activity records"))?;
+    let mut records = Vec::with_capacity(limit);
+    let mut partial = false;
+    for entry in table
+        .iter()
+        .map_err(|e| classify_redb_error(e.into(), "scan activity"))?
+        .rev()
+    {
+        if records.len() == limit {
+            partial = true;
+            break;
+        }
+        let (key, value) =
+            entry.map_err(|e| classify_redb_error(e.into(), "read activity record"))?;
+        let record = decode_record(key.value(), value.value())?;
+        let incoming = matches!(record.record_kind, StoredRecordKind::Inbound { .. });
+        records.push(MailboxActivityRecord {
+            position: key.value(),
+            peer: if incoming {
+                record.source
+            } else {
+                record.destination
+            },
+            incoming,
+        });
+    }
+    Ok((records, partial))
+}
+
+/// Check a displayed position belongs to the captured peer. The caller owns
+/// persistence of its local seen cursor; this does not send a read receipt.
+pub fn mailbox_activity_position(
+    database: &Database,
+    peer: [u8; 16],
+    position: u64,
+) -> Result<bool, MailboxFailure> {
+    let read = database
+        .begin_read()
+        .map_err(|e| classify_redb_error(e.into(), "read activity position"))?;
+    let table = read
+        .open_table(LXMF_MESSAGES)
+        .map_err(|e| classify_redb_error(e.into(), "open activity position"))?;
+    let Some(value) = table
+        .get(position)
+        .map_err(|e| classify_redb_error(e.into(), "find activity position"))?
+    else {
+        return Ok(false);
+    };
+    let record = decode_record(position, value.value())?;
+    let actual = if matches!(record.record_kind, StoredRecordKind::Inbound { .. }) {
+        record.source
+    } else {
+        record.destination
+    };
+    Ok(actual == peer)
+}
+
 const SETTLEMENT_RETRY_DELAY: Duration = Duration::from_millis(25);
 
 /// A boxed request future implemented by the application's one database owner.
@@ -1450,6 +1530,8 @@ struct DurableLifecycle {
     activated: AtomicBool,
     stopped: Arc<AtomicBool>,
     stop_complete: AtomicBool,
+    stop_transition: Mutex<()>,
+    worker_failed: AtomicBool,
     transition: Arc<Mutex<()>>,
     worker: StdMutex<Option<JoinHandle<()>>>,
     attempts: StdMutex<BTreeMap<AttemptKey, JoinHandle<()>>>,
@@ -1907,7 +1989,11 @@ impl DurableDirectLxmfService {
         })
     }
 
-    /// Stop callback work and attempts without rewriting durable queued rows.
+    /// Fence fresh callbacks and attempts, then drain already accepted callbacks.
+    ///
+    /// The embedding must retire protocol ingress before calling this method.
+    /// A bounded wait or cancellation retains every join handle for a retry;
+    /// durable queued outbound rows remain available to the next generation.
     pub async fn stop(&self) -> Result<(), DirectServiceStopError> {
         if self.lifecycle.stop_complete.load(Ordering::Acquire) {
             return Ok(());
@@ -1916,57 +2002,74 @@ impl DurableDirectLxmfService {
         self.lifecycle.activated.store(false, Ordering::Release);
         self.shared.health.stop();
         let _changed = self.lifecycle.shutdown.send(true);
-        let _transition = tokio::time::timeout(STOP_JOIN_TIMEOUT, self.lifecycle.transition.lock())
+        let deadline = tokio::time::Instant::now() + STOP_JOIN_TIMEOUT;
+        let _stop = tokio::time::timeout_at(deadline, self.lifecycle.stop_transition.lock())
             .await
             .map_err(|_| DirectServiceStopError::JoinTimedOut)?;
         if self.lifecycle.stop_complete.load(Ordering::Acquire) {
             return Ok(());
         }
-        // Every durable mutation, including callback-owned inbound insertion,
-        // holds the transition gate through its owner reply. Reaching this
-        // point proves that aborting the remaining tasks cannot discard an
-        // already-admitted commit or storage failure.
         {
+            // Outbound attempts hold this gate through any admitted commit.
+            // Release it before joining the worker, whose accepted callbacks
+            // still need the same gate to finish durable inbox insertion.
+            let _transition = tokio::time::timeout_at(deadline, self.lifecycle.transition.lock())
+                .await
+                .map_err(|_| DirectServiceStopError::JoinTimedOut)?;
             let attempts = self.lifecycle.attempts();
             for attempt in attempts.values() {
                 attempt.abort();
             }
+            self.lifecycle.pending_attempts().clear();
         }
+
+        // Poll in place: taking a JoinHandle across an await would detach it if
+        // the caller cancelled stop, allowing a later call to claim completion.
+        tokio::time::timeout_at(
+            deadline,
+            std::future::poll_fn(|cx| {
+                let mut worker = self.lifecycle.worker();
+                let Some(handle) = worker.as_mut() else {
+                    return std::task::Poll::Ready(());
+                };
+                match Pin::new(handle).poll(cx) {
+                    std::task::Poll::Ready(result) => {
+                        if result.is_err() {
+                            self.lifecycle.worker_failed.store(true, Ordering::Release);
+                        }
+                        worker.take();
+                        std::task::Poll::Ready(())
+                    }
+                    std::task::Poll::Pending => std::task::Poll::Pending,
+                }
+            }),
+        )
+        .await
+        .map_err(|_| DirectServiceStopError::JoinTimedOut)?;
+
+        while tokio::time::timeout_at(
+            deadline,
+            std::future::poll_fn(|cx| {
+                let mut attempts = self.lifecycle.attempts();
+                let Some(mut entry) = attempts.first_entry() else {
+                    return std::task::Poll::Ready(false);
+                };
+                match Pin::new(entry.get_mut()).poll(cx) {
+                    std::task::Poll::Ready(_) => {
+                        entry.remove();
+                        std::task::Poll::Ready(true)
+                    }
+                    std::task::Poll::Pending => std::task::Poll::Pending,
+                }
+            }),
+        )
+        .await
+        .map_err(|_| DirectServiceStopError::JoinTimedOut)?
         {
-            let worker = self.lifecycle.worker();
-            if let Some(worker) = worker.as_ref() {
-                worker.abort();
-            }
-        }
-        self.lifecycle.pending_attempts().clear();
-        let deadline = tokio::time::Instant::now() + STOP_JOIN_TIMEOUT;
-
-        let worker = self.lifecycle.worker().take();
-        if let Some(mut worker) = worker {
-            if tokio::time::timeout_at(deadline, &mut worker)
-                .await
-                .is_err()
-            {
-                *self.lifecycle.worker() = Some(worker);
-                return Err(DirectServiceStopError::JoinTimedOut);
-            }
-        }
-
-        let attempts = mem::take(&mut *self.lifecycle.attempts());
-        let mut attempts = attempts.into_iter();
-        while let Some((key, mut attempt)) = attempts.next() {
-            attempt.abort();
-            if tokio::time::timeout_at(deadline, &mut attempt)
-                .await
-                .is_err()
-            {
-                let mut retained = BTreeMap::new();
-                retained.insert(key, attempt);
-                retained.extend(attempts);
-                *self.lifecycle.attempts() = retained;
-                return Err(DirectServiceStopError::JoinTimedOut);
-            }
             self.shared.notify();
+        }
+        if self.lifecycle.worker_failed.load(Ordering::Acquire) {
+            return Err(DirectServiceStopError::WorkerFailed);
         }
         self.lifecycle.stop_complete.store(true, Ordering::Release);
         Ok(())
@@ -2041,7 +2144,6 @@ impl PendingDurableDirectLxmfService {
         let transition = Arc::new(Mutex::new(()));
         let worker = runtime.spawn(run_durable_worker(
             shared.clone(),
-            Arc::clone(&stopped),
             Arc::clone(&transition),
             receiver,
             shutdown_receiver,
@@ -2051,6 +2153,8 @@ impl PendingDurableDirectLxmfService {
             activated: AtomicBool::new(false),
             stopped,
             stop_complete: AtomicBool::new(false),
+            stop_transition: Mutex::new(()),
+            worker_failed: AtomicBool::new(false),
             transition,
             worker: StdMutex::new(Some(worker)),
             attempts: StdMutex::new(BTreeMap::new()),
@@ -2373,7 +2477,6 @@ fn remove_active_attempt(shared: &DurableShared, lifecycle: &DurableLifecycle, k
 
 async fn run_durable_worker(
     shared: Arc<DurableShared>,
-    stopped: Arc<AtomicBool>,
     transition: Arc<Mutex<()>>,
     mut jobs: mpsc::Receiver<Job>,
     mut shutdown: watch::Receiver<bool>,
@@ -2382,6 +2485,12 @@ async fn run_durable_worker(
         tokio::select! {
             changed = shutdown.changed() => {
                 if changed.is_err() || *shutdown.borrow() {
+                    // Receiver closure atomically rejects new queue entries;
+                    // everything that won admission before it must be settled.
+                    jobs.close();
+                    while let Some(job) = jobs.recv().await {
+                        process_durable_job(&shared, &transition, job).await;
+                    }
                     break;
                 }
             }
@@ -2390,7 +2499,7 @@ async fn run_durable_worker(
                     shared.health.stop();
                     return;
                 };
-                process_durable_job(&shared, &stopped, &transition, job).await;
+                process_durable_job(&shared, &transition, job).await;
                 if jobs.capacity() > 0 {
                     shared.health.recover();
                 }
@@ -2399,25 +2508,19 @@ async fn run_durable_worker(
     }
 }
 
-async fn process_durable_job(
-    shared: &Arc<DurableShared>,
-    stopped: &AtomicBool,
-    transition: &Mutex<()>,
-    job: Job,
-) {
+async fn process_durable_job(shared: &Arc<DurableShared>, transition: &Mutex<()>, job: Job) {
     match job {
         Job::Peer(job) => {
             if shared.peers.lock().await.observe(job) {
                 shared.notify();
             }
         }
-        Job::Inbound(job) => process_durable_inbound(shared, stopped, transition, job.wire).await,
+        Job::Inbound(job) => process_durable_inbound(shared, transition, job.wire).await,
     }
 }
 
 async fn process_durable_inbound(
     shared: &Arc<DurableShared>,
-    stopped: &AtomicBool,
     transition: &Mutex<()>,
     wire: Vec<u8>,
 ) {
@@ -2450,9 +2553,6 @@ async fn process_durable_inbound(
         verification,
     };
     let _transition = transition.lock().await;
-    if stopped.load(Ordering::Acquire) {
-        return;
-    }
     match shared
         .mailbox
         .submit(MailboxRequest::InsertInbound(inbound))
@@ -2687,6 +2787,7 @@ mod tests {
         used_destinations: StdMutex<Vec<[u8; 16]>>,
         block_retention: AtomicBool,
         retention_entered: Notify,
+        retention_released: Notify,
         sent_wires: StdMutex<Vec<Vec<u8>>>,
         block_send: AtomicBool,
         send_entered: Notify,
@@ -2715,6 +2816,7 @@ mod tests {
                 used_destinations: StdMutex::new(Vec::new()),
                 block_retention: AtomicBool::new(false),
                 retention_entered: Notify::new(),
+                retention_released: Notify::new(),
                 sent_wires: StdMutex::new(Vec::new()),
                 block_send: AtomicBool::new(false),
                 send_entered: Notify::new(),
@@ -2799,8 +2901,8 @@ mod tests {
             Box::pin(async move {
                 self.used_destinations.lock().unwrap().push(destination);
                 self.retention_entered.notify_one();
-                if self.block_retention.load(Ordering::Acquire) {
-                    std::future::pending::<()>().await;
+                while self.block_retention.load(Ordering::Acquire) {
+                    self.retention_released.notified().await;
                 }
             })
         }
@@ -4332,6 +4434,78 @@ mod tests {
             MailboxProjectionHealth::ResetRequired("inbound record is corrupt".to_owned())
         );
         assert!(stopped.messages.is_empty());
+    }
+
+    #[tokio::test]
+    async fn cancelled_stop_retains_worker_and_drains_every_accepted_callback() {
+        let (_root, _database, submitter) = shared_database();
+        let network = Arc::new(DurableFakeNetwork::default());
+        let (peer, peer_destination) = peer_facts();
+        network.add_public_key(peer_destination, &peer);
+        network.block_retention.store(true, Ordering::Release);
+        let service = start_durable(network.clone(), submitter).await;
+        let signer = LocalLxmfIdentity::from_secret_bytes(&PEER_SECRET).unwrap();
+        let callbacks = service.callbacks();
+        for timestamp in [1_700_000_007_001, 1_700_000_007_002] {
+            let mut output = [0; MAX_BASIC_LXMF_WIRE_BYTES];
+            let prepared = compose_basic_direct_lxmf(
+                service.local_destination(),
+                peer_destination,
+                timestamp,
+                b"inbound",
+                b"accepted before shutdown",
+                None,
+                &signer,
+                &mut output,
+            )
+            .unwrap();
+            assert_eq!(
+                callbacks.on_prns_event(&link_event(&output[..usize::from(prepared.wire_len())])),
+                CallbackOutcome::Enqueued
+            );
+        }
+        // The first callback is accepted but has not reached mailbox admission;
+        // the second remains queued behind it when shutdown starts.
+        network.retention_entered.notified().await;
+        let stopping = service.clone();
+        let stop = tokio::spawn(async move { stopping.stop().await });
+        tokio::time::sleep(Duration::from_millis(10)).await;
+        assert!(!stop.is_finished());
+        assert!(service.lifecycle.worker().is_some());
+        assert!(!service.lifecycle.stop_complete.load(Ordering::Acquire));
+        stop.abort();
+        assert!(stop.await.unwrap_err().is_cancelled());
+        assert!(
+            service.lifecycle.worker().is_some(),
+            "cancellation cannot detach the worker"
+        );
+        network.block_retention.store(false, Ordering::Release);
+        network.retention_released.notify_one();
+        service.stop().await.unwrap();
+        let snapshot = service.snapshot(all_messages()).await.unwrap();
+        assert_eq!(snapshot.messages.len(), 2);
+        assert_eq!(snapshot.durable_revision, 2);
+        assert!(snapshot
+            .messages
+            .iter()
+            .all(|message| message.direction == LxmfDirection::Inbound));
+        service.stop().await.unwrap();
+    }
+
+    #[tokio::test]
+    async fn failed_callback_worker_cannot_claim_successful_drain_on_retry() {
+        let (_root, _database, submitter) = shared_database();
+        let service = start_durable(Arc::new(DurableFakeNetwork::default()), submitter).await;
+        service.lifecycle.worker().as_ref().unwrap().abort();
+        assert_eq!(
+            service.stop().await,
+            Err(DirectServiceStopError::WorkerFailed)
+        );
+        assert_eq!(
+            service.stop().await,
+            Err(DirectServiceStopError::WorkerFailed)
+        );
+        assert!(!service.lifecycle.stop_complete.load(Ordering::Acquire));
     }
 
     #[tokio::test]

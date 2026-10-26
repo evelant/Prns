@@ -1,5 +1,7 @@
 #![forbid(unsafe_code)]
 
+pub mod service_scope;
+
 use std::collections::BTreeMap;
 use std::future::Future;
 use std::path::{Path, PathBuf};
@@ -70,8 +72,8 @@ use tokio::sync::{mpsc, oneshot, watch, Semaphore};
 
 pub mod embedding;
 pub use embedding::{
-    ApplicationEventDispatch, AuthenticatedAnnounce, NativeEmbedding, NativePreparedAttachment,
-    NativeServiceClient,
+    ApplicationEventDispatch, AuthenticatedAnnounce, NativeEmbedding, NativeLinkDiagnostics,
+    NativePreparedAttachment, NativeServiceClient,
 };
 pub mod owner;
 pub mod platform;
@@ -1389,6 +1391,7 @@ async fn run(
         plan_context: provided_context,
         mut on_event,
         accepted_announces,
+        link_diagnostics,
         prepare_interfaces,
         application_events,
     } = embedding;
@@ -1529,6 +1532,9 @@ async fn run(
             }
         },
     });
+    if let Some(observers) = link_diagnostics {
+        node = node.with_link_handshake_diagnostics(observers.core, observers.egress);
+    }
     if let Some(mut observer) = accepted_announces {
         node = node.with_accepted_announce_observer(move |observation| {
             observer(AuthenticatedAnnounce {
@@ -3441,6 +3447,10 @@ fn translate_diagnostic(diagnostic: &Diagnostic<'_>) -> Option<DiagnosticEvent> 
                 EngineLinkClosedReason::MalformedRtt => LinkClosedReason::MalformedRtt,
                 EngineLinkClosedReason::LocallyClosed => LinkClosedReason::LocallyClosed,
             },
+        },
+        Diagnostic::PathDiscovery(event) => DiagnosticEvent::BackendDiagnostic {
+            kind: "pathDiscovery".to_string(),
+            detail: event.phase.name().to_string(),
         },
         Diagnostic::CommandSettled { id, settlement } => DiagnosticEvent::BackendDiagnostic {
             kind: "commandSettled".to_string(),

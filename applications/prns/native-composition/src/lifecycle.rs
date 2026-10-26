@@ -2084,6 +2084,7 @@ async fn run_generation(
         all(feature = "android", target_os = "android"),
     ));
     let embedding = NativeEmbedding {
+        link_diagnostics: None,
         remote_control_config: None,
         remote_control,
         plan_context: Some(

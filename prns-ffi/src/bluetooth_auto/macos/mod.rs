@@ -1,6 +1,7 @@
 mod backend;
 mod central;
 mod data_plane;
+mod diagnostics;
 mod discovery;
 mod gatt_arbitration;
 mod gatt_link;

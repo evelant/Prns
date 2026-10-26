@@ -86,8 +86,15 @@ pub use prns_runtime_tokio::runtime::{
     ResourceOfferMonitor, ResourceProgress, ResourceReceipt, ResourceReceiveError,
     ResourceSendError, ResponseSendError, RouteSeedProgress, RouteSeedReport,
     RuntimeRequestHandlerError, SaveOnLearn, SaveOnLearnWiring, SegmentCompression,
+    ServiceEndpoint, ServiceLifecycleError, ServicePause, ServiceRegistration,
     SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError, Subscription,
     TokioHandleEntropy, TunnelSeedReport, AUTO_COMPRESS_MAX_LEN,
+};
+
+#[cfg(feature = "tokio-host")]
+pub use prns_runtime_tokio::runtime::{
+    EgressHandshakeEvent, EgressHandshakeObserver, EgressHandshakePacket, EgressHandshakePhase,
+    EgressHandshakeSnapshot,
 };
 
 #[cfg(all(feature = "tokio-host", feature = "scheduler-tuning"))]

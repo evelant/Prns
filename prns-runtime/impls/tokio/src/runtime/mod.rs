@@ -4,7 +4,7 @@ mod identity_blackhole_commands;
 mod identity_bootstrap;
 mod interface_store;
 mod interface_watch;
-mod node_facade;
+pub(crate) mod node_facade;
 pub mod node_introspection;
 #[cfg(feature = "rnx")]
 mod process_commands;
@@ -25,7 +25,11 @@ pub use crate::manifold::driver::{
     ControlledCryptoStep, ControlledJobId, ControlledWorkKind, ControlledWorkerId,
     CryptoWorkBoundary,
 };
-pub use crate::manifold::driver::{CryptoPoolConfig, CryptoWorkerPlacement, PoolWorkers};
+pub use crate::manifold::driver::{
+    CryptoPoolConfig, CryptoWorkerPlacement, EgressHandshakeEvent, EgressHandshakeObserver,
+    EgressHandshakePacket, EgressHandshakePhase, EgressHandshakeSnapshot, PoolWorkers,
+    EGRESS_HANDSHAKE_EVENT_LIMIT,
+};
 #[cfg(feature = "scheduler-tuning")]
 pub use crate::manifold::driver::{SchedulerPolicy, SchedulerPolicyError, SchedulerPolicyInput};
 pub(crate) use destination_identity_retention::{
@@ -61,8 +65,9 @@ pub use node_facade::{
     ResourceAdmissionPeer, ResourceOfferAdmission, ResourceOfferMonitor, ResourceProgress,
     ResourceReceipt, ResourceReceiveError, ResourceSendError, ResponseSendError, RouteSeedProgress,
     RouteSeedReport, RuntimeRequestHandlerError, SaveOnLearn, SaveOnLearnWiring,
-    SegmentCompression, SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError,
-    TunnelSeedReport, AUTO_COMPRESS_MAX_LEN,
+    SegmentCompression, ServiceEndpoint, ServiceLifecycleError, ServicePause, ServiceRegistration,
+    SharedInstanceIdentityError, StreamId, StreamReaderRegistrationError, TunnelSeedReport,
+    AUTO_COMPRESS_MAX_LEN,
 };
 #[cfg(feature = "rnx")]
 pub use process_commands::ProcessCommands;

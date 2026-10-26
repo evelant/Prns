@@ -8,6 +8,9 @@ The authoritative [extension inventory](schema/native-extensions-v1.json) record
 | destinationPublicKey | supported | supported | unsupported | unsupported | unsupported |
 | authenticatedAnnounces | supported | unsupported | unsupported | unsupported | unsupported |
 | preparedInterfaceAttachments | supported | unsupported | unsupported | unsupported | unsupported |
+| linkHandshakeDiagnostics | supported | unsupported | unsupported | unsupported | unsupported |
+| scopedServiceOperations | supported | unsupported | unsupported | unsupported | unsupported |
+| scopedServiceLifecycle | supported | unsupported | unsupported | unsupported | unsupported |
 
 ## destinationPublicKey
 
@@ -44,5 +47,41 @@ The embedding returns every prepared interface or supervisor as NativePreparedAt
 - C: unsupported. The native prepared-object hook is not a C operation; existing supplied-pipe and interface commands retain their own semantics.
 - N-API: unsupported. The native prepared-object hook is not projected by the N-API host.
 - Browser/cooperative: unsupported. The native prepared-object hook is not projected by the cooperative/browser host.
+
+## linkHandshakeDiagnostics
+
+Observe bounded native Link establishment and host egress decisions.
+
+Explicit opt-in function callbacks receive fixed metadata only. Core and egress have independent producer limits and sink admission accounting. Exporters must bound output and redact interface identifiers. Transient public Link identifiers intentionally correlate handshake hops; these observations do not prove physical transmission or application receipt. The hook does not alter wire packets, timeouts or the portable host contract.
+
+- Native Rust: supported through [`NativeEmbedding.link_diagnostics`](impls/native/src/embedding.rs), [`NativeLinkDiagnostics`](impls/native/src/embedding.rs).
+- Native UniFFI: unsupported. Controlled diagnostics are native embedding callbacks, not a foreign application event API.
+- C: unsupported. Controlled diagnostics are native embedding callbacks, not a foreign application event API.
+- N-API: unsupported. Controlled diagnostics are native embedding callbacks, not a foreign application event API.
+- Browser/cooperative: unsupported. Controlled diagnostics are native embedding callbacks, not a foreign application event API.
+
+## scopedServiceOperations
+
+Bind native service work to one local identity generation.
+
+NativeServiceScope bounds admitted operations and outgoing Links, rejects foreign local destinations and Links, and retains ownership across canceled waiters. It does not replace catalog admission, provide inbound resource quotas or authorize an untrusted API caller.
+
+- Native Rust: supported through [`NativeServiceScope`](impls/native/src/service_scope.rs).
+- Native UniFFI: unsupported. Scoped service ownership is a native Rust integration; generated lifecycle APIs remain separate work.
+- C: unsupported. The portable C contract does not expose scoped native service ownership.
+- N-API: unsupported. The N-API host does not expose scoped native service ownership.
+- Browser/cooperative: unsupported. The cooperative/browser host needs its own scoped runtime adapter.
+
+## scopedServiceLifecycle
+
+Stage and retire dynamic Reticulum service destinations on a shared native node.
+
+ServiceEndpoint stages closed ingress until explicit activation, snapshots receive ratchets and retires owned destinations, Links and announces. Completion measures retained interface-buffer release, not physical transmission, remote receipt or secure secret erasure. Callers must fence and drain service producers and persist receive state.
+
+- Native Rust: supported through [`ServiceEndpoint`](../prns-runtime/impls/tokio/src/runtime/node_facade/service_lifecycle.rs), [`ServicePause`](../prns-runtime/impls/tokio/src/runtime/node_facade/service_lifecycle.rs).
+- Native UniFFI: unsupported. Scoped service ownership is a native Rust integration; generated lifecycle APIs remain separate work.
+- C: unsupported. The portable C contract does not expose scoped native service ownership.
+- N-API: unsupported. The N-API host does not expose scoped native service ownership.
+- Browser/cooperative: unsupported. The cooperative/browser host needs its own scoped runtime adapter.
 
 Remote Control has a separate [declaration-generated protocol inventory](schema/remote-control-v1.generated.json), including its target availability. Authenticated announce observation parity across foreign targets remains unimplemented; diagnostics must not be substituted for authenticated native service input.
