@@ -22,9 +22,11 @@ itself announce. `Requested`, `Throttled`, `Busy` and `Unavailable` describe loc
 admission, not transmission or recipient reachability.
 
 Applications own preference persistence and any shared budget across local
-identities. Pausing an identity must fence its future work. A durable restart
-fence and shared identity scheduler are a separate integration; do not infer
-those properties from the process-local runner cooldown.
+identities. Pausing an identity must fence its future work. The [portable identity scheduler](../../../../prns-identities/runtime/README.md#shared-announce-scheduling)
+can reserve attempts durably before dispatch and coordinate a shared budget.
+Composing it with the runner and a phone lifecycle is separate application work;
+disable per-runner automatic timers when a shared owner schedules the same services.
+Do not infer durable restart behavior from the process-local runner cooldown.
 
 All groups for one identity share the same pair of destinations. Adding identities
 increases potential service traffic; adding groups does not add destinations.

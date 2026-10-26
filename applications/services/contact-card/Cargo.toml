@@ -1,0 +1,26 @@
+[package]
+name = "prns-contact-card"
+version = "0.1.0"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+publish = false
+description = "Portable bounded allocation-free signed Reticulum contact cards"
+
+[features]
+default = []
+
+[dependencies]
+curve25519-dalek = { version = "5", default-features = false }
+ed25519-dalek = { version = "3", default-features = false }
+sha2 = { version = "0.11", default-features = false }
+
+[dev-dependencies]
+ed25519-dalek = { version = "3", default-features = false, features = ["fast"] }
+hex = "0.4"
+serde_json = "1"
+
+[lints]
+workspace = true
