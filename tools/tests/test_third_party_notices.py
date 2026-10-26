@@ -23,6 +23,14 @@ SPEC.loader.exec_module(notices)
 
 
 class ThirdPartyNoticeTests(unittest.TestCase):
+    def test_e290_qualification_modes_are_separate_from_shipping_defaults(self) -> None:
+        graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
+        self.assertNotIn("ESP32-S3 Heltec E290", notices.GRAPH_FEATURES)
+        self.assertEqual(graphs["ESP32-S3 Heltec E290 MLS qualification"], ("personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml", "xtensa-esp32s3-none-elf"))
+        self.assertEqual(notices.GRAPH_FEATURES["ESP32-S3 Heltec E290 MLS qualification"], ("group-mls-qualification",))
+        self.assertEqual(graphs["ESP32-S3 Heltec E290 secure MLS qualification"], ("personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml", "xtensa-esp32s3-none-elf"))
+        self.assertEqual(notices.GRAPH_FEATURES["ESP32-S3 Heltec E290 secure MLS qualification"], ("group-mls-secure-qualification",))
+
     def test_group_library_graphs_cover_their_owned_workspaces(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in notices.GRAPHS}
         self.assertEqual(graphs["Group libraries"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
@@ -37,7 +45,7 @@ class ThirdPartyNoticeTests(unittest.TestCase):
         self.assertEqual(len(graphs), len(notices.GRAPHS))
         self.assertEqual(
             notices.GRAPH_FEATURES,
-            {"Prns app Android": ("android",), "Prns app iOS": ("apple",), "Group secure storage": ("prns-groups-store/secure",)},
+            {"Prns app Android": ("android",), "Prns app iOS": ("apple",), "Group secure storage": ("prns-groups-store/secure",), "ESP32-S3 Heltec E290 MLS qualification": ("group-mls-qualification",), "ESP32-S3 Heltec E290 secure MLS qualification": ("group-mls-secure-qualification",)},
         )
         app_manifest = "applications/prns/native-composition/Cargo.toml"
         self.assertEqual(graphs["Prns app Android"], (app_manifest, "aarch64-linux-android"))

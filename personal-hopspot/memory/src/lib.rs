@@ -33,3 +33,4 @@ pub use profiles::{
 pub use profiles::{
     linker_address_profile, LinkerAddressProfile, LinkerAddressSpace, LinkerAddressValidationError,
 };
+pub use profiles::{HELTEC_E290_MLS_PARTITION_TABLE, HELTEC_E290_MLS_QUALIFICATION};

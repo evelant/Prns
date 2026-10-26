@@ -16,6 +16,8 @@ python3 "$root/validation/security/license-policy-parity.py"
 python3 "$root/validation/security/mls-source-policy.py"
 
 graphs=(
+    "esp32-s3-heltec-e290-mls-qualification|personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml|xtensa-esp32s3-none-elf|group-mls-qualification"
+    "esp32-s3-heltec-e290-mls-secure-qualification|personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml|xtensa-esp32s3-none-elf|group-mls-secure-qualification"
     "group-libraries|prns-groups/Cargo.toml|x86_64-unknown-linux-gnu"
     "group-secure-storage|prns-groups/Cargo.toml|x86_64-unknown-linux-gnu|prns-groups-store/secure"
     "group-mls-adapter|prns-groups/security/mls-rs/Cargo.toml|x86_64-unknown-linux-gnu"

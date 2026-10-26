@@ -18,6 +18,14 @@ SPEC.loader.exec_module(audit)
 
 
 class UnsafeAuditTests(unittest.TestCase):
+    def test_e290_qualification_modes_are_separate_from_shipping_defaults(self) -> None:
+        graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
+        self.assertNotIn("esp32-s3-heltec-e290", audit.GRAPH_FEATURES)
+        self.assertEqual(graphs["esp32-s3-heltec-e290-mls-qualification"], ("personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml", "xtensa-esp32s3-none-elf"))
+        self.assertEqual(audit.GRAPH_FEATURES["esp32-s3-heltec-e290-mls-qualification"], ("group-mls-qualification",))
+        self.assertEqual(graphs["esp32-s3-heltec-e290-mls-secure-qualification"], ("personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml", "xtensa-esp32s3-none-elf"))
+        self.assertEqual(audit.GRAPH_FEATURES["esp32-s3-heltec-e290-mls-secure-qualification"], ("group-mls-secure-qualification",))
+
     def test_group_library_graphs_cover_their_owned_workspaces(self) -> None:
         graphs = {name: (manifest, target) for name, manifest, target in audit.GRAPHS}
         self.assertEqual(graphs["group-libraries"], ("prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"))
@@ -32,7 +40,7 @@ class UnsafeAuditTests(unittest.TestCase):
         self.assertEqual(len(graphs), len(audit.GRAPHS))
         self.assertEqual(
             audit.GRAPH_FEATURES,
-            {"prns-app-android": ("android",), "prns-app-ios": ("apple",), "group-secure-storage": ("prns-groups-store/secure",)},
+            {"prns-app-android": ("android",), "prns-app-ios": ("apple",), "group-secure-storage": ("prns-groups-store/secure",), "esp32-s3-heltec-e290-mls-qualification": ("group-mls-qualification",), "esp32-s3-heltec-e290-mls-secure-qualification": ("group-mls-secure-qualification",)},
         )
         manifest = "applications/prns/native-composition/Cargo.toml"
         self.assertEqual(graphs["prns-app-android"], (manifest, "aarch64-linux-android"))

@@ -78,10 +78,9 @@ the caller may retry the same requested prefix if it did not advance.
 explicit pre-enrolled development fixture. `import_enrollment` validates limits,
 incarnation, all values and receipt continuity inside one immediate transaction,
 and refuses any existing table in the target namespace. An invalid import leaves
-no partial namespace. Unrelated application tables remain intact. A consumer must
-bind the fixture configuration and local Reticulum identity, then open current
-state on subsequent starts instead of importing again. The native runner is a
-following integration.
+no partial namespace. Unrelated application tables remain intact. The native
+runner additionally binds the fixture configuration and local Reticulum identity,
+and opens current state on subsequent starts instead of importing again.
 
 These plaintext snapshots contain initial MLS secrets and are not production
 backup/restore APIs. Installing the same endpoint snapshot twice forks its state;

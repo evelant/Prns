@@ -31,6 +31,8 @@ except ModuleNotFoundError:
 ROOT = Path(__file__).resolve().parents[2]
 BASELINE = ROOT / "audits" / "unsafe-snapshot.json"
 GRAPHS = (
+    ("esp32-s3-heltec-e290-mls-qualification", "personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml", "xtensa-esp32s3-none-elf"),
+    ("esp32-s3-heltec-e290-mls-secure-qualification", "personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml", "xtensa-esp32s3-none-elf"),
     ("group-libraries", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("group-secure-storage", "prns-groups/Cargo.toml", "x86_64-unknown-linux-gnu"),
     ("group-mls-adapter", "prns-groups/security/mls-rs/Cargo.toml", "x86_64-unknown-linux-gnu"),
@@ -109,6 +111,8 @@ GRAPHS = (
 # Audit the shipped product features without enabling development-only binding
 # generators or changing the default features of the other release graphs.
 GRAPH_FEATURES = {
+    "esp32-s3-heltec-e290-mls-qualification": ("group-mls-qualification",),
+    "esp32-s3-heltec-e290-mls-secure-qualification": ("group-mls-secure-qualification",),
     "group-secure-storage": ("prns-groups-store/secure",),
     "prns-app-android": ("android",),
     "prns-app-ios": ("apple",),

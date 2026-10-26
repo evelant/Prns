@@ -6,8 +6,20 @@ use std::process::Command;
 
 use jiff::Timestamp;
 
+#[path = "build_support/mls_codegen.rs"]
+mod mls_codegen;
+
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=build_support/mls_codegen.rs");
+    println!("cargo:rerun-if-env-changed=CARGO_ENCODED_RUSTFLAGS");
+    if !mls_codegen::permits_qualification(
+        env::var_os("CARGO_FEATURE_GROUP_MLS_QUALIFICATION").is_some(),
+        &env::var("CARGO_CFG_TARGET_ARCH").unwrap_or_default(),
+        &env::var("CARGO_ENCODED_RUSTFLAGS").unwrap_or_default(),
+    ) {
+        return Err("group-mls-qualification requires explicit effective -Cforce-frame-pointers=no on Xtensa: esp 1.95.0.0 generates misaligned outgoing call frames with forced frame pointers. Use ./tools/prns run device.hopspot.mls-e290 so the qualification build applies its verified compiler flags.".into());
+    }
     println!("cargo:rerun-if-changed=../../../VERSION");
     println!("cargo:rerun-if-env-changed=PRNS_BUILD_VERSION");
     println!("cargo:rerun-if-env-changed=PRNS_BUILD_SOURCE_DIGEST");

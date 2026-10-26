@@ -238,6 +238,7 @@ const fn region_role(value: RegionRole) -> &'static str {
         RegionRole::RadioProfile => "radio-profile",
         RegionRole::WifiConfiguration => "wifi-configuration",
         RegionRole::Journal => "journal",
+        RegionRole::GroupState => "group-state",
         RegionRole::RecoveryBootloader => "recovery-bootloader",
         RegionRole::FactoryReserved => "factory-reserved",
         RegionRole::Reserved => "reserved",

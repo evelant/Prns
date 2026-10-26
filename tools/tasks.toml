@@ -461,6 +461,17 @@ entrypoint = ["python", "tools/device/hopspot-flash-local.py"]
 requires = ["cargo", "python"]
 
 [[task]]
+id = "device.hopspot.mls-e290"
+summary = "Build, flash, and capture E290 MLS journal or secure-storage qualification evidence with an explicit experimental flash layout."
+domain = "device"
+effect = "device-write"
+platforms = ["linux", "macos"]
+audience = ["developer"]
+entrypoint = ["python3", "tools/device/hopspot-mls-e290.py"]
+requires = ["bash", "cargo", "espflash", "python3", "rustc"]
+setup = "Install the ESP Rust toolchain and espflash; the wrapper loads the user-owned espup export file when present. Use --build-only to avoid opening a device."
+
+[[task]]
 id = "repo.cargo-check"
 summary = "Compile-check every host-compatible first-party Cargo workspace with shared dependencies and parallel compilation."
 domain = "repo"

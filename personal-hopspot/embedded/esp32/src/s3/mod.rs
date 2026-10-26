@@ -2,6 +2,12 @@ mod board;
 pub mod boards;
 mod entropy;
 mod gnss;
+#[cfg(feature = "link-diagnostics")]
+mod link_diagnostics;
+#[cfg(feature = "path-diagnostics")]
+mod path_diagnostics;
+#[cfg(feature = "queue-diagnostics")]
+mod queue_diagnostics;
 mod remote_control;
 
 use alloc::string::{String, ToString};
@@ -401,7 +407,10 @@ static REMOTE_CONTROL_COMMANDS: screen::HopspotCommandMailbox<
 static CORE_ONE_HEARTBEAT: AtomicU64 = AtomicU64::new(0);
 
 #[cfg(not(feature = "remote-control-pairing"))]
-fn firmware_on_event(_event: PrnsEvent<'_>, _state: &RemoteControlHandle) {}
+fn firmware_on_event(_event: PrnsEvent<'_>, _state: &RemoteControlHandle) {
+    #[cfg(feature = "path-diagnostics")]
+    path_diagnostics::observe(&_event);
+}
 
 #[cfg(feature = "remote-control-pairing")]
 fn apply_remote_control_effects(effects: RemoteControlCompositionEffects) {
@@ -447,6 +456,8 @@ fn remote_control_authorization_persisted(
 
 #[cfg(feature = "remote-control-pairing")]
 fn firmware_on_event(event: PrnsEvent<'_>, _state: &RemoteControlHandle) {
+    #[cfg(feature = "path-diagnostics")]
+    path_diagnostics::observe(&event);
     match event {
         PrnsEvent::Message(Message::RemoteControlTargetPairingConfirmationRequired(pairing)) => {
             let confirmation = pairing.confirmation();
@@ -979,3 +990,6 @@ fn request_radio_mode(mode: RadioMode) -> ! {
 
 mod firmware;
 pub(super) use firmware::run;
+
+#[cfg(feature = "group-mls-qualification")]
+mod mls_qualification;

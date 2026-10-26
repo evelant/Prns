@@ -2,6 +2,22 @@
   "generator": "validation/security/unsafe-audit.py",
   "graphs": [
     {
+      "features": [
+        "group-mls-qualification"
+      ],
+      "manifest": "personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml",
+      "name": "esp32-s3-heltec-e290-mls-qualification",
+      "target": "xtensa-esp32s3-none-elf"
+    },
+    {
+      "features": [
+        "group-mls-secure-qualification"
+      ],
+      "manifest": "personal-hopspot/embedded/esp32/boards/heltec-e290/Cargo.toml",
+      "name": "esp32-s3-heltec-e290-mls-secure-qualification",
+      "target": "xtensa-esp32s3-none-elf"
+    },
+    {
       "manifest": "prns-groups/Cargo.toml",
       "name": "group-libraries",
       "target": "x86_64-unknown-linux-gnu"
@@ -218,6 +234,16 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
         "group-mls-adapter": [
           "alloc",
           "getrandom",
@@ -251,6 +277,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -285,6 +313,22 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "aes",
+          "alloc",
+          "default",
+          "getrandom",
+          "rand_core",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "aes",
+          "alloc",
+          "default",
+          "getrandom",
+          "rand_core",
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "aes",
           "alloc",
@@ -391,6 +435,12 @@
           "alloc"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc"
         ],
         "esp32-s3-heltec-r8": [
@@ -728,6 +778,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -767,6 +819,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -805,6 +859,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc"
+        ],
         "group-mls-adapter": [
           "alloc"
         ]
@@ -831,6 +891,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "std"
         ],
@@ -988,6 +1056,12 @@
           "alloc"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc"
         ],
         "esp32-s3-heltec-r8": [
@@ -1153,6 +1227,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -1175,6 +1251,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -1219,6 +1297,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -1295,6 +1375,12 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "std"
         ],
         "esp32-s3-heltec-r8": [
@@ -1434,6 +1520,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -1497,6 +1585,12 @@
           "zeroize"
         ],
         "esp32-s3-heltec-e290": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "zeroize"
         ],
         "esp32-s3-heltec-r8": [
@@ -1581,6 +1675,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -1813,6 +1909,12 @@
         "esp32-s3-heltec-e290": [
           "uuid"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "uuid"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "uuid"
+        ],
         "esp32-s3-heltec-r8": [
           "uuid"
         ],
@@ -1933,6 +2035,12 @@
         "esp32-s3-heltec-e290": [
           "uuid"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "uuid"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "uuid"
+        ],
         "esp32-s3-heltec-r8": [
           "uuid"
         ],
@@ -1984,6 +2092,8 @@
       "graphs": {
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -2015,6 +2125,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -2067,6 +2179,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -2185,6 +2299,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "std"
         ],
@@ -2313,6 +2435,12 @@
         "esp32-s3-heltec-e290": [
           "default"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default"
+        ],
         "esp32-s3-heltec-r8": [
           "default"
         ],
@@ -2431,6 +2559,12 @@
           "block-padding"
         ],
         "esp32-s3-heltec-e290": [
+          "block-padding"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "block-padding"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "block-padding"
         ],
         "esp32-s3-heltec-r8": [
@@ -2609,6 +2743,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -2741,6 +2877,14 @@
           "rng",
           "zeroize"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "rng",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "rng",
+          "zeroize"
+        ],
         "esp32-s3-heltec-r8": [
           "rng",
           "zeroize"
@@ -2831,6 +2975,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "zeroize"
         ],
@@ -2851,6 +3001,16 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "getrandom",
+          "rand_core"
+        ],
         "group-mls-adapter": [
           "alloc",
           "getrandom",
@@ -2905,6 +3065,14 @@
         ],
         "esp32-s3-heltec-e290": [
           "block-padding"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "block-padding",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "block-padding",
+          "zeroize"
         ],
         "esp32-s3-heltec-r8": [
           "block-padding"
@@ -3219,6 +3387,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -3341,6 +3511,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -3371,6 +3543,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -3404,6 +3578,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "const-oid",
@@ -3429,6 +3605,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -3457,6 +3635,14 @@
           "no-cache-pad"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "no-cache-pad"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "no-cache-pad"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "no-cache-pad"
         ],
@@ -3776,6 +3962,14 @@
           "default",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "std"
@@ -3912,6 +4106,12 @@
           "restore-state-u32"
         ],
         "esp32-s3-heltec-e290": [
+          "restore-state-u32"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "restore-state-u32"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "restore-state-u32"
         ],
         "esp32-s3-heltec-r8": [
@@ -4262,6 +4462,16 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "generic-array",
+          "rand_core",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "generic-array",
+          "rand_core",
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "generic-array",
           "rand_core",
@@ -4302,6 +4512,14 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "getrandom",
+          "rand_core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "getrandom",
+          "rand_core"
+        ],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -4395,6 +4613,12 @@
         "esp32-s3-heltec-e290": [
           "rand_core"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "rand_core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "rand_core"
+        ],
         "esp32-s3-heltec-r8": [
           "rand_core"
         ],
@@ -4464,6 +4688,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "ctr",
@@ -4490,6 +4716,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -4547,6 +4775,16 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "digest",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "digest",
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "alloc",
           "digest",
@@ -4637,6 +4875,20 @@
           "zeroize"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "digest",
+          "precomputed-tables",
+          "rand_core",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "digest",
+          "precomputed-tables",
+          "rand_core",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "digest",
           "precomputed-tables",
@@ -4908,6 +5160,14 @@
           "default",
           "suggestions"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "suggestions"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "suggestions"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "suggestions"
@@ -4961,6 +5221,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -4989,6 +5251,14 @@
           "suggestions"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "suggestions"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "suggestions"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "suggestions"
         ],
@@ -5088,6 +5358,14 @@
           "strsim",
           "suggestions"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "strsim",
+          "suggestions"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "strsim",
+          "suggestions"
+        ],
         "esp32-s3-heltec-r8": [
           "strsim",
           "suggestions"
@@ -5141,6 +5419,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -5169,6 +5449,14 @@
           "suggestions"
         ],
         "esp32-s3-heltec-e290": [
+          "strsim",
+          "suggestions"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "strsim",
+          "suggestions"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "strsim",
           "suggestions"
         ],
@@ -5235,6 +5523,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -5261,6 +5551,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -5283,6 +5575,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -5520,6 +5814,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -5539,6 +5835,18 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "oid",
+          "pem",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "oid",
+          "pem",
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "alloc",
           "oid",
@@ -5610,6 +5918,16 @@
           "zeroize"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "oid",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "oid",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "oid",
           "zeroize"
@@ -5797,6 +6115,24 @@
         "esp32-s3-heltec-e290": [
           "block-buffer",
           "core-api"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "block-buffer",
+          "const-oid",
+          "core-api",
+          "default",
+          "mac",
+          "oid",
+          "subtle"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "block-buffer",
+          "const-oid",
+          "core-api",
+          "default",
+          "mac",
+          "oid",
+          "subtle"
         ],
         "esp32-s3-heltec-r8": [
           "block-buffer",
@@ -5996,6 +6332,20 @@
           "zeroize"
         ],
         "esp32-s3-heltec-e290": [
+          "block-api",
+          "default",
+          "mac",
+          "rand_core",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "block-api",
+          "default",
+          "mac",
+          "rand_core",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "block-api",
           "default",
           "mac",
@@ -6233,6 +6583,12 @@
         "esp32-s3-heltec-e290": [
           "default"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default"
+        ],
         "esp32-s3-heltec-r8": [
           "default"
         ],
@@ -6264,6 +6620,8 @@
       "graphs": {
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -6285,6 +6643,8 @@
       "graphs": {
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -6381,6 +6741,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -6403,6 +6765,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -6453,6 +6817,12 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default"
         ],
         "esp32-s3-heltec-r8": [
@@ -6550,6 +6920,32 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "arithmetic",
+          "der",
+          "digest",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "rfc6979",
+          "signing",
+          "spki",
+          "verifying"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "arithmetic",
+          "der",
+          "digest",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "rfc6979",
+          "signing",
+          "spki",
+          "verifying"
+        ],
         "group-mls-adapter": [
           "alloc",
           "arithmetic",
@@ -6577,6 +6973,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc"
+        ],
         "group-mls-adapter": [
           "alloc"
         ]
@@ -6625,6 +7027,12 @@
           "alloc"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc"
         ],
         "esp32-s3-heltec-r8": [
@@ -6696,6 +7104,16 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "rand_core",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "rand_core",
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "alloc",
           "rand_core",
@@ -6806,6 +7224,24 @@
           "zeroize"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "batch",
+          "fast",
+          "rand_core",
+          "signature",
+          "strobe-rs",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "batch",
+          "fast",
+          "rand_core",
+          "signature",
+          "strobe-rs",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "batch",
           "fast",
@@ -7091,6 +7527,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "either",
@@ -7106,6 +7544,30 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ff",
+          "group",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "sec1"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ff",
+          "group",
+          "hazmat",
+          "pem",
+          "pkcs8",
+          "sec1"
+        ],
         "group-mls-adapter": [
           "alloc",
           "arithmetic",
@@ -7135,6 +7597,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7160,6 +7624,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7187,6 +7653,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7217,6 +7685,12 @@
           "timer-item-size-6-words"
         ],
         "esp32-s3-heltec-e290": [
+          "timer-item-size-6-words"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "timer-item-size-6-words"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "timer-item-size-6-words"
         ],
         "esp32-s3-heltec-r8": [
@@ -7262,6 +7736,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7297,6 +7773,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7419,6 +7897,26 @@
           "udp"
         ],
         "esp32-s3-heltec-e290": [
+          "dhcpv4",
+          "dns",
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "tcp",
+          "udp"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "dhcpv4",
+          "dns",
+          "medium-ethernet",
+          "multicast",
+          "proto-ipv4",
+          "proto-ipv6",
+          "tcp",
+          "udp"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "dhcpv4",
           "dns",
           "medium-ethernet",
@@ -7590,6 +8088,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7631,6 +8131,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7689,6 +8191,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7718,6 +8222,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7748,6 +8254,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7793,6 +8301,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7841,6 +8351,12 @@
           "tick-hz-1_000_000"
         ],
         "esp32-s3-heltec-e290": [
+          "tick-hz-1_000_000"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "tick-hz-1_000_000"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "tick-hz-1_000_000"
         ],
         "esp32-s3-heltec-r8": [
@@ -7893,6 +8409,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7923,6 +8441,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -7965,6 +8485,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8003,6 +8525,12 @@
         "esp32-s3-heltec-e290": [
           "default"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default"
+        ],
         "esp32-s3-heltec-r8": [
           "default"
         ],
@@ -8035,6 +8563,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8076,6 +8606,12 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default"
         ],
         "esp32-s3-heltec-r8": [
@@ -8135,6 +8671,12 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default"
         ],
         "esp32-s3-heltec-r8": [
@@ -8221,6 +8763,12 @@
         "esp32-s3-heltec-e290": [
           "unproven"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "unproven"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "unproven"
+        ],
         "esp32-s3-heltec-r8": [
           "unproven"
         ],
@@ -8275,6 +8823,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8317,6 +8867,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8352,6 +8904,12 @@
           "async"
         ],
         "esp32-s3-heltec-e290": [
+          "async"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "async"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "async"
         ],
         "esp32-s3-heltec-r8": [
@@ -8396,6 +8954,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8436,6 +8996,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8477,6 +9039,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8517,6 +9081,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8559,6 +9125,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8600,6 +9168,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8641,6 +9211,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8702,6 +9274,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8825,6 +9399,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8847,6 +9423,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -8910,6 +9488,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -9038,6 +9618,18 @@
           "global-allocator",
           "internal-heap-stats"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "compat",
+          "default",
+          "global-allocator",
+          "internal-heap-stats"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "compat",
+          "default",
+          "global-allocator",
+          "internal-heap-stats"
+        ],
         "esp32-s3-heltec-r8": [
           "compat",
           "default",
@@ -9097,6 +9689,20 @@
           "println"
         ],
         "esp32-s3-heltec-e290": [
+          "esp32c6",
+          "esp32s3",
+          "panic-handler",
+          "print-float-registers",
+          "println"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "esp32c6",
+          "esp32s3",
+          "panic-handler",
+          "print-float-registers",
+          "println"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "esp32c6",
           "esp32s3",
           "panic-handler",
@@ -9173,6 +9779,20 @@
           "esp32s3",
           "validation"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "esp-rom-sys",
+          "esp32c6",
+          "esp32s3",
+          "validation"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "esp-rom-sys",
+          "esp32c6",
+          "esp32s3",
+          "validation"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "esp-rom-sys",
@@ -9231,6 +9851,12 @@
         "esp32-s3-heltec-e290": [
           "build"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "build"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "build"
+        ],
         "esp32-s3-heltec-r8": [
           "build"
         ],
@@ -9287,6 +9913,32 @@
           "unstable"
         ],
         "esp32-s3-heltec-e290": [
+          "__bluetooth",
+          "__usb_otg",
+          "critical-section",
+          "default",
+          "esp32c6",
+          "esp32s3",
+          "exception-handler",
+          "float-save-restore",
+          "requires-unstable",
+          "rt",
+          "unstable"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "__bluetooth",
+          "__usb_otg",
+          "critical-section",
+          "default",
+          "esp32c6",
+          "esp32s3",
+          "exception-handler",
+          "float-save-restore",
+          "requires-unstable",
+          "rt",
+          "unstable"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "__bluetooth",
           "__usb_otg",
           "critical-section",
@@ -9399,6 +10051,20 @@
           "rtc-fast",
           "rtc-slow"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "__esp_idf_bootloader",
+          "has-lp-core",
+          "has-ulp-core",
+          "rtc-fast",
+          "rtc-slow"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "__esp_idf_bootloader",
+          "has-lp-core",
+          "has-ulp-core",
+          "rtc-fast",
+          "rtc-slow"
+        ],
         "esp32-s3-heltec-r8": [
           "__esp_idf_bootloader",
           "has-lp-core",
@@ -9466,6 +10132,18 @@
           "esp32c6",
           "esp32s3"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "_device-selected",
+          "build-script",
+          "esp32c6",
+          "esp32s3"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "_device-selected",
+          "build-script",
+          "esp32c6",
+          "esp32s3"
+        ],
         "esp32-s3-heltec-r8": [
           "_device-selected",
           "build-script",
@@ -9522,6 +10200,14 @@
           "esp32c6",
           "esp32s3"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "esp32c6",
+          "esp32s3"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "esp32c6",
+          "esp32s3"
+        ],
         "esp32-s3-heltec-r8": [
           "esp32c6",
           "esp32s3"
@@ -9571,6 +10257,20 @@
           "no-op"
         ],
         "esp32-s3-heltec-e290": [
+          "esp32c6",
+          "esp32s3",
+          "jtag-serial",
+          "log-04",
+          "no-op"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "esp32c6",
+          "esp32s3",
+          "jtag-serial",
+          "log-04",
+          "no-op"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "esp32c6",
           "esp32s3",
           "jtag-serial",
@@ -9651,6 +10351,30 @@
           "xtensa-lx-rt"
         ],
         "esp32-s3-heltec-e290": [
+          "__has_unstable_feature_enabled",
+          "ble",
+          "coex",
+          "esp-alloc",
+          "esp-now",
+          "esp32c6",
+          "esp32s3",
+          "unstable",
+          "wifi",
+          "xtensa-lx-rt"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "__has_unstable_feature_enabled",
+          "ble",
+          "coex",
+          "esp-alloc",
+          "esp-now",
+          "esp32c6",
+          "esp32s3",
+          "unstable",
+          "wifi",
+          "xtensa-lx-rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "__has_unstable_feature_enabled",
           "ble",
           "coex",
@@ -9754,6 +10478,18 @@
           "esp32s3",
           "ipc-implementations"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "esp-sync",
+          "esp32c6",
+          "esp32s3",
+          "ipc-implementations"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "esp-sync",
+          "esp32c6",
+          "esp32s3",
+          "ipc-implementations"
+        ],
         "esp32-s3-heltec-r8": [
           "esp-sync",
           "esp32c6",
@@ -9827,6 +10563,14 @@
           "esp32c6",
           "esp32s3"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "esp32c6",
+          "esp32s3"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "esp32c6",
+          "esp32s3"
+        ],
         "esp32-s3-heltec-r8": [
           "esp32c6",
           "esp32s3"
@@ -9878,6 +10622,22 @@
           "esp32s3"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "default",
+          "embassy",
+          "esp-radio",
+          "esp32c6",
+          "esp32s3"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "embassy",
+          "esp-radio",
+          "esp32c6",
+          "esp32s3"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "default",
           "embassy",
@@ -9951,6 +10711,14 @@
           "esp32c6",
           "esp32s3"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "esp32c6",
+          "esp32s3"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "esp32c6",
+          "esp32s3"
+        ],
         "esp32-s3-heltec-r8": [
           "esp32c6",
           "esp32s3"
@@ -9997,6 +10765,14 @@
           "esp32sx",
           "fs"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "esp32sx",
+          "fs"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "esp32sx",
+          "fs"
+        ],
         "esp32-s3-heltec-r8": [
           "esp32sx",
           "fs"
@@ -10040,6 +10816,12 @@
         "esp32-s3-heltec-e290": [
           "default"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default"
+        ],
         "esp32-s3-heltec-r8": [
           "default"
         ],
@@ -10076,6 +10858,12 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default"
         ],
         "esp32-s3-heltec-r8": [
@@ -10118,6 +10906,16 @@
           "rt"
         ],
         "esp32-s3-heltec-e290": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "critical-section",
           "default",
           "rt"
@@ -10176,6 +10974,16 @@
           "default",
           "rt"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
         "esp32-s3-heltec-r8": [
           "critical-section",
           "default",
@@ -10226,6 +11034,16 @@
           "rt"
         ],
         "esp32-s3-heltec-e290": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "critical-section",
           "default",
           "rt"
@@ -10284,6 +11102,16 @@
           "default",
           "rt"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
         "esp32-s3-heltec-r8": [
           "critical-section",
           "default",
@@ -10334,6 +11162,16 @@
           "rt"
         ],
         "esp32-s3-heltec-e290": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "critical-section",
           "default",
           "rt"
@@ -10392,6 +11230,16 @@
           "default",
           "rt"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
         "esp32-s3-heltec-r8": [
           "critical-section",
           "default",
@@ -10442,6 +11290,16 @@
           "rt"
         ],
         "esp32-s3-heltec-e290": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "rt"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "critical-section",
           "default",
           "rt"
@@ -10672,6 +11530,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc"
+        ],
         "group-mls-adapter": [
           "alloc"
         ]
@@ -10831,6 +11695,16 @@
           "num-traits",
           "ratio"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "num-traits",
+          "ratio"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "num-traits",
+          "ratio"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "num-traits",
@@ -10950,6 +11824,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "std"
         ],
@@ -11115,6 +11997,12 @@
         "esp32-s3-heltec-e290": [
           "default"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default"
+        ],
         "esp32-s3-heltec-r8": [
           "default"
         ],
@@ -11217,6 +12105,22 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "async-await",
+          "default",
+          "executor",
+          "futures-executor",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "async-await",
+          "default",
+          "executor",
+          "futures-executor",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "async-await",
           "default",
@@ -11450,6 +12354,20 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "default",
+          "futures-sink",
+          "sink",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "futures-sink",
+          "sink",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "default",
           "futures-sink",
@@ -11661,6 +12579,16 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "default",
           "std"
@@ -11829,6 +12757,12 @@
         "esp32-s3-heltec-e290": [
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "std"
         ],
@@ -11926,6 +12860,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -11983,6 +12919,12 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "std"
         ],
         "esp32-s3-heltec-r8": [
@@ -12114,6 +13056,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -12214,6 +13158,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "std"
         ],
@@ -12374,6 +13326,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "std"
         ],
@@ -12691,6 +13651,36 @@
           "slab",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "async-await",
+          "async-await-macro",
+          "channel",
+          "futures-channel",
+          "futures-io",
+          "futures-macro",
+          "futures-sink",
+          "io",
+          "memchr",
+          "sink",
+          "slab",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "async-await",
+          "async-await-macro",
+          "channel",
+          "futures-channel",
+          "futures-io",
+          "futures-macro",
+          "futures-sink",
+          "io",
+          "memchr",
+          "sink",
+          "slab",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "alloc",
           "async-await",
@@ -12988,6 +13978,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13039,6 +14031,14 @@
         ],
         "esp32-s3-heltec-e290": [
           "more_lengths"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "more_lengths",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "more_lengths",
+          "zeroize"
         ],
         "esp32-s3-heltec-r8": [
           "more_lengths"
@@ -13143,6 +14143,18 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "custom",
+          "js",
+          "js-sys",
+          "wasm-bindgen"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "custom",
+          "js",
+          "js-sys",
+          "wasm-bindgen"
+        ],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13271,6 +14283,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13304,6 +14318,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "ghash",
@@ -13319,6 +14335,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc"
+        ],
         "group-mls-adapter": [
           "alloc"
         ]
@@ -13362,6 +14384,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13472,6 +14496,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13508,6 +14534,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13552,6 +14580,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13613,6 +14643,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13647,6 +14679,16 @@
           "std"
         ],
         "desktop-linux": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "default",
           "std"
@@ -13703,6 +14745,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "hkdf",
@@ -13729,6 +14773,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -13762,6 +14808,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "reset"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "reset"
+        ],
         "group-mls-adapter": [
           "reset"
         ]
@@ -13810,6 +14862,12 @@
           "zeroize"
         ],
         "esp32-s3-heltec-e290": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "zeroize"
         ],
         "esp32-s3-heltec-r8": [
@@ -13911,6 +14969,14 @@
       "graphs": {
         "esp32-s3-heltec-e290": [
           "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "group-mls-qualification"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "group-mls-secure-qualification"
         ]
       },
       "name": "hopspot-heltec-e290",
@@ -14213,6 +15279,12 @@
         "esp32-s3-heltec-e290": [
           "zeroize"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "zeroize"
+        ],
         "esp32-s3-heltec-r8": [
           "zeroize"
         ],
@@ -14503,6 +15575,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -14597,6 +15671,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -14704,6 +15780,14 @@
           "default",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "std"
@@ -14779,6 +15863,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -14829,6 +15915,12 @@
           "block-padding"
         ],
         "esp32-s3-heltec-e290": [
+          "block-padding"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "block-padding"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "block-padding"
         ],
         "esp32-s3-heltec-r8": [
@@ -14907,6 +15999,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -14980,6 +16074,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "std"
         ],
@@ -15100,6 +16202,12 @@
           "use_alloc",
           "use_std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "use_alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "use_alloc"
+        ],
         "expo-host-linux": [
           "default",
           "use_alloc",
@@ -15140,6 +16248,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -15179,6 +16289,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "std"
         ],
@@ -15363,6 +16481,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -15510,6 +16630,12 @@
         "esp32-s3-heltec-e290": [
           "rust-allocator"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "rust-allocator"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "rust-allocator"
+        ],
         "esp32-s3-heltec-r8": [
           "rust-allocator"
         ],
@@ -15624,6 +16750,16 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "extra_traits",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "extra_traits",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "extra_traits",
           "std"
@@ -15823,6 +16959,12 @@
           "const_mut_refs"
         ],
         "esp32-s3-heltec-e290": [
+          "const_mut_refs"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "const_mut_refs"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "const_mut_refs"
         ],
         "esp32-s3-heltec-r8": [
@@ -16049,6 +17191,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -16117,6 +17261,14 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "atomic_usize",
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "atomic_usize",
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "atomic_usize",
           "default"
         ],
@@ -16199,6 +17351,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "release_max_level_info",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "release_max_level_info",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "release_max_level_info",
           "std"
         ],
@@ -16375,6 +17535,14 @@
           "default",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "std"
@@ -16527,6 +17695,12 @@
         "esp32-s3-heltec-e290": [
           "map"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "map"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "map"
+        ],
         "esp32-s3-heltec-r8": [
           "map"
         ],
@@ -16603,6 +17777,20 @@
           "syn1",
           "syn2"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "macros",
+          "syn",
+          "syn1",
+          "syn2"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "macros",
+          "syn",
+          "syn1",
+          "syn2"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "macros",
@@ -16654,6 +17842,8 @@
       "graphs": {
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -16693,6 +17883,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default"
+        ],
         "group-mls-adapter": [
           "default"
         ]
@@ -16716,6 +17912,16 @@
           "pulldown-cmark"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "doctests",
+          "pulldown-cmark"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "doctests",
+          "pulldown-cmark"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "doctests",
           "pulldown-cmark"
@@ -16867,6 +18073,16 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "default",
           "std"
@@ -17024,6 +18240,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -17164,6 +18382,16 @@
           "os-ext",
           "os-poll"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "net",
+          "os-ext",
+          "os-poll"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "net",
+          "os-ext",
+          "os-poll"
+        ],
         "esp32-s3-heltec-r8": [
           "net",
           "os-ext",
@@ -17291,6 +18519,20 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "by_ref_proposal",
+          "fast_serialize",
+          "out_of_order",
+          "prior_epoch",
+          "private_message"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "by_ref_proposal",
+          "fast_serialize",
+          "out_of_order",
+          "prior_epoch",
+          "private_message"
+        ],
         "group-mls-adapter": [
           "by_ref_proposal",
           "fast_serialize",
@@ -17312,6 +18554,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "preallocate"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "preallocate"
+        ],
         "group-mls-adapter": [
           "preallocate"
         ]
@@ -17329,6 +18577,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "mls-rs-codec-derive",
@@ -17344,6 +18594,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "fast_serialize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "fast_serialize"
+        ],
         "group-mls-adapter": [
           "fast_serialize"
         ]
@@ -17361,6 +18617,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "mls-rs-crypto-hpke",
@@ -17376,6 +18634,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "mls-rs-crypto-rustcrypto",
@@ -17391,6 +18651,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "mls-rs-crypto-traits",
@@ -17503,6 +18765,12 @@
         "esp32-s3-heltec-e290": [
           "unstable"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "unstable"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "unstable"
+        ],
         "esp32-s3-heltec-r8": [
           "unstable"
         ],
@@ -17557,6 +18825,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -17660,6 +18930,18 @@
           "gateway"
         ],
         "esp32-s3-heltec-e290": [
+          "android-extra",
+          "apple-system-configuration-extra",
+          "default",
+          "gateway"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "android-extra",
+          "apple-system-configuration-extra",
+          "default",
+          "gateway"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "android-extra",
           "apple-system-configuration-extra",
           "default",
@@ -18097,6 +19379,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -18209,6 +19493,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "std"
         ],
@@ -20766,6 +22058,14 @@
           "elf",
           "read_core"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "elf",
+          "read_core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "elf",
+          "read_core"
+        ],
         "esp32-s3-heltec-r8": [
           "elf",
           "read_core"
@@ -20967,6 +22267,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
       },
@@ -21070,6 +22372,30 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha256"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha256"
+        ],
         "group-mls-adapter": [
           "alloc",
           "arithmetic",
@@ -21096,6 +22422,30 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha384"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "arithmetic",
+          "digest",
+          "ecdh",
+          "ecdsa",
+          "ecdsa-core",
+          "pem",
+          "pkcs8",
+          "sha2",
+          "sha384"
+        ],
         "group-mls-adapter": [
           "alloc",
           "arithmetic",
@@ -21185,6 +22535,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -21225,6 +22577,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc"
+        ],
         "group-mls-adapter": [
           "alloc"
         ]
@@ -21337,6 +22695,16 @@
           "remote-control-pairing"
         ],
         "esp32-s3-heltec-e290": [
+          "display",
+          "embedded",
+          "remote-control-pairing"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "display",
+          "embedded",
+          "remote-control-pairing"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "display",
           "embedded",
           "remote-control-pairing"
@@ -21463,6 +22831,39 @@
           "usb",
           "wifi-auto"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "bluetooth-auto",
+          "default",
+          "display",
+          "esp-now",
+          "esp32s3fn8",
+          "group-mls-qualification",
+          "heltec-v3",
+          "jtag-logging",
+          "lora",
+          "remote-control-pairing",
+          "silent-logging",
+          "tcp",
+          "usb",
+          "wifi-auto"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "bluetooth-auto",
+          "default",
+          "display",
+          "esp-now",
+          "esp32s3fn8",
+          "group-mls-qualification",
+          "group-mls-secure-qualification",
+          "heltec-v3",
+          "jtag-logging",
+          "lora",
+          "remote-control-pairing",
+          "silent-logging",
+          "tcp",
+          "usb",
+          "wifi-auto"
+        ],
         "esp32-s3-heltec-r8": [
           "bluetooth-auto",
           "default",
@@ -21542,11 +22943,11 @@
       "name": "personal-hopspot-esp32",
       "source": "personal-hopspot/embedded/esp32",
       "unsafe": {
-        "blocks": 1013,
+        "blocks": 1032,
         "externs": 779,
         "functions": 123,
         "impls": 39,
-        "tokens": 2087
+        "tokens": 2106
       },
       "version": "0.1.0"
     },
@@ -21589,6 +22990,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -21814,6 +23217,34 @@
           "wifi-auto"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "bluetooth-auto",
+          "embassy-host",
+          "esp-now",
+          "external-alloc",
+          "flash",
+          "log",
+          "lora",
+          "tcp",
+          "tcp-dns",
+          "usb",
+          "wifi-auto"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "bluetooth-auto",
+          "embassy-host",
+          "esp-now",
+          "external-alloc",
+          "flash",
+          "log",
+          "lora",
+          "tcp",
+          "tcp-dns",
+          "usb",
+          "wifi-auto"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "bluetooth-auto",
           "embassy-host",
@@ -22210,6 +23641,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -22242,6 +23675,14 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "pem"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "pem"
+        ],
         "group-mls-adapter": [
           "alloc",
           "pem"
@@ -22291,6 +23732,12 @@
           "alloc"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc"
         ],
         "esp32-s3-heltec-r8": [
@@ -22440,6 +23887,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
       },
@@ -22456,6 +23905,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "polyval",
@@ -22536,6 +23987,22 @@
           "unsafe-assume-single-core"
         ],
         "esp32-s3-heltec-e290": [
+          "critical-section",
+          "default",
+          "fallback",
+          "require-cas",
+          "std",
+          "unsafe-assume-single-core"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "critical-section",
+          "default",
+          "fallback",
+          "require-cas",
+          "std",
+          "unsafe-assume-single-core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "critical-section",
           "default",
           "fallback",
@@ -22710,6 +24177,12 @@
         "esp32-s3-heltec-e290": [
           "portable-atomic"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "portable-atomic"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "portable-atomic"
+        ],
         "esp32-s3-heltec-r8": [
           "portable-atomic"
         ],
@@ -22742,6 +24215,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -22880,6 +24355,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "primeorder",
@@ -23108,6 +24585,32 @@
           "tokio-host"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "crypto-precomputed",
+          "ed25519-batch",
+          "embassy-host",
+          "external-alloc",
+          "flash",
+          "movable-frame-forwarding",
+          "resource-work-offload",
+          "rns-management-wire",
+          "std",
+          "tokio-host"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "crypto-precomputed",
+          "ed25519-batch",
+          "embassy-host",
+          "external-alloc",
+          "flash",
+          "movable-frame-forwarding",
+          "resource-work-offload",
+          "rns-management-wire",
+          "std",
+          "tokio-host"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "crypto-precomputed",
           "ed25519-batch",
@@ -23505,6 +25008,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-libraries": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
@@ -23522,6 +25027,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "prns-groups-mls",
@@ -23537,6 +25044,13 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "secure"
+        ],
         "group-libraries": [
           "default"
         ],
@@ -23814,6 +25328,28 @@
           "wifi-auto"
         ],
         "esp32-s3-heltec-e290": [
+          "bluetooth-auto",
+          "bluetooth-auto-trouble",
+          "esp-now",
+          "log",
+          "lora",
+          "tcp",
+          "tcp-dns",
+          "usb",
+          "wifi-auto"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "bluetooth-auto",
+          "bluetooth-auto-trouble",
+          "esp-now",
+          "log",
+          "lora",
+          "tcp",
+          "tcp-dns",
+          "usb",
+          "wifi-auto"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "bluetooth-auto",
           "bluetooth-auto-trouble",
           "esp-now",
@@ -24116,6 +25652,26 @@
           "wifi-auto"
         ],
         "esp32-s3-heltec-e290": [
+          "bluetooth-auto",
+          "bluetooth-auto-runtime",
+          "log",
+          "network-device-selection",
+          "serial",
+          "tcp",
+          "usb",
+          "wifi-auto"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "bluetooth-auto",
+          "bluetooth-auto-runtime",
+          "log",
+          "network-device-selection",
+          "serial",
+          "tcp",
+          "usb",
+          "wifi-auto"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "bluetooth-auto",
           "bluetooth-auto-runtime",
           "log",
@@ -24451,6 +26007,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -24603,6 +26161,22 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "external-alloc",
+          "movable-frame-forwarding",
+          "remote-control-wifi-host",
+          "resource-bzip2",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "external-alloc",
+          "movable-frame-forwarding",
+          "remote-control-wifi-host",
+          "resource-bzip2",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "external-alloc",
           "movable-frame-forwarding",
@@ -24802,6 +26376,14 @@
           "alloc",
           "log"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "log"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "log"
+        ],
         "esp32-s3-heltec-r8": [
           "alloc",
           "log"
@@ -24899,6 +26481,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -25049,6 +26633,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -25077,6 +26663,22 @@
           "smallvec"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "parser",
+          "proc-macro",
+          "proc-macro2",
+          "quote",
+          "smallvec"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "parser",
+          "proc-macro",
+          "proc-macro2",
+          "quote",
+          "smallvec"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "parser",
           "proc-macro",
@@ -25179,6 +26781,14 @@
           "proc-macro"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "proc-macro"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "proc-macro"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "proc-macro"
         ],
@@ -25359,6 +26969,8 @@
       "graphs": {
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -25463,6 +27075,14 @@
           "proc-macro"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "proc-macro"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "proc-macro"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "proc-macro"
         ],
@@ -25607,6 +27227,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -25851,6 +27473,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -25898,6 +27522,14 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "getrandom"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "getrandom"
+        ],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -25941,6 +27573,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -26301,6 +27935,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": []
       },
       "name": "rfc6979",
@@ -26502,6 +28138,12 @@
         "esp32-s3-heltec-e290": [
           "unstable"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "unstable"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "unstable"
+        ],
         "esp32-s3-heltec-r8": [
           "unstable"
         ],
@@ -26596,6 +28238,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -26640,6 +28284,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -26697,6 +28343,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -27173,6 +28821,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -27237,6 +28887,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -27299,6 +28951,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -27397,6 +29051,26 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "der",
+          "pem",
+          "pkcs8",
+          "point",
+          "subtle",
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "default",
+          "der",
+          "pem",
+          "pkcs8",
+          "point",
+          "subtle",
+          "zeroize"
+        ],
         "group-mls-adapter": [
           "alloc",
           "default",
@@ -27421,6 +29095,12 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc"
+        ],
         "group-mls-adapter": [
           "alloc"
         ]
@@ -27487,6 +29167,12 @@
           "openocd-semihosting"
         ],
         "esp32-s3-heltec-e290": [
+          "openocd-semihosting"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "openocd-semihosting"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "openocd-semihosting"
         ],
         "esp32-s3-heltec-r8": [
@@ -27576,6 +29262,14 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "std"
         ],
@@ -27759,6 +29453,20 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "default",
+          "derive",
+          "serde_derive",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "derive",
+          "serde_derive",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "default",
           "derive",
@@ -28015,6 +29723,16 @@
           "result",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "result",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "result",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "alloc",
           "result",
@@ -28169,6 +29887,12 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default"
         ],
         "esp32-s3-heltec-r8": [
@@ -28402,6 +30126,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -28431,6 +30157,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -28484,6 +30212,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -28605,6 +30335,8 @@
           "default",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": [],
         "group-secure-storage": [],
         "halow-appliance-manager": [
@@ -28659,6 +30391,12 @@
           "zeroize"
         ],
         "esp32-s3-heltec-e290": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "zeroize"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "zeroize"
         ],
         "esp32-s3-heltec-r8": [
@@ -28919,6 +30657,16 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "digest",
+          "rand_core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "digest",
+          "rand_core"
+        ],
         "group-mls-adapter": [
           "alloc",
           "digest",
@@ -28979,6 +30727,14 @@
           "rand_core"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "rand_core"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "rand_core"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "rand_core"
         ],
@@ -29196,6 +30952,14 @@
           "default",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "std"
@@ -29283,6 +31047,12 @@
           "const_generics"
         ],
         "esp32-s3-heltec-e290": [
+          "const_generics"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "const_generics"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "const_generics"
         ],
         "esp32-s3-heltec-r8": [
@@ -29493,6 +31263,34 @@
           "socket-udp"
         ],
         "esp32-s3-heltec-e290": [
+          "async",
+          "medium-ethernet",
+          "multicast",
+          "proto-dhcpv4",
+          "proto-dns",
+          "proto-ipv4",
+          "proto-ipv6",
+          "socket",
+          "socket-dhcpv4",
+          "socket-dns",
+          "socket-tcp",
+          "socket-udp"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "async",
+          "medium-ethernet",
+          "multicast",
+          "proto-dhcpv4",
+          "proto-dns",
+          "proto-ipv4",
+          "proto-ipv6",
+          "socket",
+          "socket-dhcpv4",
+          "socket-dns",
+          "socket-tcp",
+          "socket-udp"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "async",
           "medium-ethernet",
           "multicast",
@@ -29749,6 +31547,12 @@
         "esp32-s3-heltec-e290": [
           "all"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "all"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "all"
+        ],
         "esp32-s3-heltec-r8": [
           "all"
         ],
@@ -29831,6 +31635,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -29853,6 +31659,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -29872,6 +31680,18 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "mutex",
+          "portable-atomic",
+          "portable_atomic",
+          "spin_mutex"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "mutex",
+          "portable-atomic",
+          "portable_atomic",
+          "spin_mutex"
+        ],
         "group-mls-adapter": [
           "mutex",
           "portable-atomic",
@@ -29925,6 +31745,14 @@
           "rwlock",
           "spin_mutex"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "mutex",
+          "spin_mutex"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "mutex",
+          "spin_mutex"
+        ],
         "group-libraries": [
           "mutex",
           "spin_mutex"
@@ -29951,6 +31779,14 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "pem"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "pem"
+        ],
         "group-mls-adapter": [
           "alloc",
           "pem"
@@ -30000,6 +31836,12 @@
           "alloc"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc"
         ],
         "esp32-s3-heltec-r8": [
@@ -30080,6 +31922,16 @@
           "embedded-graphics-core",
           "graphics"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "embedded-graphics-core",
+          "graphics"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default",
+          "embedded-graphics-core",
+          "graphics"
+        ],
         "esp32-s3-heltec-r8": [
           "default",
           "embedded-graphics-core",
@@ -30148,6 +32000,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -30226,6 +32080,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -30288,6 +32144,12 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default"
         ],
         "esp32-s3-heltec-r8": [
@@ -30383,6 +32245,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -30465,6 +32329,14 @@
           "derive",
           "strum_macros"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "derive",
+          "strum_macros"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "derive",
+          "strum_macros"
+        ],
         "esp32-s3-heltec-r8": [
           "derive",
           "strum_macros"
@@ -30521,6 +32393,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -30572,6 +32446,14 @@
         ],
         "esp32-s3-heltec-e290": [
           "const-generics"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "const-generics",
+          "i128"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "const-generics",
+          "i128"
         ],
         "esp32-s3-heltec-r8": [
           "const-generics"
@@ -30657,6 +32539,12 @@
         "esp32-s3-heltec-e290": [
           "default"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "default"
+        ],
         "esp32-s3-heltec-r8": [
           "default"
         ],
@@ -30711,6 +32599,30 @@
           "visit-mut"
         ],
         "esp32-s3-heltec-e290": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "quote",
+          "visit-mut"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "quote",
+          "visit-mut"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "clone-impls",
           "default",
           "derive",
@@ -30897,6 +32809,30 @@
           "visit-mut"
         ],
         "esp32-s3-heltec-e290": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit",
+          "visit-mut"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "clone-impls",
+          "default",
+          "derive",
+          "extra-traits",
+          "full",
+          "parsing",
+          "printing",
+          "proc-macro",
+          "visit",
+          "visit-mut"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "clone-impls",
           "default",
           "derive",
@@ -31602,6 +33538,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -32242,6 +34180,38 @@
           "tokio-macros",
           "windows-sys"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "bytes",
+          "default",
+          "fs",
+          "io-util",
+          "libc",
+          "macros",
+          "mio",
+          "net",
+          "rt",
+          "socket2",
+          "sync",
+          "time",
+          "tokio-macros",
+          "windows-sys"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "bytes",
+          "default",
+          "fs",
+          "io-util",
+          "libc",
+          "macros",
+          "mio",
+          "net",
+          "rt",
+          "socket2",
+          "sync",
+          "time",
+          "tokio-macros",
+          "windows-sys"
+        ],
         "esp32-s3-heltec-r8": [
           "bytes",
           "default",
@@ -32572,6 +34542,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -33152,6 +35124,16 @@
           "default",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "default",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "alloc",
           "default",
@@ -33206,6 +35188,12 @@
         "esp32-s3-heltec-e290": [
           "parse"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "parse"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "parse"
+        ],
         "esp32-s3-heltec-r8": [
           "parse"
         ],
@@ -33251,6 +35239,16 @@
           "std"
         ],
         "esp32-s3-heltec-e290": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "alloc",
           "default",
           "std"
@@ -33731,6 +35729,32 @@
           "scan",
           "trouble-host-macros"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "central",
+          "default-packet-pool",
+          "default-packet-pool-mtu-512",
+          "default-packet-pool-size-32",
+          "default-packet-pool-size-8",
+          "derive",
+          "gatt",
+          "log",
+          "peripheral",
+          "scan",
+          "trouble-host-macros"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "central",
+          "default-packet-pool",
+          "default-packet-pool-mtu-512",
+          "default-packet-pool-size-32",
+          "default-packet-pool-size-8",
+          "derive",
+          "gatt",
+          "log",
+          "peripheral",
+          "scan",
+          "trouble-host-macros"
+        ],
         "esp32-s3-heltec-r8": [
           "central",
           "default-packet-pool",
@@ -33911,6 +35935,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -34121,6 +36147,12 @@
         "esp32-s3-heltec-e290": [
           "const-generics"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "const-generics"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "const-generics"
+        ],
         "esp32-s3-heltec-r8": [
           "const-generics"
         ],
@@ -34209,6 +36241,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -34246,6 +36280,8 @@
       "graphs": {
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -34276,6 +36312,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -34335,6 +36373,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -34363,6 +36403,14 @@
           "default"
         ],
         "esp32-s3-heltec-e290": [
+          "cjk",
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "cjk",
+          "default"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "cjk",
           "default"
         ],
@@ -34544,6 +36592,8 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "group-mls-adapter": [],
         "group-secure-storage": []
       },
@@ -34563,6 +36613,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -34641,6 +36693,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -34793,6 +36847,18 @@
           "v4"
         ],
         "esp32-s3-heltec-e290": [
+          "default",
+          "rng",
+          "std",
+          "v4"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "default",
+          "rng",
+          "std",
+          "v4"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "default",
           "rng",
           "std",
@@ -35009,6 +37075,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -35057,6 +37125,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -35103,6 +37173,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -36058,6 +38130,22 @@
           "parser",
           "std"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "ascii",
+          "binary",
+          "default",
+          "parser",
+          "std"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "ascii",
+          "binary",
+          "default",
+          "parser",
+          "std"
+        ],
         "esp32-s3-heltec-r8": [
           "alloc",
           "ascii",
@@ -36181,6 +38269,14 @@
     },
     {
       "graphs": {
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "static_secrets"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "static_secrets"
+        ],
         "group-mls-adapter": [
           "alloc",
           "static_secrets"
@@ -36240,6 +38336,14 @@
           "static_secrets"
         ],
         "esp32-s3-heltec-e290": [
+          "precomputed-tables",
+          "static_secrets"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "precomputed-tables",
+          "static_secrets"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "precomputed-tables",
           "static_secrets"
         ],
@@ -36368,6 +38472,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -36394,6 +38500,12 @@
           "float-save-restore"
         ],
         "esp32-s3-heltec-e290": [
+          "float-save-restore"
+        ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "float-save-restore"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
           "float-save-restore"
         ],
         "esp32-s3-heltec-r8": [
@@ -36428,6 +38540,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -36611,6 +38725,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],
@@ -36835,6 +38951,18 @@
           "derive",
           "zeroize_derive"
         ],
+        "esp32-s3-heltec-e290-mls-qualification": [
+          "alloc",
+          "default",
+          "derive",
+          "zeroize_derive"
+        ],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [
+          "alloc",
+          "default",
+          "derive",
+          "zeroize_derive"
+        ],
         "esp32-s3-heltec-r8": [
           "alloc",
           "default",
@@ -37026,6 +39154,8 @@
         "esp32-c6": [],
         "esp32-s3-heltec": [],
         "esp32-s3-heltec-e290": [],
+        "esp32-s3-heltec-e290-mls-qualification": [],
+        "esp32-s3-heltec-e290-mls-secure-qualification": [],
         "esp32-s3-heltec-r8": [],
         "esp32-s3-heltec-v3": [],
         "esp32-s3-heltec-wireless-stick-lite-v3": [],

@@ -15,9 +15,10 @@ It does not include group enrollment or named-identity app APIs/UI.
 | Direct messaging | Refine the reusable mailbox/storage boundary while retaining LXMF interoperability and exact recovery ownership |
 | UI | Keep messaging primary, remove unsupported shell routes and make supported controls/details easy to find |
 
-Coordinate group, identity and synchronization choices through a shared design
-before app integration. Library mechanisms alone do not establish an app journey;
-shared keys or copied databases do not provide authenticated device linking.
+The group mechanisms already present in this tree do not establish the missing
+app journey. Coordinate group, identity and synchronization choices through the
+[group design](../../prns-groups/core/docs/design.md); shared keys or copied
+databases do not provide authenticated device linking.
 
 ## Reliability and handoff
 
