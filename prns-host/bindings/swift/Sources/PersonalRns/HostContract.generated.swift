@@ -390,6 +390,29 @@ public enum EventField: UInt32, Sendable {
     case arrivedAtMillis = 42
 }
 
+public enum InterfaceConfigKind: UInt32, Sendable {
+    case autoLan = 1
+    case tcpClient = 2
+    case tcpServer = 3
+    case udp = 4
+    case serial = 5
+    case kiss = 6
+    case ax25Kiss = 7
+    case rNode = 8
+    case multiRNode = 9
+    case pipe = 10
+    case backboneClient = 11
+    case backboneServer = 12
+    case i2p = 13
+    case weave = 14
+    case automaticUsb = 15
+    case automaticBluetoothLe = 16
+    case webSocketClient = 17
+    case webSocketServer = 18
+    case browserRendezvous = 19
+    case configuredBluetoothLe = 20
+}
+
 public struct DestinationHash: Hashable, Sendable {
     public let bytes: [UInt8]
 

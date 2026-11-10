@@ -247,17 +247,18 @@ static int load_fixture(const char *path, JourneyFixture *fixture) {
 }
 
 static int validate_interface_fixture(const char *path) {
-    static const char *names[19] = {
+    static const char *names[] = {
         "AutoLan", "TcpClient", "TcpServer", "Udp", "Serial", "Kiss",
         "Ax25Kiss", "RNode", "MultiRNode", "Pipe", "BackboneClient",
         "BackboneServer", "I2p", "Weave", "AutomaticUsb",
         "AutomaticBluetoothLe", "WebSocketClient", "WebSocketServer",
-        "BrowserRendezvous"
+        "BrowserRendezvous", "ConfiguredBluetoothLe"
     };
     char *text = read_text(path);
     const char *cursor;
     size_t count = 0;
-    PrnsInterfaceConfig configs[19] = PRNS_ZERO;
+    PrnsInterfaceConfig configs[sizeof(names) / sizeof(names[0])] = PRNS_ZERO;
+    const size_t expected = sizeof(configs) / sizeof(configs[0]);
     size_t index;
     if (text == NULL) {
         return 0;
@@ -275,7 +276,7 @@ static int validate_interface_fixture(const char *path) {
         length = (size_t)(end - start - 1);
         if (!((length == 4 && strncmp(start + 1, "Auto", 4) == 0) ||
               (length == 13 && strncmp(start + 1, "BitsPerSecond", 13) == 0))) {
-            if (count >= 19 || strlen(names[count]) != length ||
+            if (count >= expected || strlen(names[count]) != length ||
                 strncmp(start + 1, names[count], length) != 0) {
                 free(text);
                 return 0;
@@ -285,18 +286,14 @@ static int validate_interface_fixture(const char *path) {
         cursor = end + 1;
     }
     free(text);
-    if (count != 19) {
+    if (count != expected) {
         return 0;
     }
     for (index = 0; index < count; index += 1) {
         configs[index].struct_size = sizeof(configs[index]);
-        configs[index].kind = (PrnsInterfaceKind)(index + 1);
-        if (configs[index].struct_size != sizeof(PrnsInterfaceConfig) ||
-            configs[index].kind != (PrnsInterfaceKind)(index + 1)) {
-            return 0;
-        }
+        configs[index].kind = (PrnsInterfaceConfigKind)(index + 1);
     }
-    return 1;
+    return configs[count - 1].kind == PRNS_INTERFACE_CONFIG_KIND_CONFIGURED_BLUETOOTH_LE;
 }
 
 static int hex_bytes(

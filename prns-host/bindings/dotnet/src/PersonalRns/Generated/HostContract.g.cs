@@ -428,6 +428,30 @@ public enum EventField : uint
     ArrivedAtMillis = 42,
 }
 
+public enum InterfaceConfigKind : uint
+{
+    AutoLan = 1,
+    TcpClient = 2,
+    TcpServer = 3,
+    Udp = 4,
+    Serial = 5,
+    Kiss = 6,
+    Ax25Kiss = 7,
+    RNode = 8,
+    MultiRNode = 9,
+    Pipe = 10,
+    BackboneClient = 11,
+    BackboneServer = 12,
+    I2p = 13,
+    Weave = 14,
+    AutomaticUsb = 15,
+    AutomaticBluetoothLe = 16,
+    WebSocketClient = 17,
+    WebSocketServer = 18,
+    BrowserRendezvous = 19,
+    ConfiguredBluetoothLe = 20,
+}
+
 public readonly struct DestinationHash : IEquatable<DestinationHash>
 {
     private static readonly byte[] Zero = new byte[HostContract.DestinationHashLength];

@@ -132,6 +132,8 @@ internal open class NativeMultiRNodeMemberConfig : Structure() {
     "connectable",
     "url",
     "websocketWireFraming",
+    "discoveryGroups",
+    "discoveryGroupCount",
 )
 internal class NativeInterfaceConfig : Structure() {
     @JvmField
@@ -283,6 +285,12 @@ internal class NativeInterfaceConfig : Structure() {
 
     @JvmField
     var websocketWireFraming: Int = 0
+
+    @JvmField
+    var discoveryGroups: Pointer? = null
+
+    @JvmField
+    var discoveryGroupCount: SizeT = SizeT()
 }
 
 @Structure.FieldOrder(
@@ -317,7 +325,7 @@ internal fun NativeArena.interfaceConfig(value: InterfaceConfig): NativeInterfac
     result.structSize = SizeT(result.size().toLong())
     when (value) {
         is InterfaceConfigAutoLan -> {
-            result.kind = InterfaceKind.AUTO_LAN.rawValue
+            result.kind = InterfaceConfigKind.AUTO_LAN.rawValue
             value.groupId?.let {
                 result.hasGroupId = 1
                 result.groupId = string(it)
@@ -344,28 +352,28 @@ internal fun NativeArena.interfaceConfig(value: InterfaceConfig): NativeInterfac
             }
         }
         is InterfaceConfigTcpClient -> {
-            result.kind = InterfaceKind.TCP_CLIENT.rawValue
+            result.kind = InterfaceConfigKind.TCP_CLIENT.rawValue
             result.target = string(value.target)
             result.setBitrate(value.bitrate)
         }
         is InterfaceConfigTcpServer -> {
-            result.kind = InterfaceKind.TCP_SERVER.rawValue
+            result.kind = InterfaceConfigKind.TCP_SERVER.rawValue
             result.bind = string(value.bind)
             result.setBitrate(value.bitrate)
         }
         is InterfaceConfigUdp -> {
-            result.kind = InterfaceKind.UDP.rawValue
+            result.kind = InterfaceConfigKind.UDP.rawValue
             result.local = string(value.local)
             result.peer = string(value.peer)
             result.setBitrate(value.bitrate)
         }
         is InterfaceConfigSerial -> {
-            result.kind = InterfaceKind.SERIAL.rawValue
+            result.kind = InterfaceConfigKind.SERIAL.rawValue
             result.port = string(value.port)
             result.line = serialLine(value.line)
         }
         is InterfaceConfigKiss -> {
-            result.kind = InterfaceKind.KISS.rawValue
+            result.kind = InterfaceConfigKind.KISS.rawValue
             result.port = string(value.port)
             result.line = serialLine(value.line)
             result.flowControl = value.flowControl.native()
@@ -376,7 +384,7 @@ internal fun NativeArena.interfaceConfig(value: InterfaceConfig): NativeInterfac
             setStation(result, value.stationCallsign, value.stationIntervalSeconds)
         }
         is InterfaceConfigAx25Kiss -> {
-            result.kind = InterfaceKind.AX25_KISS.rawValue
+            result.kind = InterfaceConfigKind.AX25_KISS.rawValue
             result.port = string(value.port)
             result.line = serialLine(value.line)
             result.flowControl = value.flowControl.native()
@@ -388,7 +396,7 @@ internal fun NativeArena.interfaceConfig(value: InterfaceConfig): NativeInterfac
             result.ssid = value.ssid.toByte()
         }
         is InterfaceConfigRNode -> {
-            result.kind = InterfaceKind.R_NODE.rawValue
+            result.kind = InterfaceConfigKind.R_NODE.rawValue
             result.port = string(value.port)
             result.radio = radio(value.radio)
             result.flowControl = value.flowControl.native()
@@ -403,7 +411,7 @@ internal fun NativeArena.interfaceConfig(value: InterfaceConfig): NativeInterfac
             }
         }
         is InterfaceConfigMultiRNode -> {
-            result.kind = InterfaceKind.MULTI_R_NODE.rawValue
+            result.kind = InterfaceConfigKind.MULTI_R_NODE.rawValue
             result.port = string(value.port)
             setStation(result, value.stationCallsign, value.stationIntervalSeconds)
             result.members = structureArray(
@@ -421,49 +429,54 @@ internal fun NativeArena.interfaceConfig(value: InterfaceConfig): NativeInterfac
             result.memberCount = SizeT(value.members.size.toLong())
         }
         is InterfaceConfigPipe -> {
-            result.kind = InterfaceKind.PIPE.rawValue
+            result.kind = InterfaceConfigKind.PIPE.rawValue
             result.command = stringArray(value.command)
             result.commandCount = SizeT(value.command.size.toLong())
             result.respawnDelayMillis = value.respawnDelayMillis
         }
         is InterfaceConfigBackboneClient -> {
-            result.kind = InterfaceKind.BACKBONE_CLIENT.rawValue
+            result.kind = InterfaceConfigKind.BACKBONE_CLIENT.rawValue
             result.target = string(value.target)
             result.setBitrate(value.bitrate)
         }
         is InterfaceConfigBackboneServer -> {
-            result.kind = InterfaceKind.BACKBONE_SERVER.rawValue
+            result.kind = InterfaceConfigKind.BACKBONE_SERVER.rawValue
             result.bind = string(value.bind)
             result.setBitrate(value.bitrate)
         }
         is InterfaceConfigI2p -> {
-            result.kind = InterfaceKind.I2P.rawValue
+            result.kind = InterfaceConfigKind.I2P.rawValue
             result.peers = stringArray(value.peers)
             result.peerCount = SizeT(value.peers.size.toLong())
             result.connectable = value.connectable.native()
         }
         is InterfaceConfigWeave -> {
-            result.kind = InterfaceKind.WEAVE.rawValue
+            result.kind = InterfaceConfigKind.WEAVE.rawValue
             result.port = string(value.port)
         }
         InterfaceConfigAutomaticUsb -> {
-            result.kind = InterfaceKind.AUTOMATIC_USB.rawValue
+            result.kind = InterfaceConfigKind.AUTOMATIC_USB.rawValue
         }
         InterfaceConfigAutomaticBluetoothLe -> {
-            result.kind = InterfaceKind.AUTOMATIC_BLUETOOTH_LE.rawValue
+            result.kind = InterfaceConfigKind.AUTOMATIC_BLUETOOTH_LE.rawValue
+        }
+        is InterfaceConfigConfiguredBluetoothLe -> {
+            result.kind = InterfaceConfigKind.CONFIGURED_BLUETOOTH_LE.rawValue
+            result.discoveryGroups = stringArray(value.discoveryGroups)
+            result.discoveryGroupCount = SizeT(value.discoveryGroups.size.toLong())
         }
         is InterfaceConfigWebSocketClient -> {
-            result.kind = InterfaceKind.WEB_SOCKET_CLIENT.rawValue
+            result.kind = InterfaceConfigKind.WEB_SOCKET_CLIENT.rawValue
             result.target = string(value.target)
             result.websocketWireFraming = value.framing.rawValue
         }
         is InterfaceConfigWebSocketServer -> {
-            result.kind = InterfaceKind.WEB_SOCKET_SERVER.rawValue
+            result.kind = InterfaceConfigKind.WEB_SOCKET_SERVER.rawValue
             result.bind = string(value.bind)
             result.websocketWireFraming = value.framing.rawValue
         }
         is InterfaceConfigBrowserRendezvous -> {
-            result.kind = InterfaceKind.BROWSER_RENDEZVOUS.rawValue
+            result.kind = InterfaceConfigKind.BROWSER_RENDEZVOUS.rawValue
             result.url = string(value.url)
         }
     }

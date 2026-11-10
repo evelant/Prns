@@ -1687,6 +1687,90 @@ impl TryFrom<u32> for EventField {
     }
 }
 
+#[repr(u32)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
+pub enum InterfaceConfigKind {
+    AutoLan = 1,
+    TcpClient = 2,
+    TcpServer = 3,
+    Udp = 4,
+    Serial = 5,
+    Kiss = 6,
+    Ax25Kiss = 7,
+    RNode = 8,
+    MultiRNode = 9,
+    Pipe = 10,
+    BackboneClient = 11,
+    BackboneServer = 12,
+    I2p = 13,
+    Weave = 14,
+    AutomaticUsb = 15,
+    AutomaticBluetoothLe = 16,
+    WebSocketClient = 17,
+    WebSocketServer = 18,
+    BrowserRendezvous = 19,
+    ConfiguredBluetoothLe = 20,
+}
+
+impl InterfaceConfigKind {
+    #[must_use]
+    pub const fn contract_name(self) -> &'static str {
+        match self {
+            Self::AutoLan => "AutoLan",
+            Self::TcpClient => "TcpClient",
+            Self::TcpServer => "TcpServer",
+            Self::Udp => "Udp",
+            Self::Serial => "Serial",
+            Self::Kiss => "Kiss",
+            Self::Ax25Kiss => "Ax25Kiss",
+            Self::RNode => "RNode",
+            Self::MultiRNode => "MultiRNode",
+            Self::Pipe => "Pipe",
+            Self::BackboneClient => "BackboneClient",
+            Self::BackboneServer => "BackboneServer",
+            Self::I2p => "I2p",
+            Self::Weave => "Weave",
+            Self::AutomaticUsb => "AutomaticUsb",
+            Self::AutomaticBluetoothLe => "AutomaticBluetoothLe",
+            Self::WebSocketClient => "WebSocketClient",
+            Self::WebSocketServer => "WebSocketServer",
+            Self::BrowserRendezvous => "BrowserRendezvous",
+            Self::ConfiguredBluetoothLe => "ConfiguredBluetoothLe",
+        }
+    }
+}
+
+impl TryFrom<u32> for InterfaceConfigKind {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        match value {
+            1 => Ok(Self::AutoLan),
+            2 => Ok(Self::TcpClient),
+            3 => Ok(Self::TcpServer),
+            4 => Ok(Self::Udp),
+            5 => Ok(Self::Serial),
+            6 => Ok(Self::Kiss),
+            7 => Ok(Self::Ax25Kiss),
+            8 => Ok(Self::RNode),
+            9 => Ok(Self::MultiRNode),
+            10 => Ok(Self::Pipe),
+            11 => Ok(Self::BackboneClient),
+            12 => Ok(Self::BackboneServer),
+            13 => Ok(Self::I2p),
+            14 => Ok(Self::Weave),
+            15 => Ok(Self::AutomaticUsb),
+            16 => Ok(Self::AutomaticBluetoothLe),
+            17 => Ok(Self::WebSocketClient),
+            18 => Ok(Self::WebSocketServer),
+            19 => Ok(Self::BrowserRendezvous),
+            20 => Ok(Self::ConfiguredBluetoothLe),
+            _ => Err(()),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2199,6 +2283,33 @@ mod tests {
             (EventField::AppData, 40, "AppData"),
             (EventField::LocalDestination, 41, "LocalDestination"),
             (EventField::ArrivedAtMillis, 42, "ArrivedAtMillis"),
+        ]);
+    }
+
+    #[rustfmt::skip]
+    #[test]
+    fn interface_config_kind_values_match_the_contract() {
+        assert_contract_enum!(InterfaceConfigKind, [
+            (InterfaceConfigKind::AutoLan, 1, "AutoLan"),
+            (InterfaceConfigKind::TcpClient, 2, "TcpClient"),
+            (InterfaceConfigKind::TcpServer, 3, "TcpServer"),
+            (InterfaceConfigKind::Udp, 4, "Udp"),
+            (InterfaceConfigKind::Serial, 5, "Serial"),
+            (InterfaceConfigKind::Kiss, 6, "Kiss"),
+            (InterfaceConfigKind::Ax25Kiss, 7, "Ax25Kiss"),
+            (InterfaceConfigKind::RNode, 8, "RNode"),
+            (InterfaceConfigKind::MultiRNode, 9, "MultiRNode"),
+            (InterfaceConfigKind::Pipe, 10, "Pipe"),
+            (InterfaceConfigKind::BackboneClient, 11, "BackboneClient"),
+            (InterfaceConfigKind::BackboneServer, 12, "BackboneServer"),
+            (InterfaceConfigKind::I2p, 13, "I2p"),
+            (InterfaceConfigKind::Weave, 14, "Weave"),
+            (InterfaceConfigKind::AutomaticUsb, 15, "AutomaticUsb"),
+            (InterfaceConfigKind::AutomaticBluetoothLe, 16, "AutomaticBluetoothLe"),
+            (InterfaceConfigKind::WebSocketClient, 17, "WebSocketClient"),
+            (InterfaceConfigKind::WebSocketServer, 18, "WebSocketServer"),
+            (InterfaceConfigKind::BrowserRendezvous, 19, "BrowserRendezvous"),
+            (InterfaceConfigKind::ConfiguredBluetoothLe, 20, "ConfiguredBluetoothLe"),
         ]);
     }
 }
