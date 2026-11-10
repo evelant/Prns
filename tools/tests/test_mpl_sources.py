@@ -1,4 +1,5 @@
 import hashlib
+import runpy
 from pathlib import Path
 import tarfile
 import tempfile
@@ -53,6 +54,17 @@ class MplCrateSourceTests(unittest.TestCase):
         self.notice.write_text('locally altered notice')
         with self.assertRaisesRegex(ValueError, 'local source differs'):
             mpl_sources.crate_source(self.package, self.home, self.reviews)
+
+
+class ReleaseGraphCoverageTests(unittest.TestCase):
+    def test_features_and_target_must_have_corresponding_notice_graph(self):
+        root = Path(__file__).resolve().parents[2]
+        compare = runpy.run_path(str(root / 'validation/security/license-policy-parity.py'))['missing_notice_graphs']
+        notices = {'GRAPHS': [('example', 'pkg/Cargo.toml', 'linux')],
+                   'GRAPH_FEATURES': {'example': ('ffi', 'extra')}}
+        self.assertEqual(compare(['sdk|pkg/Cargo.toml|linux|extra ffi'], notices), [])
+        missing = ['arm|pkg/Cargo.toml|arm|extra ffi', 'added|pkg/Cargo.toml|linux|extra ffi new']
+        self.assertEqual(compare(missing, notices), missing)
 
 
 if __name__ == '__main__':
