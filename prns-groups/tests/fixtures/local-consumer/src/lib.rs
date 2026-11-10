@@ -113,10 +113,10 @@ mod tests {
         )
         .unwrap()
     }
-    fn publish(client: &Client, group: GroupId, nonce: u8) -> prns_groups_core::RecordId {
+    fn publish(client: &Client, group: GroupId, request_number: u8) -> prns_groups_core::RecordId {
         let config = wait(client.for_group(group).network_config()).unwrap();
         let request = Request {
-            id: RequestId(token(nonce)),
+            id: RequestId(token(request_number)),
             original_scope: Some(OriginalScope::Control {
                 control: config.control,
                 incarnation: config.incarnation,
@@ -308,10 +308,10 @@ mod tests {
             transfer(alice, IDS[0], bob, IDS[1]);
         }
     }
-    fn join(alice: &Client, bob: &Client, group: GroupId, nonce: u8) {
+    fn join(alice: &Client, bob: &Client, group: GroupId, request_number: u8) {
         let Outcome::Invited(invitation) = mutation(
             alice,
-            RequestId(token(nonce)),
+            RequestId(token(request_number)),
             Intent::Invite {
                 group,
                 recipient: IDS[1],
@@ -322,7 +322,7 @@ mod tests {
         transfer(alice, IDS[0], bob, IDS[1]);
         mutation(
             bob,
-            RequestId(token(nonce + 1)),
+            RequestId(token(request_number + 1)),
             Intent::Respond {
                 invitation,
                 accept: true,
@@ -336,14 +336,18 @@ mod tests {
             2
         );
     }
-    fn readmit(alice: &Client, bob: &Client, group: GroupId, nonce: u8) {
-        mutation(bob, RequestId(token(nonce)), Intent::Leave { group });
+    fn readmit(alice: &Client, bob: &Client, group: GroupId, request_number: u8) {
+        mutation(
+            bob,
+            RequestId(token(request_number)),
+            Intent::Leave { group },
+        );
         pump(alice, bob);
         assert_eq!(
             wait(bob.conversation(group, QUERY_PAGE)).unwrap().lifecycle,
             prns_groups::GroupLifecycle::Removed
         );
-        join(alice, bob, group, nonce + 1);
+        join(alice, bob, group, request_number + 1);
     }
     #[test]
     fn opaque_retained_history_is_scoped_bounded_and_recoverable_after_readmission() {

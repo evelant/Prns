@@ -35,7 +35,7 @@ enum Command {
         reply: oneshot::Sender<Result<PushReport, String>>,
     },
     Publish {
-        nonce: u8,
+        record_number: u8,
         namespace: NamespaceId,
         body: Vec<u8>,
         deadline: u64,
@@ -151,8 +151,8 @@ impl EndpointActor {
                                 SyncOptions { incarnation: incarnation(index), clock: clock(), budget }).await;
                             reply.send(result.map_err(|error| format!("{error:?}"))).unwrap();
                         },
-                        Some(Command::Publish { nonce, namespace, body, deadline, reply }) => {
-                            let mut request = publication(nonce, namespace, &fixture.readers[1..], &body);
+                        Some(Command::Publish { record_number, namespace, body, deadline, reply }) => {
+                            let mut request = publication(record_number, namespace, &fixture.readers[1..], &body);
                             request.validity = PublicationValidity::new(Timestamp(support::NOW),
                                 Timestamp(deadline), Seconds(3600)).unwrap();
                             let published = service.publish(next(index, service.coordinator()),
@@ -208,13 +208,13 @@ impl EndpointActor {
             .unwrap();
         result.await.unwrap()
     }
-    async fn publish(&self, nonce: u8, namespace: NamespaceId, body: &[u8]) -> RecordId {
-        self.publish_until(nonce, namespace, body, support::NOW + 600)
+    async fn publish(&self, record_number: u8, namespace: NamespaceId, body: &[u8]) -> RecordId {
+        self.publish_until(record_number, namespace, body, support::NOW + 600)
             .await
     }
     async fn publish_until(
         &self,
-        nonce: u8,
+        record_number: u8,
         namespace: NamespaceId,
         body: &[u8],
         deadline: u64,
@@ -222,7 +222,7 @@ impl EndpointActor {
         let (reply, result) = oneshot::channel();
         self.commands
             .send(Command::Publish {
-                nonce,
+                record_number,
                 namespace,
                 body: body.to_vec(),
                 deadline,

@@ -699,7 +699,8 @@ domain = "release"
 tiers = ["pr", "release", "scheduled"]
 platform = "linux"
 toolchain = "python"
-timeout_seconds = 600
+# Release custody tests repeatedly archive the full checkout and verify its contents.
+timeout_seconds = 1200
 command = ["bash", "validation/release/contracts.sh"]
 inputs = ["tools/build/group-scale.py", "tools/tasks.toml", "tools/tests", "tools/release", "prnsd/Cargo.toml", "validation/release/contracts.sh", "validation/release/prnsd-feature-contracts.py", "validation/release/workflow-contracts.py", "validation/release/acceptance-doc-contracts.py", "release/acceptance/README.md", "release/acceptance/QUALIFICATION.md", "release/acceptance/rosters/README.md", "release/deployment", "release/flash/README.md", "release/flash/boards.json", "docs/release-dependency-audit.md"]
 artifacts = "validation-artifacts/results/release-contracts"

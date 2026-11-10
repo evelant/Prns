@@ -12,8 +12,8 @@ fn send(policy: &mut LivenessPolicy, now_ms: u64) -> LivenessWrite {
     write
 }
 
-fn reply(nonce: u64) -> Control {
-    Control::ProbeReply { nonce }
+fn reply(probe_id: u64) -> Control {
+    Control::ProbeReply { nonce: probe_id }
 }
 
 fn greeting() -> Control {
