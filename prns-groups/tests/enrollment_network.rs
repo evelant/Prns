@@ -6,8 +6,8 @@
 mod wire;
 
 use prns_groups::{
-    run_multi, Client, Clock, Error, ExecutionContext, GroupManager, Intent, Job, Outcome,
-    PublicationIntent, Request, RequestId, Submit, SystemClock,
+    run_multi_with_policy, Client, Clock, Error, ExecutionContext, GroupManager, Intent, Job,
+    Outcome, PublicationIntent, Request, RequestId, Submit, SyncPolicy, SystemClock,
 };
 use prns_groups_service::{Endpoint, EndpointId, EndpointIncarnation, GroupId};
 use prns_host::IdentityHash;
@@ -304,7 +304,9 @@ async fn delivered(client: &Client, group: GroupId, text: &str, receipts: Option
         }
     })
     .await
-    .expect("message and authenticated receipts converge through the network hub");
+    .unwrap_or_else(|_| {
+        panic!("timed out waiting for {text:?} in {group:?}, receipts {receipts:?}")
+    });
 }
 
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
@@ -333,10 +335,19 @@ async fn fresh_managers_create_invite_join_and_sync_multiple_groups_without_fixt
     assert!(page.items.is_empty() && page.next.is_none());
     let mut stops = Vec::new();
     let mut tasks = Vec::new();
+    // Offline/reconnect transitions must be retried within this in-process
+    // fixture's observation window, including paths without a measured RTT.
+    let policy = SyncPolicy {
+        fast_poll_millis: 100,
+        constrained_poll_millis: 200,
+        max_fast_idle_millis: 500,
+        max_idle_millis: 2_000,
+        ..SyncPolicy::default()
+    };
     for (index, worker) in workers.iter().enumerate() {
         let (sender, receiver) = watch::channel(false);
         stops.push(sender);
-        tasks.push(tokio::spawn(run_multi(
+        tasks.push(tokio::spawn(run_multi_with_policy(
             worker.client.clone(),
             nodes.owners[index].client(),
             prns_groups_reticulum::destination_for(identities[index]).unwrap(),
@@ -345,6 +356,7 @@ async fn fresh_managers_create_invite_join_and_sync_multiple_groups_without_fixt
             nodes.enrollment_jobs[index].take().unwrap(),
             wire::limits(),
             wire::enrollment_limits(),
+            policy,
             receiver,
         )));
     }

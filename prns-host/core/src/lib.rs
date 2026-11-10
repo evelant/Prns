@@ -50,7 +50,7 @@ pub use generated::{
     ApplicationEventKind, BackendKind, BitrateKind, Capability, CommandFailureKind,
     CommandOutcomeKind, DeliveryEvidenceKind, DestinationConfigKind, DestinationIdentityConfigKind,
     DiagnosticEventKind, DiscoveryScope, EventField, HostRole, IdentityConfigKind, InterfaceHealth,
-    InterfaceKind, InterfaceMode, LifecyclePhase, LinkClosedReason, MulticastAddressType,
+    InterfaceConfigKind, InterfaceKind, InterfaceMode, LifecyclePhase, LinkClosedReason, MulticastAddressType,
     PersistenceConfigKind, PersistenceFlushCause, PersistenceFlushTarget, RequestPolicy,
     ResourceCompressionKind, ResourceStrategyKind, ResponseTimeoutKind, SerialDataBits,
     SerialParity, SerialStopBits, Status, StopReason, WebSocketFramingSelection,

@@ -40387,11 +40387,11 @@
       "name": "prns-host-c",
       "source": "prns-host/abi/c",
       "unsafe": {
-        "blocks": 297,
+        "blocks": 307,
         "externs": 70,
         "functions": 18,
         "impls": 2,
-        "tokens": 387
+        "tokens": 397
       },
       "version": "0.3.8"
     },

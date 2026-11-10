@@ -286,7 +286,8 @@ static void MarshalInterfaceFixtures()
             "127.0.0.1:4246",
             WebSocketFramingSelection.Hdlc
         ),
-        new InterfaceConfig.BrowserRendezvous("ws://fixture.invalid/rendezvous")
+        new InterfaceConfig.BrowserRendezvous("ws://fixture.invalid/rendezvous"),
+        new InterfaceConfig.ConfiguredBluetoothLe(ImmutableArray.Create("work", "reticulum"))
     );
     if (fixture.SchemaVersion != HostContract.SchemaVersion || fixture.Interfaces.Length != configs.Length)
     {
@@ -297,7 +298,7 @@ static void MarshalInterfaceFixtures()
     {
         var native = InterfaceConfigMarshaller.Marshal(configs[index], arena);
         if (
-            native.Kind != (InterfaceKind)(index + 1)
+            native.Kind != (InterfaceConfigKind)(index + 1)
             || native.Kind.ToString() != fixture.Interfaces[index].Kind
         )
         {

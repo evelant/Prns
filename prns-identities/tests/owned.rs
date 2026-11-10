@@ -1355,9 +1355,16 @@ fn atomic_stop_uses_protected_journal_capacity_and_recovers_a_dropped_reply() {
     drop(admit(
         identity.apply_stop(prepared.clone(), CommandDigest([13; 32])),
     ));
-    // Wait for the control slot to be dispatched, then retry exact retained
-    // intent, not a fresh reservation. No control or result journal is replaced.
-    wait(identity.snapshot()).unwrap();
+    // The ordinary queue and the control slot are scheduled independently.
+    // Observe the accepted stop in the journal before retrying the lost reply.
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while !wait(client.operations()).unwrap().iter().any(|operation| {
+        operation.token.digest == CommandDigest([13; 32])
+            && operation.command == Command::Transition(prepared.clone())
+    }) {
+        assert!(Instant::now() < deadline, "accepted stop was not journaled");
+        std::thread::yield_now();
+    }
     let token = wait(identity.apply_stop(prepared.clone(), CommandDigest([13; 32]))).unwrap();
     assert!(matches!(
         completed(&client, token, prepared.clone()),

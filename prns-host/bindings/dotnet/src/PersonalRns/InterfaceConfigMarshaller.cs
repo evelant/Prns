@@ -10,10 +10,10 @@ internal static class InterfaceConfigMarshaller
         NativeArena arena
     ) => value.Match(
         autoLan => AutoLan(autoLan, arena),
-        tcpClient => WithBitrate(InterfaceKind.TcpClient, tcpClient.Bitrate, target: arena.String(tcpClient.Target)),
-        tcpServer => WithBitrate(InterfaceKind.TcpServer, tcpServer.Bitrate, bind: arena.String(tcpServer.Bind)),
+        tcpClient => WithBitrate(InterfaceConfigKind.TcpClient, tcpClient.Bitrate, target: arena.String(tcpClient.Target)),
+        tcpServer => WithBitrate(InterfaceConfigKind.TcpServer, tcpServer.Bitrate, bind: arena.String(tcpServer.Bind)),
         udp => WithBitrate(
-            InterfaceKind.Udp,
+            InterfaceConfigKind.Udp,
             udp.Bitrate,
             local: arena.String(udp.Local),
             peer: arena.String(udp.Peer)
@@ -21,7 +21,7 @@ internal static class InterfaceConfigMarshaller
         serial => new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.Serial,
+            Kind = InterfaceConfigKind.Serial,
             Port = arena.String(serial.Port),
             Line = SerialLine(serial.Line),
         },
@@ -31,12 +31,12 @@ internal static class InterfaceConfigMarshaller
         multiRNode => MultiRNode(multiRNode, arena),
         pipe => Pipe(pipe, arena),
         backboneClient => WithBitrate(
-            InterfaceKind.BackboneClient,
+            InterfaceConfigKind.BackboneClient,
             backboneClient.Bitrate,
             target: arena.String(backboneClient.Target)
         ),
         backboneServer => WithBitrate(
-            InterfaceKind.BackboneServer,
+            InterfaceConfigKind.BackboneServer,
             backboneServer.Bitrate,
             bind: arena.String(backboneServer.Bind)
         ),
@@ -44,38 +44,45 @@ internal static class InterfaceConfigMarshaller
         weave => new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.Weave,
+            Kind = InterfaceConfigKind.Weave,
             Port = arena.String(weave.Port),
         },
         _ => new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.AutomaticUsb,
+            Kind = InterfaceConfigKind.AutomaticUsb,
         },
         _ => new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.AutomaticBluetoothLe,
+            Kind = InterfaceConfigKind.AutomaticBluetoothLe,
         },
         client => new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.WebSocketClient,
+            Kind = InterfaceConfigKind.WebSocketClient,
             Target = arena.String(client.Target),
             WebSocketFramingSelection = client.Framing,
         },
         server => new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.WebSocketServer,
+            Kind = InterfaceConfigKind.WebSocketServer,
             Bind = arena.String(server.Bind),
             WebSocketFramingSelection = server.Framing,
         },
         rendezvous => new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.BrowserRendezvous,
+            Kind = InterfaceConfigKind.BrowserRendezvous,
             Url = arena.String(rendezvous.Url),
+        },
+        bluetooth => new Native.InterfaceConfig
+        {
+            StructSize = Size,
+            Kind = InterfaceConfigKind.ConfiguredBluetoothLe,
+            DiscoveryGroups = arena.Array<Native.StringView>(Strings(bluetooth.DiscoveryGroups, arena)),
+            DiscoveryGroupCount = (nuint)bluetooth.DiscoveryGroups.Length,
         }
     );
 
@@ -91,7 +98,7 @@ internal static class InterfaceConfigMarshaller
         return new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.AutoLan,
+            Kind = InterfaceConfigKind.AutoLan,
             HasGroupId = Flag(value.GroupId is not null),
             GroupId = value.GroupId is null ? default : arena.String(value.GroupId),
             HasDiscoveryScope = Flag(value.DiscoveryScope.HasValue),
@@ -117,7 +124,7 @@ internal static class InterfaceConfigMarshaller
         var result = new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.Kiss,
+            Kind = InterfaceConfigKind.Kiss,
             Port = arena.String(value.Port),
             Line = SerialLine(value.Line),
             FlowControl = Flag(value.FlowControl),
@@ -136,7 +143,7 @@ internal static class InterfaceConfigMarshaller
     ) => new()
     {
         StructSize = Size,
-        Kind = InterfaceKind.Ax25Kiss,
+        Kind = InterfaceConfigKind.Ax25Kiss,
         Port = arena.String(value.Port),
         Line = SerialLine(value.Line),
         FlowControl = Flag(value.FlowControl),
@@ -156,7 +163,7 @@ internal static class InterfaceConfigMarshaller
         var result = new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.RNode,
+            Kind = InterfaceConfigKind.RNode,
             Port = arena.String(value.Port),
             Radio = Radio(value.Radio),
             FlowControl = Flag(value.FlowControl),
@@ -191,7 +198,7 @@ internal static class InterfaceConfigMarshaller
         var result = new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.MultiRNode,
+            Kind = InterfaceConfigKind.MultiRNode,
             Port = arena.String(value.Port),
             Members = arena.Array<Native.MultiRNodeMemberConfig>(members),
             MemberCount = (nuint)members.Length,
@@ -209,7 +216,7 @@ internal static class InterfaceConfigMarshaller
         return new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.Pipe,
+            Kind = InterfaceConfigKind.Pipe,
             Command = arena.Array<Native.StringView>(command),
             CommandCount = (nuint)command.Length,
             RespawnDelayMillis = value.RespawnDelayMillis,
@@ -225,7 +232,7 @@ internal static class InterfaceConfigMarshaller
         return new Native.InterfaceConfig
         {
             StructSize = Size,
-            Kind = InterfaceKind.I2p,
+            Kind = InterfaceConfigKind.I2p,
             Peers = arena.Array<Native.StringView>(peers),
             PeerCount = (nuint)peers.Length,
             Connectable = Flag(value.Connectable),
@@ -233,7 +240,7 @@ internal static class InterfaceConfigMarshaller
     }
 
     private static Native.InterfaceConfig WithBitrate(
-        InterfaceKind kind,
+        InterfaceConfigKind kind,
         Bitrate value,
         Native.StringView target = default,
         Native.StringView bind = default,

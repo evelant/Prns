@@ -73,9 +73,19 @@ pub(super) struct Control {
 }
 impl Control {
     pub fn new(scope: Arc<AttachmentScope>, progress: Waker) -> Result<Self, Error> {
-        let generation = NEXT_GENERATION
-            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |v| v.checked_add(1))
-            .map_err(|_| Error::Busy)?;
+        let mut generation = NEXT_GENERATION.load(Ordering::Acquire);
+        loop {
+            let next = generation.checked_add(1).ok_or(Error::Busy)?;
+            match NEXT_GENERATION.compare_exchange_weak(
+                generation,
+                next,
+                Ordering::AcqRel,
+                Ordering::Acquire,
+            ) {
+                Ok(_) => break,
+                Err(current) => generation = current,
+            }
+        }
         Ok(Self {
             generation,
             scope,

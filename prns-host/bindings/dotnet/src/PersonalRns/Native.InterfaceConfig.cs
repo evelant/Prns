@@ -40,7 +40,7 @@ internal static partial class Native
     internal struct InterfaceConfig
     {
         internal nuint StructSize;
-        internal InterfaceKind Kind;
+        internal InterfaceConfigKind Kind;
         internal byte HasGroupId;
         internal StringView GroupId;
         internal byte HasDiscoveryScope;
@@ -89,6 +89,8 @@ internal static partial class Native
         internal byte Connectable;
         internal StringView Url;
         internal WebSocketFramingSelection WebSocketFramingSelection;
+        internal nint DiscoveryGroups;
+        internal nuint DiscoveryGroupCount;
     }
 
     [StructLayout(LayoutKind.Sequential)]
