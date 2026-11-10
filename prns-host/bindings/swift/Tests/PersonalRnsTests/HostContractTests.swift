@@ -126,6 +126,7 @@ func everySharedInterfaceFixtureMarshals() throws {
         .webSocketClient(target: "ws://fixture.invalid/client", framing: .kiss),
         .webSocketServer(bind: "127.0.0.1:4246", framing: .hdlc),
         .browserRendezvous(url: "ws://fixture.invalid/rendezvous"),
+        .configuredBluetoothLe(discoveryGroups: ["work", "reticulum"]),
     ]
     #expect(fixture.schemaVersion == HostContract.schemaVersion)
     #expect(fixture.interfaces.count == configs.count)
@@ -149,6 +150,7 @@ func everySharedInterfaceFixtureMarshals() throws {
         "WebSocketClient",
         "WebSocketServer",
         "BrowserRendezvous",
+        "ConfiguredBluetoothLe",
     ])
     let arena = NativeArena()
     let kinds = try configs.map { try nativeInterfaceConfig($0, arena: arena).kind }

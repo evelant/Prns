@@ -120,6 +120,7 @@ class HostContractTest {
             ),
             InterfaceConfigWebSocketServer("127.0.0.1:4246", WebSocketFramingSelection.HDLC),
             InterfaceConfigBrowserRendezvous("ws://fixture.invalid/rendezvous"),
+            InterfaceConfigConfiguredBluetoothLe(listOf("work", "reticulum")),
         )
         val fixtureKinds = Regex("\\\"kind\\\"\\s*:\\s*\\\"([^\\\"]+)\\\"")
             .findAll(text)

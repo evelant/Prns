@@ -370,6 +370,28 @@ typedef uint32_t PrnsEventField;
 #define PRNS_EVENT_FIELD_LOCAL_DESTINATION UINT32_C(41)
 #define PRNS_EVENT_FIELD_ARRIVED_AT_MILLIS UINT32_C(42)
 
+typedef uint32_t PrnsInterfaceConfigKind;
+#define PRNS_INTERFACE_CONFIG_KIND_AUTO_LAN UINT32_C(1)
+#define PRNS_INTERFACE_CONFIG_KIND_TCP_CLIENT UINT32_C(2)
+#define PRNS_INTERFACE_CONFIG_KIND_TCP_SERVER UINT32_C(3)
+#define PRNS_INTERFACE_CONFIG_KIND_UDP UINT32_C(4)
+#define PRNS_INTERFACE_CONFIG_KIND_SERIAL UINT32_C(5)
+#define PRNS_INTERFACE_CONFIG_KIND_KISS UINT32_C(6)
+#define PRNS_INTERFACE_CONFIG_KIND_AX25_KISS UINT32_C(7)
+#define PRNS_INTERFACE_CONFIG_KIND_R_NODE UINT32_C(8)
+#define PRNS_INTERFACE_CONFIG_KIND_MULTI_R_NODE UINT32_C(9)
+#define PRNS_INTERFACE_CONFIG_KIND_PIPE UINT32_C(10)
+#define PRNS_INTERFACE_CONFIG_KIND_BACKBONE_CLIENT UINT32_C(11)
+#define PRNS_INTERFACE_CONFIG_KIND_BACKBONE_SERVER UINT32_C(12)
+#define PRNS_INTERFACE_CONFIG_KIND_I2P UINT32_C(13)
+#define PRNS_INTERFACE_CONFIG_KIND_WEAVE UINT32_C(14)
+#define PRNS_INTERFACE_CONFIG_KIND_AUTOMATIC_USB UINT32_C(15)
+#define PRNS_INTERFACE_CONFIG_KIND_AUTOMATIC_BLUETOOTH_LE UINT32_C(16)
+#define PRNS_INTERFACE_CONFIG_KIND_WEB_SOCKET_CLIENT UINT32_C(17)
+#define PRNS_INTERFACE_CONFIG_KIND_WEB_SOCKET_SERVER UINT32_C(18)
+#define PRNS_INTERFACE_CONFIG_KIND_BROWSER_RENDEZVOUS UINT32_C(19)
+#define PRNS_INTERFACE_CONFIG_KIND_CONFIGURED_BLUETOOTH_LE UINT32_C(20)
+
 /*
  * Ownership and lifetime contract:
  * - Input byte/string views and configuration arrays are borrowed only for
@@ -583,7 +605,7 @@ typedef struct PrnsHostSnapshot {
 
 typedef struct PrnsInterfaceConfig {
     size_t struct_size;
-    PrnsInterfaceKind kind;
+    PrnsInterfaceConfigKind kind;
     uint8_t has_group_id;
     PrnsStringView group_id;
     uint8_t has_discovery_scope;
@@ -632,6 +654,9 @@ typedef struct PrnsInterfaceConfig {
     uint8_t connectable;
     PrnsStringView url;
     PrnsWebSocketFramingSelection websocket_framing_selection;
+    /* Size-gated tail used only for PRNS_INTERFACE_CONFIG_KIND_CONFIGURED_BLUETOOTH_LE. */
+    const PrnsStringView *discovery_groups;
+    size_t discovery_group_count;
 } PrnsInterfaceConfig;
 
 typedef struct PrnsDestinationConfig {

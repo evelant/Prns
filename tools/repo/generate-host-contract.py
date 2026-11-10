@@ -410,6 +410,13 @@ def semantic_fingerprint(schema):
     return hashlib.sha256(json.dumps(schema, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
+def native_enums(schema):
+    # Config tags describe inputs. InterfaceKind describes the running interface,
+    # which is AutomaticBluetoothLe for either Bluetooth configuration.
+    cases = next(item["cases"] for item in schema["unions"] if item["name"] == "InterfaceConfig")
+    return [*schema["enums"], {"name": "InterfaceConfigKind", "values": cases}]
+
+
 def rust_output(schema):
     lines = [
         f'pub const HOST_SEMANTIC_FINGERPRINT: &str = "{semantic_fingerprint(schema)}";',
@@ -432,7 +439,7 @@ def rust_output(schema):
     for key, value in schema["limits"].items():
         lines.append(f"pub const BALANCED_{screaming(key)}: usize = {value};")
     lines.extend(rust_operation_inventory(schema))
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         name = enum["name"]
         lines.extend(
             [
@@ -496,7 +503,7 @@ def rust_output(schema):
             "    }",
         ]
     )
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         name = enum["name"]
         lines.extend(
             [
@@ -983,7 +990,7 @@ def c_output(schema):
     for key, value in schema["limits"].items():
         lines.append(f"#define PRNS_BALANCED_{screaming(key)} UINT64_C({value})")
     lines.append("")
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         c_name = f"Prns{enum['name']}"
         lines.append(f"typedef uint32_t {c_name};")
         for value in enum["values"]:
@@ -1068,7 +1075,7 @@ def c_output(schema):
         [
             "typedef struct PrnsInterfaceConfig {",
             "    size_t struct_size;",
-            "    PrnsInterfaceKind kind;",
+            "    PrnsInterfaceConfigKind kind;",
             "    uint8_t has_group_id;",
             "    PrnsStringView group_id;",
             "    uint8_t has_discovery_scope;",
@@ -1117,6 +1124,9 @@ def c_output(schema):
             "    uint8_t connectable;",
             "    PrnsStringView url;",
             "    PrnsWebSocketFramingSelection websocket_framing_selection;",
+            "    /* Size-gated tail used only for PRNS_INTERFACE_CONFIG_KIND_CONFIGURED_BLUETOOTH_LE. */",
+            "    const PrnsStringView *discovery_groups;",
+            "    size_t discovery_group_count;",
             "} PrnsInterfaceConfig;",
             "",
             "typedef struct PrnsDestinationConfig {",
@@ -1251,7 +1261,7 @@ def python_output(schema):
     for key, value in schema["limits"].items():
         lines.append(f"BALANCED_{screaming(key)} = {value}")
     lines.append("")
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         lines.append(f"class {enum['name']}(IntEnum):")
         for value in enum["values"]:
             lines.append(f"    {screaming(value['name'])} = {value['value']}")
@@ -1395,7 +1405,7 @@ def dotnet_output(schema):
             f"    public const int Balanced{key[0].upper() + key[1:]} = {value};"
         )
     lines.extend(["}", ""])
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         lines.append(f"public enum {enum['name']} : uint")
         lines.append("{")
         for value in enum["values"]:
@@ -1596,7 +1606,7 @@ def go_output(schema):
             "",
         ]
     )
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         lines.extend(
             [
                 f"type {enum['name']} uint32",
@@ -1735,7 +1745,7 @@ def swift_output(schema):
     for key, value in schema["limits"].items():
         lines.append(f"    public static let balanced{key[0].upper() + key[1:]} = {value}")
     lines.extend(["}", ""])
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         lines.append(f"public enum {enum['name']}: UInt32, Sendable {{")
         for value in enum["values"]:
             lines.append(f"    case {swift_identifier(value['name'])} = {value['value']}")
@@ -1889,7 +1899,7 @@ def kotlin_output(schema):
     for key, value in schema["limits"].items():
         lines.append(f"    const val BALANCED_{screaming(key)} = {value}")
     lines.extend(["}", ""])
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         lines.append(f"enum class {enum['name']}(val rawValue: Int) {{")
         last_index = len(enum["values"]) - 1
         for index, value in enumerate(enum["values"]):
@@ -2055,7 +2065,7 @@ def julia_output(schema):
     for key, value in schema["limits"].items():
         lines.append(f"const BALANCED_{screaming(key)} = {value}")
     lines.append("")
-    for enum in schema["enums"]:
+    for enum in native_enums(schema):
         lines.append(f"@enum {enum['name']}::UInt32 begin")
         for value in enum["values"]:
             lines.append(
