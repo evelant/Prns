@@ -303,11 +303,20 @@ async fn production_key_use_is_bounded_persisted_and_restored_without_a_route() 
     wait_for_key(&receiver_network, unused_hash, unused_identity.public_key()).await;
 
     let services = receiver.client().service_client().unwrap();
-    let before_use = services.clock().now();
+    // Commands in one manifold batch share its start time. Bracket the mark
+    // with engine observations so all three timestamps use that same clock.
+    let engine_time = async || {
+        tokio::time::timeout(WAIT, services.protocols().engine_inspection_snapshot())
+            .await
+            .expect("receiver's engine clock query settles")
+            .expect("receiver's engine is running")
+            .engine_time_millis
+    };
+    let before_use = engine_time().await;
     tokio::time::timeout(WAIT, receiver_network.mark_destination_used(used_hash))
         .await
         .expect("production adapter settles the host retention command");
-    let after_use = services.clock().now();
+    let after_use = engine_time().await;
     for destination in [used_hash, unused_hash] {
         services
             .protocols()
@@ -350,7 +359,10 @@ async fn production_key_use_is_bounded_persisted_and_restored_without_a_route() 
     let DestinationIdentityRetentionState::UsedAt(used_at) = used.retention else {
         panic!("key use must persist finite UsedAt retention, never a permanent pin");
     };
-    assert!(before_use <= used_at && used_at <= after_use);
+    assert!(
+        (before_use..=after_use).contains(&used_at.0),
+        "persisted key-use time {used_at:?} outside engine observations {before_use}..={after_use}"
+    );
 
     // Native hosts own separate Tokio runtimes, so caller paused time cannot advance them.
     // Exercise the public retention policy with exact persisted rows and controlled time.
