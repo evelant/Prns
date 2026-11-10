@@ -1,0 +1,7 @@
+# IdnaMappingTable-8.0.0.txt
+# Date: 2015-05-02 12:42:14 GMT [MD]
+#
+# Unicode IDNA Compatible Preprocessing (UTS #46)
+# Copyright (c) 1991-2015 Unicode, Inc.
+# For terms of use, see http://www.unicode.org/terms_of_use.html
+# For documentation, see http://www.unicode.org/reports/tr46/

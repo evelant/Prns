@@ -3,6 +3,24 @@
   "scope": "Evidence for exact npm archives lacking standalone license files. This records source attribution, not policy approval.",
   "packages": [
     {
+      "name": "@react-native/asset-utils",
+      "version": "0.88.1",
+      "integrity": "sha512-BLb5FF7NgggGYiCsA7KKkK2qFhn0K+6iGXOI+4Ucd+G7Robzw9Gt4WsWwxLt+Od+G+/hyqfz8ASokyWFZ6VcLw==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fasset-utils/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/asset-utils/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "@react-native/assets-registry",
       "version": "0.86.3",
       "integrity": "sha512-TDhgCZA4wjJg84d5A9swiOQYPIWSKEEVdg9IwMFZDupQzW/F3QoLUrfAJOcalgqTDA9/buTB8awhE3Whwg6u9Q==",
@@ -37,6 +55,42 @@
       "unresolved": []
     },
     {
+      "name": "@react-native/babel-plugin-codegen",
+      "version": "0.88.1",
+      "integrity": "sha512-2r7aeE3dXu3hawHNYHgazWQl9MJNjcnA/gxLApFK2gPMxBCLiQOHVUSaemDQz4mKPs5svulbhtDehxo6LzTzpQ==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fbabel-plugin-codegen/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/babel-plugin-codegen/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/babel-preset",
+      "version": "0.88.1",
+      "integrity": "sha512-tnacL6tECmtFyBf59tI1GuadSvpm/XCcRQ1vMkL3qoQECpgMVdCfhw79A6l7iZdKM78TcZ0xKV98kZlERydwCg==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fbabel-preset/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/react-native-babel-preset/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "@react-native/codegen",
       "version": "0.86.3",
       "integrity": "sha512-Ux4jHi0fh+bdtVEcL0gaPLbY56V+SvFUDl/8sRAE1jdb4k+o7fT/4Nc29yz4X+qfjstkSqObQTMBGhdzxH9JvA==",
@@ -49,6 +103,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/react-native/4829a675c80e64f7c170b0f30d24b3808b7663d3/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/codegen",
+      "version": "0.88.1",
+      "integrity": "sha512-URPgPhnsxqeQSLyTRVzhZZ8iNXtZdR1Jop6lqaQacymvl3byghXisNIRR1YyG6PbXUfzPan5Jmz/kPhUUsZ2Yw==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fcodegen/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/react-native-codegen/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
         }
       ],
       "unresolved": []
@@ -71,6 +143,24 @@
       "unresolved": []
     },
     {
+      "name": "@react-native/community-cli-plugin",
+      "version": "0.88.1",
+      "integrity": "sha512-L2CQvzsOMz4oof6AVLSzesFL1Q92nrtXpK0uQH2VwdOmzzgkiHql8WFQSo9VLvMFGJDg8+G6enrHH573ruqqWA==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fcommunity-cli-plugin/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/community-cli-plugin/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "@react-native/debugger-shell",
       "version": "0.86.3",
       "integrity": "sha512-O4ds+J7xZfxkbih9T+cAGegBdvKSPKYJm/lDgC9CpEjFMkmzWTpVLU3Qsv9sqZuo58z+sGhIcJfPsCFFWHpqbQ==",
@@ -83,6 +173,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/react-native/4829a675c80e64f7c170b0f30d24b3808b7663d3/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/debugger-shell",
+      "version": "0.88.1",
+      "integrity": "sha512-vrOLlxkp/417qcSUiS3x3gmdoQHYA/26oEKIWPB4EekJG0uJxKXsMR0tHIDiJWO0JH/2BO3M+507DjR1U74jQg==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fdebugger-shell/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/debugger-shell/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
         }
       ],
       "unresolved": []
@@ -105,6 +213,24 @@
       "unresolved": []
     },
     {
+      "name": "@react-native/dev-middleware",
+      "version": "0.88.1",
+      "integrity": "sha512-0smOWE3NCdEYUwPiEdiwVXjTdvXcwSejviCM0YZB0Dj6HaQ+uu4hpSrvgERDevr5dvtSaqr8N4TdYZCLXiVgFw==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fdev-middleware/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/dev-middleware/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "@react-native/gradle-plugin",
       "version": "0.86.3",
       "integrity": "sha512-lxmx0GqLEWRIpZfpYFXlYVIs3ENQwaW6Vmp6oi29l2GoQJ1wZfFZRdMimDWlGEk8LKfHar3QH3iaPMkTcK9lEQ==",
@@ -117,6 +243,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/react-native/4829a675c80e64f7c170b0f30d24b3808b7663d3/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/gradle-plugin",
+      "version": "0.88.1",
+      "integrity": "sha512-zalxoJJ/m5kxLnBy9I1zYrx4jaPxPXdys8DeROvrSOa3pSQkTwVVXRZ4FkXCdGodVA9KR2WitplDo/URNjyvFA==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fgradle-plugin/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/gradle-plugin/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
         }
       ],
       "unresolved": []
@@ -156,6 +300,78 @@
       "unresolved": []
     },
     {
+      "name": "@react-native/js-polyfills",
+      "version": "0.88.1",
+      "integrity": "sha512-B62O6zVMYW7kK8dxIuCwpdJ5RYcIvET6ItScm0sfsTibJs+llS0krUVSAOHnEUn3lbFMfw+o+sNdWREOAc6FfQ==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fjs-polyfills/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/polyfills/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/metro-babel-transformer",
+      "version": "0.88.1",
+      "integrity": "sha512-74bvSM4lVZcv+M777/uYW2Nzs6Ga5/F0Ncn9dmeXyUPFMkJO3Ys5v9YlhI//AQ2+0nxojYYFVS/rlAjOkVjtHA==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fmetro-babel-transformer/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/react-native-babel-transformer/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/metro-config",
+      "version": "0.88.1",
+      "integrity": "sha512-Q0rKoC55HSOIc4j55lCOHpjIt/JkGQ66u2KsorfTC99LaRIez9UYJ/mhMwhjkZqGHq5Z4iBT6PCd4eQf35zdgQ==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fmetro-config/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/metro-config/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/normalize-colors",
+      "version": "0.74.89",
+      "integrity": "sha512-qoMMXddVKVhZ8PA1AbUCk83trpd6N+1nF2A6k1i6LsQObyS92fELuk8kU/lQs6M7BsMHwqyLCpQJ1uFgNvIQXg==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fnormalize-colors/0.74.89",
+      "git_head": "a2066d730d933126bbf7055f4e47c575936e62f3",
+      "source_manifest": "https://raw.githubusercontent.com/facebook/react-native/a2066d730d933126bbf7055f4e47c575936e62f3/packages/normalize-color/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/facebook/react-native/a2066d730d933126bbf7055f4e47c575936e62f3/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "@react-native/normalize-colors",
       "version": "0.86.3",
       "integrity": "sha512-Cv3CDkprb67GrzuaS9BGbBJC/6G4lIw3nyKOHRKTqTTum4bn37y5+R0Z04L8mcbQN85eEohNrRwb7IOM4j6uvg==",
@@ -173,6 +389,24 @@
       "unresolved": []
     },
     {
+      "name": "@react-native/normalize-colors",
+      "version": "0.88.1",
+      "integrity": "sha512-2SAKiLyZRf+peBLkhhJWGY5vC26w1Uj9QBgUZvjAnOxjgeEKUGBE5riPS0R7+YoqSrRL0w8ucwZB4M+vvy9HMg==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fnormalize-colors/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/normalize-color/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "@react-native/virtualized-lists",
       "version": "0.86.3",
       "integrity": "sha512-1j44NEyNn05Ut40vHAmoSWbsIcybFkMAOBTwQt1PrESyfSS+qBoyU1LGIogNva0VIa0rQyEC5PzbA7R4/7Nhyw==",
@@ -185,6 +419,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/react-native/4829a675c80e64f7c170b0f30d24b3808b7663d3/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "@react-native/virtualized-lists",
+      "version": "0.88.1",
+      "integrity": "sha512-Zt+OGvJE6VgmzgemZL8TSA0VomNWpHMNcG0OvLkkBQEGrzY8OdDHRfjJh7S+f+UFJF77kicRC6o6mt3A7ER9lQ==",
+      "registry": "https://registry.npmjs.org/@react-native%2Fvirtualized-lists/0.88.1",
+      "git_head": "c30b7f86850d47422637a64c70508e7411dbd8ea",
+      "source_manifest": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/packages/virtualized-lists/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE"
         }
       ],
       "unresolved": []
@@ -306,6 +558,18 @@
       }
     },
     {
+      "name": "client-only",
+      "version": "0.0.1",
+      "integrity": "sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==",
+      "registry": "https://registry.npmjs.org/client-only/0.0.1",
+      "verification": "published-archive-inspection",
+      "provenance": "The exact published manifest declares MIT and points to the React homepage and issue tracker. npm supplies neither a repository revision nor an attributed license text.",
+      "texts": [],
+      "unresolved": [
+        "A complete publisher-attributed notice for the marker package is still missing."
+      ]
+    },
+    {
       "name": "fb-dotslash",
       "version": "0.5.8",
       "integrity": "sha512-XHYLKk9J4BupDxi9bSEhkfss0m+Vr9ChTrjhf9l2iw3jB5C7BnY4GVPoMcqbrTutsKJso6yj2nAB6BI/F2oZaA==",
@@ -328,6 +592,98 @@
       "unresolved": []
     },
     {
+      "name": "flow-estree",
+      "version": "0.327.0",
+      "integrity": "sha512-f9vK751YUzD0qaHSpKc5/qQM6gqOlgGS+4ZRqTNcZOpVqn3mC55yEQ6dUG2K1eaVm5FbKkz9CFWe6XNvrkQFQg==",
+      "registry": "https://registry.npmjs.org/flow-estree/0.327.0",
+      "source_revision": "7e2f5914c23c33a72a64c691c8869ad83ef6209f",
+      "source_manifest": "https://raw.githubusercontent.com/facebook/flow/7e2f5914c23c33a72a64c691c8869ad83ef6209f/packages/flow-estree/package.json",
+      "matching_source": {
+        "archive_path": "package/dist/index.js.flow",
+        "url": "https://raw.githubusercontent.com/facebook/flow/7e2f5914c23c33a72a64c691c8869ad83ef6209f/packages/flow-estree/src/index.js",
+        "sha256": "5b0e05c31f49d529138f059d19357bd42cf1eb8c35b63a1be5a763f3e125dff3"
+      },
+      "verification": "versioned-source-and-published-files",
+      "provenance": "The upstream v0.327.0 tag includes the matching name, version and MIT declaration. 5 typed implementation files from the integrity-verified published archive match the tagged Git blobs byte for byte. The archive source headers refer to the root LICENSE. The registry does not publish a gitHead.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/facebook/flow/7e2f5914c23c33a72a64c691c8869ad83ef6209f/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "flow-estree",
+      "version": "0.331.0",
+      "integrity": "sha512-FVLYkSL/ITb/QXBEQvNWPjPooRGswuUtGOwrH+puSlMDneNkxy640+FZsk/TfKL+b7Wbw/Fg9FTUv2bMQDpj2w==",
+      "registry": "https://registry.npmjs.org/flow-estree/0.331.0",
+      "source_revision": "28ebb8819f8f032d469e108ea2458a0442844a47",
+      "source_manifest": "https://raw.githubusercontent.com/facebook/flow/28ebb8819f8f032d469e108ea2458a0442844a47/packages/flow-estree/package.json",
+      "matching_source": {
+        "archive_path": "package/dist/index.js.flow",
+        "url": "https://raw.githubusercontent.com/facebook/flow/28ebb8819f8f032d469e108ea2458a0442844a47/packages/flow-estree/src/index.js",
+        "sha256": "5b0e05c31f49d529138f059d19357bd42cf1eb8c35b63a1be5a763f3e125dff3"
+      },
+      "verification": "versioned-source-and-published-files",
+      "provenance": "The upstream v0.331.0 tag includes the matching name, version and MIT declaration. 5 typed implementation files from the integrity-verified published archive match the tagged Git blobs byte for byte. The archive source headers refer to the root LICENSE. The registry does not publish a gitHead.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/facebook/flow/28ebb8819f8f032d469e108ea2458a0442844a47/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "flow-parser",
+      "version": "0.327.0",
+      "integrity": "sha512-/MYZ5hXWf5ozpbdfUDmazMgQXviLxWEiRLH3MppEGDdW0itRVqmB5UaU7QX+SBCDNiq+gEesSVn8nlxmPDyDkw==",
+      "registry": "https://registry.npmjs.org/flow-parser/0.327.0",
+      "source_revision": "7e2f5914c23c33a72a64c691c8869ad83ef6209f",
+      "source_manifest": "https://raw.githubusercontent.com/facebook/flow/7e2f5914c23c33a72a64c691c8869ad83ef6209f/packages/flow-parser/package.json",
+      "matching_source": {
+        "archive_path": "package/dist/transform/astArrayMutationHelpers.js.flow",
+        "url": "https://raw.githubusercontent.com/facebook/flow/7e2f5914c23c33a72a64c691c8869ad83ef6209f/packages/flow-parser/oxidized-src/transform/astArrayMutationHelpers.js",
+        "sha256": "30e2c7730a7ad5d4c272b88655c433e59767c2ca36943aa7f18b340fc019acd1"
+      },
+      "verification": "versioned-source-and-published-files",
+      "provenance": "The upstream v0.327.0 tag includes the matching name, version and MIT declaration. 23 typed implementation files from the integrity-verified published archive match the tagged Git blobs byte for byte. The archive source headers refer to the root LICENSE. The registry does not publish a gitHead.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/facebook/flow/7e2f5914c23c33a72a64c691c8869ad83ef6209f/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "flow-parser",
+      "version": "0.331.0",
+      "integrity": "sha512-vEZcHIlnKeN8JSVtYFczj8sWJfHIJOkz+YG00O/oul/Bete+t1ZhTi+O6JRRLFYvGW+yJkZ0YgL16iStnbkUqQ==",
+      "registry": "https://registry.npmjs.org/flow-parser/0.331.0",
+      "source_revision": "28ebb8819f8f032d469e108ea2458a0442844a47",
+      "source_manifest": "https://raw.githubusercontent.com/facebook/flow/28ebb8819f8f032d469e108ea2458a0442844a47/packages/flow-parser/package.json",
+      "matching_source": {
+        "archive_path": "package/dist/transform/astArrayMutationHelpers.js.flow",
+        "url": "https://raw.githubusercontent.com/facebook/flow/28ebb8819f8f032d469e108ea2458a0442844a47/packages/flow-parser/oxidized-src/transform/astArrayMutationHelpers.js",
+        "sha256": "30e2c7730a7ad5d4c272b88655c433e59767c2ca36943aa7f18b340fc019acd1"
+      },
+      "verification": "versioned-source-and-published-files",
+      "provenance": "The upstream v0.331.0 tag includes the matching name, version and MIT declaration. 22 typed implementation files from the integrity-verified published archive match the tagged Git blobs byte for byte. The archive source headers refer to the root LICENSE. The registry does not publish a gitHead.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/facebook/flow/28ebb8819f8f032d469e108ea2458a0442844a47/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "hermes-compiler",
       "version": "250829098.0.17",
       "integrity": "sha512-qG1PXzTEtriF6oQLZF3vyHhSMxOdW5h2TqqLri0rdpstPustd2fSvRZQMVAPdlhgFwBfYnj3OUZtiO6LjYsEFw==",
@@ -343,6 +699,38 @@
         }
       ],
       "unresolved": []
+    },
+    {
+      "name": "hermes-compiler",
+      "version": "260318099.0.5",
+      "integrity": "sha512-4Gze+pGTGTUBRmnv6LtdOMo6ZzMMh3hEkvDiWzvuNL5LM0EO5YGhr8xh3fRjFaEqReUwEGjJGcGgEPFe9+E6Gw==",
+      "registry": "https://registry.npmjs.org/hermes-compiler/260318099.0.5",
+      "git_head": "9a115f15785851f4ff2747ebb090ddd066fc8ad2",
+      "source_manifest": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/npm/hermes-compiler/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision. Windows file-version resources identify the bundled ICU binaries as 64.2.0.0; the corresponding ICU release notice and the compiler source’s llvh license are retained.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/LICENSE"
+        },
+        {
+          "path": "release/licenses/app-npm/texts/6a18c5fac70d7860b57f5b72b4e2c9a1ba6b3d2741eef7ff9767c5379364f10d.txt",
+          "sha256": "6a18c5fac70d7860b57f5b72b4e2c9a1ba6b3d2741eef7ff9767c5379364f10d",
+          "source": "https://raw.githubusercontent.com/unicode-org/icu/e2d85306162d3a0691b070b4f0a73e4012433444/icu4c/LICENSE"
+        },
+        {
+          "path": "release/licenses/app-npm/texts/3340babe8ac7bc6ae294d93aa01c310a250d43d5b760e5c12954882d4e5c83c7.txt",
+          "sha256": "3340babe8ac7bc6ae294d93aa01c310a250d43d5b760e5c12954882d4e5c83c7",
+          "source": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/llvh/LICENSE.txt",
+          "source_sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee",
+          "normalization": "The upstream file ends with two newlines. The retained notice ends with one."
+        }
+      ],
+      "unresolved": [
+        "The archive includes Microsoft Visual C++ runtime DLLs with file version 14.51.36247.0; the applicable redistribution terms have not been verified."
+      ]
     },
     {
       "name": "imurmurhash",
@@ -401,6 +789,24 @@
       "unresolved": []
     },
     {
+      "name": "metro",
+      "version": "0.87.1",
+      "integrity": "sha512-1oyLU9elM7hPAsKIqKooEekwxiuWr27+MZBhUROPhzcbXhMDxK64GPF/hCXwBZVp1F89ODavCrBmJtLx9WtBoQ==",
+      "registry": "https://registry.npmjs.org/metro/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "metro-babel-transformer",
       "version": "0.84.5",
       "integrity": "sha512-2WbHILKMiJUzfdjmGOQOqU1bWi9//gqiclc/tkk/AIsrrVw3efhZ1uhkOwMTxUEPOzqoo091H0olLmVZH5FHGQ==",
@@ -413,6 +819,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/metro/b71015ef83904e7086342ddb72205b7242dcd129/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "metro-babel-transformer",
+      "version": "0.87.1",
+      "integrity": "sha512-orvRIGpb0yK1yMbk5YP3dhVKjmoxUkRB9fdltGJxNppEqus/1tFpNuf9KnGFR3Qjg0izoUrJ4z6WgoBvdkXPrA==",
+      "registry": "https://registry.npmjs.org/metro-babel-transformer/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-babel-transformer/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
         }
       ],
       "unresolved": []
@@ -435,6 +859,24 @@
       "unresolved": []
     },
     {
+      "name": "metro-cache",
+      "version": "0.87.1",
+      "integrity": "sha512-juNPaj0Xi5tkLp8imXqvbSnEIijwKG36m7OiFFVJMqEkiURwAjkMFVek3/xpix1+LVQqO7kjVp3PvuvIM61mKQ==",
+      "registry": "https://registry.npmjs.org/metro-cache/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-cache/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "metro-cache-key",
       "version": "0.84.5",
       "integrity": "sha512-3dPB2TnvGjjf0/9O7AXVQURKXuQNauTZE7WpTGTlR017Gh/B5y0m/2wcqxfveUguHSpu89KhVxCAlr2k/H7uhQ==",
@@ -447,6 +889,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/metro/b71015ef83904e7086342ddb72205b7242dcd129/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "metro-cache-key",
+      "version": "0.87.1",
+      "integrity": "sha512-scqVVPMA2c+RVO12I3wyMDp5xCkRPLsyrcG4Qc3xfU5JR0EW/0sz2tjty+5UjMUtG09uiM1KYQ8HjWg7OQXHtw==",
+      "registry": "https://registry.npmjs.org/metro-cache-key/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-cache-key/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
         }
       ],
       "unresolved": []
@@ -469,6 +929,24 @@
       "unresolved": []
     },
     {
+      "name": "metro-config",
+      "version": "0.87.1",
+      "integrity": "sha512-NmkDlc/qZAdo5gTkVTuO2AKE/khemRKRH5IA+SKfqUBJigI5GqZ5TOXhmEokhlkAqzjt8dyzKhzI6FHvXoXaTQ==",
+      "registry": "https://registry.npmjs.org/metro-config/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-config/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "metro-core",
       "version": "0.84.5",
       "integrity": "sha512-xwm605hCi5Y6eJTTb8ZWo6pkUcoBEIyiQOfkZh5GwtDwUrP9SNhTQZhzJHrBCwwxlf3Ptl/pxWJgQ1rsNYMnrA==",
@@ -481,6 +959,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/metro/b71015ef83904e7086342ddb72205b7242dcd129/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "metro-core",
+      "version": "0.87.1",
+      "integrity": "sha512-xizzky/4+c/Mkznege8OW05j7bSdM39VPoEps61Se4+hf32UQujmbvLvIE9+UnP6kNEPVomk0Fw8NsBK9iRQmw==",
+      "registry": "https://registry.npmjs.org/metro-core/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-core/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
         }
       ],
       "unresolved": []
@@ -503,6 +999,24 @@
       "unresolved": []
     },
     {
+      "name": "metro-file-map",
+      "version": "0.87.1",
+      "integrity": "sha512-9sPuNCojC3pS4vj+ZPY7FXmHGpdJeckXuKXQrDAfJvZc60AF8owRFTkI8XdwlwrmPIB2w++KraK9FMEXvC4wJw==",
+      "registry": "https://registry.npmjs.org/metro-file-map/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-file-map/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "metro-minify-terser",
       "version": "0.84.5",
       "integrity": "sha512-BJoFwCEDsYnagPqarayInv2+diCDNDdLlaof/p6s9w4gh+gc9HXYM+pDvsKGKKUumpZswNF3Z/ftTMqKl/5IBg==",
@@ -515,6 +1029,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/metro/b71015ef83904e7086342ddb72205b7242dcd129/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "metro-minify-terser",
+      "version": "0.87.1",
+      "integrity": "sha512-YK4k1oO1wV48hfE+Nbw2rJCnAgeabzrgT/xH5ha5n9gbK4p3HYFC898cERUiyTl9vRh58CNTiXRc88f7y6PfKg==",
+      "registry": "https://registry.npmjs.org/metro-minify-terser/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-minify-terser/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
         }
       ],
       "unresolved": []
@@ -537,6 +1069,24 @@
       "unresolved": []
     },
     {
+      "name": "metro-resolver",
+      "version": "0.87.1",
+      "integrity": "sha512-FXH/brY69wT6sPxaSW8BhMmDGD/6irmBr/cL4rUi+VWwqR3pbvdcfUOfyjcHucgQ7pe5IW3xJY21eHKLVKNumQ==",
+      "registry": "https://registry.npmjs.org/metro-resolver/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-resolver/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "metro-runtime",
       "version": "0.84.5",
       "integrity": "sha512-U1m2+d1Pr+JO2/iVXBB2OfXXityz7tqwIorxfrT15IEgaHvpJBq/OHiqnOWPKJbUl3JcxjcdviZZOKk85oK4Qg==",
@@ -549,6 +1099,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/metro/b71015ef83904e7086342ddb72205b7242dcd129/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "metro-runtime",
+      "version": "0.87.1",
+      "integrity": "sha512-kjeuSvInsM6OzBjkCQsWxnkrKZFMKtnkCl38oXWRI9lDGs2L9hGs9Tak9sQYJ9h3gtDujneB7wZio+irgqJKDw==",
+      "registry": "https://registry.npmjs.org/metro-runtime/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-runtime/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
         }
       ],
       "unresolved": []
@@ -571,6 +1139,24 @@
       "unresolved": []
     },
     {
+      "name": "metro-source-map",
+      "version": "0.87.1",
+      "integrity": "sha512-Bqpm0PBGdy53pigIJb4HRF7QxD2pUOdgSmVh/4AWbP635kSCv+Y6ltVxUZgSnzS/QbSmzyCGijmRPlXMj2/qHw==",
+      "registry": "https://registry.npmjs.org/metro-source-map/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-source-map/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "metro-symbolicate",
       "version": "0.84.5",
       "integrity": "sha512-rQ40zYDAkaWBN9yvjUuAD0ZpzBMZSoKyGYXnb5JrfbKjun7fTvfoLHL3KXFYenBTYZkQtlp4cKSCv/1utxFyOw==",
@@ -583,6 +1169,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/metro/b71015ef83904e7086342ddb72205b7242dcd129/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "metro-symbolicate",
+      "version": "0.87.1",
+      "integrity": "sha512-rcGvwabrg0lbXGRGRKl14PY3My3+dkno2jZYhdJEuH2DmjTtTkV5bYwgto4JtV/Lbe+sXE6GO1UGg654430uow==",
+      "registry": "https://registry.npmjs.org/metro-symbolicate/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-symbolicate/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
         }
       ],
       "unresolved": []
@@ -605,6 +1209,24 @@
       "unresolved": []
     },
     {
+      "name": "metro-transform-plugins",
+      "version": "0.87.1",
+      "integrity": "sha512-qMiJ/x+VfqumFJJSefKS6nj8uojzC29b2/aK8vlMuFABIqGjDucICEOXd2Yt6k/XMFAgAcaJvShUOT0HLyYaPw==",
+      "registry": "https://registry.npmjs.org/metro-transform-plugins/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-transform-plugins/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
       "name": "metro-transform-worker",
       "version": "0.84.5",
       "integrity": "sha512-ui1Z8x4s5RL36gMmKLaMMO7O9NNDHNdthEZSCDQHAau3JcAsTaFOK6I+2q4I/kW5u8hSEjJk9L45TXSVJw6g1A==",
@@ -617,6 +1239,24 @@
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
           "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
           "source": "https://raw.githubusercontent.com/react/metro/b71015ef83904e7086342ddb72205b7242dcd129/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "metro-transform-worker",
+      "version": "0.87.1",
+      "integrity": "sha512-VOzs3OV405FuOLYdAhqA2wsn1F9lvueDVxMDLvCKaQ44U+yknIqphJ9eMjjsGwLDZiJq9sW3DMLhjD27JxQgqQ==",
+      "registry": "https://registry.npmjs.org/metro-transform-worker/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/metro-transform-worker/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
         }
       ],
       "unresolved": []
@@ -639,6 +1279,49 @@
       "unresolved": []
     },
     {
+      "name": "ob1",
+      "version": "0.87.1",
+      "integrity": "sha512-i8iA8uij0g1YQzS8uOJPSRCgwDjO9warIHUAu1Fqj877Wc3wlfxDYBioYWgKTBF2+URVJttyDWSEpmd99nlvtQ==",
+      "registry": "https://registry.npmjs.org/ob1/0.87.1",
+      "git_head": "c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce",
+      "source_manifest": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/packages/ob1/package.json",
+      "verification": "exact-published-revision",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "source": "https://raw.githubusercontent.com/react/metro/c7597f88c3e5b2a0d5e5915dfed2413aadcdfcce/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "server-only",
+      "version": "0.0.1",
+      "integrity": "sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==",
+      "registry": "https://registry.npmjs.org/server-only/0.0.1",
+      "verification": "published-archive-inspection",
+      "provenance": "The exact published manifest declares MIT and points to the React homepage and issue tracker. npm supplies neither a repository revision nor an attributed license text.",
+      "texts": [],
+      "unresolved": [
+        "A complete publisher-attributed notice for the marker package is still missing."
+      ]
+    },
+    {
+      "name": "standard-navigation",
+      "version": "0.0.5",
+      "integrity": "sha512-YAmzwAiiQVocZxO/VGPFiQHcu5pKiz09QIGC0MK6aRMoa3E0QkoTQgcqJr7ZZ3OMiNhu4DkaGElFI5htjOIDbw==",
+      "registry": "https://registry.npmjs.org/standard-navigation/0.0.5",
+      "git_head": "0016fae7800b9f27bab91326697b740a6d2266dc",
+      "verification": "published-revision-inspection",
+      "provenance": "The npm gitHead declares version 0.0.5 and MIT but has no license file. Upstream later added LICENSE at 33f3d3c976a24bad9fe32583939318bc143fa41b after changing the implementation and package version.",
+      "texts": [],
+      "unresolved": [
+        "The later 0.0.7 source is not byte-equivalent to this archive; an attributable notice for the 0.0.5 release remains missing."
+      ]
+    },
+    {
       "name": "structured-headers",
       "version": "0.4.1",
       "integrity": "sha512-0MP/Cxx5SzeeZ10p/bZI0S6MpgD+yxAhi1BOQ34jgnMXsCq3j1t6tQnZu+KdlL7dvJTLT3g9xN8tl10TqgFMcg==",
@@ -651,6 +1334,35 @@
           "path": "release/licenses/app-npm/texts/e897643af2c5e3027bf40e8d254f92ec9f96b248aba160e7110d21862dbd684d.txt",
           "sha256": "e897643af2c5e3027bf40e8d254f92ec9f96b248aba160e7110d21862dbd684d",
           "source": "https://raw.githubusercontent.com/evert/structured-header/080859e568bac3f128cfff3c8a9b924180f429ca/LICENSE"
+        }
+      ],
+      "unresolved": []
+    },
+    {
+      "name": "tr46",
+      "version": "0.0.3",
+      "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==",
+      "registry": "https://registry.npmjs.org/tr46/0.0.3",
+      "git_head": "a8009f9ce80ff5dbe71dd71e203afe4e4c878d28",
+      "mapping_sha256": "b6b39724dca9011113a08d9d6910204062b58169e98952acdfbd19bf2c31bbff",
+      "data_sha256": "5e9f5929130b713e698162ac5b60a99ccfb831606686b1c50777cd920b55dee2",
+      "verification": "same-version-identical-implementation-and-reproduced-data",
+      "provenance": "The sole change between the npm gitHead and the maintainer’s next commit is the addition of LICENSE.md. Running that version’s mapping conversion against the official Unicode 8.0.0 IDNA dataset reproduces the entire 260,049-byte published mappingTable.json. The preserved original data header points to the Unicode terms.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/eeed1ca176eebad5c73870e233cfff03981fecd319c969475dfa3633036c336b.txt",
+          "sha256": "eeed1ca176eebad5c73870e233cfff03981fecd319c969475dfa3633036c336b",
+          "source": "https://raw.githubusercontent.com/jsdom/tr46/3a6f29721e7063b9ffd421e461a54beae6170001/LICENSE.md"
+        },
+        {
+          "path": "release/licenses/app-npm/texts/28d7dbb368fbb77523f2aebcf4b619990fce5228cceb24004256a7bcf006f4b1.txt",
+          "sha256": "28d7dbb368fbb77523f2aebcf4b619990fce5228cceb24004256a7bcf006f4b1",
+          "source": "https://www.unicode.org/Public/idna/8.0.0/IdnaMappingTable.txt"
+        },
+        {
+          "path": "release/licenses/app-npm/texts/e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96.txt",
+          "sha256": "e7a93b009565cfce55919a381437ac4db883e9da2126fa28b91d12732bc53d96",
+          "source": "https://www.unicode.org/license.txt"
         }
       ],
       "unresolved": []
