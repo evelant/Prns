@@ -1387,7 +1387,16 @@ fn worker(
             return Ok(());
         }
     };
-    let result = runtime.block_on(run(config, sink, embedding, inputs, ready_tx));
+    // Keep node readiness in a scheduled task. Tokio's synchronous mpsc
+    // try_recv can park this thread while a sender publishes a slot, consuming
+    // a wake addressed only to the outer Runtime::block_on parker.
+    let result = {
+        let local = tokio::task::LocalSet::new();
+        let node = local.spawn_local(run(config, sink, embedding, inputs, ready_tx));
+        local
+            .block_on(&runtime, node)
+            .unwrap_or(Err(HostStopError::WorkerPanicked))
+    };
     // A timed Tokio shutdown can leave blocking persistence work running after
     // this worker joins. Keep the owner and directory lock until it actually exits;
     // callers may bound their wait without releasing unfinished native ownership.
