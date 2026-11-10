@@ -281,6 +281,7 @@ macro_rules! interface_config_layout {
         }
 
         #[repr(C)]
+        #[derive(Clone, Copy)]
         pub struct PrnsInterfaceConfig {
             $(pub $name: $ty,)+
             pub discovery_groups: *const PrnsStringView,
