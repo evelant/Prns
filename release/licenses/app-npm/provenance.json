@@ -563,11 +563,13 @@
       "integrity": "sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==",
       "registry": "https://registry.npmjs.org/client-only/0.0.1",
       "verification": "published-archive-inspection",
-      "provenance": "The exact published manifest declares MIT and points to the React homepage and issue tracker. npm supplies neither a repository revision nor an attributed license text.",
+      "provenance": "The exact npm record identifies sebmarkbage as publisher. Sebastian Markbåge’s React RFC 227 confirms that he published the marker and identifies its conditional entry points. The archive declares MIT but has no copyright notice, and the RFC does not provide one for that archive.",
       "texts": [],
       "unresolved": [
         "A complete publisher-attributed notice for the marker package is still missing."
-      ]
+      ],
+      "publisher": "sebmarkbage",
+      "publisher_confirmation": "https://github.com/reactjs/rfcs/blob/d633174475a77d1538263cb42753b11ef641f5af/text/0227-server-module-conventions.md#poisoned-imports"
     },
     {
       "name": "fb-dotslash",
@@ -708,7 +710,7 @@
       "git_head": "9a115f15785851f4ff2747ebb090ddd066fc8ad2",
       "source_manifest": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/npm/hermes-compiler/package.json",
       "verification": "exact-published-revision",
-      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision. Windows file-version resources identify the bundled ICU binaries as 64.2.0.0; the corresponding ICU release notice and the compiler source’s llvh license are retained.",
+      "provenance": "The registry gitHead identifies the repository revision. Its package manifest declares the published name, version and license, and the preserved root LICENSE matches the Git blob at that revision. Windows file-version resources identify the bundled ICU binaries as 64.2.0.0; the corresponding ICU release notice and the compiler source’s llvh license are retained. The three Microsoft DLLs were copied from System32 by the upstream build workflow. Their only PE resource type is VERSIONINFO; the preserved LegalCopyright string appears in all three.",
       "texts": [
         {
           "path": "release/licenses/app-npm/texts/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
@@ -726,11 +728,38 @@
           "source": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/llvh/LICENSE.txt",
           "source_sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee",
           "normalization": "The upstream file ends with two newlines. The retained notice ends with one."
+        },
+        {
+          "path": "release/licenses/app-npm/texts/346ca14d23bd8a7264e0f157c3f534011e5dc1dbe6c5ad88bd0ee4fe447997d6.txt",
+          "sha256": "346ca14d23bd8a7264e0f157c3f534011e5dc1dbe6c5ad88bd0ee4fe447997d6",
+          "source": "https://registry.npmjs.org/hermes-compiler/-/hermes-compiler-260318099.0.5.tgz#package/hermesc/win64-bin/msvcp140.dll"
         }
       ],
       "unresolved": [
-        "The archive includes Microsoft Visual C++ runtime DLLs with file version 14.51.36247.0; the applicable redistribution terms have not been verified."
-      ]
+        "Microsoft conditions redistribution of the individual Visual C++ runtime binaries on the applicable Visual Studio license. The npm archive carries their copyright notice, but supplies no redistribution license or evidence of the distributor’s entitlement."
+      ],
+      "windows_runtime_files": [
+        {
+          "path": "package/hermesc/win64-bin/msvcp140.dll",
+          "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca",
+          "file_version": "14.51.36247.0",
+          "version_resource_field": "LegalCopyright"
+        },
+        {
+          "path": "package/hermesc/win64-bin/vcruntime140_1.dll",
+          "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e",
+          "file_version": "14.51.36247.0",
+          "version_resource_field": "LegalCopyright"
+        },
+        {
+          "path": "package/hermesc/win64-bin/vcruntime140.dll",
+          "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7",
+          "file_version": "14.51.36247.0",
+          "version_resource_field": "LegalCopyright"
+        }
+      ],
+      "windows_runtime_source": "https://github.com/facebook/hermes/blob/9a115f15785851f4ff2747ebb090ddd066fc8ad2/.github/workflows/build-hermesc-windows.yml",
+      "windows_redistribution_terms": "https://learn.microsoft.com/en-us/cpp/windows/redistributing-visual-cpp-files"
     },
     {
       "name": "imurmurhash",
@@ -753,23 +782,30 @@
       "integrity": "sha512-dZ6Ra7u1G8c4Letq/B5EzAxj4tLFHL+cGtdpR+PVm4yzPDj+lCk+AbivWt1eOM+ikzkowtyV7qSqX6qr3t71Ww==",
       "registry": "https://registry.npmjs.org/jimp-compact/0.16.1",
       "git_head": "c4cdbe12832de484d83d38aa0c14d7709f5ca657",
-      "verification": "explicit-derived-source-attribution",
-      "provenance": "PublishedREADME attributes MIT license to Jimp. Published gitHead yarn.lock pins Jimp0.16.1; build.js bundles Jimp and copies its version. This is the exact Jimp0.16.1 gitHead license; no separate compact-wrapper copyright notice found. The minified bundle includes dependencies and this is not a full bundled-dependency notice audit.",
+      "verification": "byte-identical-bundle-and-locked-source",
+      "provenance": "The published dist/jimp.js matches the build from the registry gitHead and its frozen Yarn lock byte for byte. Compiler statistics identify 189 modules belonging to 59 npm packages, 14 Node built-ins and the compact wrapper. The component receipt records archive identities, emitted module paths and notice sources.",
       "texts": [
         {
           "path": "release/licenses/app-npm/texts/942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278.txt",
           "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
           "source": "https://raw.githubusercontent.com/jimp-dev/jimp/909f06eac36ef5ba36ebb1e0853fd006c4da3560/LICENSE"
+        },
+        {
+          "path": "release/licenses/app-npm/texts/a936b9ea0fcc5807f4d21aabfd90f5c8364ec8bb0abdc019905ac8b3e8984ce6.txt",
+          "sha256": "a936b9ea0fcc5807f4d21aabfd90f5c8364ec8bb0abdc019905ac8b3e8984ce6",
+          "source": "https://raw.githubusercontent.com/nuxt-community/jimp-compact/c4cdbe12832de484d83d38aa0c14d7709f5ca657/yarn.lock"
         }
       ],
       "unresolved": [
-        "Exact Jimp source attribution is reproduced, but the compiled dependency bundle and compact wrapper have not received a complete notice review."
+        "The compact wrapper’s published package declares MIT and its README links to the Jimp project’s license. The wrapper has no separate publisher-attributed copyright/permission text; the version-specific request to its maintainer remains unanswered."
       ],
       "additional_evidence": {
         "path": "release/licenses/app-npm/texts/972c97f9a3650668316b09c45508054ebb51b6630010dde5d64b4c92687e5b29.txt",
         "sha256": "972c97f9a3650668316b09c45508054ebb51b6630010dde5d64b4c92687e5b29",
         "source": "integrity-checked published package README"
-      }
+      },
+      "bundle_receipt": "release/licenses/app-npm/jimp-compact-bundle.json",
+      "upstream_notice_request": "https://github.com/unjs-archive/jimp-compact/issues/67"
     },
     {
       "name": "metro",
@@ -1302,11 +1338,13 @@
       "integrity": "sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==",
       "registry": "https://registry.npmjs.org/server-only/0.0.1",
       "verification": "published-archive-inspection",
-      "provenance": "The exact published manifest declares MIT and points to the React homepage and issue tracker. npm supplies neither a repository revision nor an attributed license text.",
+      "provenance": "The exact npm record identifies sebmarkbage as publisher. Sebastian Markbåge’s React RFC 227 confirms that he published the marker and identifies its conditional entry points. The archive declares MIT but has no copyright notice, and the RFC does not provide one for that archive.",
       "texts": [],
       "unresolved": [
         "A complete publisher-attributed notice for the marker package is still missing."
-      ]
+      ],
+      "publisher": "sebmarkbage",
+      "publisher_confirmation": "https://github.com/reactjs/rfcs/blob/d633174475a77d1538263cb42753b11ef641f5af/text/0227-server-module-conventions.md#poisoned-imports"
     },
     {
       "name": "standard-navigation",
@@ -1314,12 +1352,18 @@
       "integrity": "sha512-YAmzwAiiQVocZxO/VGPFiQHcu5pKiz09QIGC0MK6aRMoa3E0QkoTQgcqJr7ZZ3OMiNhu4DkaGElFI5htjOIDbw==",
       "registry": "https://registry.npmjs.org/standard-navigation/0.0.5",
       "git_head": "0016fae7800b9f27bab91326697b740a6d2266dc",
-      "verification": "published-revision-inspection",
-      "provenance": "The npm gitHead declares version 0.0.5 and MIT but has no license file. Upstream later added LICENSE at 33f3d3c976a24bad9fe32583939318bc143fa41b after changing the implementation and package version.",
-      "texts": [],
-      "unresolved": [
-        "The later 0.0.7 source is not byte-equivalent to this archive; an attributable notice for the 0.0.5 release remains missing."
-      ]
+      "verification": "maintainer-confirmed-earlier-release",
+      "provenance": "Satyajit Sahoo (satya164) added the upstream MIT license file. In response to an explicit question about the published 0.0.5 archive, he confirmed that the file applies to all previous versions.",
+      "texts": [
+        {
+          "path": "release/licenses/app-npm/texts/77aa111867b23a7dd45fd66c958c410a0a4b09f2f49e1ea0c16af01d1582d291.txt",
+          "sha256": "77aa111867b23a7dd45fd66c958c410a0a4b09f2f49e1ea0c16af01d1582d291",
+          "source": "https://raw.githubusercontent.com/react-navigation/standard-navigation/33f3d3c976a24bad9fe32583939318bc143fa41b/LICENSE"
+        }
+      ],
+      "unresolved": [],
+      "license_revision": "33f3d3c976a24bad9fe32583939318bc143fa41b",
+      "maintainer_confirmation": "https://github.com/react-navigation/standard-navigation/issues/7#issuecomment-6474665803"
     },
     {
       "name": "structured-headers",

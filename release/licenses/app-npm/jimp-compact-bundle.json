@@ -1,0 +1,1680 @@
+{
+  "name": "jimp-compact",
+  "version": "0.16.1",
+  "archive": "https://registry.npmjs.org/jimp-compact/-/jimp-compact-0.16.1.tgz",
+  "integrity": "sha512-dZ6Ra7u1G8c4Letq/B5EzAxj4tLFHL+cGtdpR+PVm4yzPDj+lCk+AbivWt1eOM+ikzkowtyV7qSqX6qr3t71Ww==",
+  "bundle_file": "package/dist/jimp.js",
+  "size_bytes": 537491,
+  "bundle_sha256": "44a07a9b57193eaf5ed8a17828ab650ddf62e1e59b4b0c0012a732840996ebf7",
+  "publisher_git_head": "c4cdbe12832de484d83d38aa0c14d7709f5ca657",
+  "build_script": "https://raw.githubusercontent.com/nuxt-community/jimp-compact/c4cdbe12832de484d83d38aa0c14d7709f5ca657/build.js",
+  "build_script_sha256": "a0226d21c17b617cbd3a3f48244066e5aaaf7aabb1446834474af2c48d609e9d",
+  "yarn_lock": "https://raw.githubusercontent.com/nuxt-community/jimp-compact/c4cdbe12832de484d83d38aa0c14d7709f5ca657/yarn.lock",
+  "yarn_lock_sha256": "e74ee274b2492a3ad2d61accdb1511f92abcb23c799224004f85a1e4392d3dd6",
+  "entry_source": "https://raw.githubusercontent.com/nuxt-community/jimp-compact/c4cdbe12832de484d83d38aa0c14d7709f5ca657/src/jimp.js",
+  "entry_source_sha256": "3e1e218bdc0d58fb22b1be227280bc6ce4eded532da046cf5d76c705731c150b",
+  "verification": "Installed the publisher’s Yarn 1 frozen lock with scripts disabled. Node 16.19.0 ran its build script. The published bundle and rebuilt output are byte-identical. The matching ncc run reported one chunk, 204 modules and zero filtered modules. Every emitted npm file is byte-identical to a member of the archive identified here. The archive bytes match the npm integrity and the Yarn resolved SHA-1. Notice text hashes normalize line endings and trailing whitespace. Hashes for individual source comments cover the extracted comment after trimming its outer whitespace.",
+  "node_externals": [
+    "assert",
+    "buffer",
+    "events",
+    "fs",
+    "http",
+    "https",
+    "path",
+    "querystring",
+    "stream",
+    "string_decoder",
+    "timers",
+    "url",
+    "util",
+    "zlib"
+  ],
+  "compiler": [
+    {
+      "name": "@zeit/ncc",
+      "version": "0.22.3",
+      "archive": "https://registry.npmjs.org/@zeit/ncc/-/ncc-0.22.3.tgz",
+      "integrity": "sha512-jnCLpLXWuw/PAiJiVbLjA8WBC0IJQbFeUwF4I9M+23MvIxTxk5pD4Q8byQBSPmHQjz5aBoA7AKAElQxMpjrCLQ==",
+      "notice": {
+        "path": "package/LICENSE",
+        "source": "https://registry.npmjs.org/@zeit/ncc/-/ncc-0.22.3.tgz",
+        "kind": "compiler distribution",
+        "sha256": "887b2c1c59d5662c11670d2b744e3c6140b5bd945e7f716e0e669b006239c104",
+        "notice_text_sha256": "887b2c1c59d5662c11670d2b744e3c6140b5bd945e7f716e0e669b006239c104"
+      }
+    },
+    {
+      "name": "webpack",
+      "version": "5.0.0-alpha.17",
+      "archive": "https://registry.npmjs.org/webpack/-/webpack-5.0.0-alpha.17.tgz",
+      "integrity": "sha512-tKNeZe+fWxrIEiLVhv00DUgyU6X/9M65zef2//XKcXlcFWLj99qrrOxpKZ/wX9B55IrQyW9ScgLuFO5ZtmWkTQ==",
+      "notice": {
+        "path": "package/LICENSE",
+        "source": "https://registry.npmjs.org/webpack/-/webpack-5.0.0-alpha.17.tgz",
+        "kind": "compiler distribution",
+        "sha256": "9068a8782d2fb4c6e432cfa25334efa56f722822180570802bf86e71b6003b1e",
+        "notice_text_sha256": "2af12ca8b612a22e6659ae68e0e59ee7ac792718c45524a989b512c49c5f5879"
+      }
+    }
+  ],
+  "packages": [
+    {
+      "name": "@babel/runtime",
+      "version": "7.9.6",
+      "archive": "https://registry.npmjs.org/@babel/runtime/-/runtime-7.9.6.tgz",
+      "integrity": "sha512-64AF1xY3OAkFHqOb9s4jpgk1Mm5vDZ4L3acHvAml+53nO1XbXLuDodsVpO4OIUsmemlUHMxNdYMNJmsvOwLrvQ==",
+      "license": "MIT",
+      "modules": [
+        "helpers/arrayLikeToArray.js",
+        "helpers/arrayWithHoles.js",
+        "helpers/arrayWithoutHoles.js",
+        "helpers/assertThisInitialized.js",
+        "helpers/classCallCheck.js",
+        "helpers/construct.js",
+        "helpers/createClass.js",
+        "helpers/defineProperty.js",
+        "helpers/extends.js",
+        "helpers/getPrototypeOf.js",
+        "helpers/inherits.js",
+        "helpers/interopRequireDefault.js",
+        "helpers/interopRequireWildcard.js",
+        "helpers/isNativeReflectConstruct.js",
+        "helpers/iterableToArray.js",
+        "helpers/iterableToArrayLimit.js",
+        "helpers/nonIterableRest.js",
+        "helpers/nonIterableSpread.js",
+        "helpers/possibleConstructorReturn.js",
+        "helpers/setPrototypeOf.js",
+        "helpers/slicedToArray.js",
+        "helpers/toConsumableArray.js",
+        "helpers/typeof.js",
+        "helpers/unsupportedIterableToArray.js",
+        "regenerator/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@babel/runtime/-/runtime-7.9.6.tgz",
+          "kind": "archive file",
+          "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76",
+          "notice_text_sha256": "8f08c824b2bb54eda2b6ee6053d2eeed46877b3b7b2ef3f60fc2b9fa580f54b2"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/bmp",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/bmp/-/bmp-0.16.1.tgz",
+      "integrity": "sha512-iwyNYQeBawrdg/f24x3pQ5rEx+/GwjZcCXd3Kgc+ZUd+Ivia7sIqBsOnDaMZdKCBPlfW364ekexnlOqyVa0NWg==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/bmp/-/bmp-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/core",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/core/-/core-0.16.1.tgz",
+      "integrity": "sha512-la7kQia31V6kQ4q1kI/uLimu8FXx7imWVajDGtwUG8fzePLWDFJyZl0fdIXVCL1JW2nBcRHidUot6jvlRDi2+g==",
+      "license": "MIT",
+      "modules": [
+        "dist/composite/composite-modes.js",
+        "dist/composite/index.js",
+        "dist/constants.js",
+        "dist/index.js",
+        "dist/modules/phash.js",
+        "dist/request.js",
+        "dist/utils/image-bitmap.js",
+        "dist/utils/mime.js",
+        "dist/utils/promisify.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/core/-/core-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        },
+        {
+          "path": "package/dist/modules/phash.js",
+          "source": "https://registry.npmjs.org/@jimp/core/-/core-0.16.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "904b952f79a852fdff42373a4382c5d96b6f6f3cf6532db75985d5cb8743d9f3",
+          "notice_text_sha256": "904b952f79a852fdff42373a4382c5d96b6f6f3cf6532db75985d5cb8743d9f3"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/custom",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/custom/-/custom-0.16.1.tgz",
+      "integrity": "sha512-DNUAHNSiUI/j9hmbatD6WN/EBIyeq4AO0frl5ETtt51VN1SvE4t4v83ZA/V6ikxEf3hxLju4tQ5Pc3zmZkN/3A==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/custom/-/custom-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/gif",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/gif/-/gif-0.16.1.tgz",
+      "integrity": "sha512-r/1+GzIW1D5zrP4tNrfW+3y4vqD935WBXSc8X/wm23QTY9aJO9Lw6PEdzpYCEY+SOklIFKaJYUAq/Nvgm/9ryw==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/gif/-/gif-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/jpeg",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/jpeg/-/jpeg-0.16.1.tgz",
+      "integrity": "sha512-8352zrdlCCLFdZ/J+JjBslDvml+fS3Z8gttdml0We759PnnZGqrnPRhkOEOJbNUlE+dD4ckLeIe6NPxlS/7U+w==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/jpeg/-/jpeg-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-blit",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-blit/-/plugin-blit-0.16.1.tgz",
+      "integrity": "sha512-fKFNARm32RoLSokJ8WZXHHH2CGzz6ire2n1Jh6u+XQLhk9TweT1DcLHIXwQMh8oR12KgjbgsMGvrMVlVknmOAg==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-blit/-/plugin-blit-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-blur",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-blur/-/plugin-blur-0.16.1.tgz",
+      "integrity": "sha512-1WhuLGGj9MypFKRcPvmW45ht7nXkOKu+lg3n2VBzIB7r4kKNVchuI59bXaCYQumOLEqVK7JdB4glaDAbCQCLyw==",
+      "license": "MIT",
+      "modules": [
+        "dist/blur-tables.js",
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-blur/-/plugin-blur-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        },
+        {
+          "path": "package/dist/index.js",
+          "source": "https://registry.npmjs.org/@jimp/plugin-blur/-/plugin-blur-0.16.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "548a1ce0804a807405650c9a6f59329a4810f0fc82aebf82d311d232f4157a16",
+          "notice_text_sha256": "548a1ce0804a807405650c9a6f59329a4810f0fc82aebf82d311d232f4157a16"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-circle",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-circle/-/plugin-circle-0.16.1.tgz",
+      "integrity": "sha512-JK7yi1CIU7/XL8hdahjcbGA3V7c+F+Iw+mhMQhLEi7Q0tCnZ69YJBTamMiNg3fWPVfMuvWJJKOBRVpwNTuaZRg==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-circle/-/plugin-circle-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-color",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-color/-/plugin-color-0.16.1.tgz",
+      "integrity": "sha512-9yQttBAO5SEFj7S6nJK54f+1BnuBG4c28q+iyzm1JjtnehjqMg6Ljw4gCSDCvoCQ3jBSYHN66pmwTV74SU1B7A==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-color/-/plugin-color-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-contain",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-contain/-/plugin-contain-0.16.1.tgz",
+      "integrity": "sha512-44F3dUIjBDHN+Ym/vEfg+jtjMjAqd2uw9nssN67/n4FdpuZUVs7E7wadKY1RRNuJO+WgcD5aDQcsvurXMETQTg==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-contain/-/plugin-contain-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-cover",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-cover/-/plugin-cover-0.16.1.tgz",
+      "integrity": "sha512-YztWCIldBAVo0zxcQXR+a/uk3/TtYnpKU2CanOPJ7baIuDlWPsG+YE4xTsswZZc12H9Kl7CiziEbDtvF9kwA/Q==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-cover/-/plugin-cover-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-crop",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-crop/-/plugin-crop-0.16.1.tgz",
+      "integrity": "sha512-UQdva9oQzCVadkyo3T5Tv2CUZbf0klm2cD4cWMlASuTOYgaGaFHhT9st+kmfvXjKL8q3STkBu/zUPV6PbuV3ew==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-crop/-/plugin-crop-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-displace",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-displace/-/plugin-displace-0.16.1.tgz",
+      "integrity": "sha512-iVAWuz2+G6Heu8gVZksUz+4hQYpR4R0R/RtBzpWEl8ItBe7O6QjORAkhxzg+WdYLL2A/Yd4ekTpvK0/qW8hTVw==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-displace/-/plugin-displace-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-dither",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-dither/-/plugin-dither-0.16.1.tgz",
+      "integrity": "sha512-tADKVd+HDC9EhJRUDwMvzBXPz4GLoU6s5P7xkVq46tskExYSptgj5713J5Thj3NMgH9Rsqu22jNg1H/7tr3V9Q==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-dither/-/plugin-dither-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-fisheye",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-fisheye/-/plugin-fisheye-0.16.1.tgz",
+      "integrity": "sha512-BWHnc5hVobviTyIRHhIy9VxI1ACf4CeSuCfURB6JZm87YuyvgQh5aX5UDKtOz/3haMHXBLP61ZBxlNpMD8CG4A==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-fisheye/-/plugin-fisheye-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-flip",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-flip/-/plugin-flip-0.16.1.tgz",
+      "integrity": "sha512-KdxTf0zErfZ8DyHkImDTnQBuHby+a5YFdoKI/G3GpBl3qxLBvC+PWkS2F/iN3H7wszP7/TKxTEvWL927pypT0w==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-flip/-/plugin-flip-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-gaussian",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-gaussian/-/plugin-gaussian-0.16.1.tgz",
+      "integrity": "sha512-u9n4wjskh3N1mSqketbL6tVcLU2S5TEaFPR40K6TDv4phPLZALi1Of7reUmYpVm8mBDHt1I6kGhuCJiWvzfGyg==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-gaussian/-/plugin-gaussian-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-invert",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-invert/-/plugin-invert-0.16.1.tgz",
+      "integrity": "sha512-2DKuyVXANH8WDpW9NG+PYFbehzJfweZszFYyxcaewaPLN0GxvxVLOGOPP1NuUTcHkOdMFbE0nHDuB7f+sYF/2w==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-invert/-/plugin-invert-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-mask",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-mask/-/plugin-mask-0.16.1.tgz",
+      "integrity": "sha512-snfiqHlVuj4bSFS0v96vo2PpqCDMe4JB+O++sMo5jF5mvGcGL6AIeLo8cYqPNpdO6BZpBJ8MY5El0Veckhr39Q==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-mask/-/plugin-mask-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-normalize",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-normalize/-/plugin-normalize-0.16.1.tgz",
+      "integrity": "sha512-dOQfIOvGLKDKXPU8xXWzaUeB0nvkosHw6Xg1WhS1Z5Q0PazByhaxOQkSKgUryNN/H+X7UdbDvlyh/yHf3ITRaw==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-normalize/-/plugin-normalize-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-print",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-print/-/plugin-print-0.16.1.tgz",
+      "integrity": "sha512-ceWgYN40jbN4cWRxixym+csyVymvrryuKBQ+zoIvN5iE6OyS+2d7Mn4zlNgumSczb9GGyZZESIgVcBDA1ezq0Q==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js",
+        "dist/measure-text.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-print/-/plugin-print-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-resize",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-resize/-/plugin-resize-0.16.1.tgz",
+      "integrity": "sha512-u4JBLdRI7dargC04p2Ha24kofQBk3vhaf0q8FwSYgnCRwxfvh2RxvhJZk9H7Q91JZp6wgjz/SjvEAYjGCEgAwQ==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js",
+        "dist/modules/resize.js",
+        "dist/modules/resize2.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-resize/-/plugin-resize-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        },
+        {
+          "path": "package/dist/modules/resize2.js",
+          "source": "https://registry.npmjs.org/@jimp/plugin-resize/-/plugin-resize-0.16.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "592b364a881c662f05bfb7f74277edf7da46827e322c3579a390df15e295d088",
+          "notice_text_sha256": "592b364a881c662f05bfb7f74277edf7da46827e322c3579a390df15e295d088"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-rotate",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-rotate/-/plugin-rotate-0.16.1.tgz",
+      "integrity": "sha512-ZUU415gDQ0VjYutmVgAYYxC9Og9ixu2jAGMCU54mSMfuIlmohYfwARQmI7h4QB84M76c9hVLdONWjuo+rip/zg==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-rotate/-/plugin-rotate-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-scale",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-scale/-/plugin-scale-0.16.1.tgz",
+      "integrity": "sha512-jM2QlgThIDIc4rcyughD5O7sOYezxdafg/2Xtd1csfK3z6fba3asxDwthqPZAgitrLgiKBDp6XfzC07Y/CefUw==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-scale/-/plugin-scale-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-shadow",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-shadow/-/plugin-shadow-0.16.1.tgz",
+      "integrity": "sha512-MeD2Is17oKzXLnsphAa1sDstTu6nxscugxAEk3ji0GV1FohCvpHBcec0nAq6/czg4WzqfDts+fcPfC79qWmqrA==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-shadow/-/plugin-shadow-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugin-threshold",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugin-threshold/-/plugin-threshold-0.16.1.tgz",
+      "integrity": "sha512-iGW8U/wiCSR0+6syrPioVGoSzQFt4Z91SsCRbgNKTAk7D+XQv6OI78jvvYg4o0c2FOlwGhqz147HZV5utoSLxA==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugin-threshold/-/plugin-threshold-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/plugins",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/plugins/-/plugins-0.16.1.tgz",
+      "integrity": "sha512-c+lCqa25b+4q6mJZSetlxhMoYuiltyS+ValLzdwK/47+aYsq+kcJNl+TuxIEKf59yr9+5rkbpsPkZHLF/V7FFA==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/plugins/-/plugins-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/png",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/png/-/png-0.16.1.tgz",
+      "integrity": "sha512-iyWoCxEBTW0OUWWn6SveD4LePW89kO7ZOy5sCfYeDM/oTPLpR8iMIGvZpZUz1b8kvzFr27vPst4E5rJhGjwsdw==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/png/-/png-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/tiff",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/tiff/-/tiff-0.16.1.tgz",
+      "integrity": "sha512-3K3+xpJS79RmSkAvFMgqY5dhSB+/sxhwTFA9f4AVHUK0oKW+u6r52Z1L0tMXHnpbAdR9EJ+xaAl2D4x19XShkQ==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/tiff/-/tiff-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/types",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/types/-/types-0.16.1.tgz",
+      "integrity": "sha512-g1w/+NfWqiVW4CaXSJyD28JQqZtm2eyKMWPhBBDCJN9nLCN12/Az0WFF3JUAktzdsEC2KRN2AqB1a2oMZBNgSQ==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/types/-/types-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "@jimp/utils",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/@jimp/utils/-/utils-0.16.1.tgz",
+      "integrity": "sha512-8fULQjB0x4LzUSiSYG6ZtQl355sZjxbv8r9PPAuYHzS9sGiSHJQavNqK/nKnpDsVkU88/vRGcE7t3nMU0dEnVw==",
+      "license": "MIT",
+      "modules": [
+        "dist/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/@jimp/utils/-/utils-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "any-base",
+      "version": "1.1.0",
+      "archive": "https://registry.npmjs.org/any-base/-/any-base-1.1.0.tgz",
+      "integrity": "sha512-uMgjozySS8adZZYePpaWs8cxB9/kdzmpX6SgJZ+wbz1K5eYk5QMYDVJaZKhxyIHUdnnJkfR7SVgStgH7LkGUyg==",
+      "license": "MIT",
+      "modules": [
+        "index.js",
+        "src/converter.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/any-base/-/any-base-1.1.0.tgz",
+          "kind": "archive file",
+          "sha256": "aedafeae58d48d949d59d808112126c97ff0ce47f92dbe80336898d22dbecf23",
+          "notice_text_sha256": "aedafeae58d48d949d59d808112126c97ff0ce47f92dbe80336898d22dbecf23"
+        }
+      ]
+    },
+    {
+      "name": "bmp-js",
+      "version": "0.1.0",
+      "archive": "https://registry.npmjs.org/bmp-js/-/bmp-js-0.1.0.tgz",
+      "integrity": "sha512-vHdS19CnY3hwiNdkaqk93DvjVLfbEcI8mys4UjuWrlX1haDmroo8o4xCzh4wD6DGV6HxRCyauwhHRqMTfERtjw==",
+      "license": "MIT",
+      "modules": [
+        "index.js",
+        "lib/decoder.js",
+        "lib/encoder.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/bmp-js/-/bmp-js-0.1.0.tgz",
+          "kind": "archive file",
+          "sha256": "9f165f5bd2b462122cacb8c6dc32028be1abb4d8ad0322e9a332f30b2ebdb833",
+          "notice_text_sha256": "069da6e7319fbda3f459dad6e8bb6481805287fa870b7fe707d705935e459003"
+        }
+      ]
+    },
+    {
+      "name": "buffer-equal",
+      "version": "0.0.1",
+      "archive": "https://registry.npmjs.org/buffer-equal/-/buffer-equal-0.0.1.tgz",
+      "integrity": "sha512-RgSV6InVQ9ODPdLWJ5UAqBqJBOg370Nz6ZQtRzpt6nUjc8v0St97uJ4PYC6NztqIScrAXafKM3mZPMygSe1ggA==",
+      "license": "MIT",
+      "modules": [
+        "index.js"
+      ],
+      "notices": [
+        {
+          "path": "LICENSE",
+          "source": "https://raw.githubusercontent.com/inspect-js/buffer-equal/a7326b2a0b34b98ba0d4d63cb126357175244847/LICENSE",
+          "kind": "identical implementation",
+          "sha256": "435a6722c786b0a56fbe7387028f1d9d3f3a2d0fb615bb8fee118727c3f59b7b",
+          "notice_text_sha256": "2cd23e64d69941c70a6a6a42ee2e4b3249bb9f071380a6e68709f5c6efd9d96a"
+        }
+      ],
+      "verification": "The npm archive matches index.js in the v0.0.1 tag and the first following commit. That commit adds LICENSE and changes package.json; it leaves index.js byte-identical."
+    },
+    {
+      "name": "exif-parser",
+      "version": "0.1.12",
+      "archive": "https://registry.npmjs.org/exif-parser/-/exif-parser-0.1.12.tgz",
+      "integrity": "sha512-c2bQfLNbMzLPmzQuOr8fy0csy84WmwnER81W88DzTp9CYNPJ6yzOj2EZAh9pywYpqHnshVLHQJ8WzldAyfY+Iw==",
+      "license": null,
+      "modules": [
+        "index.js",
+        "lib/bufferstream.js",
+        "lib/date.js",
+        "lib/dom-bufferstream.js",
+        "lib/exif-tags.js",
+        "lib/exif.js",
+        "lib/jpeg.js",
+        "lib/parser.js",
+        "lib/simplify.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE.md",
+          "source": "https://registry.npmjs.org/exif-parser/-/exif-parser-0.1.12.tgz",
+          "kind": "archive file",
+          "sha256": "3c58bdcad5b1313456b7cf639574708a84a80ee6bddf1a26f0c5fc4d7ab1830b",
+          "notice_text_sha256": "3c58bdcad5b1313456b7cf639574708a84a80ee6bddf1a26f0c5fc4d7ab1830b"
+        }
+      ]
+    },
+    {
+      "name": "file-type",
+      "version": "9.0.0",
+      "archive": "https://registry.npmjs.org/file-type/-/file-type-9.0.0.tgz",
+      "integrity": "sha512-Qe/5NJrgIOlwijpq3B7BEpzPFcgzggOTagZmkXQY4LA6bsXKTUstK7Wp12lEJ/mLKTpvIZxmIuRcLYWT6ov9lw==",
+      "license": "MIT",
+      "modules": [
+        "index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/license",
+          "source": "https://registry.npmjs.org/file-type/-/file-type-9.0.0.tgz",
+          "kind": "archive file",
+          "sha256": "48da2f39e100d4085767e94966b43f4fa95ff6a0698fba57ed460914e35f94a0",
+          "notice_text_sha256": "c9808a775260db5602f6a0c29f5f8b78e81f9666a33623fedfa34a22208b1063"
+        }
+      ]
+    },
+    {
+      "name": "gifwrap",
+      "version": "0.9.2",
+      "archive": "https://registry.npmjs.org/gifwrap/-/gifwrap-0.9.2.tgz",
+      "integrity": "sha512-fcIswrPaiCDAyO8xnWvHSZdWChjKXUanKKpAiWWJ/UTkEi/aYKn5+90e7DE820zbEaVR9CE2y4z9bzhQijZ0BA==",
+      "license": "MIT",
+      "modules": [
+        "src/bitmapimage.js",
+        "src/gif.js",
+        "src/gifcodec.js",
+        "src/gifframe.js",
+        "src/gifutil.js",
+        "src/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/gifwrap/-/gifwrap-0.9.2.tgz",
+          "kind": "archive file",
+          "sha256": "c28a483580454d61210a1c7cc0899d75b68fa875cc7940ebafde3c49ca762439",
+          "notice_text_sha256": "a493714d9497a7387abe1b88b16f8f3c4cad83cce9e335d58cc4224ebadf1a9f"
+        }
+      ]
+    },
+    {
+      "name": "image-q",
+      "version": "1.1.1",
+      "archive": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+      "integrity": "sha512-zgWEeg+5KV7fILRUxkmPr/Sykz9wP22n2OfBtuzURc7jZ0D5esuw6xFfKWug3fYUEZ78+ECNKjjYmEUqxFtk+Q==",
+      "license": "MIT",
+      "modules": [
+        "dist/iq.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "archive file",
+          "sha256": "bdccf910f033ad8d4b68c7d0ae952ac8479c9256670d59e4340751701e540cf9",
+          "notice_text_sha256": "316303fc0f026f6db1d59a8134483782b6148f740e7341ea7ebb1cac6634ee18"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "13846ad77983e4d9811fd5249b30c3d948af0ba4a7f70bd88ef6bf30ff7a20b4",
+          "notice_text_sha256": "428122c8067948f5c4751ffeb25158404bbb3dd5cd12053483b1779aa3f493da"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "a2c81fa0327df59a5d993f1710a26ca5d45a9bfa1580bc1e2e45f20261379903",
+          "notice_text_sha256": "2cbbd6264a7260817b8e0d9cb0fc4b9869620269bb8f0fbc4474ed9d233afe29"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "a2c81fa0327df59a5d993f1710a26ca5d45a9bfa1580bc1e2e45f20261379903",
+          "notice_text_sha256": "2cbbd6264a7260817b8e0d9cb0fc4b9869620269bb8f0fbc4474ed9d233afe29"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "13846ad77983e4d9811fd5249b30c3d948af0ba4a7f70bd88ef6bf30ff7a20b4",
+          "notice_text_sha256": "428122c8067948f5c4751ffeb25158404bbb3dd5cd12053483b1779aa3f493da"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "56cf5f518b23412a4af8b3dbed8a73837e0189a547f8868da166b3506973d8c4",
+          "notice_text_sha256": "c5bb1fe3bca91b6294b5c098416e7f3fd6a23b059dab9b82695ddc1b346dd4d0"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "6cbbe4a11db31a9c2eff8ebed522f63412d1c3b26b0b7fd83ad4063816f73b93",
+          "notice_text_sha256": "7b5ad13dbe14f797a7eed800c37cae1565f56a19f85efc65405c0d4a3caeb314"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "1d8c1c56995b2551d0abb9ac58ed9d48e260387d37192e808e980e24f29dcbbf",
+          "notice_text_sha256": "6aab5b4801604ee9cfb16558cb39154148c1cee7740ded8cb9c02cc71dca5f82"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "45c3e8f75458a18ec49455de48f20bb91c3c9ec1233ca01dd99cc57b1d713618",
+          "notice_text_sha256": "edd5fe50cff8926d4d596dceff25c5c26fb0bf45442f6cb5ba994ef118425e9e"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "9677ee8369297f8ffa0def7130970f134dab68a210200e9b64b15a6acb34a2e0",
+          "notice_text_sha256": "fa9416699905945f347d67bf659f84f51d2d074af0d67f9ea01226b0ab35aa0c"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "f0e83b70abd521d00e0a0bcb86f6d48b52d6f2659d0973cc4a3049e160b2ba9a",
+          "notice_text_sha256": "99419a93810837ed995244285e4b65c52457bca31f358c0737276da1dd3e22f8"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "180b334f892bb16494ba9fbf67ea56be10f38383c8a7e86ed2d6d9572c6e23ae",
+          "notice_text_sha256": "0571d80e8c7eab68e6d6411a519e21b63dbe1703ebeaae6aad47cc019ed90964"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "13846ad77983e4d9811fd5249b30c3d948af0ba4a7f70bd88ef6bf30ff7a20b4",
+          "notice_text_sha256": "428122c8067948f5c4751ffeb25158404bbb3dd5cd12053483b1779aa3f493da"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4504e7e2b63d610454e74ee09e50d230a33afbf16f0b039eb7b76523f3fc8af2",
+          "notice_text_sha256": "c67908321c75cb84dc6407b9c2c234e0db643db893817c4d95962e52fd038484"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "cd74e0c151c37f1683de6a74e43c942c0abe937c4eff059fb1ebeb3945912c7a",
+          "notice_text_sha256": "ba9c2920f889bb77ec627a08ff5b15fb6528350b964c07ffe3ec6936b15a9523"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "b2d22dd70e48091fdb8af521d87037262568038b2ef1f801e68a044ee059a5ea",
+          "notice_text_sha256": "878d65839fe5909eeb7e850827bdfae97f6422dacac31901feb11096babc2666"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "69aa461cb6478140deaebb71845b22059b0ddae629dd82b1208b16ddfc96193e",
+          "notice_text_sha256": "b073312a096f8c68ad78076bc09dd0b36626c418a0001b65b0589de399381ec7"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "c6e5b83ebc7dde8579d0dc095c17d147b874b489a95e94aaa204615b8f463066",
+          "notice_text_sha256": "e68bb1308204319392deea88750a46e0af31a548d0b1f63608b7dc3e413a4f72"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "0e03195e363d306182d6f1e6ae068cdef6b6fd36db93bc927208b360784d71e1",
+          "notice_text_sha256": "a7ba211b30b0f9b5a91ad98b3ef5f026b806457b7d2b93985c4f295d3eeb8355"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "2404a09ce3904ca0c0dad919d6e33caf413fcb6d9c27e6d86b4b92d91785aa1c",
+          "notice_text_sha256": "060cec72770f9e65344cab173f91482f90a390d40468164870a33b2a1cd7aae9"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "f35f100081f1dce001c4b3e03a960915bfcc961df5cb08e3cf440fd549c0780b",
+          "notice_text_sha256": "bbf51632d3e2ae8f9a03e752712d1a2771dc27fe76c502f089dd2d9a8afff79a"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "56172cdb4edd833ee85bda3aa3e34a818089cd8c074c27a821705202dff64615",
+          "notice_text_sha256": "f2667114d3d8a0175d71b6aca02a1e93f8e043a2cc542f5bb77273c8e5b54513"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "61bcaa977bb24119c6c552fc1b0c2486f852d1d5165fde8ad258977d81ea5f57",
+          "notice_text_sha256": "77045415d44d2ce312f4cdb2babd6485747c98f1c62b0b44d349af68a07a8e62"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "2cee526bbb116d024a794bf30e8624bca4713805d93f3fea7515a89cf2cf745c",
+          "notice_text_sha256": "e75a951d4031cecb6dc687ca36675ed929e9ce94b1a864fd81bc3138b9c24a0d"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "39ccd4b02280d8a524d3e57bb92b4e8a3c486fb7350857293703ff7aeaa58415",
+          "notice_text_sha256": "9c52a60b827251d0d7a16ede6d9f0121ae825ab79cd6c9dca23f8f7d9529eb8a"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "f35f100081f1dce001c4b3e03a960915bfcc961df5cb08e3cf440fd549c0780b",
+          "notice_text_sha256": "bbf51632d3e2ae8f9a03e752712d1a2771dc27fe76c502f089dd2d9a8afff79a"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "94d0440f006dbc6e9ebac072f29d83039a53ff756753606d2f0e68985f0a2377",
+          "notice_text_sha256": "db1b8773f0051214a442d105791a550b376622bd13aacb927ceab5f28941835c"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "2e3e93c4097697f3810e30a337ffe57c38a99b6d18352a387c19bbc3ea25c106",
+          "notice_text_sha256": "e7a300c4f962e2a83b14aafed9208e925047069672c5737f494baa210dc7997c"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "abc0950f17a141ab0596014874583a562cb9d1fadce875d7fa63836f02267ebd",
+          "notice_text_sha256": "0fb53f89a2a609657aa87ee3c2fab4fd511bd92b8b3b86bc952ee8b2fd9b908b"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "c3c291917a17d12500539b88506101cca3911d5b7b6dd56c762e2ce2a389bfeb",
+          "notice_text_sha256": "8d185241572f6c2ac8d16c45659655f831bcc0cce5044ae0e4df060fcd063f74"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "396774634b1fb1971046b754f290fff4e40f9dd23b3735af6e5cc50e41f5ccee",
+          "notice_text_sha256": "c63e5bb50941af237729e6ab464829dcf7f1093e86cd8fd72b04a83a1ddf3e55"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "8612bf83bcd6394c4b92e07fd5f2da25be2b602a7c39a8aa98ddaeee8e45dc7d",
+          "notice_text_sha256": "16ddcd5e9e4586cc599175297f7f3bbd7c8c202d2c4812bed3c131a1c00a82a0"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "13846ad77983e4d9811fd5249b30c3d948af0ba4a7f70bd88ef6bf30ff7a20b4",
+          "notice_text_sha256": "428122c8067948f5c4751ffeb25158404bbb3dd5cd12053483b1779aa3f493da"
+        },
+        {
+          "path": "package/dist/iq.js",
+          "source": "https://registry.npmjs.org/image-q/-/image-q-1.1.1.tgz",
+          "kind": "emitted source comment",
+          "sha256": "13846ad77983e4d9811fd5249b30c3d948af0ba4a7f70bd88ef6bf30ff7a20b4",
+          "notice_text_sha256": "428122c8067948f5c4751ffeb25158404bbb3dd5cd12053483b1779aa3f493da"
+        }
+      ]
+    },
+    {
+      "name": "jimp",
+      "version": "0.16.1",
+      "archive": "https://registry.npmjs.org/jimp/-/jimp-0.16.1.tgz",
+      "integrity": "sha512-+EKVxbR36Td7Hfd23wKGIeEyHbxShZDX6L8uJkgVW3ESA9GiTEPK08tG1XI2r/0w5Ch0HyJF5kPqF9K7EmGjaw==",
+      "license": "MIT",
+      "modules": [
+        "es/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/jimp/-/jimp-0.16.1.tgz",
+          "kind": "archive file",
+          "sha256": "942eab097945c835cf41abcbf1b9a6659c5d0c3493e60c56796d2e045c219278",
+          "notice_text_sha256": "7271197ebd7d13f1d3e4607271aa731755da363902a74cf99f65948c85e81cb1"
+        }
+      ]
+    },
+    {
+      "name": "jpeg-js",
+      "version": "0.4.2",
+      "archive": "https://registry.npmjs.org/jpeg-js/-/jpeg-js-0.4.2.tgz",
+      "integrity": "sha512-+az2gi/hvex7eLTMTlbRLOhH6P6WFdk2ITI8HJsaH2VqYO0I594zXSYEP+tf4FW+8Cy68ScDXoAsQdyQanv3sw==",
+      "license": "BSD-3-Clause",
+      "modules": [
+        "index.js",
+        "lib/decoder.js",
+        "lib/encoder.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/jpeg-js/-/jpeg-js-0.4.2.tgz",
+          "kind": "archive file",
+          "sha256": "c0a8512eabe960492fefd4f287523eb3b5ca1518ca37ef0ec83344cd7f089cb8",
+          "notice_text_sha256": "b587d7daeed1b148c33498fac0da1ebd776f6cd41585536d3169cc2687376c57"
+        },
+        {
+          "path": "package/lib/decoder.js",
+          "source": "https://registry.npmjs.org/jpeg-js/-/jpeg-js-0.4.2.tgz",
+          "kind": "emitted source comment",
+          "sha256": "b565bc7182bfdb5b7cebdc20de5cf4a75fd14fe50795335eaf1bf7e8f5d314bb",
+          "notice_text_sha256": "b565bc7182bfdb5b7cebdc20de5cf4a75fd14fe50795335eaf1bf7e8f5d314bb"
+        },
+        {
+          "path": "package/lib/encoder.js",
+          "source": "https://registry.npmjs.org/jpeg-js/-/jpeg-js-0.4.2.tgz",
+          "kind": "emitted source comment",
+          "sha256": "8f229948624629f3ad3b2ff3f39bbec20b415771d882cf16314c99f782689a62",
+          "notice_text_sha256": "3f5b29dcf73651d62915b9b6b3a529d678b86a7ae7c8424f1a1b445a841d2221"
+        },
+        {
+          "path": "lib/decoder.js",
+          "source": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+          "kind": "license referenced by emitted source",
+          "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "notice_text_sha256": "283ea6cc2997a1a70da0049e09adf9317bb60ca1b51279b65196b83a69e1996b"
+        }
+      ]
+    },
+    {
+      "name": "load-bmfont",
+      "version": "1.4.0",
+      "archive": "https://registry.npmjs.org/load-bmfont/-/load-bmfont-1.4.0.tgz",
+      "integrity": "sha512-kT63aTAlNhZARowaNYcY29Fn/QYkc52M3l6V1ifRcPewg2lvUZDAj7R6dXjOL9D0sict76op3T5+odumDSF81g==",
+      "license": "MIT",
+      "modules": [
+        "index.js",
+        "lib/is-binary.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE.md",
+          "source": "https://registry.npmjs.org/load-bmfont/-/load-bmfont-1.4.0.tgz",
+          "kind": "archive file",
+          "sha256": "fb153e8eaf70c10aa169bc3d7401946a9d51163cafaca23458cea8e67de972f4",
+          "notice_text_sha256": "f78aadf65093e4402d6117d875a8107e2fd3bccda4a3e3e28a5409121bad81d6"
+        }
+      ]
+    },
+    {
+      "name": "mime",
+      "version": "1.6.0",
+      "archive": "https://registry.npmjs.org/mime/-/mime-1.6.0.tgz",
+      "integrity": "sha512-x0Vn8spI+wuJ1O6S7gnbaQg8Pxh4NNHb7KSINmEWKiPE4RKOplvijn+NkmYmmRgP68mc70j2EbeTFRsrswaQeg==",
+      "license": "MIT",
+      "modules": [
+        "mime.js",
+        "types.json"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/mime/-/mime-1.6.0.tgz",
+          "kind": "archive file",
+          "sha256": "8f2658c03422c408b2b2ce4d151decc3b1a6fd3d86e5ca9433777bccdcdf75a2",
+          "notice_text_sha256": "f0f81ce253975643e69a72e820f541397bc6e9904ca02e389a8a1bfeff6be86a"
+        }
+      ]
+    },
+    {
+      "name": "mkdirp",
+      "version": "0.5.5",
+      "archive": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.5.tgz",
+      "integrity": "sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==",
+      "license": "MIT",
+      "modules": [
+        "index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/mkdirp/-/mkdirp-0.5.5.tgz",
+          "kind": "archive file",
+          "sha256": "05991c2e8f070b69ec5b656c2c12fd07cd0153dd157d39b050b82af59b319a01",
+          "notice_text_sha256": "bda3aa73b62615eff69425999ccf205b05db83c38914db66a8ad790037bcbb30"
+        }
+      ]
+    },
+    {
+      "name": "omggif",
+      "version": "1.0.10",
+      "archive": "https://registry.npmjs.org/omggif/-/omggif-1.0.10.tgz",
+      "integrity": "sha512-LMJTtvgc/nugXj0Vcrrs68Mn2D1r0zf630VNtqtpI1FEO7e+O9FP4gqs9AcnBaSEeoHIPm28u6qgPR0oyEpGSw==",
+      "license": "MIT",
+      "modules": [
+        "omggif.js"
+      ],
+      "notices": [
+        {
+          "path": "package/omggif.js",
+          "source": "https://registry.npmjs.org/omggif/-/omggif-1.0.10.tgz",
+          "kind": "emitted source comment",
+          "sha256": "ac46deb45693c89d90237098b5030d84c05c258b695712374e31f86b8db43cee",
+          "notice_text_sha256": "ac46deb45693c89d90237098b5030d84c05c258b695712374e31f86b8db43cee"
+        }
+      ]
+    },
+    {
+      "name": "pako",
+      "version": "1.0.11",
+      "archive": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+      "integrity": "sha512-4hLB8Py4zZce5s4yd9XzopqwVv/yGNhV1Bl8NTmCq1763HeK2+EwVTv+leGeL13Dnh2wfbqowVPXCIO0z4taYw==",
+      "license": "(MIT AND Zlib)",
+      "modules": [
+        "index.js",
+        "lib/deflate.js",
+        "lib/inflate.js",
+        "lib/utils/common.js",
+        "lib/utils/strings.js",
+        "lib/zlib/adler32.js",
+        "lib/zlib/constants.js",
+        "lib/zlib/crc32.js",
+        "lib/zlib/deflate.js",
+        "lib/zlib/gzheader.js",
+        "lib/zlib/inffast.js",
+        "lib/zlib/inflate.js",
+        "lib/zlib/inftrees.js",
+        "lib/zlib/messages.js",
+        "lib/zlib/trees.js",
+        "lib/zlib/zstream.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "archive file",
+          "sha256": "a04665b3b2de56c66730c1f720f528175739e4104f79073614aa611da1e85539",
+          "notice_text_sha256": "9bce71206bb197a44eea817bf9c4091118b153cbe09f7544ed7e5abc536d5bcc"
+        },
+        {
+          "path": "package/lib/zlib/adler32.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/constants.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/crc32.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/deflate.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/gzheader.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/inffast.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/inflate.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/inftrees.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/messages.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/trees.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        },
+        {
+          "path": "package/lib/zlib/zstream.js",
+          "source": "https://registry.npmjs.org/pako/-/pako-1.0.11.tgz",
+          "kind": "emitted source comment",
+          "sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804",
+          "notice_text_sha256": "4125652cdbd6fdba9b60c839df6abeb3fc9da98fca00b4cab15157951e080804"
+        }
+      ]
+    },
+    {
+      "name": "parse-bmfont-ascii",
+      "version": "1.0.6",
+      "archive": "https://registry.npmjs.org/parse-bmfont-ascii/-/parse-bmfont-ascii-1.0.6.tgz",
+      "integrity": "sha512-U4RrVsUFCleIOBsIGYOMKjn9PavsGOXxbvYGtMOEfnId0SVNsgehXh1DxUdVPLoxd5mvcEtvmKs2Mmf0Mpa1ZA==",
+      "license": "MIT",
+      "modules": [
+        "index.js"
+      ],
+      "notices": [
+        {
+          "path": "LICENSE.md",
+          "source": "https://raw.githubusercontent.com/mattdesl/parse-bmfont-ascii/5f22b037ae7460f629dd681db23cd9b543a76b06/LICENSE.md",
+          "kind": "published gitHead",
+          "sha256": "59c38e93a395817bc9d674d868af7c062fcea8b37468af8b3f6f075133eb1756",
+          "notice_text_sha256": "bd7c2da51c2d1f42cd7993f50858b632a584f5750de5747df832768801a112bc"
+        }
+      ],
+      "verification": "The archive README points to this license. The exact npm gitHead contains the license and its index.js matches the emitted source."
+    },
+    {
+      "name": "parse-bmfont-binary",
+      "version": "1.0.6",
+      "archive": "https://registry.npmjs.org/parse-bmfont-binary/-/parse-bmfont-binary-1.0.6.tgz",
+      "integrity": "sha512-GxmsRea0wdGdYthjuUeWTMWPqm2+FAd4GI8vCvhgJsFnoGhTrLhXDDupwTo7rXVAgaLIGoVHDZS9p/5XbSqeWA==",
+      "license": "MIT",
+      "modules": [
+        "index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE.md",
+          "source": "https://registry.npmjs.org/parse-bmfont-binary/-/parse-bmfont-binary-1.0.6.tgz",
+          "kind": "archive file",
+          "sha256": "fb153e8eaf70c10aa169bc3d7401946a9d51163cafaca23458cea8e67de972f4",
+          "notice_text_sha256": "f78aadf65093e4402d6117d875a8107e2fd3bccda4a3e3e28a5409121bad81d6"
+        }
+      ]
+    },
+    {
+      "name": "parse-bmfont-xml",
+      "version": "1.1.4",
+      "archive": "https://registry.npmjs.org/parse-bmfont-xml/-/parse-bmfont-xml-1.1.4.tgz",
+      "integrity": "sha512-bjnliEOmGv3y1aMEfREMBJ9tfL3WR0i0CKPj61DnSLaoxWR3nLrsQrEbCId/8rF4NyRF0cCqisSVXyQYWM+mCQ==",
+      "license": "MIT",
+      "modules": [
+        "lib/index.js",
+        "lib/parse-attribs.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE.md",
+          "source": "https://registry.npmjs.org/parse-bmfont-xml/-/parse-bmfont-xml-1.1.4.tgz",
+          "kind": "archive file",
+          "sha256": "59c38e93a395817bc9d674d868af7c062fcea8b37468af8b3f6f075133eb1756",
+          "notice_text_sha256": "bd7c2da51c2d1f42cd7993f50858b632a584f5750de5747df832768801a112bc"
+        }
+      ]
+    },
+    {
+      "name": "phin",
+      "version": "2.9.3",
+      "archive": "https://registry.npmjs.org/phin/-/phin-2.9.3.tgz",
+      "integrity": "sha512-CzFr90qM24ju5f88quFC/6qohjC144rehe5n6DH900lgXmUe86+xCKc10ev56gRKC4/BkHUoG4uSiQgBiIXwDA==",
+      "license": "MIT",
+      "modules": [
+        "lib/phin.compiled.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/phin/-/phin-2.9.3.tgz",
+          "kind": "archive file",
+          "sha256": "27b3d1e86583b71dcd450ab51ee29db0dc41403dd11e2851be87c124a3aa7a9b",
+          "notice_text_sha256": "27b3d1e86583b71dcd450ab51ee29db0dc41403dd11e2851be87c124a3aa7a9b"
+        }
+      ]
+    },
+    {
+      "name": "pixelmatch",
+      "version": "4.0.2",
+      "archive": "https://registry.npmjs.org/pixelmatch/-/pixelmatch-4.0.2.tgz",
+      "integrity": "sha512-J8B6xqiO37sU/gkcMglv6h5Jbd9xNER7aHzpfRdNmV4IbQBzBpe4l9XmbG+xPF/znacgu2jfEw+wHffaq/YkXA==",
+      "license": "ISC",
+      "modules": [
+        "index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/pixelmatch/-/pixelmatch-4.0.2.tgz",
+          "kind": "archive file",
+          "sha256": "828f2aed51b6526881a236758ec9b08cd69928fbfc70346d9d44a0b3a3444fe1",
+          "notice_text_sha256": "b75ac78be079a64731daf6e4f0297b200a4b11c435e7c827ecaf313525c4a7e3"
+        }
+      ]
+    },
+    {
+      "name": "pngjs",
+      "version": "3.4.0",
+      "archive": "https://registry.npmjs.org/pngjs/-/pngjs-3.4.0.tgz",
+      "integrity": "sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==",
+      "license": "MIT",
+      "modules": [
+        "lib/bitmapper.js",
+        "lib/bitpacker.js",
+        "lib/chunkstream.js",
+        "lib/constants.js",
+        "lib/crc.js",
+        "lib/filter-pack.js",
+        "lib/filter-parse-async.js",
+        "lib/filter-parse-sync.js",
+        "lib/filter-parse.js",
+        "lib/format-normaliser.js",
+        "lib/interlace.js",
+        "lib/packer-async.js",
+        "lib/packer-sync.js",
+        "lib/packer.js",
+        "lib/paeth-predictor.js",
+        "lib/parser-async.js",
+        "lib/parser-sync.js",
+        "lib/parser.js",
+        "lib/png-sync.js",
+        "lib/png.js",
+        "lib/sync-inflate.js",
+        "lib/sync-reader.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/pngjs/-/pngjs-3.4.0.tgz",
+          "kind": "archive file",
+          "sha256": "176b07a18c0bb3836aaeb61088fd0bf11a38f66e6f15e3fbda85faa225250d6e",
+          "notice_text_sha256": "87ddba564a59e4efa83b49350a4a09671ce05059dd01916e44acee77dbfcc551"
+        }
+      ]
+    },
+    {
+      "name": "regenerator-runtime",
+      "version": "0.13.5",
+      "archive": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz",
+      "integrity": "sha512-ZS5w8CpKFinUzOwW3c83oPeVXoNsrLsaCoLtJvAClH135j/R77RuymhiSErhm2lKcwSCIpmvIWSbDkIfAqKQlA==",
+      "license": "MIT",
+      "modules": [
+        "runtime.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz",
+          "kind": "archive file",
+          "sha256": "51887a3d47051ac2fce1210562e5b9fe0830a8a8fabeb272c2d586eeb18a05fd",
+          "notice_text_sha256": "1bd3149b744f9c384c8972ad7f5d034073bc799031bbbe64b04ec95ef200b933"
+        },
+        {
+          "path": "package/runtime.js",
+          "source": "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.5.tgz",
+          "kind": "emitted source comment",
+          "sha256": "7ec3786a7f20c029554947502394b1286cfb7fc396d49f2686313e65e29cd5f8",
+          "notice_text_sha256": "7ec3786a7f20c029554947502394b1286cfb7fc396d49f2686313e65e29cd5f8"
+        }
+      ]
+    },
+    {
+      "name": "sax",
+      "version": "1.2.4",
+      "archive": "https://registry.npmjs.org/sax/-/sax-1.2.4.tgz",
+      "integrity": "sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==",
+      "license": "ISC",
+      "modules": [
+        "lib/sax.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/sax/-/sax-1.2.4.tgz",
+          "kind": "archive file",
+          "sha256": "3098be2717081cfe2b88a0faa221cb4f2326720cb8ce869199a9d6234f219319",
+          "notice_text_sha256": "9d8656fb870ed9088befac6376177ce1fa136ef7daf8d97437df891b05e3e403"
+        }
+      ]
+    },
+    {
+      "name": "timm",
+      "version": "1.6.2",
+      "archive": "https://registry.npmjs.org/timm/-/timm-1.6.2.tgz",
+      "integrity": "sha512-IH3DYDL1wMUwmIlVmMrmesw5lZD6N+ZOAFWEyLrtpoL9Bcrs9u7M/vyOnHzDD2SMs4irLkVjqxZbHrXStS/Nmw==",
+      "license": "MIT",
+      "modules": [
+        "lib/timm.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/timm/-/timm-1.6.2.tgz",
+          "kind": "archive file",
+          "sha256": "c91e8b19c76596add7a0012af17af17295764d0084b86ee845413d2b0e5791bf",
+          "notice_text_sha256": "e53e6f89e5a5347a166a90ff1e4dccbbc39000e401c62b369daa28e9310c267c"
+        },
+        {
+          "path": "package/lib/timm.js",
+          "source": "https://registry.npmjs.org/timm/-/timm-1.6.2.tgz",
+          "kind": "emitted source comment",
+          "sha256": "8b54d090f9f66ac6be1b721d138abd69a850bbd7b2e4d6a52f8f8b36ad5b7f09",
+          "notice_text_sha256": "8b54d090f9f66ac6be1b721d138abd69a850bbd7b2e4d6a52f8f8b36ad5b7f09"
+        }
+      ]
+    },
+    {
+      "name": "tinycolor2",
+      "version": "1.4.1",
+      "archive": "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.1.tgz",
+      "integrity": "sha512-5gQXogvRKAhJChgQPSAXaXbrQVq+w2Ckl/5jeno5N9eMcYbz0docSS3n0YNywAyDQBsUFokmHzNM8yvX2+eLVg==",
+      "license": "MIT",
+      "modules": [
+        "tinycolor.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.1.tgz",
+          "kind": "archive file",
+          "sha256": "c6cb470a9ba0a50d57611aeec1f31da609c5aefdbee8eac7f289bcb0e30625fa",
+          "notice_text_sha256": "c6cb470a9ba0a50d57611aeec1f31da609c5aefdbee8eac7f289bcb0e30625fa"
+        }
+      ]
+    },
+    {
+      "name": "utif",
+      "version": "2.0.1",
+      "archive": "https://registry.npmjs.org/utif/-/utif-2.0.1.tgz",
+      "integrity": "sha512-Z/S1fNKCicQTf375lIP9G8Sa1H/phcysstNrrSdZKj1f9g58J4NMgb5IgiEZN9/nLMPDwF0W7hdOe9Qq2IYoLg==",
+      "license": "MIT",
+      "modules": [
+        "UTIF.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/utif/-/utif-2.0.1.tgz",
+          "kind": "archive file",
+          "sha256": "c1fb8861eca211bf5aea574358aba7039396c0c1824c2a1477cc126d398efd89",
+          "notice_text_sha256": "ba8b485276d2a2d1062ce653a3f73c0ea538ddd3847341becf279201daceb4ed"
+        }
+      ]
+    },
+    {
+      "name": "xml2js",
+      "version": "0.4.23",
+      "archive": "https://registry.npmjs.org/xml2js/-/xml2js-0.4.23.tgz",
+      "integrity": "sha512-ySPiMjM0+pLDftHgXY4By0uswI3SPKLDw/i3UXbnO8M/p28zqexCUoPmQFrYD+/1BzhGJSs2i1ERWKJAtiLrug==",
+      "license": "MIT",
+      "modules": [
+        "lib/bom.js",
+        "lib/builder.js",
+        "lib/defaults.js",
+        "lib/parser.js",
+        "lib/processors.js",
+        "lib/xml2js.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/xml2js/-/xml2js-0.4.23.tgz",
+          "kind": "archive file",
+          "sha256": "c51452ef1dfd5606c9fe266930fa6bf7e8a534d52973b6475df5bf212cad5b0a",
+          "notice_text_sha256": "2c0d399ee1ac86f8db3c3852ceeccb0ebca1d9b35a4bd4656845c34742c277bc"
+        }
+      ]
+    },
+    {
+      "name": "xmlbuilder",
+      "version": "11.0.1",
+      "archive": "https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-11.0.1.tgz",
+      "integrity": "sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==",
+      "license": "MIT",
+      "modules": [
+        "lib/DocumentPosition.js",
+        "lib/NodeType.js",
+        "lib/Utility.js",
+        "lib/WriterState.js",
+        "lib/XMLAttribute.js",
+        "lib/XMLCData.js",
+        "lib/XMLCharacterData.js",
+        "lib/XMLComment.js",
+        "lib/XMLDOMConfiguration.js",
+        "lib/XMLDOMErrorHandler.js",
+        "lib/XMLDOMImplementation.js",
+        "lib/XMLDOMStringList.js",
+        "lib/XMLDTDAttList.js",
+        "lib/XMLDTDElement.js",
+        "lib/XMLDTDEntity.js",
+        "lib/XMLDTDNotation.js",
+        "lib/XMLDeclaration.js",
+        "lib/XMLDocType.js",
+        "lib/XMLDocument.js",
+        "lib/XMLDocumentCB.js",
+        "lib/XMLDummy.js",
+        "lib/XMLElement.js",
+        "lib/XMLNamedNodeMap.js",
+        "lib/XMLNode.js",
+        "lib/XMLNodeList.js",
+        "lib/XMLProcessingInstruction.js",
+        "lib/XMLRaw.js",
+        "lib/XMLStreamWriter.js",
+        "lib/XMLStringWriter.js",
+        "lib/XMLStringifier.js",
+        "lib/XMLText.js",
+        "lib/XMLWriterBase.js",
+        "lib/index.js"
+      ],
+      "notices": [
+        {
+          "path": "package/LICENSE",
+          "source": "https://registry.npmjs.org/xmlbuilder/-/xmlbuilder-11.0.1.tgz",
+          "kind": "archive file",
+          "sha256": "e368bc4263b466cf98c225af15e300549e00da8859416a4536109e9654d434a8",
+          "notice_text_sha256": "6aa73c22716951bb11a0ef9b88b805c6ff12d6c925aefac3024e3431d9ae59ca"
+        }
+      ]
+    }
+  ]
+}
