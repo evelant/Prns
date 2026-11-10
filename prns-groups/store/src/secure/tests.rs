@@ -232,6 +232,8 @@ fn is_marker(call: &Call) -> bool {
 /// Test-only forensic oracle: unwrap every physically surviving capsule and
 /// catalog using the separately retained device key. Never logs key material.
 fn audit_reachable_keys(store: &Store, retired_dek: &[u8], old_root: Root, old_catalog: &[u8]) {
+    let mut wrapping_key = Zeroizing::new([0; 32]);
+    Keys.wrapping_key(&mut wrapping_key).unwrap();
     let mut surviving = 0;
     for slot in 0..3 {
         let at = store.capsule_at(slot) as usize;
@@ -243,7 +245,7 @@ fn audit_reachable_keys(store: &Store, retired_dek: &[u8], old_root: Root, old_c
         assert_eq!(&sector[SECTOR - BLOCK..], MARKER);
         let nonce: [u8; 24] = sector[40..64].try_into().unwrap();
         let descriptor = codec::open(
-            &[0x72; 32],
+            wrapping_key.as_ref(),
             &nonce,
             &sector[..64],
             Zeroizing::new(sector[64..212].to_vec()),
