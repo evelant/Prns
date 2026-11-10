@@ -187,7 +187,9 @@ export function main(args = process.argv.slice(2)) {
     validatePackagedAttribution(sdkArchive.files, selection, sourceRecord, readMember('THIRD_PARTY_NOTICES.md'));
     assert.deepEqual(sourceRecord, expectedSources, 'packed source record differs from verified inputs');
     const attribution = { sourceRecordSha256: digest(join(sdk, 'third-party-sources.json')),
-      noticeSha256: sourceRecord.notice_sha256, policyApproval: false };
+      noticeSha256: sourceRecord.notice_sha256, policyApproval: false,
+      runtimeLicensePolicy: sourceRecord.runtime_archives.packages.every(
+        runtime => runtime.unresolved_policy.length === 0) ? 'passed' : 'unresolved' };
 
     const appleImages = validatePackagedAppleImages(sdkArchive.files, selection, values['require-ios']);
     const images = [...validatePackagedImages(sdkArchive.files, selection), ...appleImages];

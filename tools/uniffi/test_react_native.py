@@ -165,7 +165,7 @@ class ConfiguredInputsTests(unittest.TestCase):
             with self.subTest(text=text), self.assertRaises(ValueError):
                 react_native.patch_paths(text)
 
-    def test_attribution_preserves_packages_patches_and_unresolved_policy(self):
+    def test_attribution_preserves_packages_patches_and_exact_runtime_exceptions(self):
         with patch.object(react_native, 'package_archive') as archives:
             report = runtime_notices.evidence()
         self.assertEqual(archives.call_count, len(self.document['packages']))
@@ -176,9 +176,19 @@ class ConfiguredInputsTests(unittest.TestCase):
             self.assertEqual(actual['archive'], expected['archive'])
             self.assertEqual(actual['upstream'], self.document['upstream'])
             self.assertIn('Mozilla Public License', ' '.join(actual['license_notice'].split()))
-        with self.assertRaisesRegex(ValueError, 'crate-specific exceptions do not approve'):
-            runtime_notices.verify_policy(report)
+            self.assertTrue(actual['mobile_runtime_license_exception'])
+        runtime_notices.verify_policy(report)
+        self.assertIn(Path(runtime_notices.npm_lockfile.__file__).resolve(), runtime_notices.input_paths())
         self.assertIn(self.root / self.document['runtime_patch']['file'], runtime_notices.input_paths())
+
+    def test_changed_archive_is_unresolved_even_with_a_crate_exception(self):
+        self.document['packages'][0]['archive'] += '?unreviewed'
+        self.save()
+        with patch.object(react_native, 'package_archive'):
+            report = runtime_notices.evidence()
+        self.assertFalse(report['packages'][0]['mobile_runtime_license_exception'])
+        with self.assertRaisesRegex(ValueError, 'No reviewed license policy entry'):
+            runtime_notices.verify_policy(report)
 
     def test_failed_archive_verification_cannot_produce_attribution(self):
         with patch.object(react_native, 'package_archive', side_effect=ValueError('invalid archive')):

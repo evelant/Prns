@@ -4,6 +4,30 @@ import base64
 import binascii
 
 
+# These exceptions are tied to the published bytes independently of the input lockfiles.
+_REVIEWED_MOBILE_RUNTIME_ARCHIVES = {
+    "@ubjs/core": (
+        "https://registry.npmjs.org/@ubjs/core/-/core-0.31.0-6.tgz",
+        "sha512-pscv6Zj8mVmd5+ikb1Zr6XZ0yqYwKGeIV8HU8rf9sTvs7GW34OARAp03xFJ7rE9XE4R6LgwQhzYW9knAuz5yxA==",
+    ),
+    "@ubjs/react-native": (
+        "https://registry.npmjs.org/@ubjs/react-native/-/react-native-0.31.0-6.tgz",
+        "sha512-vD1033OqUFy968F/3yUKFfN/Im7sfSM5NXRZcUlpUWwuzC9vQn81vtX9P1Fz/xuLxNc88MnNym3zari7PkClNQ==",
+    ),
+}
+
+
+def reviewed_mobile_runtime_license(
+    name: str, version: str, license_expression: str, integrity: str, archive_url: str,
+) -> bool:
+    """Whether this registry artifact qualifies for the mobile runtime MPL exception."""
+    return (
+        version == "0.31.0-6"
+        and license_expression == "MPL-2.0"
+        and _REVIEWED_MOBILE_RUNTIME_ARCHIVES.get(name) == (archive_url, integrity)
+    )
+
+
 def has_registry_integrity(metadata: dict) -> bool:
     resolved = metadata.get("resolved", "")
     integrity = metadata.get("integrity", "")

@@ -109,8 +109,8 @@ def render(provider, runtime):
     version, notices = notice_generator.collect_rust_notices(graphs, features)
     lines = ['# Selected SDK image third-party notices', '',
              f"Image: `{provider['libraryName']}`. Generated with `{version}` from locked Cargo graphs.",
-             'This document records attribution, not approval of unresolved runtime policy. '
-             'See third-party-sources.json for exact image selection, inputs and runtime archive/source custody.', '',
+             'The third-party-sources.json record identifies the selected image, its inputs, '
+             'the published runtime archives and their license policy results.', '',
              '## Selected Rust graphs', '']
     lines.extend(f'- `{target}`: `{manifest}`, shipping features {json.dumps(provider.get("features", []))}.'
                  for _, _, target in graphs)

@@ -67,6 +67,7 @@ the SDK itself still requires a clean consumer that resolves published packages
 without local overrides. Release qualification must refer to the actual packaged bytes;
 older local checks or another provider's phone trial do not qualify a new build.
 
-The runtime npm packages currently carry an unresolved MPL-2.0 approval
-finding in the production npm audit. Successful source, image or detached
-consumer checks do not qualify distribution while that finding remains open.
+The production npm audit checks the package-specific MPL-2.0 exceptions for
+`@ubjs/core@0.31.0-6` and `@ubjs/react-native@0.31.0-6` against their
+registry URLs and SHA-512 integrities. The source record also binds the license
+notices, upstream revision, runtime patch and SHA-256 archive hashes.
