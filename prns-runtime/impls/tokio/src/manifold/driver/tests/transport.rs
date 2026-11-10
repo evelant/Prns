@@ -245,6 +245,11 @@ async fn a_connected_non_draining_lane_cannot_stall_pooled_ingress_or_a_healthy_
 
     #[cfg(feature = "runtime-metrics")]
     {
+        // The last packet verdict starts a bounded run of cooperative polls. The
+        // healthy rebroadcast can arrive during that run when its jitter is small.
+        tokio::time::timeout(Duration::from_secs(2), wake_tx.wait_until_armed())
+            .await
+            .expect("the manifold must arm its idle wake while the slow lane remains full");
         let before = tokio::time::timeout(Duration::from_secs(2), handle.metrics_snapshot())
             .await
             .expect("the metrics command is independent of the slow lane")
@@ -264,9 +269,10 @@ async fn a_connected_non_draining_lane_cannot_stall_pooled_ingress_or_a_healthy_
             .await
             .expect("a second metrics command is serviced")
             .expect("the manifold remains alive");
+        let idle_turns = after.manifold.turns.saturating_sub(before.manifold.turns);
         assert!(
-            after.manifold.turns.saturating_sub(before.manifold.turns) <= 16,
-            "a permanently full lane must leave the idle manifold cold"
+            idle_turns <= 16,
+            "a permanently full lane must leave the idle manifold cold ({idle_turns} turns)"
         );
     }
 }
