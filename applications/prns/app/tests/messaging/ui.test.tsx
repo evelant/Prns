@@ -89,6 +89,7 @@ async function menu(label: string, action: string) {
   if (Platform.OS === "ios") await act(async () => { dismiss(); });
 }
 
+// The first native screen render also loads React Native modules on a cold Jest cache.
 test("subscribe precedes snapshots; switching away releases waiter without stopping service", async () => {
   const { native, client, observation } = fixture();
   const rendered = await render(<Messaging screen="list" identity={identity} client={client} contacts={[contact]} />);
@@ -97,7 +98,7 @@ test("subscribe precedes snapshots; switching away releases waiter without stopp
   await rendered.rerender(<Messaging screen="list" identity={identity} client={client} contacts={[contact]} active={false} />);
   expect(observation.next.mock.calls[0]?.[0].signal.aborted).toBe(true);
   expect(observation.uniffiDestroy).toHaveBeenCalledTimes(1);
-});
+}, 20_000);
 
 test.each([true, false])("native revision refresh keeps the composer editable until fresh send permission is %s", async (canSend) => {
   const { native, client, observation } = fixture();
