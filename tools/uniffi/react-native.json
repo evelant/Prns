@@ -4,6 +4,7 @@
     "repository": "https://github.com/jhugman/uniffi-bindgen-react-native.git",
     "revision": "3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e"
   },
+  "upstream_source_sha256": "42cc128bad64420ff47514442568c0b5971b34f2ff1d634adbb9b145453670a7",
   "patches": [
     {
       "file": "patches/0001-exact-optional-properties.patch",

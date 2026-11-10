@@ -186,6 +186,8 @@ export function main(args = process.argv.slice(2)) {
     const sourceRecord = JSON.parse(readMember('third-party-sources.json'));
     validatePackagedAttribution(sdkArchive.files, selection, sourceRecord, readMember('THIRD_PARTY_NOTICES.md'));
     assert.deepEqual(sourceRecord, expectedSources, 'packed source record differs from verified inputs');
+    const [reviewedPatch] = sourceRecord.runtime_archives.source_patches;
+    assert.equal(readMember(runtimePatch), reviewedPatch.patch, 'packaged runtime patch differs from recipient source');
     const attribution = { sourceRecordSha256: digest(join(sdk, 'third-party-sources.json')),
       noticeSha256: sourceRecord.notice_sha256, policyApproval: false,
       runtimeLicensePolicy: sourceRecord.runtime_archives.packages.every(

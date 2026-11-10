@@ -27,6 +27,8 @@ def selected_inputs(provider_path, provider, runtime):
     """Cargo owns the selected dependency closure; no second package inventory."""
     paths = set(notice_generator.runtime_notices.input_paths())
     paths.update((Path(__file__).resolve(), Path(notice_generator.__file__).resolve(),
+                  ROOT / notice_generator.mpl_sources.REVIEWS,
+                  Path(notice_generator.mpl_sources.__file__).resolve(),
                   provider_path, notice_generator.ABOUT, PACKAGE / 'package.json',
                   ROOT / 'LICENSE-MIT', ROOT / 'LICENSE-APACHE'))
     packages = {}
@@ -115,9 +117,6 @@ def render(provider, runtime):
     lines.extend(f'- `{target}`: `{manifest}`, shipping features {json.dumps(provider.get("features", []))}.'
                  for _, _, target in graphs)
     lines.extend(notice_generator.runtime_notices.declaration_lines(runtime))
-    for item in runtime['packages']:
-        lines.extend(['', f"### Original upstream notice: {item['name']}", '', '```text',
-                      item['license_notice'].rstrip(), '```'])
     lines.extend(['', '## Selected native license texts', ''])
     lines.extend(notice_generator.license_text_lines(notices))
     return '\n'.join(lines).rstrip() + '\n'
@@ -129,7 +128,10 @@ def check_inputs(destination, provider_path=None):
         raise ValueError('selected SDK attribution is missing; generate package notices')
     saved = json.loads(sources.read_text())
     provider_path = provider_path or ROOT / saved['provider']
-    _, _, expected = prepare(provider_path)
+    _, runtime, expected = prepare(provider_path)
+    recipient_sources = '\n'.join(notice_generator.runtime_notices.recipient_source_lines(runtime))
+    if recipient_sources not in (destination / NOTICE).read_text():
+        raise ValueError('selected SDK attribution is missing the verified runtime source instructions')
     expected['notice_sha256'] = digest(destination / NOTICE)
     if saved != expected:
         raise ValueError('selected SDK attribution inputs or notice bytes changed; regenerate notices')

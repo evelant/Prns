@@ -64,7 +64,7 @@ class SelectionTests(unittest.TestCase):
             stored['notice_sha256'] = notices.digest(target / notices.NOTICE)
             (target / notices.SOURCES).write_text(json.dumps(stored))
             (target / 'native-image.json').write_text(json.dumps(selection))
-            with patch.object(notices, 'prepare', side_effect=lambda _: (None, None, copy.deepcopy(record))):
+            with patch.object(notices, 'prepare', side_effect=lambda _: (None, {"packages": []}, copy.deepcopy(record))):
                 self.assertEqual(notices.check_inputs(target), stored)
                 (target / notices.NOTICE).write_text('changed')
                 with self.assertRaisesRegex(ValueError, 'inputs or notice bytes changed'):

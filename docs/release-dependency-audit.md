@@ -32,11 +32,14 @@ retain their unsafe-code forbids.
 [`deny.toml`](../deny.toml) owns the reviewed license allowlist, exact package
 exceptions and permitted sources. Unlisted license expressions fail unless the
 selected package and version have an explicit exception. GPL, LGPL, AGPL and
-unknown licenses are not accepted. MPL is not allowed generally; its exceptions
-apply only to the listed Rust packages and versions, whose source and notices
-remain part of distribution review. They do not approve separately distributed
-npm packages. Keep exception versions and source restrictions in that
-configuration rather than maintaining a second list here.
+unknown licenses are not accepted. MPL-2.0 is permitted when recipients receive the relevant notices and
+access to the corresponding source, including local changes. For Rust, the notice
+generator checks each selected MPL archive against its reviewed digest in
+`release/licenses/rust-mpl-sources.json`, checks the unpacked sources, and places
+a download link and checksum beside the license. Review a new archive's source
+coverage and notices before recording its digest. The selected mobile SDK uses
+the upstream revision, exact registry archives and verified source patch described
+in its own recipient notice.
 
 ## Unsafe enforcement
 

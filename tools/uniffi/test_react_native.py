@@ -95,8 +95,9 @@ class ConfiguredInputsTests(unittest.TestCase):
         self.save()
         self.enterContext(patch.multiple(react_native, ROOT=self.root, HERE=self.here, LOCK=self.lock))
         self.enterContext(patch.object(runtime_notices, 'ROOT', self.root))
+        self.enterContext(patch.object(runtime_notices.runtime_source, 'verify_corresponding_sources'))
         (self.root / 'deny.toml').write_text(
-            '[licenses]\nallow = ["MIT"]\n[[licenses.exceptions]]\n'
+            '[licenses]\nallow = ["MIT","MPL-2.0"]\n[[licenses.exceptions]]\n'
             'name = "one-rust-crate"\nallow = ["MPL-2.0"]\n')
 
     def save(self):
@@ -176,17 +177,17 @@ class ConfiguredInputsTests(unittest.TestCase):
             self.assertEqual(actual['archive'], expected['archive'])
             self.assertEqual(actual['upstream'], self.document['upstream'])
             self.assertIn('Mozilla Public License', ' '.join(actual['license_notice'].split()))
-            self.assertTrue(actual['mobile_runtime_license_exception'])
+            self.assertTrue(actual['reviewed_source_archive'])
         runtime_notices.verify_policy(report)
         self.assertIn(Path(runtime_notices.npm_lockfile.__file__).resolve(), runtime_notices.input_paths())
         self.assertIn(self.root / self.document['runtime_patch']['file'], runtime_notices.input_paths())
 
-    def test_changed_archive_is_unresolved_even_with_a_crate_exception(self):
+    def test_changed_archive_is_unresolved_even_when_mpl_is_allowed(self):
         self.document['packages'][0]['archive'] += '?unreviewed'
         self.save()
         with patch.object(react_native, 'package_archive'):
             report = runtime_notices.evidence()
-        self.assertFalse(report['packages'][0]['mobile_runtime_license_exception'])
+        self.assertFalse(report['packages'][0]['reviewed_source_archive'])
         with self.assertRaisesRegex(ValueError, 'No reviewed license policy entry'):
             runtime_notices.verify_policy(report)
 
