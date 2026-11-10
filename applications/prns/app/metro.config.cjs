@@ -3,6 +3,7 @@ const { realpathSync } = require('node:fs');
 const { getDefaultConfig } = require('expo/metro-config');
 
 const config = getDefaultConfig(__dirname);
+if (!config.resolver.assetExts.includes('txt')) config.resolver.assetExts.push('txt');
 // This file-linked package lives outside the applications workspace. Metro can
 // resolve it through node_modules without watching its rebuilt dist files.
 // Watch its real package root, preserving Expo's workspace and resolver defaults.

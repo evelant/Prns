@@ -1,6 +1,6 @@
 import { Button, Text } from "./ui/primitives";
 import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Linking, StyleSheet, View } from "react-native";
+import { ActivityIndicator, Linking, Platform, StyleSheet, View } from "react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import type { BarcodeScanningResult } from "expo-camera";
 import { useStyles } from "./ui";
@@ -39,6 +39,13 @@ export function ContactScanner({ onScan, onCancel, onFailure }: {
   return <View style={styles.card}>
     <Text accessibilityRole="header" style={styles.title}>Scan a contact card</Text>
     <Text>Point your camera at a prns contact QR code. You will review the verified identity before saving it.</Text>
+    {Platform.OS === "android" && <Text>
+      QR images are processed on your device. Google ML Kit sends scanner usage and performance metrics to Google and may contact Google for updates.{" "}
+      <Text accessibilityRole="link" onPress={() => {
+        void Linking.openURL("https://developers.google.com/ml-kit/terms").catch(() =>
+          setError("ML Kit privacy information is available at https://developers.google.com/ml-kit/terms."));
+      }}>ML Kit privacy information</Text>
+    </Text>}
     {error !== undefined && <Text accessibilityRole="alert" style={styles.error}>{error}</Text>}
     {permission === null && <ActivityIndicator accessibilityLabel="Checking camera permission" />}
     {permission !== null && !permission.granted && <>

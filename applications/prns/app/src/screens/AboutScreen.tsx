@@ -1,4 +1,5 @@
 import { Disclosure } from "../ui/Disclosure";
+import { LicenseNotices } from "../licenses/LicenseNotices";
 import Constants from "expo-constants";
 import { Platform, Share } from "react-native";
 import { useEffect, useRef, useState } from "react";
@@ -64,6 +65,7 @@ export function AboutScreen() {
     <Panel><Text>Version {Constants.nativeAppVersion ?? Constants.expoConfig?.version ?? "unknown"} ({Constants.nativeBuildVersion ?? "unavailable"})</Text>
       <Text selectable>{label}</Text><Text>{variant}</Text></Panel>
     <Text>Conversations, contacts and connected nodes.</Text>
+    <LicenseNotices />
     <Disclosure label="Diagnostics">
       {loading && <Text>Checking connection health…</Text>}
       <Text selectable>{report}</Text>
