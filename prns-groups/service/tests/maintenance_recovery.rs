@@ -110,9 +110,9 @@ fn service_for<'a>(
     )
     .unwrap()
 }
-fn request<'a>(nonce: u64, created: u64, targets: &'a [Endpoint]) -> Publication<'a> {
+fn request<'a>(publication_number: u64, created: u64, targets: &'a [Endpoint]) -> Publication<'a> {
     let mut bytes = [0; 32];
-    bytes[..8].copy_from_slice(&nonce.to_be_bytes());
+    bytes[..8].copy_from_slice(&publication_number.to_be_bytes());
     Publication {
         nonce: bytes,
         namespace: NamespaceId(1),

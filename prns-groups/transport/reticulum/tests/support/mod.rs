@@ -80,13 +80,13 @@ pub fn next(peer: usize, coordinator: &Coordinator<RedbBackend<'_>>) -> Operatio
         .operation_id()
 }
 pub fn publication<'a>(
-    nonce: u8,
+    record_number: u8,
     namespace: NamespaceId,
     targets: &'a [Endpoint],
     body: &'a [u8],
 ) -> Publication<'a> {
     Publication {
-        nonce: [nonce; 32],
+        nonce: [record_number; 32],
         namespace,
         schema: SchemaId(1),
         validity: PublicationValidity::new(Timestamp(NOW), Timestamp(NOW + 600), Seconds(3600))

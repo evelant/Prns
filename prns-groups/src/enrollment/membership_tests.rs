@@ -53,7 +53,7 @@ fn next(service: &GroupService<RedbBackend<'_>>, incarnation: StoreIncarnation) 
 fn publish(
     device: &mut Device<'_>,
     group: GroupId,
-    nonce: u8,
+    record_number: u8,
     deadline: u64,
 ) -> (RecordId, Vec<u8>) {
     let cfg = device.descriptor(group);
@@ -70,7 +70,7 @@ fn publish(
             .publish(
                 operation,
                 &Publication {
-                    nonce: [nonce; 32],
+                    nonce: [record_number; 32],
                     namespace: NamespaceId(17),
                     schema: SchemaId(1),
                     validity: PublicationValidity::new(
@@ -101,11 +101,17 @@ fn receive(device: &mut Device<'_>, group: GroupId, wire: &[u8]) -> Incoming {
     })
 }
 
-fn join(owner: &mut Device<'_>, member: &mut Device<'_>, group: GroupId, nonce: u8) {
-    let invitation = offer(owner, member, group, nonce);
+fn join(owner: &mut Device<'_>, member: &mut Device<'_>, group: GroupId, request_number: u8) {
+    let invitation = offer(owner, member, group, request_number);
     member
         .engine
-        .respond(&mut member.owner, request(nonce + 1), invitation, true, NOW)
+        .respond(
+            &mut member.owner,
+            request(request_number + 1),
+            invitation,
+            true,
+            NOW,
+        )
         .unwrap();
     let work = member.work("join");
     let response = owner.receive(member.identity, &work, NOW);
