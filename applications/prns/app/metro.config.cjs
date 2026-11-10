@@ -11,4 +11,7 @@ const personalRns = path.dirname(realpathSync(require.resolve('personal-rns/pack
 require(path.join(personalRns, 'scripts/check-built-contracts.cjs')).checkBuiltContracts(personalRns);
 config.watchFolders = [...new Set([...config.watchFolders, personalRns])];
 
+if (process.env.PRNS_METRO_INVENTORY_DIR) {
+  require('../../tools/metro-release-inventory.cjs')(config, process.env.PRNS_METRO_INVENTORY_DIR);
+}
 module.exports = config;
