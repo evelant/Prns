@@ -6,6 +6,7 @@ import threading
 from pathlib import Path
 
 import personal_rns as prns
+from personal_rns._native import bytes_from_view
 from personal_rns.host import _Arena, _marshal_interface
 
 
@@ -88,6 +89,7 @@ def marshal_interface_fixtures():
         prns.InterfaceConfigBrowserRendezvous(
             "ws://fixture.invalid/rendezvous"
         ),
+        prns.InterfaceConfigConfiguredBluetoothLe(("work", "reticulum")),
     )
     assert INTERFACES["schemaVersion"] == prns.SCHEMA_VERSION
     assert len(INTERFACES["interfaces"]) == len(configs)
@@ -98,6 +100,11 @@ def marshal_interface_fixtures():
         assert [
             _marshal_interface(config, arena).kind for config in configs
         ] == list(range(1, len(configs) + 1))
+        bluetooth = _marshal_interface(configs[-1], arena)
+        assert [
+            bytes_from_view(bluetooth.discovery_groups[index]).decode()
+            for index in range(bluetooth.discovery_group_count)
+        ] == INTERFACES["interfaces"][-1]["discoveryGroups"]
 
 
 async def next_matching(stream, event_type, timeout=5):

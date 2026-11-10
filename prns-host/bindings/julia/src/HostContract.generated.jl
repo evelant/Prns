@@ -386,6 +386,29 @@ end
     EventFieldArrivedAtMillis = 42
 end
 
+@enum InterfaceConfigKind::UInt32 begin
+    InterfaceConfigKindAutoLan = 1
+    InterfaceConfigKindTcpClient = 2
+    InterfaceConfigKindTcpServer = 3
+    InterfaceConfigKindUdp = 4
+    InterfaceConfigKindSerial = 5
+    InterfaceConfigKindKiss = 6
+    InterfaceConfigKindAx25Kiss = 7
+    InterfaceConfigKindRNode = 8
+    InterfaceConfigKindMultiRNode = 9
+    InterfaceConfigKindPipe = 10
+    InterfaceConfigKindBackboneClient = 11
+    InterfaceConfigKindBackboneServer = 12
+    InterfaceConfigKindI2p = 13
+    InterfaceConfigKindWeave = 14
+    InterfaceConfigKindAutomaticUsb = 15
+    InterfaceConfigKindAutomaticBluetoothLe = 16
+    InterfaceConfigKindWebSocketClient = 17
+    InterfaceConfigKindWebSocketServer = 18
+    InterfaceConfigKindBrowserRendezvous = 19
+    InterfaceConfigKindConfiguredBluetoothLe = 20
+end
+
 struct DestinationHash
     bytes::NTuple{16,UInt8}
 

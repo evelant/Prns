@@ -202,7 +202,14 @@ async fn enrollment_authenticates_identity_and_large_frames_without_group_member
     let (received, ()) = tokio::join!(send, receive);
     assert_eq!(received.unwrap(), response);
     assert!(nodes.state.resources.load(Ordering::SeqCst) >= 2);
-    assert!(nodes.state.resource_proofs.load(Ordering::SeqCst) >= 2);
+    // The receiver can finish the exchange before the wire forwards its proof.
+    tokio::time::timeout(Duration::from_secs(5), async {
+        while nodes.state.resource_proofs.load(Ordering::SeqCst) < 2 {
+            tokio::time::sleep(Duration::from_millis(5)).await;
+        }
+    })
+    .await
+    .expect("request and response resource proofs crossed the wire");
 
     // Carrier identity is not invitation authorization. The application receives
     // the actual stranger's identity, even when its payload claims to be Alice.

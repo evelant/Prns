@@ -359,6 +359,28 @@ class EventField(IntEnum):
     LOCAL_DESTINATION = 41
     ARRIVED_AT_MILLIS = 42
 
+class InterfaceConfigKind(IntEnum):
+    AUTO_LAN = 1
+    TCP_CLIENT = 2
+    TCP_SERVER = 3
+    UDP = 4
+    SERIAL = 5
+    KISS = 6
+    AX25_KISS = 7
+    R_NODE = 8
+    MULTI_R_NODE = 9
+    PIPE = 10
+    BACKBONE_CLIENT = 11
+    BACKBONE_SERVER = 12
+    I2P = 13
+    WEAVE = 14
+    AUTOMATIC_USB = 15
+    AUTOMATIC_BLUETOOTH_LE = 16
+    WEB_SOCKET_CLIENT = 17
+    WEB_SOCKET_SERVER = 18
+    BROWSER_RENDEZVOUS = 19
+    CONFIGURED_BLUETOOTH_LE = 20
+
 @dataclass(frozen=True, slots=True)
 class DestinationHash:
     value: bytes

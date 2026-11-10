@@ -370,12 +370,12 @@ where
         endpoint: Endpoint,
         capabilities: LinkCapabilities,
     ) -> Self {
-        Self::new_with_discovery_groups(
+        Self::with_status(
             backend,
             identity,
             endpoint,
             capabilities,
-            DiscoveryGroupSet::reticulum(),
+            BluetoothAutoStatus::new(),
         )
     }
 

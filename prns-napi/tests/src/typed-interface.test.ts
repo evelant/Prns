@@ -59,7 +59,7 @@ test('every shared typed interface fixture marshals without touching hardware', 
     )
   ) as InterfaceFixture;
   assert.equal(fixture.schemaVersion, hostSchemaVersion());
-  assert.equal(fixture.interfaces.length, 19);
+  assert.equal(fixture.interfaces.length, 20);
 
   const node = startNode({}, () => {});
   try {
@@ -73,7 +73,9 @@ test('every shared typed interface fixture marshals without touching hardware', 
     });
     assert.deepEqual(
       kinds,
-      fixture.interfaces.map((config) => config.kind)
+      fixture.interfaces.map((config) =>
+        config.kind === 'ConfiguredBluetoothLe' ? 'AutomaticBluetoothLe' : config.kind
+      )
     );
   } finally {
     await node.stop().catch(() => {});

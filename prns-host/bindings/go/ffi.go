@@ -269,7 +269,7 @@ func marshalInterface(
 	var err error
 	switch config := value.(type) {
 	case InterfaceConfigAutoLan:
-		result.kind = C.PRNS_INTERFACE_KIND_AUTO_LAN
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_AUTO_LAN
 		if config.GroupId != nil {
 			result.has_group_id = 1
 			result.group_id, err = arena.stringView(*config.GroupId)
@@ -306,19 +306,19 @@ func marshalInterface(
 			)
 		}
 	case InterfaceConfigTcpClient:
-		result.kind = C.PRNS_INTERFACE_KIND_TCP_CLIENT
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_TCP_CLIENT
 		result.target, err = arena.stringView(config.Target)
 		if err == nil {
 			err = setBitrate(config.Bitrate)
 		}
 	case InterfaceConfigTcpServer:
-		result.kind = C.PRNS_INTERFACE_KIND_TCP_SERVER
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_TCP_SERVER
 		result.bind, err = arena.stringView(config.Bind)
 		if err == nil {
 			err = setBitrate(config.Bitrate)
 		}
 	case InterfaceConfigUdp:
-		result.kind = C.PRNS_INTERFACE_KIND_UDP
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_UDP
 		result.local, err = arena.stringView(config.Local)
 		if err == nil {
 			result.peer, err = arena.stringView(config.Peer)
@@ -327,11 +327,11 @@ func marshalInterface(
 			err = setBitrate(config.Bitrate)
 		}
 	case InterfaceConfigSerial:
-		result.kind = C.PRNS_INTERFACE_KIND_SERIAL
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_SERIAL
 		result.port, err = arena.stringView(config.Port)
 		result.line = marshalSerialLine(config.Line)
 	case InterfaceConfigKiss:
-		result.kind = C.PRNS_INTERFACE_KIND_KISS
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_KISS
 		result.port, err = arena.stringView(config.Port)
 		result.line = marshalSerialLine(config.Line)
 		result.flow_control = nativeBool(config.FlowControl)
@@ -343,7 +343,7 @@ func marshalInterface(
 			err = setStation(config.StationCallsign, config.StationIntervalSeconds)
 		}
 	case InterfaceConfigAx25Kiss:
-		result.kind = C.PRNS_INTERFACE_KIND_AX25_KISS
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_AX25_KISS
 		result.port, err = arena.stringView(config.Port)
 		result.line = marshalSerialLine(config.Line)
 		result.flow_control = nativeBool(config.FlowControl)
@@ -356,7 +356,7 @@ func marshalInterface(
 		}
 		result.ssid = C.uint8_t(config.Ssid)
 	case InterfaceConfigRNode:
-		result.kind = C.PRNS_INTERFACE_KIND_R_NODE
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_R_NODE
 		result.port, err = arena.stringView(config.Port)
 		result.radio = marshalRNodeRadio(config.Radio)
 		result.flow_control = nativeBool(config.FlowControl)
@@ -376,7 +376,7 @@ func marshalInterface(
 			)
 		}
 	case InterfaceConfigMultiRNode:
-		result.kind = C.PRNS_INTERFACE_KIND_MULTI_R_NODE
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_MULTI_R_NODE
 		result.port, err = arena.stringView(config.Port)
 		if err == nil {
 			err = setStation(config.StationCallsign, config.StationIntervalSeconds)
@@ -408,44 +408,48 @@ func marshalInterface(
 		result.members = (*C.PrnsMultiRNodeMemberConfig)(membersPointer)
 		result.member_count = C.size_t(len(config.Members))
 	case InterfaceConfigPipe:
-		result.kind = C.PRNS_INTERFACE_KIND_PIPE
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_PIPE
 		result.command, err = marshalStringViews(arena, config.Command)
 		result.command_count = C.size_t(len(config.Command))
 		result.respawn_delay_millis = C.uint64_t(config.RespawnDelayMillis)
 	case InterfaceConfigBackboneClient:
-		result.kind = C.PRNS_INTERFACE_KIND_BACKBONE_CLIENT
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_BACKBONE_CLIENT
 		result.target, err = arena.stringView(config.Target)
 		if err == nil {
 			err = setBitrate(config.Bitrate)
 		}
 	case InterfaceConfigBackboneServer:
-		result.kind = C.PRNS_INTERFACE_KIND_BACKBONE_SERVER
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_BACKBONE_SERVER
 		result.bind, err = arena.stringView(config.Bind)
 		if err == nil {
 			err = setBitrate(config.Bitrate)
 		}
 	case InterfaceConfigI2p:
-		result.kind = C.PRNS_INTERFACE_KIND_I2P
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_I2P
 		result.peers, err = marshalStringViews(arena, config.Peers)
 		result.peer_count = C.size_t(len(config.Peers))
 		result.connectable = nativeBool(config.Connectable)
 	case InterfaceConfigWeave:
-		result.kind = C.PRNS_INTERFACE_KIND_WEAVE
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_WEAVE
 		result.port, err = arena.stringView(config.Port)
 	case InterfaceConfigAutomaticUsb:
-		result.kind = C.PRNS_INTERFACE_KIND_AUTOMATIC_USB
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_AUTOMATIC_USB
 	case InterfaceConfigAutomaticBluetoothLe:
-		result.kind = C.PRNS_INTERFACE_KIND_AUTOMATIC_BLUETOOTH_LE
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_AUTOMATIC_BLUETOOTH_LE
+	case InterfaceConfigConfiguredBluetoothLe:
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_CONFIGURED_BLUETOOTH_LE
+		result.discovery_groups, err = marshalStringViews(arena, config.DiscoveryGroups)
+		result.discovery_group_count = C.size_t(len(config.DiscoveryGroups))
 	case InterfaceConfigWebSocketClient:
-		result.kind = C.PRNS_INTERFACE_KIND_WEB_SOCKET_CLIENT
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_WEB_SOCKET_CLIENT
 		result.target, err = arena.stringView(config.Target)
 		result.websocket_framing_selection = C.PrnsWebSocketFramingSelection(config.Framing)
 	case InterfaceConfigWebSocketServer:
-		result.kind = C.PRNS_INTERFACE_KIND_WEB_SOCKET_SERVER
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_WEB_SOCKET_SERVER
 		result.bind, err = arena.stringView(config.Bind)
 		result.websocket_framing_selection = C.PrnsWebSocketFramingSelection(config.Framing)
 	case InterfaceConfigBrowserRendezvous:
-		result.kind = C.PRNS_INTERFACE_KIND_BROWSER_RENDEZVOUS
+		result.kind = C.PRNS_INTERFACE_CONFIG_KIND_BROWSER_RENDEZVOUS
 		result.url, err = arena.stringView(config.Url)
 	case nil:
 		err = ConfigError{Kind: ConfigUnknownInterface, Field: "interface"}

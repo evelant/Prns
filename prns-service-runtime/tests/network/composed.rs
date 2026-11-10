@@ -258,12 +258,12 @@ fn generated_named_identities_bootstrap_deliver_and_recover_on_supplied_hosts() 
                     .identity
                     .services
                     .is_empty());
-                assert_eq!(
-                    std::fs::read_dir(paths[index].join("domains"))
-                        .unwrap()
-                        .count(),
-                    0
-                );
+                let identity_database = prns_identities::scoped_store::path_under(
+                    identity.reference(),
+                    &paths[index].join("domains"),
+                )
+                .unwrap();
+                assert!(!identity_database.try_exists().unwrap());
                 assert!(matches!(
                     transition(
                         &catalog,

@@ -16,7 +16,7 @@ func nativeInterfaceConfig(
         let ignoredDevices,
         let multicastAddressType
     ):
-        result.kind = InterfaceKind.autoLan.rawValue
+        result.kind = InterfaceConfigKind.autoLan.rawValue
         if let groupId {
             result.has_group_id = 1
             result.group_id = try arena.string(groupId)
@@ -44,20 +44,20 @@ func nativeInterfaceConfig(
             result.multicast_address_type = multicastAddressType.rawValue
         }
     case .tcpClient(let target, let bitrate):
-        result.kind = InterfaceKind.tcpClient.rawValue
+        result.kind = InterfaceConfigKind.tcpClient.rawValue
         result.target = try arena.string(target)
         try apply(bitrate, to: &result)
     case .tcpServer(let bind, let bitrate):
-        result.kind = InterfaceKind.tcpServer.rawValue
+        result.kind = InterfaceConfigKind.tcpServer.rawValue
         result.bind = try arena.string(bind)
         try apply(bitrate, to: &result)
     case .udp(let local, let peer, let bitrate):
-        result.kind = InterfaceKind.udp.rawValue
+        result.kind = InterfaceConfigKind.udp.rawValue
         result.local = try arena.string(local)
         result.peer = try arena.string(peer)
         try apply(bitrate, to: &result)
     case .serial(let port, let line):
-        result.kind = InterfaceKind.serial.rawValue
+        result.kind = InterfaceConfigKind.serial.rawValue
         result.port = try arena.string(port)
         result.line = nativeSerialLine(line)
     case .kiss(
@@ -71,7 +71,7 @@ func nativeInterfaceConfig(
         let stationCallsign,
         let stationIntervalSeconds
     ):
-        result.kind = InterfaceKind.kiss.rawValue
+        result.kind = InterfaceConfigKind.kiss.rawValue
         result.port = try arena.string(port)
         result.line = nativeSerialLine(line)
         result.flow_control = flowControl ? 1 : 0
@@ -91,7 +91,7 @@ func nativeInterfaceConfig(
         let callsign,
         let ssid
     ):
-        result.kind = InterfaceKind.ax25Kiss.rawValue
+        result.kind = InterfaceConfigKind.ax25Kiss.rawValue
         result.port = try arena.string(port)
         result.line = nativeSerialLine(line)
         result.flow_control = flowControl ? 1 : 0
@@ -110,7 +110,7 @@ func nativeInterfaceConfig(
         let airtimeLimitShortCentiPercent,
         let airtimeLimitLongCentiPercent
     ):
-        result.kind = InterfaceKind.rNode.rawValue
+        result.kind = InterfaceConfigKind.rNode.rawValue
         result.port = try arena.string(port)
         result.radio = nativeRNodeRadio(radio)
         result.flow_control = flowControl ? 1 : 0
@@ -124,7 +124,7 @@ func nativeInterfaceConfig(
             result.airtime_limit_long_centi_percent = airtimeLimitLongCentiPercent
         }
     case .multiRNode(let port, let stationCallsign, let stationIntervalSeconds, let members):
-        result.kind = InterfaceKind.multiRNode.rawValue
+        result.kind = InterfaceConfigKind.multiRNode.rawValue
         result.port = try arena.string(port)
         try apply(stationCallsign, stationIntervalSeconds, to: &result, arena: arena)
         let nativeMembers = try members.map { member in
@@ -140,42 +140,47 @@ func nativeInterfaceConfig(
         result.members = try arena.array(nativeMembers).map { UnsafePointer($0) }
         result.member_count = nativeMembers.count
     case .pipe(let command, let respawnDelayMillis):
-        result.kind = InterfaceKind.pipe.rawValue
+        result.kind = InterfaceConfigKind.pipe.rawValue
         let nativeCommand = try command.map { try arena.string($0) }
         result.command = try arena.array(nativeCommand).map { UnsafePointer($0) }
         result.command_count = nativeCommand.count
         result.respawn_delay_millis = respawnDelayMillis
     case .backboneClient(let target, let bitrate):
-        result.kind = InterfaceKind.backboneClient.rawValue
+        result.kind = InterfaceConfigKind.backboneClient.rawValue
         result.target = try arena.string(target)
         try apply(bitrate, to: &result)
     case .backboneServer(let bind, let bitrate):
-        result.kind = InterfaceKind.backboneServer.rawValue
+        result.kind = InterfaceConfigKind.backboneServer.rawValue
         result.bind = try arena.string(bind)
         try apply(bitrate, to: &result)
     case .i2p(let peers, let connectable):
-        result.kind = InterfaceKind.i2p.rawValue
+        result.kind = InterfaceConfigKind.i2p.rawValue
         let nativePeers = try peers.map { try arena.string($0) }
         result.peers = try arena.array(nativePeers).map { UnsafePointer($0) }
         result.peer_count = nativePeers.count
         result.connectable = connectable ? 1 : 0
     case .weave(let port):
-        result.kind = InterfaceKind.weave.rawValue
+        result.kind = InterfaceConfigKind.weave.rawValue
         result.port = try arena.string(port)
     case .automaticUsb:
-        result.kind = InterfaceKind.automaticUsb.rawValue
+        result.kind = InterfaceConfigKind.automaticUsb.rawValue
     case .automaticBluetoothLe:
-        result.kind = InterfaceKind.automaticBluetoothLe.rawValue
+        result.kind = InterfaceConfigKind.automaticBluetoothLe.rawValue
+    case .configuredBluetoothLe(let discoveryGroups):
+        result.kind = InterfaceConfigKind.configuredBluetoothLe.rawValue
+        let groups = try discoveryGroups.map { try arena.string($0) }
+        result.discovery_groups = try arena.array(groups).map { UnsafePointer($0) }
+        result.discovery_group_count = groups.count
     case .webSocketClient(let target, let framing):
-        result.kind = InterfaceKind.webSocketClient.rawValue
+        result.kind = InterfaceConfigKind.webSocketClient.rawValue
         result.target = try arena.string(target)
         result.websocket_framing_selection = framing.rawValue
     case .webSocketServer(let bind, let framing):
-        result.kind = InterfaceKind.webSocketServer.rawValue
+        result.kind = InterfaceConfigKind.webSocketServer.rawValue
         result.bind = try arena.string(bind)
         result.websocket_framing_selection = framing.rawValue
     case .browserRendezvous(let url):
-        result.kind = InterfaceKind.browserRendezvous.rawValue
+        result.kind = InterfaceConfigKind.browserRendezvous.rawValue
         result.url = try arena.string(url)
     }
     return result

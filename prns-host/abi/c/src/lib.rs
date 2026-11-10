@@ -43,11 +43,12 @@ use prns_host_core::{
     HOST_SCHEMA_VERSION, SAFE_INT_MAX, SAFE_INT_MIN, SAFE_UINT_MAX,
 };
 use prns_host_runtime::{
-    CommandHandle, CommandWait, IdentityStartError, HostRuntime, HostSnapshotError,
-    HostStartError, HostSubmitError, HostRuntimeUpload, PersistenceStartError, UploadWriteError,
+    CommandHandle, CommandWait, HostRuntime, HostRuntimeUpload, HostSnapshotError, HostStartError,
+    HostSubmitError, IdentityStartError, PersistenceStartError, UploadWriteError,
 };
 use prns_host_runtime::{
-    HostRuntimeEventStream, HostRuntimeEventValue as EventValue, HostSessionEvents, HostRuntimeStreamError,
+    HostRuntimeEventStream, HostRuntimeEventValue as EventValue, HostRuntimeStreamError,
+    HostSessionEvents,
 };
 pub use prns_host_runtime::{
     HostRuntimeResourceStream as PrnsResourceStream, HostSessionEvents as HostPublisher,
@@ -270,59 +271,76 @@ pub struct PrnsMultiRNodeMemberConfig {
     pub outgoing: u8,
 }
 
-#[repr(C)]
-#[derive(Clone, Copy)]
-pub struct PrnsInterfaceConfig {
-    pub struct_size: usize,
-    pub kind: u32,
-    pub has_group_id: u8,
-    pub group_id: PrnsStringView,
-    pub has_discovery_scope: u8,
-    pub discovery_scope: u32,
-    pub has_discovery_port: u8,
-    pub discovery_port: u16,
-    pub has_data_port: u8,
-    pub data_port: u16,
-    pub devices: *const PrnsStringView,
-    pub device_count: usize,
-    pub ignored_devices: *const PrnsStringView,
-    pub ignored_device_count: usize,
-    pub has_multicast_address_type: u8,
-    pub multicast_address_type: u32,
-    pub target: PrnsStringView,
-    pub bind: PrnsStringView,
-    pub local: PrnsStringView,
-    pub peer: PrnsStringView,
-    pub bitrate_kind: u32,
-    pub bitrate_bps: u64,
-    pub port: PrnsStringView,
-    pub line: PrnsSerialLineConfig,
-    pub flow_control: u8,
-    pub preamble_millis: u32,
-    pub transmit_tail_millis: u32,
-    pub persistence: u8,
-    pub slot_time_millis: u32,
-    pub has_station_callsign: u8,
-    pub station_callsign: PrnsStringView,
-    pub has_station_interval_seconds: u8,
-    pub station_interval_seconds: u64,
-    pub callsign: PrnsStringView,
-    pub ssid: u8,
-    pub radio: PrnsRNodeRadioConfig,
-    pub has_airtime_limit_short_centi_percent: u8,
-    pub airtime_limit_short_centi_percent: u16,
-    pub has_airtime_limit_long_centi_percent: u8,
-    pub airtime_limit_long_centi_percent: u16,
-    pub members: *const PrnsMultiRNodeMemberConfig,
-    pub member_count: usize,
-    pub command: *const PrnsStringView,
-    pub command_count: usize,
-    pub respawn_delay_millis: u64,
-    pub peers: *const PrnsStringView,
-    pub peer_count: usize,
-    pub connectable: u8,
-    pub url: PrnsStringView,
-    pub websocket_framing_selection: u32,
+// Embed the fields directly in each layout. On 32-bit targets an appended pointer can
+// occupy the legacy layout's trailing padding, so nesting the prefix would change its offset.
+macro_rules! interface_config_layout {
+    ($($name:ident: $ty:ty,)+) => {
+        #[repr(C)]
+        struct PrnsInterfaceConfigPrefix {
+            $($name: $ty,)+
+        }
+
+        #[repr(C)]
+        #[derive(Clone, Copy)]
+        pub struct PrnsInterfaceConfig {
+            $(pub $name: $ty,)+
+            pub discovery_groups: *const PrnsStringView,
+            pub discovery_group_count: usize,
+        }
+    };
+}
+
+interface_config_layout! {
+    struct_size: usize,
+    kind: u32,
+    has_group_id: u8,
+    group_id: PrnsStringView,
+    has_discovery_scope: u8,
+    discovery_scope: u32,
+    has_discovery_port: u8,
+    discovery_port: u16,
+    has_data_port: u8,
+    data_port: u16,
+    devices: *const PrnsStringView,
+    device_count: usize,
+    ignored_devices: *const PrnsStringView,
+    ignored_device_count: usize,
+    has_multicast_address_type: u8,
+    multicast_address_type: u32,
+    target: PrnsStringView,
+    bind: PrnsStringView,
+    local: PrnsStringView,
+    peer: PrnsStringView,
+    bitrate_kind: u32,
+    bitrate_bps: u64,
+    port: PrnsStringView,
+    line: PrnsSerialLineConfig,
+    flow_control: u8,
+    preamble_millis: u32,
+    transmit_tail_millis: u32,
+    persistence: u8,
+    slot_time_millis: u32,
+    has_station_callsign: u8,
+    station_callsign: PrnsStringView,
+    has_station_interval_seconds: u8,
+    station_interval_seconds: u64,
+    callsign: PrnsStringView,
+    ssid: u8,
+    radio: PrnsRNodeRadioConfig,
+    has_airtime_limit_short_centi_percent: u8,
+    airtime_limit_short_centi_percent: u16,
+    has_airtime_limit_long_centi_percent: u8,
+    airtime_limit_long_centi_percent: u16,
+    members: *const PrnsMultiRNodeMemberConfig,
+    member_count: usize,
+    command: *const PrnsStringView,
+    command_count: usize,
+    respawn_delay_millis: u64,
+    peers: *const PrnsStringView,
+    peer_count: usize,
+    connectable: u8,
+    url: PrnsStringView,
+    websocket_framing_selection: u32,
 }
 
 #[repr(C)]
@@ -814,10 +832,16 @@ fn parse_rnode_radio(value: &PrnsRNodeRadioConfig) -> Result<RNodeRadioConfig, u
     })
 }
 
-unsafe fn parse_interface_config(value: &PrnsInterfaceConfig) -> Result<InterfaceConfig, u32> {
-    validate_size(value.struct_size, size_of::<PrnsInterfaceConfig>())?;
-    let kind =
-        AbiInterfaceKind::try_from(value.kind).map_err(|_| status(AbiStatus::InvalidArgument))?;
+unsafe fn parse_interface_config(
+    config: *const PrnsInterfaceConfig,
+) -> Result<InterfaceConfig, u32> {
+    use prns_host_core::InterfaceConfigKind as Kind;
+
+    let size = *unsafe { required_ref(config.cast::<usize>()) }?;
+    validate_size(size, size_of::<PrnsInterfaceConfigPrefix>())?;
+    // Only borrow the original layout until the caller's size permits reading the new tail.
+    let value = unsafe { &*config.cast::<PrnsInterfaceConfigPrefix>() };
+    let kind = Kind::try_from(value.kind).map_err(|_| status(AbiStatus::InvalidArgument))?;
     let optional_scope = || {
         if value.has_discovery_scope == 0 {
             Ok(None)
@@ -837,7 +861,7 @@ unsafe fn parse_interface_config(value: &PrnsInterfaceConfig) -> Result<Interfac
     let optional_interval =
         || (value.has_station_interval_seconds != 0).then_some(value.station_interval_seconds);
     match kind {
-        AbiInterfaceKind::AutoLan => Ok(InterfaceConfig::AutoLan {
+        Kind::AutoLan => Ok(InterfaceConfig::AutoLan {
             group_id: unsafe { optional_string(value.has_group_id, value.group_id) }?,
             discovery_scope: optional_scope()?,
             discovery_port: (value.has_discovery_port != 0).then_some(value.discovery_port),
@@ -848,24 +872,24 @@ unsafe fn parse_interface_config(value: &PrnsInterfaceConfig) -> Result<Interfac
             }?,
             multicast_address_type: optional_multicast()?,
         }),
-        AbiInterfaceKind::TcpClient => Ok(InterfaceConfig::TcpClient {
+        Kind::TcpClient => Ok(InterfaceConfig::TcpClient {
             target: unsafe { read_string(value.target) }?.to_string(),
             bitrate: parse_bitrate(value.bitrate_kind, value.bitrate_bps)?,
         }),
-        AbiInterfaceKind::TcpServer => Ok(InterfaceConfig::TcpServer {
+        Kind::TcpServer => Ok(InterfaceConfig::TcpServer {
             bind: unsafe { read_string(value.bind) }?.to_string(),
             bitrate: parse_bitrate(value.bitrate_kind, value.bitrate_bps)?,
         }),
-        AbiInterfaceKind::Udp => Ok(InterfaceConfig::Udp {
+        Kind::Udp => Ok(InterfaceConfig::Udp {
             local: unsafe { read_string(value.local) }?.to_string(),
             peer: unsafe { read_string(value.peer) }?.to_string(),
             bitrate: parse_bitrate(value.bitrate_kind, value.bitrate_bps)?,
         }),
-        AbiInterfaceKind::Serial => Ok(InterfaceConfig::Serial {
+        Kind::Serial => Ok(InterfaceConfig::Serial {
             port: unsafe { read_string(value.port) }?.to_string(),
             line: parse_serial_line(&value.line)?,
         }),
-        AbiInterfaceKind::Kiss => Ok(InterfaceConfig::Kiss {
+        Kind::Kiss => Ok(InterfaceConfig::Kiss {
             port: unsafe { read_string(value.port) }?.to_string(),
             line: parse_serial_line(&value.line)?,
             flow_control: value.flow_control != 0,
@@ -876,7 +900,7 @@ unsafe fn parse_interface_config(value: &PrnsInterfaceConfig) -> Result<Interfac
             station_callsign: optional_station()?,
             station_interval_seconds: optional_interval(),
         }),
-        AbiInterfaceKind::Ax25Kiss => Ok(InterfaceConfig::Ax25Kiss {
+        Kind::Ax25Kiss => Ok(InterfaceConfig::Ax25Kiss {
             port: unsafe { read_string(value.port) }?.to_string(),
             line: parse_serial_line(&value.line)?,
             flow_control: value.flow_control != 0,
@@ -887,7 +911,7 @@ unsafe fn parse_interface_config(value: &PrnsInterfaceConfig) -> Result<Interfac
             callsign: unsafe { read_string(value.callsign) }?.to_string(),
             ssid: value.ssid,
         }),
-        AbiInterfaceKind::RNode => Ok(InterfaceConfig::RNode {
+        Kind::RNode => Ok(InterfaceConfig::RNode {
             port: unsafe { read_string(value.port) }?.to_string(),
             radio: parse_rnode_radio(&value.radio)?,
             flow_control: value.flow_control != 0,
@@ -898,7 +922,7 @@ unsafe fn parse_interface_config(value: &PrnsInterfaceConfig) -> Result<Interfac
             airtime_limit_long_centi_percent: (value.has_airtime_limit_long_centi_percent != 0)
                 .then_some(value.airtime_limit_long_centi_percent),
         }),
-        AbiInterfaceKind::MultiRNode => {
+        Kind::MultiRNode => {
             let members = unsafe { read_array(value.members, value.member_count) }?
                 .iter()
                 .map(|member| {
@@ -919,36 +943,45 @@ unsafe fn parse_interface_config(value: &PrnsInterfaceConfig) -> Result<Interfac
                 members,
             })
         }
-        AbiInterfaceKind::Pipe => Ok(InterfaceConfig::Pipe {
+        Kind::Pipe => Ok(InterfaceConfig::Pipe {
             command: unsafe { read_strings(value.command, value.command_count) }?,
             respawn_delay_millis: value.respawn_delay_millis,
         }),
-        AbiInterfaceKind::BackboneClient => Ok(InterfaceConfig::BackboneClient {
+        Kind::BackboneClient => Ok(InterfaceConfig::BackboneClient {
             target: unsafe { read_string(value.target) }?.to_string(),
             bitrate: parse_bitrate(value.bitrate_kind, value.bitrate_bps)?,
         }),
-        AbiInterfaceKind::BackboneServer => Ok(InterfaceConfig::BackboneServer {
+        Kind::BackboneServer => Ok(InterfaceConfig::BackboneServer {
             bind: unsafe { read_string(value.bind) }?.to_string(),
             bitrate: parse_bitrate(value.bitrate_kind, value.bitrate_bps)?,
         }),
-        AbiInterfaceKind::I2p => Ok(InterfaceConfig::I2p {
+        Kind::I2p => Ok(InterfaceConfig::I2p {
             peers: unsafe { read_strings(value.peers, value.peer_count) }?,
             connectable: value.connectable != 0,
         }),
-        AbiInterfaceKind::Weave => Ok(InterfaceConfig::Weave {
+        Kind::Weave => Ok(InterfaceConfig::Weave {
             port: unsafe { read_string(value.port) }?.to_string(),
         }),
-        AbiInterfaceKind::AutomaticUsb => Ok(InterfaceConfig::AutomaticUsb),
-        AbiInterfaceKind::AutomaticBluetoothLe => Ok(InterfaceConfig::AutomaticBluetoothLe),
-        AbiInterfaceKind::WebSocketClient => Ok(InterfaceConfig::WebSocketClient {
+        Kind::AutomaticUsb => Ok(InterfaceConfig::AutomaticUsb),
+        Kind::AutomaticBluetoothLe => Ok(InterfaceConfig::AutomaticBluetoothLe),
+        Kind::ConfiguredBluetoothLe => {
+            validate_size(size, size_of::<PrnsInterfaceConfig>())?;
+            let extended = unsafe { &*config };
+            Ok(InterfaceConfig::ConfiguredBluetoothLe {
+                discovery_groups: unsafe {
+                    read_strings(extended.discovery_groups, extended.discovery_group_count)
+                }?,
+            })
+        }
+        Kind::WebSocketClient => Ok(InterfaceConfig::WebSocketClient {
             target: unsafe { read_string(value.target) }?.to_string(),
             framing: parse_websocket_framing_selection(value.websocket_framing_selection)?,
         }),
-        AbiInterfaceKind::WebSocketServer => Ok(InterfaceConfig::WebSocketServer {
+        Kind::WebSocketServer => Ok(InterfaceConfig::WebSocketServer {
             bind: unsafe { read_string(value.bind) }?.to_string(),
             framing: parse_websocket_framing_selection(value.websocket_framing_selection)?,
         }),
-        AbiInterfaceKind::BrowserRendezvous => Ok(InterfaceConfig::BrowserRendezvous {
+        Kind::BrowserRendezvous => Ok(InterfaceConfig::BrowserRendezvous {
             url: unsafe { read_string(value.url) }?.to_string(),
         }),
     }
@@ -1726,10 +1759,6 @@ pub unsafe extern "C" fn prns_host_attach_interface(
     out_command: *mut *mut PrnsIssuedCommand,
 ) -> u32 {
     catch_status(|| {
-        let config = match unsafe { required_ref(config) } {
-            Ok(config) => config,
-            Err(error) => return error,
-        };
         let config = match unsafe { parse_interface_config(config) } {
             Ok(config) => config,
             Err(error) => return error,
@@ -3454,6 +3483,50 @@ mod tests {
     use std::sync::atomic::{AtomicUsize, Ordering};
 
     #[test]
+    fn configured_bluetooth_reads_its_groups_and_preserves_the_original_abi_prefix(
+    ) -> Result<(), u32> {
+        use prns_host_core::InterfaceConfigKind;
+
+        let mut legacy: PrnsInterfaceConfigPrefix = unsafe { std::mem::zeroed() };
+        legacy.struct_size = size_of::<PrnsInterfaceConfigPrefix>();
+        legacy.kind = InterfaceConfigKind::AutomaticBluetoothLe as u32;
+        assert_eq!(
+            unsafe { parse_interface_config(ptr::from_ref(&legacy).cast()) },
+            Ok(InterfaceConfig::AutomaticBluetoothLe)
+        );
+        legacy.kind = InterfaceConfigKind::ConfiguredBluetoothLe as u32;
+        assert_eq!(
+            unsafe { parse_interface_config(ptr::from_ref(&legacy).cast()) },
+            Err(status(AbiStatus::InvalidArgument))
+        );
+
+        let groups = [string_view("work"), string_view("reticulum")];
+        let mut configured: PrnsInterfaceConfig = unsafe { std::mem::zeroed() };
+        configured.struct_size = size_of::<PrnsInterfaceConfig>();
+        configured.kind = InterfaceConfigKind::ConfiguredBluetoothLe as u32;
+        configured.discovery_groups = groups.as_ptr();
+        configured.discovery_group_count = groups.len();
+        let decoded = unsafe { parse_interface_config(&configured) }?;
+        assert_eq!(
+            decoded,
+            InterfaceConfig::ConfiguredBluetoothLe {
+                discovery_groups: vec!["work".into(), "reticulum".into()]
+            }
+        );
+        assert!(decoded.validate().is_ok());
+        configured.discovery_groups = ptr::null();
+        assert_eq!(
+            unsafe { parse_interface_config(&configured) },
+            Err(status(AbiStatus::InvalidArgument))
+        );
+        configured.discovery_group_count = 0;
+        assert!(unsafe { parse_interface_config(&configured) }?
+            .validate()
+            .is_err());
+        Ok(())
+    }
+
+    #[test]
     fn response_too_large_preserves_its_failure_kind() {
         let cached = cache_command_result(Err(CommandFailure::ResponseTooLarge));
         assert_eq!(
@@ -4273,7 +4346,7 @@ mod tests {
 
         let mut generic: PrnsInterfaceConfig = unsafe { std::mem::zeroed() };
         generic.struct_size = size_of::<PrnsInterfaceConfig>();
-        generic.kind = AbiInterfaceKind::BrowserRendezvous as u32;
+        generic.kind = prns_host_core::InterfaceConfigKind::BrowserRendezvous as u32;
         generic.url = string_view("ws://127.0.0.1:4242");
         let mut routing = PrnsInterfaceRoutingPolicy {
             struct_size: size_of::<PrnsInterfaceRoutingPolicy>(),

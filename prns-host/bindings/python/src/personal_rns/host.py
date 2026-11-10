@@ -553,7 +553,7 @@ def _marshal_interface(
         return arena.array(StringView, [arena.string(item) for item in values])
 
     if isinstance(value, g.InterfaceConfigAutoLan):
-        result.kind = g.InterfaceKind.AUTO_LAN
+        result.kind = g.InterfaceConfigKind.AUTO_LAN
         if value.group_id is not None:
             result.has_group_id = 1
             result.group_id = arena.string(value.group_id)
@@ -574,24 +574,24 @@ def _marshal_interface(
             result.has_multicast_address_type = 1
             result.multicast_address_type = value.multicast_address_type
     elif isinstance(value, g.InterfaceConfigTcpClient):
-        result.kind = g.InterfaceKind.TCP_CLIENT
+        result.kind = g.InterfaceConfigKind.TCP_CLIENT
         result.target = arena.string(value.target)
         set_bitrate(value.bitrate)
     elif isinstance(value, g.InterfaceConfigTcpServer):
-        result.kind = g.InterfaceKind.TCP_SERVER
+        result.kind = g.InterfaceConfigKind.TCP_SERVER
         result.bind = arena.string(value.bind)
         set_bitrate(value.bitrate)
     elif isinstance(value, g.InterfaceConfigUdp):
-        result.kind = g.InterfaceKind.UDP
+        result.kind = g.InterfaceConfigKind.UDP
         result.local = arena.string(value.local)
         result.peer = arena.string(value.peer)
         set_bitrate(value.bitrate)
     elif isinstance(value, g.InterfaceConfigSerial):
-        result.kind = g.InterfaceKind.SERIAL
+        result.kind = g.InterfaceConfigKind.SERIAL
         result.port = arena.string(value.port)
         result.line = _marshal_serial_line(value.line)
     elif isinstance(value, g.InterfaceConfigKiss):
-        result.kind = g.InterfaceKind.KISS
+        result.kind = g.InterfaceConfigKind.KISS
         result.port = arena.string(value.port)
         result.line = _marshal_serial_line(value.line)
         result.flow_control = value.flow_control
@@ -601,7 +601,7 @@ def _marshal_interface(
         result.slot_time_millis = value.slot_time_millis
         set_station(value.station_callsign, value.station_interval_seconds)
     elif isinstance(value, g.InterfaceConfigAx25Kiss):
-        result.kind = g.InterfaceKind.AX25_KISS
+        result.kind = g.InterfaceConfigKind.AX25_KISS
         result.port = arena.string(value.port)
         result.line = _marshal_serial_line(value.line)
         result.flow_control = value.flow_control
@@ -612,7 +612,7 @@ def _marshal_interface(
         result.callsign = arena.string(value.callsign)
         result.ssid = value.ssid
     elif isinstance(value, g.InterfaceConfigRNode):
-        result.kind = g.InterfaceKind.R_NODE
+        result.kind = g.InterfaceConfigKind.R_NODE
         result.port = arena.string(value.port)
         result.radio = _marshal_radio(value.radio)
         result.flow_control = value.flow_control
@@ -628,7 +628,7 @@ def _marshal_interface(
                 value.airtime_limit_long_centi_percent
             )
     elif isinstance(value, g.InterfaceConfigMultiRNode):
-        result.kind = g.InterfaceKind.MULTI_R_NODE
+        result.kind = g.InterfaceConfigKind.MULTI_R_NODE
         result.port = arena.string(value.port)
         set_station(value.station_callsign, value.station_interval_seconds)
         members = [
@@ -645,40 +645,44 @@ def _marshal_interface(
         result.members = arena.array(NativeMultiRNodeMemberConfig, members)
         result.member_count = len(members)
     elif isinstance(value, g.InterfaceConfigPipe):
-        result.kind = g.InterfaceKind.PIPE
+        result.kind = g.InterfaceConfigKind.PIPE
         result.command = strings(value.command)
         result.command_count = len(value.command)
         result.respawn_delay_millis = value.respawn_delay_millis
     elif isinstance(value, g.InterfaceConfigBackboneClient):
-        result.kind = g.InterfaceKind.BACKBONE_CLIENT
+        result.kind = g.InterfaceConfigKind.BACKBONE_CLIENT
         result.target = arena.string(value.target)
         set_bitrate(value.bitrate)
     elif isinstance(value, g.InterfaceConfigBackboneServer):
-        result.kind = g.InterfaceKind.BACKBONE_SERVER
+        result.kind = g.InterfaceConfigKind.BACKBONE_SERVER
         result.bind = arena.string(value.bind)
         set_bitrate(value.bitrate)
     elif isinstance(value, g.InterfaceConfigI2p):
-        result.kind = g.InterfaceKind.I2P
+        result.kind = g.InterfaceConfigKind.I2P
         result.peers = strings(value.peers)
         result.peer_count = len(value.peers)
         result.connectable = value.connectable
     elif isinstance(value, g.InterfaceConfigWeave):
-        result.kind = g.InterfaceKind.WEAVE
+        result.kind = g.InterfaceConfigKind.WEAVE
         result.port = arena.string(value.port)
     elif isinstance(value, g.InterfaceConfigAutomaticUsb):
-        result.kind = g.InterfaceKind.AUTOMATIC_USB
+        result.kind = g.InterfaceConfigKind.AUTOMATIC_USB
     elif isinstance(value, g.InterfaceConfigAutomaticBluetoothLe):
-        result.kind = g.InterfaceKind.AUTOMATIC_BLUETOOTH_LE
+        result.kind = g.InterfaceConfigKind.AUTOMATIC_BLUETOOTH_LE
+    elif isinstance(value, g.InterfaceConfigConfiguredBluetoothLe):
+        result.kind = g.InterfaceConfigKind.CONFIGURED_BLUETOOTH_LE
+        result.discovery_groups = strings(value.discovery_groups)
+        result.discovery_group_count = len(value.discovery_groups)
     elif isinstance(value, g.InterfaceConfigWebSocketClient):
-        result.kind = g.InterfaceKind.WEB_SOCKET_CLIENT
+        result.kind = g.InterfaceConfigKind.WEB_SOCKET_CLIENT
         result.target = arena.string(value.target)
         result.websocket_framing_selection = value.framing
     elif isinstance(value, g.InterfaceConfigWebSocketServer):
-        result.kind = g.InterfaceKind.WEB_SOCKET_SERVER
+        result.kind = g.InterfaceConfigKind.WEB_SOCKET_SERVER
         result.bind = arena.string(value.bind)
         result.websocket_framing_selection = value.framing
     elif isinstance(value, g.InterfaceConfigBrowserRendezvous):
-        result.kind = g.InterfaceKind.BROWSER_RENDEZVOUS
+        result.kind = g.InterfaceConfigKind.BROWSER_RENDEZVOUS
         result.url = arena.string(value.url)
     else:
         raise TypeError(f"unknown interface config {type(value)!r}")

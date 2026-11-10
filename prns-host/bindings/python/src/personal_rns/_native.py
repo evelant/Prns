@@ -154,6 +154,8 @@ class InterfaceConfig(ctypes.Structure):
         ("connectable", ctypes.c_uint8),
         ("url", StringView),
         ("websocket_framing_selection", ctypes.c_uint32),
+        ("discovery_groups", ctypes.POINTER(StringView)),
+        ("discovery_group_count", ctypes.c_size_t),
     ]
 
 

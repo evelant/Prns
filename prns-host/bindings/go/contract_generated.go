@@ -462,6 +462,31 @@ const (
 	EventFieldArrivedAtMillis EventField = 42
 )
 
+type InterfaceConfigKind uint32
+
+const (
+	InterfaceConfigKindAutoLan InterfaceConfigKind = 1
+	InterfaceConfigKindTcpClient InterfaceConfigKind = 2
+	InterfaceConfigKindTcpServer InterfaceConfigKind = 3
+	InterfaceConfigKindUdp InterfaceConfigKind = 4
+	InterfaceConfigKindSerial InterfaceConfigKind = 5
+	InterfaceConfigKindKiss InterfaceConfigKind = 6
+	InterfaceConfigKindAx25Kiss InterfaceConfigKind = 7
+	InterfaceConfigKindRNode InterfaceConfigKind = 8
+	InterfaceConfigKindMultiRNode InterfaceConfigKind = 9
+	InterfaceConfigKindPipe InterfaceConfigKind = 10
+	InterfaceConfigKindBackboneClient InterfaceConfigKind = 11
+	InterfaceConfigKindBackboneServer InterfaceConfigKind = 12
+	InterfaceConfigKindI2p InterfaceConfigKind = 13
+	InterfaceConfigKindWeave InterfaceConfigKind = 14
+	InterfaceConfigKindAutomaticUsb InterfaceConfigKind = 15
+	InterfaceConfigKindAutomaticBluetoothLe InterfaceConfigKind = 16
+	InterfaceConfigKindWebSocketClient InterfaceConfigKind = 17
+	InterfaceConfigKindWebSocketServer InterfaceConfigKind = 18
+	InterfaceConfigKindBrowserRendezvous InterfaceConfigKind = 19
+	InterfaceConfigKindConfiguredBluetoothLe InterfaceConfigKind = 20
+)
+
 type DestinationHash [DestinationHashLength]byte
 
 type IdentityHash [IdentityHashLength]byte

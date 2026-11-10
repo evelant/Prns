@@ -188,6 +188,7 @@ interface_configs = InterfaceConfig[
     ),
     InterfaceConfigWebSocketServer("127.0.0.1:4246", WebSocketFramingSelectionHdlc),
     InterfaceConfigBrowserRendezvous("ws://fixture.invalid/rendezvous"),
+    InterfaceConfigConfiguredBluetoothLe(["work", "reticulum"]),
 ]
 interface_kinds = [
     matched.captures[1]
