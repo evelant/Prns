@@ -16,11 +16,12 @@ static COMMITS: AtomicU32 = AtomicU32::new(0);
 static SALT: OnceLock<Option<[u8; 32]>> = OnceLock::new();
 
 fn salt() -> Option<&'static [u8; 32]> {
-    SALT.get_or_init(|| {
-        let mut value = [0; 32];
-        getrandom::getrandom(&mut value).ok().map(|()| value)
-    })
-    .as_ref()
+    SALT.get_or_init(generate_salt).as_ref()
+}
+
+fn generate_salt() -> Option<[u8; 32]> {
+    let mut value = [0; 32];
+    getrandom::getrandom(&mut value).ok().map(|()| value)
 }
 
 fn tag(salt: &[u8; 32], domain: &[u8], value: &[u8]) -> u64 {
@@ -149,20 +150,17 @@ mod tests {
     use super::*;
 
     #[test]
-    fn tags_are_domain_and_process_separated_but_stable_within_a_process() {
+    fn tags_are_domain_and_process_separated_but_stable_within_a_process(
+    ) -> Result<(), &'static str> {
         let value = [3; 32];
-        assert_eq!(
-            tag(&[1; 32], b"group", &value),
-            tag(&[1; 32], b"group", &value)
-        );
-        assert_ne!(
-            tag(&[1; 32], b"group", &value),
-            tag(&[2; 32], b"group", &value)
-        );
-        assert_ne!(
-            tag(&[1; 32], b"group", &value),
-            tag(&[1; 32], b"peer", &value)
-        );
+        let group = correlation_tag(b"group", &value).ok_or("process salt unavailable")?;
+        let peer = correlation_tag(b"peer", &value).ok_or("process salt unavailable")?;
+        assert_eq!(Some(group), correlation_tag(b"group", &value));
+        assert_ne!(group, peer);
+
+        let next_process = generate_salt().ok_or("could not generate another process salt")?;
+        assert_ne!(group, tag(&next_process, b"group", &value));
+        Ok(())
     }
 
     #[test]

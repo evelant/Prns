@@ -41,10 +41,10 @@ fn intent() -> CreateRequest<2> {
         services: ServiceSet::empty(),
     }
 }
-fn request(scope: CreateRequestScope, nonce: u8) -> CreateRequestId {
+fn request(scope: CreateRequestScope, request_number: u8) -> CreateRequestId {
     CreateRequestId {
         scope,
-        nonce: [nonce; 32],
+        nonce: [request_number; 32],
     }
 }
 fn with_core<T>(root: &Path, f: impl FnOnce(&mut Disk, &mut Coordinator<'_, 4, 8, 2>) -> T) -> T {

@@ -81,7 +81,11 @@ fn next(service: &Service<'_>, cfg: &Provisioned) -> prns_groups_core::Operation
         .unwrap()
         .operation_id()
 }
-fn publish(db: &Database, cfg: &Provisioned, nonce: u8) -> (prns_groups_core::RecordId, Vec<u8>) {
+fn publish(
+    db: &Database,
+    cfg: &Provisioned,
+    record_number: u8,
+) -> (prns_groups_core::RecordId, Vec<u8>) {
     service(
         db,
         cfg,
@@ -97,7 +101,7 @@ fn publish(db: &Database, cfg: &Provisioned, nonce: u8) -> (prns_groups_core::Re
                 .publish(
                     operation,
                     &Publication {
-                        nonce: [nonce; 32],
+                        nonce: [record_number; 32],
                         namespace: NamespaceId(0x42),
                         schema: SchemaId(7),
                         validity: PublicationValidity::new(

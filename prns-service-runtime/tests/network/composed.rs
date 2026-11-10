@@ -101,13 +101,13 @@ fn options() -> network::OwnerOptions {
         },
     }
 }
-async fn named(client: &owned::Client, nonce: u8, name: &str) -> owned::IdentityClient {
+async fn named(client: &owned::Client, request_number: u8, name: &str) -> owned::IdentityClient {
     let scope = client.creation_scope().await.unwrap();
     let result = client
         .create_or_recover(
             CreateRequestId {
                 scope,
-                nonce: [nonce; 32],
+                nonce: [request_number; 32],
             },
             api::CreateRequest {
                 source: identity::KeySource::Generate,

@@ -444,12 +444,12 @@ fn close_fences_borrowed_host_before_local_drain_and_actual_host_stop() {
     assert!(host.events().lifecycle().state.is_terminal());
 }
 
-fn create_identity(owner: &Owner, nonce: u8) -> api::IdentityClient {
+fn create_identity(owner: &Owner, request_number: u8) -> api::IdentityClient {
     let catalog = owner.identities().unwrap();
     let outcome = wait(catalog.create_or_recover(
         CreateRequestId {
             scope: wait(catalog.creation_scope()).unwrap(),
-            nonce: [nonce; 32],
+            nonce: [request_number; 32],
         },
         api::CreateRequest {
             source: identity::KeySource::Generate,

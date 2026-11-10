@@ -115,9 +115,9 @@ impl Worker {
     }
 }
 
-fn request_token(nonce: u8) -> [u8; 32] {
+fn request_token(request_number: u8) -> [u8; 32] {
     static ISSUED: std::sync::OnceLock<u64> = std::sync::OnceLock::new();
-    prns_groups_core::retry::RequestToken::new(*ISSUED.get_or_init(now), [nonce; 20])
+    prns_groups_core::retry::RequestToken::new(*ISSUED.get_or_init(now), [request_number; 20])
         .unwrap()
         .into_bytes()
 }
