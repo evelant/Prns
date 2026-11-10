@@ -67,7 +67,8 @@ the SDK itself still requires a clean consumer that resolves published packages
 without local overrides. Release qualification must refer to the actual packaged bytes;
 older local checks or another provider's phone trial do not qualify a new build.
 
-The production npm audit checks the package-specific MPL-2.0 exceptions for
-`@ubjs/core@0.31.0-6` and `@ubjs/react-native@0.31.0-6` against their
-registry URLs and SHA-512 integrities. The source record also binds the license
-notices, upstream revision, runtime patch and SHA-256 archive hashes.
+The production audit verifies the corresponding upstream source revision, exact
+registry archives and original notice for both MPL-2.0 runtime peers. The SDK
+notice gives recipients the source download URLs, digests and complete text of
+the runtime patch. The detached consumer checks the patch in the packed SDK
+against the verified source record.

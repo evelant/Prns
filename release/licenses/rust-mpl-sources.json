@@ -1,0 +1,34 @@
+{
+  "option-ext 0.2.0": {
+    "sha256": "04744f49eae99ab78e0d5c0b603ab218f515ea8cfe5a456d7629ad883a3b6e7d",
+    "notice": "LICENSE.txt"
+  },
+  "serialport 4.9.0": {
+    "sha256": "a4d91116f97173694f1642263b2ff837f80d933aa837e2314969f6728f661df3",
+    "notice": "LICENSE.txt"
+  },
+  "uniffi 0.31.2": {
+    "sha256": "46eefd5468602930da46b1f49d3448c6dfc2e81295f93120f23f8174fd70267f",
+    "notice": "src/lib.rs"
+  },
+  "uniffi_core 0.31.2": {
+    "sha256": "eec017b112701681f6fbbe5d92014b5c468eb0b177a94389de03ceec40665095",
+    "notice": "src/lib.rs"
+  },
+  "uniffi_internal_macros 0.31.2": {
+    "sha256": "4641669b48fefbc5e80ff08c5004d9c7617fb91232131a6734ab6712779cb04c",
+    "notice": "src/lib.rs"
+  },
+  "uniffi_macros 0.31.2": {
+    "sha256": "eeb8617ee814de22caf7417bf514715ba0b3f46bd9d5a5d794413fd8282cb737",
+    "notice": "src/lib.rs"
+  },
+  "uniffi_meta 0.31.2": {
+    "sha256": "58d5b94fc92803d21b2928bd15c6f06e57609b95caf98ea561c99cda1b6d2a25",
+    "notice": "src/lib.rs"
+  },
+  "uniffi_pipeline 0.31.2": {
+    "sha256": "032739b3ec725576914c15899dedaf080163ced86b6934566c20ec2b20ce90ca",
+    "notice": "src/lib.rs"
+  }
+}

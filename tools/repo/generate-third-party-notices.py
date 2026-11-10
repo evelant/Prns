@@ -19,6 +19,8 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "tools/uniffi"))
 import runtime_notices
+sys.path.insert(0, str(ROOT / "validation/security"))
+import mpl_sources
 OUTPUT = ROOT / "THIRD_PARTY_NOTICES.md"
 ABOUT = ROOT / "about.toml"
 GRAPH_FEATURES = {'Group secure storage': ('prns-groups-store/secure',),
@@ -183,6 +185,8 @@ def notice_input_paths() -> tuple[Path, ...]:
     paths = {
         Path(__file__).resolve(),
         ABOUT,
+        ROOT / mpl_sources.REVIEWS,
+        ROOT / "validation/security/mpl_sources.py",
         ROOT / "docs/website/package-lock.json",
     }
     # The lockfile's integrity hashes bind the exact npm package archives, while
@@ -372,6 +376,8 @@ def collect_rust_notices(graphs, features):
         directory = temporary / "output"
         directory.mkdir()
         fetched_manifests: set[str] = set()
+        source_reviews = json.loads((ROOT / mpl_sources.REVIEWS).read_text())
+        verified_sources = {}
         for graph, manifest, target in graphs:
             if manifest not in fetched_manifests:
                 fetch_manifest(manifest, cargo_home)
@@ -392,8 +398,27 @@ def collect_rust_notices(graphs, features):
                 notice["graphs"].add(graph)
                 for used in license_info.get("used_by", []):
                     package = used["crate"]
-                    notice["packages"].add(f'{package["name"]} {package["version"]}')
+                    package_version = f'{package["name"]} {package["version"]}'
+                    notice["packages"].add(package_version)
+                    if license_info["id"] == "MPL-2.0":
+                        identity = (package["id"], package["manifest_path"])
+                        if identity not in verified_sources:
+                            verified_sources[identity] = mpl_sources.crate_source(
+                                package, cargo_home, source_reviews)
+                        notice.setdefault("sources", {})[package_version] = verified_sources[identity]
     return version, notices
+
+
+def mpl_source_lines(identifier, notice):
+    if identifier != "MPL-2.0":
+        return []
+    sources = notice.get("sources", {})
+    if sources.keys() != notice["packages"]:
+        raise ValueError("MPL notice lacks corresponding source for a selected package")
+    lines = ["Source code and original notices are available under MPL-2.0 in these exact archives.", ""]
+    for package, (url, checksum, notice_file) in sorted(sources.items()):
+        lines.append(f"- [{package}]({url}) (SHA-256 `{checksum}`, notice in `{notice_file}`).")
+    return [*lines, ""]
 
 
 def license_text_lines(notices):
@@ -414,6 +439,7 @@ def license_text_lines(notices):
                 "",
                 "Release graphs: " + ", ".join(sorted(notice["graphs"])),
                 "",
+                *mpl_source_lines(identifier, notice),
                 "```text",
                 text,
                 "```",

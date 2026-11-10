@@ -13,6 +13,7 @@ accepted = [
     "0BSD",
     "bzip2-1.0.6",
     "CDLA-Permissive-2.0",
+    "MPL-2.0",
 ]
 ignore-dev-dependencies = true
 ignore-build-dependencies = false
@@ -25,29 +26,6 @@ accepted = ["NCSA"]
 
 [nrf-softdevice-s140]
 accepted = ["LicenseRef-Nordic-SoftDevice"]
-
-[serialport]
-accepted = ["MPL-2.0"]
-
-# Notice choices for the SDK's generated native binding runtime. Exact package
-# versions are enforced by deny.toml and the locked release graphs.
-[uniffi]
-accepted = ["MPL-2.0"]
-
-[uniffi_core]
-accepted = ["MPL-2.0"]
-
-[uniffi_internal_macros]
-accepted = ["MPL-2.0"]
-
-[uniffi_macros]
-accepted = ["MPL-2.0"]
-
-[uniffi_meta]
-accepted = ["MPL-2.0"]
-
-[uniffi_pipeline]
-accepted = ["MPL-2.0"]
 
 [nrf-softdevice-s140.clarify]
 license = "LicenseRef-Nordic-SoftDevice"

@@ -4,7 +4,7 @@ import base64
 import binascii
 
 
-# These exceptions are tied to the published bytes independently of the input lockfiles.
+# These reviewed source records identify exact published bytes independently of the input lockfiles.
 _REVIEWED_MOBILE_RUNTIME_ARCHIVES = {
     "@ubjs/core": (
         "https://registry.npmjs.org/@ubjs/core/-/core-0.31.0-6.tgz",
@@ -20,7 +20,7 @@ _REVIEWED_MOBILE_RUNTIME_ARCHIVES = {
 def reviewed_mobile_runtime_license(
     name: str, version: str, license_expression: str, integrity: str, archive_url: str,
 ) -> bool:
-    """Whether this registry artifact qualifies for the mobile runtime MPL exception."""
+    """Whether this archive matches a mobile runtime with verified corresponding source."""
     return (
         version == "0.31.0-6"
         and license_expression == "MPL-2.0"
