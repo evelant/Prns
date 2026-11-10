@@ -129,9 +129,80 @@ class MobileRedistributionTests(unittest.TestCase):
             m.write_text(json.dumps({"version": 3, "sources": sources + extra, "sourcesContent": contents}))
             with self.assertRaisesRegex(ValueError, issue):
                 mobile.verify_bundle_map(self.root, "android", m)
-        m.write_text(json.dumps({"version": 3, "sources": sources[:1]}))
+        m.write_text(json.dumps({"version": 3, "sources": sources[:1], "sourcesContent": ["entry"]}))
         with self.assertRaisesRegex(ValueError, "implementation"):
             mobile.verify_bundle_map(self.root, "ios", m)
+
+    def test_indexed_native_map_and_build_machine_route_prefixes(self):
+        compressed = {
+            "version": 3,
+            "sections": [
+                {
+                    "offset": {"line": 0, "column": 0},
+                    "map": {
+                        "version": 3,
+                        "sources": ["__prelude__"],
+                        "sourcesContent": ["var __DEV__=false"],
+                    },
+                },
+                {
+                    "offset": {"line": 1, "column": 0},
+                    "map": {
+                        "version": 3,
+                        "sources": ["/../prns-js/dist/file.js"],
+                        "sourcesContent": ["export const version = 1"],
+                    },
+                },
+            ],
+        }
+        self.assertEqual(len(list(mobile.map_entries(compressed))), 2)
+        self.assertEqual(mobile.mapped_path("/../prns-js/dist/file.js"), "prns-js/dist/file.js")
+        with self.assertRaisesRegex(ValueError, "escapes"):
+            mobile.mapped_path("/../prns-js/../../secret")
+        compressed["sections"][1] = {"url": "external.map"}
+        with self.assertRaisesRegex(ValueError, "self-contained"):
+            list(mobile.map_entries(compressed))
+        route = 'get() {return require("/tmp/build/applications/prns/app/app/route.tsx");}'
+        self.assertEqual(
+            mobile.virtual_digest("routes", route),
+            mobile.virtual_digest("routes", route.replace("/tmp/build", "/var/lib/runner/repo")),
+        )
+        self.assertNotEqual(
+            mobile.virtual_digest("routes", route),
+            mobile.virtual_digest("routes", route.replace("route.tsx", "changed.tsx")),
+        )
+
+    def test_native_asset_stub_requires_matching_physical_bytes(self):
+        pkg = self.pkg("expo-router")
+        loc = pkg["locations"][0]
+        self.qualify({os_: [pkg] for os_ in mobile.PLATFORMS})
+        record = json.loads((self.root / mobile.RECORD).read_text())
+        for profile in record["platforms"].values():
+            profile["registry"][loc] = {
+                "entry.js": mobile.sha(b"entry"),
+                "assets/icon.png": mobile.sha(b"png"),
+            }
+            profile["assets"] = [loc + "/assets/icon@2x.android.png"]
+        self.write(mobile.RECORD, json.dumps(record))
+        stub = self.write(loc + "/assets/icon.png", "png")
+        map_file = self.write(
+            "native.map",
+            json.dumps(
+                {
+                    "version": 3,
+                    "sources": [
+                        "/node_modules/expo-router/entry.js",
+                        "/prns/app/src/main.ts",
+                        "/node_modules/expo-router/assets/icon.png",
+                    ],
+                    "sourcesContent": ["entry", "source", ""],
+                }
+            ),
+        )
+        self.assertEqual(mobile.verify_bundle_map(self.root, "android", map_file)["sources"], 3)
+        stub.write_text("tampered")
+        with self.assertRaisesRegex(ValueError, "differs from qualified input"):
+            mobile.verify_bundle_map(self.root, "android", map_file)
 
     def test_unreviewed_vendor_paths_and_nested_map_dependencies_fail_closed(self):
         p = self.pkg("publisher")

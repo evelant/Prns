@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "inputs_sha256": "8919c289591c7405a2004e2900f381f3caa8410a36ec74d193d3e336e871e469",
+  "inputs_sha256": "ef8745518ca58a7431c27c909cf14f0c9ef69861cc5d80b20239beb50bdbd5c0",
   "platforms": {
     "android": {
       "registry": {
@@ -1838,10 +1838,22 @@
         "prns-js/dist/remote-control.generated.js": "47e0afd8289330bb1db65277d632db5aa1c703e81ba18ed6e4dd71a9cbd4e7bd"
       },
       "virtual": {
-        "environment-variables": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
-        "external-require": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
-        "__prelude__": "applications/node_modules/metro/src/lib/getPrependedScripts.js",
-        "routes": "applications/node_modules/metro/src/lib/contextModuleTemplates.js"
+        "environment-variables": {
+          "producer": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
+          "source_sha256": "a2c2339691fc48fbd14fb307292dff3e21222712d9240810742d7df0c6d74dfb"
+        },
+        "external-require": {
+          "producer": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
+          "source_sha256": "fde6df8f654eafcabb7c41dd2a2ed609fb5048fa4a434da83c0d5dd7e933d381"
+        },
+        "__prelude__": {
+          "producer": "applications/node_modules/metro/src/lib/getPrependedScripts.js",
+          "source_sha256": "c118cbe823031197e989134a0354275067d0f5c0157dde853f46dac3b132adc9"
+        },
+        "routes": {
+          "producer": "applications/node_modules/metro/src/lib/contextModuleTemplates.js",
+          "source_sha256": "369518dbb44c91e3cb058d46ff0cd018fb806d369a26164f9e0a5df2fdebec6b"
+        }
       },
       "assets": [
         "applications/node_modules/expo-router/assets/arrow_down.png",
@@ -3715,10 +3727,22 @@
         "prns-js/dist/remote-control.generated.js": "47e0afd8289330bb1db65277d632db5aa1c703e81ba18ed6e4dd71a9cbd4e7bd"
       },
       "virtual": {
-        "environment-variables": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
-        "external-require": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
-        "__prelude__": "applications/node_modules/metro/src/lib/getPrependedScripts.js",
-        "routes": "applications/node_modules/metro/src/lib/contextModuleTemplates.js"
+        "environment-variables": {
+          "producer": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
+          "source_sha256": "a2c2339691fc48fbd14fb307292dff3e21222712d9240810742d7df0c6d74dfb"
+        },
+        "external-require": {
+          "producer": "applications/node_modules/@expo/cli/build/src/start/server/metro/withMetroMultiPlatform.js",
+          "source_sha256": "fde6df8f654eafcabb7c41dd2a2ed609fb5048fa4a434da83c0d5dd7e933d381"
+        },
+        "__prelude__": {
+          "producer": "applications/node_modules/metro/src/lib/getPrependedScripts.js",
+          "source_sha256": "c118cbe823031197e989134a0354275067d0f5c0157dde853f46dac3b132adc9"
+        },
+        "routes": {
+          "producer": "applications/node_modules/metro/src/lib/contextModuleTemplates.js",
+          "source_sha256": "369518dbb44c91e3cb058d46ff0cd018fb806d369a26164f9e0a5df2fdebec6b"
+        }
       },
       "assets": [
         "applications/node_modules/expo-router/assets/arrow_down.png",
@@ -4161,119 +4185,521 @@
   },
   "source_headers": {
     "sha512-+/1aFErkawyky5UdWI06zYeO2DeHUnfaWnYHeiI8M8Z/sB6L66gI3WUxqtvUvKJoaM0Ti1CximD3x3JwteLYIg==": [
-      "// Copyright Joyent, Inc. and other Node contributors.\n//\n// Permission is hereby granted, free of charge, to any person obtaining a\n// copy of this software and associated documentation files (the\n// \"Software\"), to deal in the Software without restriction, including\n// without limitation the rights to use, copy, modify, merge, publish,\n// distribute, sublicense, and/or sell copies of the Software, and to permit\n// persons to whom the Software is furnished to do so, subject to the\n// following conditions:\n//\n// The above copyright notice and this permission notice shall be included\n// in all copies or substantial portions of the Software.\n//\n// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n// USE OR OTHER DEALINGS IN THE SOFTWARE."
+      {
+        "text": "// Copyright Joyent, Inc. and other Node contributors.\n//\n// Permission is hereby granted, free of charge, to any person obtaining a\n// copy of this software and associated documentation files (the\n// \"Software\"), to deal in the Software without restriction, including\n// without limitation the rights to use, copy, modify, merge, publish,\n// distribute, sublicense, and/or sell copies of the Software, and to permit\n// persons to whom the Software is furnished to do so, subject to the\n// following conditions:\n//\n// The above copyright notice and this permission notice shall be included\n// in all copies or substantial portions of the Software.\n//\n// THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n// USE OR OTHER DEALINGS IN THE SOFTWARE.",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==": [
-      "/**\n * @license React\n * react-is.production.min.js\n *\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * @license React\n * react-is.production.min.js\n *\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-1ca71Zgiu6ORjHqFBDpnSMTR2ReToX4l1Au1VFLyVeBTFavzQnv5JxMFr3ukHVKpSrSA2MCk0lNJSykjUfz7Zg==": [
-      "/**\n * QRCode for JavaScript\n *\n * modified by Ryan Day for nodejs support\n * Copyright (c) 2011 Ryan Day\n *\n * Licensed under the MIT license:\n *   http://www.opensource.org/licenses/mit-license.php\n *\n//---------------------------------------------------------------------\n// QRCode for JavaScript\n//\n// Copyright (c) 2009 Kazuhiko Arase\n//\n// URL: http://www.d-project.com/\n//\n// Licensed under the MIT license:\n//   http://www.opensource.org/licenses/mit-license.php\n//\n// The word \"QR Code\" is registered trademark of\n// DENSO WAVE INCORPORATED\n//   http://www.denso-wave.com/qrcode/faqpatent-e.html\n//\n//---------------------------------------------------------------------\n*/"
+      {
+        "text": "/**\n * QRCode for JavaScript\n *\n * modified by Ryan Day for nodejs support\n * Copyright (c) 2011 Ryan Day\n *\n * Licensed under the MIT license:\n *   http://www.opensource.org/licenses/mit-license.php\n *\n//---------------------------------------------------------------------\n// QRCode for JavaScript\n//\n// Copyright (c) 2009 Kazuhiko Arase\n//\n// URL: http://www.d-project.com/\n//\n// Licensed under the MIT license:\n//   http://www.opensource.org/licenses/mit-license.php\n//\n// The word \"QR Code\" is registered trademark of\n// DENSO WAVE INCORPORATED\n//   http://www.denso-wave.com/qrcode/faqpatent-e.html\n//\n//---------------------------------------------------------------------\n*/",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-2SAKiLyZRf+peBLkhhJWGY5vC26w1Uj9QBgUZvjAnOxjgeEKUGBE5riPS0R7+YoqSrRL0w8ucwZB4M+vvy9HMg==": [
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @format\n * @noflow\n */"
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @format\n * @noflow\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-3PYnM29RFXwvAN6Pc/scUfkI7RwhQ/xqyLUyPNlXUp9S40zI8nup9tUSrTLSVnWGBN38FNiGWbwZOB6uR4OGdw==": [
-      "/**\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-B62O6zVMYW7kK8dxIuCwpdJ5RYcIvET6ItScm0sfsTibJs+llS0krUVSAOHnEUn3lbFMfw+o+sNdWREOAc6FfQ==": [
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n * @polyfill\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @format\n * @noflow\n * @nolint\n * @polyfill\n */",
-      "// Copyright Joyent, Inc. and other Node contributors.\n  //\n  // Permission is hereby granted, free of charge, to any person obtaining a\n  // copy of this software and associated documentation files (the\n  // \"Software\"), to deal in the Software without restriction, including\n  // without limitation the rights to use, copy, modify, merge, publish,\n  // distribute, sublicense, and/or sell copies of the Software, and to permit\n  // persons to whom the Software is furnished to do so, subject to the\n  // following conditions:\n  //\n  // The above copyright notice and this permission notice shall be included\n  // in all copies or substantial portions of the Software.\n  //\n  // THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n  // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n  // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n  // NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n  // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n  // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n  // USE OR OTHER DEALINGS IN THE SOFTWARE.\n  //\n  // https://github.com/joyent/node/blob/master/lib/util.js"
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n * @polyfill\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @format\n * @noflow\n * @nolint\n * @polyfill\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "// Copyright Joyent, Inc. and other Node contributors.\n  //\n  // Permission is hereby granted, free of charge, to any person obtaining a\n  // copy of this software and associated documentation files (the\n  // \"Software\"), to deal in the Software without restriction, including\n  // without limitation the rights to use, copy, modify, merge, publish,\n  // distribute, sublicense, and/or sell copies of the Software, and to permit\n  // persons to whom the Software is furnished to do so, subject to the\n  // following conditions:\n  //\n  // The above copyright notice and this permission notice shall be included\n  // in all copies or substantial portions of the Software.\n  //\n  // THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n  // OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n  // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN\n  // NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n  // DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n  // OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n  // USE OR OTHER DEALINGS IN THE SOFTWARE.\n  //\n  // https://github.com/joyent/node/blob/master/lib/util.js",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-BLb5FF7NgggGYiCsA7KKkK2qFhn0K+6iGXOI+4Ucd+G7Robzw9Gt4WsWwxLt+Od+G+/hyqfz8ASokyWFZ6VcLw==": [
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */"
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==": [
-      "/**\n * @license React\n * react-jsx-runtime.production.js\n *\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * @license React\n * react.production.js\n *\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * @license React\n * react-jsx-runtime.production.js\n *\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * @license React\n * react.production.js\n *\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-FRpmfd1mdjWS9bRSMoZkwpF8ugbN+w6BDtNs+DYEio7rdSguTJ6fs/gaeWSeN60AJAbz80Uj36AMWtpHkShG0g==": [
-      "/**\n * @license\n * web-streams-polyfill v4.1.0\n * Copyright 2024 Mattias Buelens, Diwank Singh Tomer and other contributors.\n * This code is released under the MIT license.\n * SPDX-License-Identifier: MIT\n */",
-      "/**\n * Copyright (c) 650 Industries.\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * Copyright (c) 650 Industries.\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Based on this but with web support:\n * https://github.com/facebook/react-native/blob/086714b02b0fb838dee5a66c5bcefe73b53cf3df/Libraries/Utilities/HMRClient.js\n */",
-      "/**\n * Copyright © 2022 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * Copyright © 2023-present 650 Industries, Inc. (aka Expo)\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * Copyright © 2024 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * Copyright © 2025 650 Industries.\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Fork of unexposed react-native module\n * https://github.com/facebook/react-native/blob/c5fb371061c1083684a23aa0852f6dbfb74a8b52/packages/react-native/Libraries/Utilities/PolyfillFunctions.js#L1\n */",
-      "/**\n * Copyright © 2026 650 Industries.\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Forked from React Native's DOMException implementation\n * https://github.com/facebook/react-native/blob/f5bd86c31105bb6a994acb03c8149bd7ee03dac6/packages/react-native/src/private/webapis/errors/DOMException.js\n */",
-      "// Copyright 2015-present 650 Industries. All rights reserved."
+      {
+        "text": "/**\n * @license\n * web-streams-polyfill v4.1.0\n * Copyright 2024 Mattias Buelens, Diwank Singh Tomer and other contributors.\n * This code is released under the MIT license.\n * SPDX-License-Identifier: MIT\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) 650 Industries.\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) 650 Industries.\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Based on this but with web support:\n * https://github.com/facebook/react-native/blob/086714b02b0fb838dee5a66c5bcefe73b53cf3df/Libraries/Utilities/HMRClient.js\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2022 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2023-present 650 Industries, Inc. (aka Expo)\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2024 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2025 650 Industries.\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Fork of unexposed react-native module\n * https://github.com/facebook/react-native/blob/c5fb371061c1083684a23aa0852f6dbfb74a8b52/packages/react-native/Libraries/Utilities/PolyfillFunctions.js#L1\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2026 650 Industries.\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Forked from React Native's DOMException implementation\n * https://github.com/facebook/react-native/blob/f5bd86c31105bb6a994acb03c8149bd7ee03dac6/packages/react-native/src/private/webapis/errors/DOMException.js\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "// Copyright 2015-present 650 Industries. All rights reserved.",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-GzwSjiDCJeSHDiH71jeCsncMCEksRyDhGweNcVjGfW5C7JMYtROUroMBudPGtrOpKkHUQ0lampFsb8jidT4lbg==": [
-      "/**\n * Copyright © 2024 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * Copyright © 2025 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n */",
-      "// Copyright © 2024 650 Industries."
+      {
+        "text": "/**\n * Copyright © 2024 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2025 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "// Copyright © 2024 650 Industries.",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-Pdlw/oPxN+aXdmM9R00JVC9WVFoCLTKJvDVLgmJ+qAffBMxsV85l/Lu7sNx4zSzPyoL2euImuEwHhOXdEgNFZQ==": [
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-PkL1X/r0cTs6NG47Xp3TxRvtqSeRmPYhPOHp3GDmZB2oOxpjXge6qLi/bSSv0asFWqf+MLOlXZ+hq2Imuh0Z1g==": [
-      "// Copyright © 2024 650 Industries."
+      {
+        "text": "// Copyright © 2024 650 Industries.",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==": [
-      "/*\n * Copyright 2011 Mozilla Foundation and contributors\n * Licensed under the New BSD license. See LICENSE or:\n * http://opensource.org/licenses/BSD-3-Clause\n *\n * Based on the Base 64 VLQ implementation in Closure Compiler:\n * https://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/debugging/sourcemap/Base64VLQ.java\n *\n * Copyright 2011 The Closure Compiler Authors. All rights reserved.\n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are\n * met:\n *\n *  * Redistributions of source code must retain the above copyright\n *    notice, this list of conditions and the following disclaimer.\n *  * Redistributions in binary form must reproduce the above\n *    copyright notice, this list of conditions and the following\n *    disclaimer in the documentation and/or other materials provided\n *    with the distribution.\n *  * Neither the name of Google Inc. nor the names of its\n *    contributors may be used to endorse or promote products derived\n *    from this software without specific prior written permission.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n * \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */",
-      "/*\n * Copyright 2011 Mozilla Foundation and contributors\n * Licensed under the New BSD license. See LICENSE or:\n * http://opensource.org/licenses/BSD-3-Clause\n */",
-      "/*\n * Copyright 2014 Mozilla Foundation and contributors\n * Licensed under the New BSD license. See LICENSE or:\n * http://opensource.org/licenses/BSD-3-Clause\n */"
+      {
+        "text": "/*\n * Copyright 2011 Mozilla Foundation and contributors\n * Licensed under the New BSD license. See LICENSE or:\n * http://opensource.org/licenses/BSD-3-Clause\n *\n * Based on the Base 64 VLQ implementation in Closure Compiler:\n * https://code.google.com/p/closure-compiler/source/browse/trunk/src/com/google/debugging/sourcemap/Base64VLQ.java\n *\n * Copyright 2011 The Closure Compiler Authors. All rights reserved.\n * Redistribution and use in source and binary forms, with or without\n * modification, are permitted provided that the following conditions are\n * met:\n *\n *  * Redistributions of source code must retain the above copyright\n *    notice, this list of conditions and the following disclaimer.\n *  * Redistributions in binary form must reproduce the above\n *    copyright notice, this list of conditions and the following\n *    disclaimer in the documentation and/or other materials provided\n *    with the distribution.\n *  * Neither the name of Google Inc. nor the names of its\n *    contributors may be used to endorse or promote products derived\n *    from this software without specific prior written permission.\n *\n * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n * \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/*\n * Copyright 2011 Mozilla Foundation and contributors\n * Licensed under the New BSD license. See LICENSE or:\n * http://opensource.org/licenses/BSD-3-Clause\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/*\n * Copyright 2014 Mozilla Foundation and contributors\n * Licensed under the New BSD license. See LICENSE or:\n * http://opensource.org/licenses/BSD-3-Clause\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-XwuQoW7/GEgWRMovOQtX3A4PrXhyaZm0lVUiY8qJDvdngjLms9Cpdck6SmGAUNqQwcj2EadHC1HwL0bEyoa/SQ==": [
-      "/**\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n */"
+      {
+        "text": "/**\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-Zt+OGvJE6VgmzgemZL8TSA0VomNWpHMNcG0OvLkkBQEGrzY8OdDHRfjJh7S+f+UFJF77kicRC6o6mt3A7ER9lQ==": [
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n */"
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-gvRvjR5JAaUZF8tv2Kcq/Gbt3JHwbKFYfmb445rhOj6NUMx3qPLixmDx5pZAyb9at1bYvJ4/eTUipU5aki45xw==": [
-      "/**\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * Copyright (c) Facebook, Inc. and its affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw==": [
-      "/**\n * @license React\n * scheduler.native.production.js\n *\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * @license React\n * scheduler.native.production.js\n *\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==": [
-      "/**\n * Copyright (c) 2014-present, Facebook, Inc.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * Copyright (c) 2014-present, Facebook, Inc.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-onJvBi90uwLj69F1EaVPmPeds/ndxc2/vNc0Z5n8rqcMKToMyLxGaL3Be6yf7OVjPhGvoDj+LWQ/IcbpN1hnoA==": [
-      "/**\n * Copyright © 2023 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * Copyright © 2024 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "// Copyright © 2023 650 Industries.\n// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license."
+      {
+        "text": "/**\n * Copyright © 2023 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2024 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "// Copyright © 2023 650 Industries.\n// Copyright 2018-2023 the Deno authors. All rights reserved. MIT license.",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==": [
-      "/**\n * Copyright (c) 2013-present, Facebook, Inc.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */"
+      {
+        "text": "/**\n * Copyright (c) 2013-present, Facebook, Inc.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-qiSlmBq9+BCdCA/L46dw8Uy93mloxsPSbwnm5yrKn2vMPiy8KyAskTF6zuV/j5BMsmOGZDPs7KjU+mjb670kfA==": [
-      "/******************************************************************************\n * Created 2008-08-19.\n *\n * Dijkstra path-finding functions. Adapted from the Dijkstar Python project.\n *\n * Copyright (C) 2008\n *   Wyatt Baldwin <self@wyattbaldwin.com>\n *   All rights reserved\n *\n * Licensed under the MIT license.\n *\n *   http://www.opensource.org/licenses/mit-license.php\n *\n * THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n * THE SOFTWARE.\n *****************************************************************************/"
+      {
+        "text": "/******************************************************************************\n * Created 2008-08-19.\n *\n * Dijkstra path-finding functions. Adapted from the Dijkstar Python project.\n *\n * Copyright (C) 2008\n *   Wyatt Baldwin <self@wyattbaldwin.com>\n *   All rights reserved\n *\n * Licensed under the MIT license.\n *\n *   http://www.opensource.org/licenses/mit-license.php\n *\n * THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN\n * THE SOFTWARE.\n *****************************************************************************/",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-uIyFJHouaiHwIoDjWSjb1Zg5LMGmkUs7CEp0rzpXvC+SStP/sr+dcjclUYD1ImmngMYuxRcs9soHEuWbcZWr/w==": [
-      "// Copyright © 2024 650 Industries.",
-      "// Copyright © 2024 650 Industries.\n// NOTE: Forcing this to be a client boundary so the errors are a bit clearer. In the future we can\n// make this a shim on the server by ignoring the globals that are missing in React Server contexts (Node.js)."
+      {
+        "text": "// Copyright © 2024 650 Industries.",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "// Copyright © 2024 650 Industries.\n// NOTE: Forcing this to be a client boundary so the errors are a bit clearer. In the future we can\n// make this a shim on the server by ignoring the globals that are missing in React Server contexts (Node.js).",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-wajWcLZ93GCN7k4Uwh4CS4L2Ah8ohcvkOXnvIYmh4Yvuqho5j3APZ9qozK+nQrHWSgauq4h8D3HN5DKK84SrHA==": [
-      "/**\n * Based on abort-controller by Toru Nagashima\n * https://github.com/mysticatea/abort-controller\n *\n * Original work Copyright (c) 2017 Toru Nagashima\n * Modified work Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * Permission is hereby granted, free of charge, to any person obtaining a copy\n * of this software and associated documentation files (the \"Software\"), to deal\n * in the Software without restriction, including without limitation the rights\n * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n * copies of the Software, and to permit persons to whom the Software is\n * furnished to do so, subject to the following conditions:\n *\n * The above copyright notice and this permission notice shall be included in all\n * copies or substantial portions of the Software.\n *\n * THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n * SOFTWARE.\n *\n * @flow strict\n * @format\n */",
-      "/**\n * BezierEasing - use bezier curve for transition easing function\n * https://github.com/gre/bezier-easing\n * @copyright 2014-2015 Gaëtan Renaudeau. MIT License.\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n * @deprecated\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n * @deprecated\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @noformat\n * @generated by scripts/releases/set-version.js\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n * @deprecated\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n * @oncall react_native\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format strict-local\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @format\n * @flow strict\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @generated SignedSource<<52d39a196023796eed43d419c5a0b855>>\n * @flow strict\n * @noformat\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @generated SignedSource<<d6c54d6154c0f0771c211424e608f182>>\n * @flow strict\n * @noformat\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noflow\n * @format\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noflow\n * @nolint\n * @preventMunge\n * @generated SignedSource<<3c59d85aa170213f7f757b2501b0b2f6>>\n *\n * This file was sync'd from the facebook/react repository.\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noformat\n * @nolint\n * @flow\n * @generated SignedSource<<8b6b4d01340cfba2de5eabc3936dfbdd>>\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noformat\n * @nolint\n * @flow strict-local\n * @generated SignedSource<<260b8a01781c54c31a520f00cb1bde7f>>\n */",
-      "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noformat\n * @nolint\n * @flow strict-local\n * @generated SignedSource<<26e94f747da2450a86c1e314470813f5>>\n */",
-      "/**\n * Portions Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */",
-      "/**\n * The JSDoc comments in this file have been extracted from [DOMRectReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly).\n * Content by [Mozilla Contributors](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly/contributors.txt),\n * licensed under [CC-BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/).\n */",
-      "/**\n * The JSDoc comments in this file have been extracted from [DOMRect](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect).\n * Content by [Mozilla Contributors](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect/contributors.txt),\n * licensed under [CC-BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/).\n */"
+      {
+        "text": "/**\n * Based on abort-controller by Toru Nagashima\n * https://github.com/mysticatea/abort-controller\n *\n * Original work Copyright (c) 2017 Toru Nagashima\n * Modified work Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * Permission is hereby granted, free of charge, to any person obtaining a copy\n * of this software and associated documentation files (the \"Software\"), to deal\n * in the Software without restriction, including without limitation the rights\n * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n * copies of the Software, and to permit persons to whom the Software is\n * furnished to do so, subject to the following conditions:\n *\n * The above copyright notice and this permission notice shall be included in all\n * copies or substantial portions of the Software.\n *\n * THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n * SOFTWARE.\n *\n * @flow strict\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * BezierEasing - use bezier curve for transition easing function\n * https://github.com/gre/bezier-easing\n * @copyright 2014-2015 Gaëtan Renaudeau. MIT License.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n * @deprecated\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n * @deprecated\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @noformat\n * @generated by scripts/releases/set-version.js\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n * @deprecated\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n * @oncall react_native\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict-local\n * @format strict-local\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @format\n * @flow strict\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @generated SignedSource<<52d39a196023796eed43d419c5a0b855>>\n * @flow strict\n * @noformat\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @generated SignedSource<<d6c54d6154c0f0771c211424e608f182>>\n * @flow strict\n * @noformat\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noflow\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noflow\n * @nolint\n * @preventMunge\n * @generated SignedSource<<3c59d85aa170213f7f757b2501b0b2f6>>\n *\n * This file was sync'd from the facebook/react repository.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noformat\n * @nolint\n * @flow\n * @generated SignedSource<<8b6b4d01340cfba2de5eabc3936dfbdd>>\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noformat\n * @nolint\n * @flow strict-local\n * @generated SignedSource<<260b8a01781c54c31a520f00cb1bde7f>>\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @noformat\n * @nolint\n * @flow strict-local\n * @generated SignedSource<<26e94f747da2450a86c1e314470813f5>>\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Portions Copyright (c) Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * @flow strict\n * @format\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * The JSDoc comments in this file have been extracted from [DOMRectReadOnly](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly).\n * Content by [Mozilla Contributors](https://developer.mozilla.org/en-US/docs/Web/API/DOMRectReadOnly/contributors.txt),\n * licensed under [CC-BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/).\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * The JSDoc comments in this file have been extracted from [DOMRect](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect).\n * Content by [Mozilla Contributors](https://developer.mozilla.org/en-US/docs/Web/API/DOMRect/contributors.txt),\n * licensed under [CC-BY-SA 2.5](https://creativecommons.org/licenses/by-sa/2.5/).\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ],
     "sha512-zoLhSlFnln0xn1fiW0+kb1J0lNv06HAy+FQ27HHwEEWoAClCE13FnTQBOW5bOVYc3c7hsGM8ypKcZGS7RGqjQA==": [
-      "/**\n * Copyright © 2022 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
-      "/**\n * Copyright © 2024 650 Industries.\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Universal require runtime based on:\n * https://github.com/facebook/metro/blob/ebd40efa3bd3363930ffe21120714a4d9e0b7bac/packages/metro-runtime/src/polyfills/require.js#L1\n */"
+      {
+        "text": "/**\n * Copyright © 2022 650 Industries.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      },
+      {
+        "text": "/**\n * Copyright © 2024 650 Industries.\n * Copyright © Meta Platforms, Inc. and affiliates.\n *\n * This source code is licensed under the MIT license found in the\n * LICENSE file in the root directory of this source tree.\n *\n * Universal require runtime based on:\n * https://github.com/facebook/metro/blob/ebd40efa3bd3363930ffe21120714a4d9e0b7bac/packages/metro-runtime/src/polyfills/require.js#L1\n */",
+        "platforms": [
+          "android",
+          "ios"
+        ]
+      }
     ]
   }
 }
