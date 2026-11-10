@@ -1,7 +1,6 @@
-export interface NoticeDocument {
-  title: string;
-  asset: () => number;
-}
+export type NoticeDocument = { title: string } & (
+  { asset: () => number } | { bundleFile: string }
+);
 
 export const nativeSources: NoticeDocument = {
   title: "Native libraries and corresponding source",

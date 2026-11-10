@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FlatList, Modal, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Asset } from "expo-asset";
-import { File } from "expo-file-system";
+import { File, Paths } from "expo-file-system";
 import { Button, Text } from "../ui/primitives";
 import { Disclosure } from "../ui/Disclosure";
 import { useAppPalette } from "../ui/theme";
@@ -16,9 +16,15 @@ function NoticeReader({ document, close }: { document: NoticeDocument; close: ()
   useEffect(() => {
     let active = true;
     async function read() {
-      const asset = await Asset.fromModule(document.asset()).downloadAsync();
-      if (!asset.localUri) throw new Error("Missing packaged notice");
-      const text = await new File(asset.localUri).text();
+      let file: File;
+      if ("bundleFile" in document) {
+        file = new File(Paths.bundle, document.bundleFile);
+      } else {
+        const asset = await Asset.fromModule(document.asset()).downloadAsync();
+        if (!asset.localUri) throw new Error("Missing packaged notice");
+        file = new File(asset.localUri);
+      }
+      const text = await file.text();
       if (active) setParagraphs(text.split(/\n\s*\n/));
     }
     void read().catch(() => { if (active) setFailed(true); });
