@@ -1,0 +1,114 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "url": "../../zstd-kmp/0.4.0/zstd-kmp-0.4.0.module",
+    "group": "com.squareup.zstd",
+    "module": "zstd-kmp",
+    "version": "0.4.0",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "9.1.0"
+    }
+  },
+  "variants": [
+    {
+      "name": "releaseApiElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "android",
+        "org.gradle.usage": "java-api",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "zstd-kmp-release.aar",
+          "url": "zstd-kmp-android-0.4.0.aar",
+          "size": 1247244,
+          "sha512": "3b2db2160dd06a3d8cb02b1f3a81cd28fa6ce297eb306620cbe924196e51ce405fea1a3ce7f426df07d613ebc43c323e9dcbc49ceb799b4377afa4586532e20f",
+          "sha256": "2778570454ae78026df42ace7168b8a6500f2521a5d497f2ab2fc0f804247826",
+          "sha1": "016cae051d8fc4106fbf4e4ddf1bc15869186597",
+          "md5": "30709b5234f63823f62e7725db06255c"
+        }
+      ]
+    },
+    {
+      "name": "releaseRuntimeElements-published",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.jvm.environment": "android",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "dependencies": [
+        {
+          "group": "org.jetbrains.kotlin",
+          "module": "kotlin-stdlib",
+          "version": {
+            "requires": "2.2.20"
+          },
+          "excludes": [
+            {
+              "group": "org.jetbrains.kotlin",
+              "module": "kotlin-stdlib-common"
+            },
+            {
+              "group": "org.jetbrains.kotlin",
+              "module": "kotlin-test-common"
+            },
+            {
+              "group": "org.jetbrains.kotlin",
+              "module": "kotlin-test-annotations-common"
+            }
+          ]
+        }
+      ],
+      "files": [
+        {
+          "name": "zstd-kmp-release.aar",
+          "url": "zstd-kmp-android-0.4.0.aar",
+          "size": 1247244,
+          "sha512": "3b2db2160dd06a3d8cb02b1f3a81cd28fa6ce297eb306620cbe924196e51ce405fea1a3ce7f426df07d613ebc43c323e9dcbc49ceb799b4377afa4586532e20f",
+          "sha256": "2778570454ae78026df42ace7168b8a6500f2521a5d497f2ab2fc0f804247826",
+          "sha1": "016cae051d8fc4106fbf4e4ddf1bc15869186597",
+          "md5": "30709b5234f63823f62e7725db06255c"
+        }
+      ]
+    },
+    {
+      "name": "releaseSourcesElements-published",
+      "attributes": {
+        "org.gradle.category": "documentation",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.docstype": "sources",
+        "org.gradle.jvm.environment": "android",
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime",
+        "org.jetbrains.kotlin.platform.type": "androidJvm"
+      },
+      "files": [
+        {
+          "name": "zstd-kmp-android-0.4.0-sources.jar",
+          "url": "zstd-kmp-android-0.4.0-sources.jar",
+          "size": 7791,
+          "sha512": "78f31dbf50fb28727e43dbf430278706dbc09795b8884dcabb8d6bf22c66fb80008db47ec8cab926db020bc4adc5ae5a952fe35fe1a7cf39a8bb0f55cf463a47",
+          "sha256": "7326a5dc6f1b4bbccda70ccea28da71ce8434437b77d12c93d65b9a369f4015d",
+          "sha1": "3935ba56bebe4c6f898c270df30f597366ccc1ab",
+          "md5": "f4f13ee10a409a106454e8675ea31861"
+        }
+      ]
+    }
+  ]
+}

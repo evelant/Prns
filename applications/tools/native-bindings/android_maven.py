@@ -8,6 +8,7 @@ import re
 
 BASELINE = Path(__file__).with_name('android-maven-baseline.json')
 CONFIGURATIONS = ('debugRuntimeClasspath', 'releaseRuntimeClasspath')
+REVIEWED_RESOLUTION = Path(__file__).resolve().parents[3] / 'release/licenses/app-maven/resolved-runtime.json'
 TASK = ':app:prnsRuntimeDependencyInventory'
 
 
@@ -92,7 +93,8 @@ def compare(actual: dict, baseline: dict) -> None:
         raise ValueError('Android Maven runtime closure drifted; review baseline and notices before acceptance. ' + '; '.join(differences))
 
 
-def check_report(raw_path: Path, output: Path, baseline_path: Path = BASELINE) -> dict:
+def check_report(raw_path: Path, output: Path, baseline_path: Path = BASELINE,
+                 reviewed_resolution: Path = REVIEWED_RESOLUTION) -> dict:
     raw = raw_path.read_bytes()
     actual = json.loads(raw)
     baseline_bytes = baseline_path.read_bytes()
@@ -121,11 +123,18 @@ def check_report(raw_path: Path, output: Path, baseline_path: Path = BASELINE) -
             if key in seen:
                 raise ValueError(f'Duplicate artifact evidence: {key}')
             seen.add(key)
+    reviewed = json.loads(reviewed_resolution.read_bytes())
+    compare(actual, reviewed)
+    for name in CONFIGURATIONS:
+        if actual['artifacts'][name] != reviewed['artifacts'][name]:
+            raise ValueError(f'{name}: resolved Maven artifact names or hashes differ from their reviewed origins')
+        if actual['project_components'][name] != reviewed['project_components'][name]:
+            raise ValueError(f'{name}: Android project dependencies differ from the reviewed resolution')
     report = dict(actual,
         baseline=baseline_path.name,
         baseline_sha256=hashlib.sha256(baseline_bytes).hexdigest(),
         inventory_sha256=hashlib.sha256(raw).hexdigest(),
         union=sorted(set().union(*actual['configurations'].values())),
-        qualification='Resolved debug and release runtime metadata/artifacts only. Release resolution is not compiled, signed, device or release acceptance. Coordinates alone do not bind artifact bytes; observed external input hashes are included. Project source dependencies and repository provenance require their owning source inventories.')
+        qualification='Resolved debug and release runtime metadata/artifacts only. Release resolution is not compiled, signed, device or release acceptance. External artifact filenames and hashes match their reviewed origins. Project source dependencies and repository provenance require their owning source inventories.')
     output.write_text(json.dumps(report, indent=2) + '\n')
     return report

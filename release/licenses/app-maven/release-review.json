@@ -1,0 +1,1591 @@
+{
+  "schema": 1,
+  "product": "PRNS Chat for compatible Android devices",
+  "profile": "releaseRuntimeClasspath",
+  "release_inputs_sha256": "5e9f9f0e8b4294b666d6719cb447996d976c715bf78104a719774776f0755004",
+  "coordinates": {
+    "androidx.activity:activity-ktx:1.8.1": "Apache-2.0",
+    "androidx.activity:activity:1.8.1": "Apache-2.0",
+    "androidx.annotation:annotation-experimental:1.4.1": "Apache-2.0",
+    "androidx.annotation:annotation-jvm:1.9.1": "Apache-2.0",
+    "androidx.annotation:annotation:1.9.1": "resolution-metadata",
+    "androidx.appcompat:appcompat-resources:1.7.1": "Apache-2.0",
+    "androidx.appcompat:appcompat:1.7.1": "Apache-2.0",
+    "androidx.arch.core:core-common:2.2.0": "Apache-2.0",
+    "androidx.arch.core:core-runtime:2.2.0": "Apache-2.0",
+    "androidx.autofill:autofill:1.3.0": "Apache-2.0",
+    "androidx.camera.featurecombinationquery:featurecombinationquery:1.6.0": "Apache-2.0",
+    "androidx.camera.viewfinder:viewfinder-core:1.5.1": "Apache-2.0",
+    "androidx.camera:camera-camera2-pipe:1.6.0": "Apache-2.0",
+    "androidx.camera:camera-camera2:1.6.0": "Apache-2.0",
+    "androidx.camera:camera-core:1.6.0": "Apache-2.0 AND BSD-3-Clause",
+    "androidx.camera:camera-extensions:1.6.0": "Apache-2.0",
+    "androidx.camera:camera-lifecycle:1.6.0": "Apache-2.0",
+    "androidx.camera:camera-mlkit-vision:1.6.0": "Apache-2.0",
+    "androidx.camera:camera-video:1.6.0": "Apache-2.0",
+    "androidx.camera:camera-view:1.6.0": "Apache-2.0",
+    "androidx.cardview:cardview:1.0.0": "Apache-2.0",
+    "androidx.collection:collection-jvm:1.4.4": "Apache-2.0",
+    "androidx.collection:collection-ktx:1.4.4": "Apache-2.0",
+    "androidx.collection:collection:1.4.4": "resolution-metadata",
+    "androidx.concurrent:concurrent-futures-ktx:1.1.0": "Apache-2.0",
+    "androidx.concurrent:concurrent-futures:1.1.0": "Apache-2.0",
+    "androidx.constraintlayout:constraintlayout-core:1.0.0": "Apache-2.0",
+    "androidx.constraintlayout:constraintlayout:2.1.0": "Apache-2.0",
+    "androidx.coordinatorlayout:coordinatorlayout:1.2.0": "Apache-2.0",
+    "androidx.core:core-backported-fixes:1.0.0": "Apache-2.0",
+    "androidx.core:core-ktx:1.18.0": "Apache-2.0",
+    "androidx.core:core-viewtree:1.0.0": "Apache-2.0",
+    "androidx.core:core:1.18.0": "Apache-2.0",
+    "androidx.cursoradapter:cursoradapter:1.0.0": "Apache-2.0",
+    "androidx.customview:customview:1.1.0": "Apache-2.0",
+    "androidx.documentfile:documentfile:1.1.0": "Apache-2.0",
+    "androidx.drawerlayout:drawerlayout:1.1.1": "Apache-2.0",
+    "androidx.dynamicanimation:dynamicanimation:1.1.0": "Apache-2.0",
+    "androidx.emoji2:emoji2-views-helper:1.3.0": "Apache-2.0",
+    "androidx.emoji2:emoji2:1.3.0": "Apache-2.0",
+    "androidx.exifinterface:exifinterface:1.4.2": "Apache-2.0",
+    "androidx.fragment:fragment-ktx:1.8.9": "Apache-2.0",
+    "androidx.fragment:fragment:1.8.9": "Apache-2.0",
+    "androidx.graphics:graphics-shapes-android:1.0.1": "Apache-2.0",
+    "androidx.graphics:graphics-shapes:1.0.1": "resolution-metadata",
+    "androidx.interpolator:interpolator:1.0.0": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-common:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-livedata-core:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-livedata:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-process:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-runtime:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2": "Apache-2.0",
+    "androidx.lifecycle:lifecycle-viewmodel:2.6.2": "Apache-2.0",
+    "androidx.loader:loader:1.0.0": "Apache-2.0",
+    "androidx.media3:media3-common:1.9.0": "Apache-2.0",
+    "androidx.media3:media3-container:1.9.0": "Apache-2.0",
+    "androidx.media3:media3-muxer:1.9.0": "Apache-2.0",
+    "androidx.profileinstaller:profileinstaller:1.3.1": "Apache-2.0",
+    "androidx.recyclerview:recyclerview:1.2.1": "Apache-2.0",
+    "androidx.resourceinspection:resourceinspection-annotation:1.0.1": "Apache-2.0",
+    "androidx.savedstate:savedstate-ktx:1.2.1": "Apache-2.0",
+    "androidx.savedstate:savedstate:1.2.1": "Apache-2.0",
+    "androidx.startup:startup-runtime:1.1.1": "Apache-2.0",
+    "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0": "Apache-2.0",
+    "androidx.tracing:tracing-android:1.3.0": "Apache-2.0",
+    "androidx.tracing:tracing-ktx:1.3.0": "Apache-2.0",
+    "androidx.tracing:tracing:1.3.0": "resolution-metadata",
+    "androidx.transition:transition-ktx:1.7.0": "Apache-2.0",
+    "androidx.transition:transition:1.7.0": "Apache-2.0",
+    "androidx.vectordrawable:vectordrawable-animated:1.1.0": "Apache-2.0",
+    "androidx.vectordrawable:vectordrawable:1.1.0": "Apache-2.0",
+    "androidx.versionedparcelable:versionedparcelable:1.1.1": "Apache-2.0",
+    "androidx.viewpager2:viewpager2:1.0.0": "Apache-2.0",
+    "androidx.viewpager:viewpager:1.0.0": "Apache-2.0",
+    "androidx.window:window-core-android:1.5.1": "Apache-2.0",
+    "androidx.window:window-core:1.5.1": "resolution-metadata",
+    "androidx.window:window:1.5.1": "Apache-2.0",
+    "com.facebook.fbjni:fbjni:0.7.0": "Apache-2.0",
+    "com.facebook.fresco:animated-base:3.7.0": "MIT",
+    "com.facebook.fresco:animated-drawable:3.7.0": "MIT",
+    "com.facebook.fresco:animated-gif-lite:3.7.0": "MIT",
+    "com.facebook.fresco:animated-gif:3.7.0": "MIT",
+    "com.facebook.fresco:drawee:3.7.0": "MIT",
+    "com.facebook.fresco:fbcore:3.7.0": "MIT",
+    "com.facebook.fresco:fresco:3.7.0": "MIT",
+    "com.facebook.fresco:imagepipeline-base:3.7.0": "MIT",
+    "com.facebook.fresco:imagepipeline-native:3.7.0": "MIT",
+    "com.facebook.fresco:imagepipeline-okhttp3:3.7.0": "MIT",
+    "com.facebook.fresco:imagepipeline:3.7.0": "MIT",
+    "com.facebook.fresco:memory-type-ashmem:3.7.0": "MIT",
+    "com.facebook.fresco:memory-type-java:3.7.0": "MIT",
+    "com.facebook.fresco:memory-type-native:3.7.0": "MIT",
+    "com.facebook.fresco:middleware:3.7.0": "MIT",
+    "com.facebook.fresco:nativeimagefilters:3.7.0": "MIT",
+    "com.facebook.fresco:nativeimagetranscoder:3.7.0": "MIT",
+    "com.facebook.fresco:soloader:3.7.0": "MIT",
+    "com.facebook.fresco:ui-common:3.7.0": "MIT",
+    "com.facebook.fresco:ui-core:3.7.0": "MIT",
+    "com.facebook.fresco:urimod:3.7.0": "MIT",
+    "com.facebook.fresco:vito-core-common-impl:3.7.0": "MIT",
+    "com.facebook.fresco:vito-core-impl:3.7.0": "MIT",
+    "com.facebook.fresco:vito-core-java-impl:3.7.0": "MIT",
+    "com.facebook.fresco:vito-core:3.7.0": "MIT",
+    "com.facebook.fresco:vito-drawee-support:3.7.0": "MIT",
+    "com.facebook.fresco:vito-options:3.7.0": "MIT",
+    "com.facebook.fresco:vito-provider:3.7.0": "MIT",
+    "com.facebook.fresco:vito-renderer:3.7.0": "MIT",
+    "com.facebook.fresco:vito-source:3.7.0": "MIT",
+    "com.facebook.fresco:webpsupport:3.7.0": "MIT",
+    "com.facebook.hermes:hermes-android:260318099.0.5": "MIT",
+    "com.facebook.infer.annotation:infer-annotation:0.18.0": "MIT",
+    "com.facebook.react:react-android:0.88.1": "MIT",
+    "com.facebook.soloader:annotation:0.12.1": "Apache-2.0",
+    "com.facebook.soloader:nativeloader:0.12.1": "Apache-2.0",
+    "com.facebook.soloader:soloader:0.12.1": "Apache-2.0",
+    "com.facebook.yoga:proguard-annotations:1.19.0": "MIT",
+    "com.google.android.datatransport:transport-api:2.2.1": "Apache-2.0",
+    "com.google.android.datatransport:transport-backend-cct:2.3.3": "Apache-2.0",
+    "com.google.android.datatransport:transport-runtime:2.2.6": "Apache-2.0",
+    "com.google.android.gms:play-services-base:18.5.0": "Google Android SDK client terms",
+    "com.google.android.gms:play-services-basement:18.10.0": "Google Android SDK client terms",
+    "com.google.android.gms:play-services-code-scanner:16.1.0": "Google ML Kit",
+    "com.google.android.gms:play-services-mlkit-barcode-scanning:18.3.1": "Google ML Kit",
+    "com.google.android.gms:play-services-mlkit-document-scanner:16.0.0-beta1": "Google ML Kit",
+    "com.google.android.gms:play-services-tasks:18.2.1": "Google Android SDK client terms",
+    "com.google.android.material:material:1.13.0": "Apache-2.0",
+    "com.google.android.odml:image:1.0.0-beta1": "Google Android SDK client terms",
+    "com.google.auto.value:auto-value-annotations:1.6.3": "Apache-2.0",
+    "com.google.code.findbugs:jsr305:3.0.2": "Apache-2.0",
+    "com.google.code.gson:gson:2.8.6": "Apache-2.0",
+    "com.google.dagger:dagger:2.59": "Apache-2.0",
+    "com.google.errorprone:error_prone_annotations:2.15.0": "Apache-2.0",
+    "com.google.firebase:firebase-annotations:16.0.0": "Apache-2.0",
+    "com.google.firebase:firebase-components:16.1.0": "Apache-2.0",
+    "com.google.firebase:firebase-encoders-json:17.1.0": "Apache-2.0",
+    "com.google.firebase:firebase-encoders:16.1.0": "Apache-2.0",
+    "com.google.guava:failureaccess:1.0.2": "Apache-2.0",
+    "com.google.guava:guava:33.3.1-android": "Apache-2.0",
+    "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava": "Apache-2.0",
+    "com.google.mlkit:barcode-scanning-common:17.0.0": "Google ML Kit",
+    "com.google.mlkit:barcode-scanning:17.3.0": "Google ML Kit",
+    "com.google.mlkit:common:18.11.0": "Google ML Kit",
+    "com.google.mlkit:vision-common:17.3.0": "Google ML Kit",
+    "com.google.mlkit:vision-interfaces:16.3.0": "Google ML Kit",
+    "com.parse.bolts:bolts-tasks:1.4.0": "BSD-3-Clause",
+    "com.squareup.okhttp3:okhttp-urlconnection:4.9.2": "Apache-2.0",
+    "com.squareup.okhttp3:okhttp:4.9.2": "Apache-2.0",
+    "com.squareup.okio:okio-jvm:3.16.0": "Apache-2.0",
+    "com.squareup.okio:okio:3.16.0": "resolution-metadata",
+    "com.squareup.zstd:zstd-kmp-android:0.4.0": "Apache-2.0",
+    "com.squareup.zstd:zstd-kmp-okio-android:0.4.0": "Apache-2.0",
+    "com.squareup.zstd:zstd-kmp-okio:0.4.0": "resolution-metadata",
+    "com.squareup.zstd:zstd-kmp:0.4.0": "resolution-metadata",
+    "commons-codec:commons-codec:1.10": "Apache-2.0",
+    "commons-io:commons-io:2.6": "Apache-2.0",
+    "expo.modules.asset:expo.modules.asset:58.0.20": "MIT",
+    "expo.modules.router:expo.modules.router:58.0.30": "MIT",
+    "host.exp.exponent:expo.modules.camera:58.0.14": "MIT",
+    "host.exp.exponent:expo.modules.crypto:58.0.7": "MIT",
+    "host.exp.exponent:expo.modules.documentpicker:58.0.4": "MIT",
+    "host.exp.exponent:expo.modules.filesystem:58.0.13": "MIT",
+    "host.exp.exponent:expo.modules.font:58.0.11": "MIT",
+    "host.exp.exponent:expo.modules.keepawake:58.0.3": "MIT",
+    "host.exp.exponent:expo.modules.linking:58.0.16": "MIT",
+    "host.exp.exponent:expo.modules.statusbar:58.0.4": "MIT",
+    "io.github.expo.kolibri:kolibri-android:0.2.4": "MIT",
+    "io.github.expo.kolibri:runtime:0.2.4": "MIT",
+    "io.github.expo.pika:pika-api:1.1.0": "MIT",
+    "io.github.expo:expo-modules-v2-react:0.2.7": "MIT",
+    "jakarta.inject:jakarta.inject-api:2.0.1": "Apache-2.0",
+    "javax.inject:javax.inject:1": "Apache-2.0",
+    "net.java.dev.jna:jna:5.18.1": "JNA / Apache-2.0",
+    "org.brotli:dec:0.1.2": "MIT",
+    "org.jetbrains.kotlin:kotlin-annotations-jvm:1.3.72": "Apache-2.0",
+    "org.jetbrains.kotlin:kotlin-bom:1.8.22": "resolution-metadata",
+    "org.jetbrains.kotlin:kotlin-reflect:2.2.10": "Apache-2.0",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.10": "Apache-2.0",
+    "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22": "Apache-2.0",
+    "org.jetbrains.kotlin:kotlin-stdlib:2.2.20": "Apache-2.0",
+    "org.jetbrains.kotlinx:atomicfu-jvm:0.28.0": "Apache-2.0",
+    "org.jetbrains.kotlinx:atomicfu:0.28.0": "resolution-metadata",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2": "Apache-2.0",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.10.2": "resolution-metadata",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2": "Apache-2.0",
+    "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2": "resolution-metadata",
+    "org.jetbrains:annotations:23.0.0": "Apache-2.0",
+    "org.jspecify:jspecify:1.0.0": "Apache-2.0"
+  },
+  "decisions": {
+    "Apache-2.0": {
+      "status": "reviewed",
+      "basis": "Apache License 2.0. The license, retained notices and supplemental upstream attributions appear below.",
+      "sources": [
+        "https://www.apache.org/licenses/LICENSE-2.0"
+      ]
+    },
+    "MIT": {
+      "status": "reviewed",
+      "basis": "MIT-licensed runtime components. The copyright and permission notices appear below.",
+      "sources": [
+        "https://opensource.org/license/mit"
+      ]
+    },
+    "BSD-3-Clause": {
+      "status": "reviewed",
+      "basis": "BSD license with attribution, disclaimer and endorsement conditions. The original Bolts license and additional patent notice appear below.",
+      "sources": [
+        "https://github.com/BoltsFramework/Bolts-Android/tree/1.4.0"
+      ]
+    },
+    "Apache-2.0 AND BSD-3-Clause": {
+      "status": "reviewed",
+      "basis": "CameraX camera-core combines Apache-licensed CameraX with BSD-licensed code for image processing. Both notices are included.",
+      "sources": [
+        "https://www.apache.org/licenses/LICENSE-2.0",
+        "https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE"
+      ]
+    },
+    "JNA / Apache-2.0": {
+      "status": "reviewed",
+      "basis": "PRNS selects Apache License 2.0 for JNA 5.18.1 under the archive’s express Apache-2.0 OR LGPL-2.1-or-later choice. The native libffi notice is included.",
+      "sources": [
+        "https://www.apache.org/licenses/LICENSE-2.0",
+        "https://github.com/java-native-access/jna/blob/5.18.1/LICENSE"
+      ]
+    },
+    "Google ML Kit": {
+      "status": "reviewed",
+      "basis": "PRNS Chat uses the Android libraries for in-app scanning. Google documents both the bundled barcode model and Play services scanner integration. The Google APIs and ML Kit terms apply to the libraries and models. Scans run on-device. Google may receive performance and usage metrics and provide updates. This review covers using the client in this Android application.",
+      "sources": [
+        "https://developers.google.com/ml-kit/terms",
+        "https://developers.google.com/terms",
+        "https://developers.google.com/ml-kit/vision/barcode-scanning/android",
+        "https://developers.google.com/ml-kit/vision/doc-scanner/android",
+        "https://developers.google.com/ml-kit/android-data-disclosure",
+        "https://developers.google.com/android/guides/opensource"
+      ]
+    },
+    "Google Android SDK client terms": {
+      "status": "pending",
+      "basis": "The four Google Maven AARs are Android client-library inputs to PRNS Chat. Google documents packaging the client libraries in apps. Android SDK license sections 3.1–3.5 restrict SDK use and redistribution. The project release-policy decision for this app-specific integration is pending.",
+      "sources": [
+        "https://developer.android.com/studio/terms.html",
+        "https://developers.google.com/android/guides/overview",
+        "https://developers.google.com/android/guides/setup",
+        "https://developers.google.com/android/guides/opensource"
+      ]
+    },
+    "resolution-metadata": {
+      "status": "reviewed",
+      "basis": "This dependency participates in Gradle version or platform resolution and has no independent AAR or JAR in the release profile.",
+      "sources": []
+    }
+  },
+  "supplemental_notices": [
+    {
+      "name": "libyuv BSD notice",
+      "coordinates": [
+        "androidx.camera:camera-core:1.6.0"
+      ],
+      "url": "https://chromium.googlesource.com/libyuv/libyuv/+/refs/heads/main/LICENSE?format=TEXT",
+      "source": {
+        "path": "artifact-notice-sources/2b2cc1180c7e6988328ad2033b04b80117419db9c4c584918bbb3cfec7e9364f.txt",
+        "encoding": "plain",
+        "bytes": 1506,
+        "sha256": "2b2cc1180c7e6988328ad2033b04b80117419db9c4c584918bbb3cfec7e9364f",
+        "file_sha256": "2b2cc1180c7e6988328ad2033b04b80117419db9c4c584918bbb3cfec7e9364f"
+      }
+    },
+    {
+      "name": "META-INF/androidx/annotation/annotation/LICENSE.txt",
+      "coordinates": [
+        "androidx.annotation:annotation-jvm:1.9.1"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/annotation/annotation-jvm/1.9.1/annotation-jvm-1.9.1-sources.jar!/META-INF/androidx/annotation/annotation/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/autofill/autofill/LICENSE.txt",
+      "coordinates": [
+        "androidx.autofill:autofill:1.3.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/autofill/autofill/1.3.0/autofill-1.3.0-sources.jar!/META-INF/androidx/autofill/autofill/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-camera2-pipe/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-camera2-pipe:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-camera2-pipe/1.6.0/camera-camera2-pipe-1.6.0-sources.jar!/META-INF/androidx/camera/camera-camera2-pipe/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-camera2/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-camera2:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-camera2/1.6.0/camera-camera2-1.6.0-sources.jar!/META-INF/androidx/camera/camera-camera2/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-core/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-core:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-core/1.6.0/camera-core-1.6.0-sources.jar!/META-INF/androidx/camera/camera-core/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-extensions/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-extensions:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-extensions/1.6.0/camera-extensions-1.6.0-sources.jar!/META-INF/androidx/camera/camera-extensions/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-lifecycle/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-lifecycle:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-lifecycle/1.6.0/camera-lifecycle-1.6.0-sources.jar!/META-INF/androidx/camera/camera-lifecycle/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-mlkit-vision/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-mlkit-vision:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-mlkit-vision/1.6.0/camera-mlkit-vision-1.6.0-sources.jar!/META-INF/androidx/camera/camera-mlkit-vision/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-video/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-video:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-video/1.6.0/camera-video-1.6.0-sources.jar!/META-INF/androidx/camera/camera-video/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/camera-view/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera:camera-view:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/camera-view/1.6.0/camera-view-1.6.0-sources.jar!/META-INF/androidx/camera/camera-view/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/featurecombinationquery/featurecombinationquery/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera.featurecombinationquery:featurecombinationquery:1.6.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/featurecombinationquery/featurecombinationquery/1.6.0/featurecombinationquery-1.6.0-sources.jar!/META-INF/androidx/camera/featurecombinationquery/featurecombinationquery/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/camera/viewfinder/viewfinder-core/LICENSE.txt",
+      "coordinates": [
+        "androidx.camera.viewfinder:viewfinder-core:1.5.1"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/camera/viewfinder/viewfinder-core/1.5.1/viewfinder-core-1.5.1-sources.jar!/META-INF/androidx/camera/viewfinder/viewfinder-core/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/core/core-backported-fixes/LICENSE.txt",
+      "coordinates": [
+        "androidx.core:core-backported-fixes:1.0.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/core/core-backported-fixes/1.0.0/core-backported-fixes-1.0.0-sources.jar!/META-INF/androidx/core/core-backported-fixes/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/core/core-ktx/LICENSE.txt",
+      "coordinates": [
+        "androidx.core:core-ktx:1.18.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/core/core-ktx/1.18.0/core-ktx-1.18.0-sources.jar!/META-INF/androidx/core/core-ktx/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/core/core-viewtree/LICENSE.txt",
+      "coordinates": [
+        "androidx.core:core-viewtree:1.0.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/core/core-viewtree/1.0.0/core-viewtree-1.0.0-sources.jar!/META-INF/androidx/core/core-viewtree/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/core/core/LICENSE.txt",
+      "coordinates": [
+        "androidx.core:core:1.18.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/core/core/1.18.0/core-1.18.0-sources.jar!/META-INF/androidx/core/core/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/documentfile/documentfile/LICENSE.txt",
+      "coordinates": [
+        "androidx.documentfile:documentfile:1.1.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/documentfile/documentfile/1.1.0/documentfile-1.1.0-sources.jar!/META-INF/androidx/documentfile/documentfile/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/dynamicanimation/dynamicanimation/LICENSE.txt",
+      "coordinates": [
+        "androidx.dynamicanimation:dynamicanimation:1.1.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/dynamicanimation/dynamicanimation/1.1.0/dynamicanimation-1.1.0-sources.jar!/META-INF/androidx/dynamicanimation/dynamicanimation/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/exifinterface/exifinterface/LICENSE.txt",
+      "coordinates": [
+        "androidx.exifinterface:exifinterface:1.4.2"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/exifinterface/exifinterface/1.4.2/exifinterface-1.4.2-sources.jar!/META-INF/androidx/exifinterface/exifinterface/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/graphics/graphics-shapes/LICENSE.txt",
+      "coordinates": [
+        "androidx.graphics:graphics-shapes-android:1.0.1"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/graphics/graphics-shapes-android/1.0.1/graphics-shapes-android-1.0.1-sources.jar!/META-INF/androidx/graphics/graphics-shapes/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/tracing/tracing/LICENSE.txt",
+      "coordinates": [
+        "androidx.tracing:tracing-android:1.3.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/tracing/tracing-android/1.3.0/tracing-android-1.3.0-sources.jar!/META-INF/androidx/tracing/tracing/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/tracing/tracing-ktx/LICENSE.txt",
+      "coordinates": [
+        "androidx.tracing:tracing-ktx:1.3.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/tracing/tracing-ktx/1.3.0/tracing-ktx-1.3.0-sources.jar!/META-INF/androidx/tracing/tracing-ktx/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/transition/transition-ktx/LICENSE.txt",
+      "coordinates": [
+        "androidx.transition:transition-ktx:1.7.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/transition/transition-ktx/1.7.0/transition-ktx-1.7.0-sources.jar!/META-INF/androidx/transition/transition-ktx/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/transition/transition/LICENSE.txt",
+      "coordinates": [
+        "androidx.transition:transition:1.7.0"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/transition/transition/1.7.0/transition-1.7.0-sources.jar!/META-INF/androidx/transition/transition/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/window/window-core/LICENSE.txt",
+      "coordinates": [
+        "androidx.window:window-core-android:1.5.1"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/window/window-core-android/1.5.1/window-core-android-1.5.1-sources.jar!/META-INF/androidx/window/window-core/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "META-INF/androidx/window/window/LICENSE.txt",
+      "coordinates": [
+        "androidx.window:window:1.5.1"
+      ],
+      "url": "https://dl.google.com/dl/android/maven2/androidx/window/window/1.5.1/window-1.5.1-sources.jar!/META-INF/androidx/window/window/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0.txt",
+        "encoding": "plain",
+        "bytes": 10175,
+        "sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0",
+        "file_sha256": "809fa1ed21450f59827d1e9aec720bbc4b687434fa22283c6cb5dd82a47ab9c0"
+      }
+    },
+    {
+      "name": "BoltsFramework/Bolts-Android / LICENSE",
+      "coordinates": [
+        "com.parse.bolts:bolts-tasks:1.4.0"
+      ],
+      "url": "https://raw.githubusercontent.com/BoltsFramework/Bolts-Android/3def0de57eb06ea09056251be93e397ea28e34c1/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/9e69750c616877af2dec86f961a53e39324c3655e25b1d6ceed06e9661ec072b.txt",
+        "encoding": "plain",
+        "bytes": 1525,
+        "sha256": "9e69750c616877af2dec86f961a53e39324c3655e25b1d6ceed06e9661ec072b",
+        "file_sha256": "9e69750c616877af2dec86f961a53e39324c3655e25b1d6ceed06e9661ec072b"
+      }
+    },
+    {
+      "name": "BoltsFramework/Bolts-Android / PATENTS",
+      "coordinates": [
+        "com.parse.bolts:bolts-tasks:1.4.0"
+      ],
+      "url": "https://raw.githubusercontent.com/BoltsFramework/Bolts-Android/3def0de57eb06ea09056251be93e397ea28e34c1/PATENTS",
+      "source": {
+        "path": "artifact-notice-sources/3771c3a91bc856f48304c6ac6be2bc07fc6c4826c2f6cdf9a5acc63e7982dcbe.txt",
+        "encoding": "plain",
+        "bytes": 1973,
+        "sha256": "3771c3a91bc856f48304c6ac6be2bc07fc6c4826c2f6cdf9a5acc63e7982dcbe",
+        "file_sha256": "3771c3a91bc856f48304c6ac6be2bc07fc6c4826c2f6cdf9a5acc63e7982dcbe"
+      }
+    },
+    {
+      "name": "boostorg/boost / LICENSE_1_0.txt",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/boostorg/boost/boost-1.83.0/LICENSE_1_0.txt",
+      "source": {
+        "path": "artifact-notice-sources/c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566.txt",
+        "encoding": "plain",
+        "bytes": 1338,
+        "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+        "file_sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+      }
+    },
+    {
+      "name": "expo/expo-modules-v2-android / LICENSE.txt",
+      "coordinates": [
+        "io.github.expo:expo-modules-v2-react:0.2.7"
+      ],
+      "url": "https://raw.githubusercontent.com/expo/expo-modules-v2-android/c5c8a614ea5508dd62f60a69417b1f7fbb80b2e3/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/a1690bef5d8880c1036a72204838b18cf9dc19f51ed6a5147e281505601ac6cf.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "a1690bef5d8880c1036a72204838b18cf9dc19f51ed6a5147e281505601ac6cf",
+        "file_sha256": "a1690bef5d8880c1036a72204838b18cf9dc19f51ed6a5147e281505601ac6cf"
+      }
+    },
+    {
+      "name": "Expo Router upstream MIT license",
+      "coordinates": [
+        "expo.modules.router:expo.modules.router:58.0.30"
+      ],
+      "url": "https://raw.githubusercontent.com/expo/expo/expo-router%4058.0.30/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "expo/kolibri / LICENSE.txt",
+      "coordinates": [
+        "io.github.expo.kolibri:kolibri-android:0.2.4",
+        "io.github.expo.kolibri:runtime:0.2.4"
+      ],
+      "url": "https://raw.githubusercontent.com/expo/kolibri/afb099efe52588941346b02a88859d124c822730/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "expo/pika / LICENSE.txt",
+      "coordinates": [
+        "io.github.expo.pika:pika-api:1.1.0"
+      ],
+      "url": "https://raw.githubusercontent.com/expo/pika/8456165a82a17c670614c91e12b784ab8245de57/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/921f777d6cb71423f5a0cd8f1a0847f087b97da62e4d48ffe63e3add13f50af5.txt",
+        "encoding": "plain",
+        "bytes": 1071,
+        "sha256": "921f777d6cb71423f5a0cd8f1a0847f087b97da62e4d48ffe63e3add13f50af5",
+        "file_sha256": "921f777d6cb71423f5a0cd8f1a0847f087b97da62e4d48ffe63e3add13f50af5"
+      }
+    },
+    {
+      "name": "facebook/folly / LICENSE",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/folly/v2024.11.18.00/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/2206c00af7013581ae0d7c8c8a0089f02fab621913daac019b32336bd4d1e1db.txt",
+        "encoding": "plain",
+        "bytes": 11350,
+        "sha256": "2206c00af7013581ae0d7c8c8a0089f02fab621913daac019b32336bd4d1e1db",
+        "file_sha256": "2206c00af7013581ae0d7c8c8a0089f02fab621913daac019b32336bd4d1e1db"
+      }
+    },
+    {
+      "name": "facebook/fresco / LICENSE",
+      "coordinates": [
+        "com.facebook.fresco:animated-base:3.7.0",
+        "com.facebook.fresco:animated-drawable:3.7.0",
+        "com.facebook.fresco:animated-gif-lite:3.7.0",
+        "com.facebook.fresco:animated-gif:3.7.0",
+        "com.facebook.fresco:drawee:3.7.0",
+        "com.facebook.fresco:fbcore:3.7.0",
+        "com.facebook.fresco:fresco:3.7.0",
+        "com.facebook.fresco:imagepipeline-base:3.7.0",
+        "com.facebook.fresco:imagepipeline-native:3.7.0",
+        "com.facebook.fresco:imagepipeline-okhttp3:3.7.0",
+        "com.facebook.fresco:imagepipeline:3.7.0",
+        "com.facebook.fresco:memory-type-ashmem:3.7.0",
+        "com.facebook.fresco:memory-type-java:3.7.0",
+        "com.facebook.fresco:memory-type-native:3.7.0",
+        "com.facebook.fresco:middleware:3.7.0",
+        "com.facebook.fresco:nativeimagefilters:3.7.0",
+        "com.facebook.fresco:nativeimagetranscoder:3.7.0",
+        "com.facebook.fresco:soloader:3.7.0",
+        "com.facebook.fresco:ui-common:3.7.0",
+        "com.facebook.fresco:ui-core:3.7.0",
+        "com.facebook.fresco:urimod:3.7.0",
+        "com.facebook.fresco:vito-core-common-impl:3.7.0",
+        "com.facebook.fresco:vito-core-impl:3.7.0",
+        "com.facebook.fresco:vito-core-java-impl:3.7.0",
+        "com.facebook.fresco:vito-core:3.7.0",
+        "com.facebook.fresco:vito-drawee-support:3.7.0",
+        "com.facebook.fresco:vito-options:3.7.0",
+        "com.facebook.fresco:vito-provider:3.7.0",
+        "com.facebook.fresco:vito-renderer:3.7.0",
+        "com.facebook.fresco:vito-source:3.7.0",
+        "com.facebook.fresco:webpsupport:3.7.0"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/fresco/e49df6696127cd0ca6b96036c5f46c8a8212a4cd/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+        "encoding": "plain",
+        "bytes": 1088,
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+        "file_sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      }
+    },
+    {
+      "name": "facebook/hermes / LICENSE",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+        "encoding": "plain",
+        "bytes": 1088,
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+        "file_sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      }
+    },
+    {
+      "name": "facebook/hermes / external/asmjit/asmjit/LICENSE.md",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/asmjit/asmjit/LICENSE.md",
+      "source": {
+        "path": "artifact-notice-sources/c8d30b463d35bd5a14b868bae5d8345a1a77cbc6b4a94669f437c619f2ebef61.txt",
+        "encoding": "plain",
+        "bytes": 862,
+        "sha256": "c8d30b463d35bd5a14b868bae5d8345a1a77cbc6b4a94669f437c619f2ebef61",
+        "file_sha256": "c8d30b463d35bd5a14b868bae5d8345a1a77cbc6b4a94669f437c619f2ebef61"
+      }
+    },
+    {
+      "name": "facebook/hermes / external/asmjit/asmjit/db/LICENSE.md",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/asmjit/asmjit/db/LICENSE.md",
+      "source": {
+        "path": "artifact-notice-sources/1f71050137644be1bc1f932e8f943ae21c5b68948c738bb9d15ff528823aed5a.txt",
+        "encoding": "plain",
+        "bytes": 1284,
+        "sha256": "1f71050137644be1bc1f932e8f943ae21c5b68948c738bb9d15ff528823aed5a",
+        "file_sha256": "1f71050137644be1bc1f932e8f943ae21c5b68948c738bb9d15ff528823aed5a"
+      }
+    },
+    {
+      "name": "facebook/hermes / external/boost/boost_1_86_0/LICENSE_1_0.txt",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/boost/boost_1_86_0/LICENSE_1_0.txt",
+      "source": {
+        "path": "artifact-notice-sources/c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566.txt",
+        "encoding": "plain",
+        "bytes": 1338,
+        "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566",
+        "file_sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+      }
+    },
+    {
+      "name": "facebook/hermes / external/esprima/LICENSE.BSD",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/esprima/LICENSE.BSD",
+      "source": {
+        "path": "artifact-notice-sources/94bcb9959136723aa4fb36e1a6c4d5c662a2369978cfae344dabfb83ae619e79.txt",
+        "encoding": "plain",
+        "bytes": 1303,
+        "sha256": "94bcb9959136723aa4fb36e1a6c4d5c662a2369978cfae344dabfb83ae619e79",
+        "file_sha256": "94bcb9959136723aa4fb36e1a6c4d5c662a2369978cfae344dabfb83ae619e79"
+      }
+    },
+    {
+      "name": "facebook/hermes / external/icu_decls/license.html",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/icu_decls/license.html",
+      "source": {
+        "path": "artifact-notice-sources/0f6b1df0f0deedbe33e0a371314e9c32249a0a539c5c2be9609211d6dbe0dc10.txt",
+        "encoding": "plain",
+        "bytes": 19995,
+        "sha256": "0f6b1df0f0deedbe33e0a371314e9c32249a0a539c5c2be9609211d6dbe0dc10",
+        "file_sha256": "0f6b1df0f0deedbe33e0a371314e9c32249a0a539c5c2be9609211d6dbe0dc10"
+      }
+    },
+    {
+      "name": "facebook/hermes / external/llvh/LICENSE.txt",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/llvh/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee.txt",
+        "encoding": "plain",
+        "bytes": 15141,
+        "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee",
+        "file_sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+      }
+    },
+    {
+      "name": "facebook/hermes / external/llvh/include/llvh/Support/LICENSE.TXT",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/llvh/include/llvh/Support/LICENSE.TXT",
+      "source": {
+        "path": "artifact-notice-sources/a012d664e4e01df52a65b2eeafdfb8aeb856fec0e6c372265d01b0109c3f5e2a.txt",
+        "encoding": "plain",
+        "bytes": 284,
+        "sha256": "a012d664e4e01df52a65b2eeafdfb8aeb856fec0e6c372265d01b0109c3f5e2a",
+        "file_sha256": "a012d664e4e01df52a65b2eeafdfb8aeb856fec0e6c372265d01b0109c3f5e2a"
+      }
+    },
+    {
+      "name": "facebook/hermes / include/hermes/Regex/LICENSE.TXT",
+      "coordinates": [
+        "com.facebook.hermes:hermes-android:260318099.0.5"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/include/hermes/Regex/LICENSE.TXT",
+      "source": {
+        "path": "artifact-notice-sources/c1938c0e9e90639d1e8f5a7f6bebaab83a3642e0ee44295a4c69934686d0bda8.txt",
+        "encoding": "plain",
+        "bytes": 3493,
+        "sha256": "c1938c0e9e90639d1e8f5a7f6bebaab83a3642e0ee44295a4c69934686d0bda8",
+        "file_sha256": "c1938c0e9e90639d1e8f5a7f6bebaab83a3642e0ee44295a4c69934686d0bda8"
+      }
+    },
+    {
+      "name": "facebook/infer / LICENSE",
+      "coordinates": [
+        "com.facebook.infer.annotation:infer-annotation:0.18.0"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/infer/92e60ed4d9e2d5d091194db287ad8f854aae9bf0/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85.txt",
+        "encoding": "plain",
+        "bytes": 1086,
+        "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+        "file_sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+      }
+    },
+    {
+      "name": "facebook/react-native / LICENSE",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/react-native/c30b7f86850d47422637a64c70508e7411dbd8ea/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+        "encoding": "plain",
+        "bytes": 1088,
+        "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+        "file_sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+      }
+    },
+    {
+      "name": "facebook/yoga / LICENSE",
+      "coordinates": [
+        "com.facebook.yoga:proguard-annotations:1.19.0"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/yoga/8a65d8b6dc65fbe71d3fdfc0d4274fc3d7b0452d/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85.txt",
+        "encoding": "plain",
+        "bytes": 1086,
+        "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+        "file_sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85"
+      }
+    },
+    {
+      "name": "facebook/zstd / LICENSE",
+      "coordinates": [
+        "com.squareup.zstd:zstd-kmp-android:0.4.0",
+        "com.squareup.zstd:zstd-kmp-okio-android:0.4.0"
+      ],
+      "url": "https://raw.githubusercontent.com/facebook/zstd/1dbc2e09084e843f6c0dcc2d0791610015c50979/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8.txt",
+        "encoding": "plain",
+        "bytes": 1549,
+        "sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8",
+        "file_sha256": "7055266497633c9025b777c78eb7235af13922117480ed5c674677adc381c9d8"
+      }
+    },
+    {
+      "name": "fastfloat/fast_float / LICENSE-MIT",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/fastfloat/fast_float/v8.0.0/LICENSE-MIT",
+      "source": {
+        "path": "artifact-notice-sources/e562f3f974ced7e69dd1db77b820b36bcf8f30377f1aa105723fba449c53c4e6.txt",
+        "encoding": "plain",
+        "bytes": 1079,
+        "sha256": "e562f3f974ced7e69dd1db77b820b36bcf8f30377f1aa105723fba449c53c4e6",
+        "file_sha256": "e562f3f974ced7e69dd1db77b820b36bcf8f30377f1aa105723fba449c53c4e6"
+      }
+    },
+    {
+      "name": "fmtlib/fmt / LICENSE",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/fmtlib/fmt/12.1.0/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/07580f2a3b35709ce703d523f447b242f6dfec7582a8c0df102c7fa2849375f8.txt",
+        "encoding": "plain",
+        "bytes": 1431,
+        "sha256": "07580f2a3b35709ce703d523f447b242f6dfec7582a8c0df102c7fa2849375f8",
+        "file_sha256": "07580f2a3b35709ce703d523f447b242f6dfec7582a8c0df102c7fa2849375f8"
+      }
+    },
+    {
+      "name": "gflags/gflags / COPYING.txt",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/gflags/gflags/v2.2.0/COPYING.txt",
+      "source": {
+        "path": "artifact-notice-sources/90d1f3701813c3cd65eee2dc736746fe46b465918f3f7d6d31463a2018b33fa5.txt",
+        "encoding": "plain",
+        "bytes": 1479,
+        "sha256": "90d1f3701813c3cd65eee2dc736746fe46b465918f3f7d6d31463a2018b33fa5",
+        "file_sha256": "90d1f3701813c3cd65eee2dc736746fe46b465918f3f7d6d31463a2018b33fa5"
+      }
+    },
+    {
+      "name": "Brotli license",
+      "coordinates": [
+        "org.brotli:dec:0.1.2"
+      ],
+      "url": "https://raw.githubusercontent.com/google/brotli/v1.0.0/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94.txt",
+        "encoding": "plain",
+        "bytes": 1084,
+        "sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94",
+        "file_sha256": "3d180008e36922a4e8daec11c34c7af264fed5962d07924aea928c38e8663c94"
+      }
+    },
+    {
+      "name": "google/double-conversion / LICENSE",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/google/double-conversion/v1.1.6/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca.txt",
+        "encoding": "plain",
+        "bytes": 1527,
+        "sha256": "4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca",
+        "file_sha256": "4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca"
+      }
+    },
+    {
+      "name": "google/glog / COPYING",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/google/glog/v0.3.5/COPYING",
+      "source": {
+        "path": "artifact-notice-sources/0fc497129c5c69ff6f22da6933c7e4aaef082fde8437fd57680c2780100772a4.txt",
+        "encoding": "plain",
+        "bytes": 3215,
+        "sha256": "0fc497129c5c69ff6f22da6933c7e4aaef082fde8437fd57680c2780100772a4",
+        "file_sha256": "0fc497129c5c69ff6f22da6933c7e4aaef082fde8437fd57680c2780100772a4"
+      }
+    },
+    {
+      "name": "java-native-access/jna / native/libffi/LICENSE",
+      "coordinates": [
+        "net.java.dev.jna:jna:5.18.1"
+      ],
+      "url": "https://raw.githubusercontent.com/java-native-access/jna/5.18.1/native/libffi/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/2c9c2acb9743e6b007b91350475308aee44691d96aa20eacef8e199988c8c388.txt",
+        "encoding": "plain",
+        "bytes": 1132,
+        "sha256": "2c9c2acb9743e6b007b91350475308aee44691d96aa20eacef8e199988c8c388",
+        "file_sha256": "2c9c2acb9743e6b007b91350475308aee44691d96aa20eacef8e199988c8c388"
+      }
+    },
+    {
+      "name": "libjpeg-turbo / LICENSE.md",
+      "coordinates": [
+        "com.facebook.fresco:nativeimagetranscoder:3.7.0"
+      ],
+      "url": "https://raw.githubusercontent.com/libjpeg-turbo/libjpeg-turbo/2.1.5.1/LICENSE.md",
+      "source": {
+        "path": "artifact-notice-sources/60c756742db3ad1913304e8b13f0e86e22e51adb50cc0b3333c163f7e45ceec1.txt",
+        "encoding": "plain",
+        "bytes": 5213,
+        "sha256": "60c756742db3ad1913304e8b13f0e86e22e51adb50cc0b3333c163f7e45ceec1",
+        "file_sha256": "60c756742db3ad1913304e8b13f0e86e22e51adb50cc0b3333c163f7e45ceec1"
+      }
+    },
+    {
+      "name": "libjpeg-turbo / README.ijg",
+      "coordinates": [
+        "com.facebook.fresco:nativeimagetranscoder:3.7.0"
+      ],
+      "url": "https://raw.githubusercontent.com/libjpeg-turbo/libjpeg-turbo/2.1.5.1/README.ijg",
+      "source": {
+        "path": "artifact-notice-sources/4b7b9f8c03bb8d60270dfd12684e70ab21e4abfd27e73905cd1a7c4cae6f5cdb.txt",
+        "encoding": "plain",
+        "bytes": 12732,
+        "sha256": "4b7b9f8c03bb8d60270dfd12684e70ab21e4abfd27e73905cd1a7c4cae6f5cdb",
+        "file_sha256": "4b7b9f8c03bb8d60270dfd12684e70ab21e4abfd27e73905cd1a7c4cae6f5cdb"
+      }
+    },
+    {
+      "name": "LLVM libc++ runtime license with exceptions",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/llvm/llvm-project/3c92011b600bdf70424e2547594dd461fe411a41/libcxx/LICENSE.TXT",
+      "source": {
+        "path": "artifact-notice-sources/539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b.txt",
+        "encoding": "plain",
+        "bytes": 16703,
+        "sha256": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b",
+        "file_sha256": "539dd7aed86e8a4f12cbdd0e6c50c189c7d74847e4fecc64ce2c6ee3a01da38b"
+      }
+    },
+    {
+      "name": "LLVM libc++abi runtime license with exceptions",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/llvm/llvm-project/3c92011b600bdf70424e2547594dd461fe411a41/libcxxabi/LICENSE.TXT",
+      "source": {
+        "path": "artifact-notice-sources/e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c.txt",
+        "encoding": "plain",
+        "bytes": 16706,
+        "sha256": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c",
+        "file_sha256": "e2b35be49f7284a45b7baca8fc7b3ab7440e7902392b2528a457816b5bb2a15c"
+      }
+    },
+    {
+      "name": "nlohmann/json / LICENSE.MIT",
+      "coordinates": [
+        "com.facebook.react:react-android:0.88.1"
+      ],
+      "url": "https://raw.githubusercontent.com/nlohmann/json/v3.11.2/LICENSE.MIT",
+      "source": {
+        "path": "artifact-notice-sources/86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14.txt",
+        "encoding": "plain",
+        "bytes": 1076,
+        "sha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14",
+        "file_sha256": "86b998c792894ccb911a1cb7994f7a9652894e7a094c0b5e45be2f553f45cf14"
+      }
+    },
+    {
+      "name": "libpng / LICENSE",
+      "coordinates": [
+        "com.facebook.fresco:webpsupport:3.7.0"
+      ],
+      "url": "https://raw.githubusercontent.com/pnggroup/libpng/v1.6.37/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/bf5e22b9dce8464064ae17a48ea1133c3369ac9e1d80ef9e320e5219aa14ea9b.txt",
+        "encoding": "plain",
+        "bytes": 5345,
+        "sha256": "bf5e22b9dce8464064ae17a48ea1133c3369ac9e1d80ef9e320e5219aa14ea9b",
+        "file_sha256": "bf5e22b9dce8464064ae17a48ea1133c3369ac9e1d80ef9e320e5219aa14ea9b"
+      }
+    },
+    {
+      "name": "square/zstd-kmp / LICENSE",
+      "coordinates": [
+        "com.squareup.zstd:zstd-kmp-android:0.4.0",
+        "com.squareup.zstd:zstd-kmp-okio-android:0.4.0"
+      ],
+      "url": "https://raw.githubusercontent.com/square/zstd-kmp/4fbdf35df030888d2a0cce4a84329d107438134f/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt",
+        "encoding": "plain",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "file_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      }
+    },
+    {
+      "name": "square/zstd-kmp / zstd-kmp/native/include/LICENSE",
+      "coordinates": [
+        "com.squareup.zstd:zstd-kmp-android:0.4.0",
+        "com.squareup.zstd:zstd-kmp-okio-android:0.4.0"
+      ],
+      "url": "https://raw.githubusercontent.com/square/zstd-kmp/4fbdf35df030888d2a0cce4a84329d107438134f/zstd-kmp/native/include/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726.txt",
+        "encoding": "plain",
+        "bytes": 19274,
+        "sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726",
+        "file_sha256": "4b9abebc4338048a7c2dc184e9f800deb349366bdf28eb23c2677a77b4c87726"
+      }
+    },
+    {
+      "name": "libwebp / COPYING",
+      "coordinates": [
+        "com.facebook.fresco:webpsupport:3.7.0"
+      ],
+      "url": "https://raw.githubusercontent.com/webmproject/libwebp/v1.3.2/COPYING",
+      "source": {
+        "path": "artifact-notice-sources/5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf.txt",
+        "encoding": "plain",
+        "bytes": 1496,
+        "sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf",
+        "file_sha256": "5aec868f669e384a22372a4e8a1a6cd7d44c64cd451f960ca69cc170d1e13acf"
+      }
+    },
+    {
+      "name": "libwebp / PATENTS",
+      "coordinates": [
+        "com.facebook.fresco:webpsupport:3.7.0"
+      ],
+      "url": "https://raw.githubusercontent.com/webmproject/libwebp/v1.3.2/PATENTS",
+      "source": {
+        "path": "artifact-notice-sources/cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c.txt",
+        "encoding": "plain",
+        "bytes": 1436,
+        "sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c",
+        "file_sha256": "cc3273e0694ea5896145e0677699b53471b03ea43021ddc50e7923fbb9f5023c"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "expo.modules.asset:expo.modules.asset:58.0.20"
+      ],
+      "url": "https://registry.npmjs.org/expo-asset/-/expo-asset-58.0.20.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.camera:58.0.14"
+      ],
+      "url": "https://registry.npmjs.org/expo-camera/-/expo-camera-58.0.14.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.crypto:58.0.7"
+      ],
+      "url": "https://registry.npmjs.org/expo-crypto/-/expo-crypto-58.0.7.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.documentpicker:58.0.4"
+      ],
+      "url": "https://registry.npmjs.org/expo-document-picker/-/expo-document-picker-58.0.4.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.filesystem:58.0.13"
+      ],
+      "url": "https://registry.npmjs.org/expo-file-system/-/expo-file-system-58.0.13.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.font:58.0.11"
+      ],
+      "url": "https://registry.npmjs.org/expo-font/-/expo-font-58.0.11.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.keepawake:58.0.3"
+      ],
+      "url": "https://registry.npmjs.org/expo-keep-awake/-/expo-keep-awake-58.0.3.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.linking:58.0.16"
+      ],
+      "url": "https://registry.npmjs.org/expo-linking/-/expo-linking-58.0.16.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "Expo license",
+      "coordinates": [
+        "host.exp.exponent:expo.modules.statusbar:58.0.4"
+      ],
+      "url": "https://registry.npmjs.org/expo-status-bar/-/expo-status-bar-58.0.4.tgz!/package/LICENSE",
+      "source": {
+        "path": "artifact-notice-sources/fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4.txt",
+        "encoding": "plain",
+        "bytes": 1106,
+        "sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4",
+        "file_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+      }
+    },
+    {
+      "name": "okhttp3/internal/publicsuffix/NOTICE",
+      "coordinates": [
+        "com.squareup.okhttp3:okhttp:4.9.2"
+      ],
+      "url": "https://repo.maven.apache.org/maven2/com/squareup/okhttp3/okhttp/4.9.2/okhttp-4.9.2-sources.jar!/okhttp3/internal/publicsuffix/NOTICE",
+      "source": {
+        "path": "artifact-notice-sources/8a9c58fbded5ea3474315e4a9824ca8b1486098a1a03e897e0b19419d5e1876a.txt",
+        "encoding": "plain",
+        "bytes": 218,
+        "sha256": "8a9c58fbded5ea3474315e4a9824ca8b1486098a1a03e897e0b19419d5e1876a",
+        "file_sha256": "8a9c58fbded5ea3474315e4a9824ca8b1486098a1a03e897e0b19419d5e1876a"
+      }
+    },
+    {
+      "name": "META-INF/LICENSE.txt",
+      "coordinates": [
+        "commons-codec:commons-codec:1.10"
+      ],
+      "url": "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-sources.jar!/META-INF/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5.txt",
+        "encoding": "plain",
+        "bytes": 11560,
+        "sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5",
+        "file_sha256": "3ddf9be5c28fe27dad143a5dc76eea25222ad1dd68934a047064e56ed2fa40c5"
+      }
+    },
+    {
+      "name": "META-INF/NOTICE.txt",
+      "coordinates": [
+        "commons-codec:commons-codec:1.10"
+      ],
+      "url": "https://repo.maven.apache.org/maven2/commons-codec/commons-codec/1.10/commons-codec-1.10-sources.jar!/META-INF/NOTICE.txt",
+      "source": {
+        "path": "artifact-notice-sources/bcb83645cb4d1a46e551f21a53477b3f8b7518471480e1b6afe04a5f9fc3af80.txt",
+        "encoding": "plain",
+        "bytes": 749,
+        "sha256": "bcb83645cb4d1a46e551f21a53477b3f8b7518471480e1b6afe04a5f9fc3af80",
+        "file_sha256": "bcb83645cb4d1a46e551f21a53477b3f8b7518471480e1b6afe04a5f9fc3af80"
+      }
+    },
+    {
+      "name": "META-INF/LICENSE.txt",
+      "coordinates": [
+        "commons-io:commons-io:2.6"
+      ],
+      "url": "https://repo.maven.apache.org/maven2/commons-io/commons-io/2.6/commons-io-2.6-sources.jar!/META-INF/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/8c6db340475136df3c1201d458fa5755698eace76e510471ecc9d857d6083dac.txt",
+        "encoding": "plain",
+        "bytes": 11359,
+        "sha256": "8c6db340475136df3c1201d458fa5755698eace76e510471ecc9d857d6083dac",
+        "file_sha256": "8c6db340475136df3c1201d458fa5755698eace76e510471ecc9d857d6083dac"
+      }
+    },
+    {
+      "name": "META-INF/NOTICE.txt",
+      "coordinates": [
+        "commons-io:commons-io:2.6"
+      ],
+      "url": "https://repo.maven.apache.org/maven2/commons-io/commons-io/2.6/commons-io-2.6-sources.jar!/META-INF/NOTICE.txt",
+      "source": {
+        "path": "artifact-notice-sources/f738390135295a249c4fb7118469ff881ae0bd11401b410f7564a52b7e54c4d2.txt",
+        "encoding": "plain",
+        "bytes": 171,
+        "sha256": "f738390135295a249c4fb7118469ff881ae0bd11401b410f7564a52b7e54c4d2",
+        "file_sha256": "f738390135295a249c4fb7118469ff881ae0bd11401b410f7564a52b7e54c4d2"
+      }
+    },
+    {
+      "name": "META-INF/LICENSE.txt",
+      "coordinates": [
+        "jakarta.inject:jakarta.inject-api:2.0.1"
+      ],
+      "url": "https://repo.maven.apache.org/maven2/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1-sources.jar!/META-INF/LICENSE.txt",
+      "source": {
+        "path": "artifact-notice-sources/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt",
+        "encoding": "plain",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "file_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      }
+    },
+    {
+      "name": "META-INF/NOTICE.md",
+      "coordinates": [
+        "jakarta.inject:jakarta.inject-api:2.0.1"
+      ],
+      "url": "https://repo.maven.apache.org/maven2/jakarta/inject/jakarta.inject-api/2.0.1/jakarta.inject-api-2.0.1-sources.jar!/META-INF/NOTICE.md",
+      "source": {
+        "path": "artifact-notice-sources/992ed62dd3ee17d73ce6a4a5e02dd0fed9eb326bf386aa5304e6a512214df540.txt",
+        "encoding": "plain",
+        "bytes": 1074,
+        "sha256": "992ed62dd3ee17d73ce6a4a5e02dd0fed9eb326bf386aa5304e6a512214df540",
+        "file_sha256": "992ed62dd3ee17d73ce6a4a5e02dd0fed9eb326bf386aa5304e6a512214df540"
+      }
+    },
+    {
+      "name": "giflib 5.2.1 / COPYING",
+      "coordinates": [
+        "com.facebook.fresco:animated-gif:3.7.0"
+      ],
+      "url": "https://sourceforge.net/p/giflib/code/ci/5.2.1/tree/COPYING?format=raw",
+      "source": {
+        "path": "artifact-notice-sources/0c9b7990ecdca88b676db232c226548ac408b279f550d424d996f0d83591dd8e.txt",
+        "encoding": "plain",
+        "bytes": 1088,
+        "sha256": "0c9b7990ecdca88b676db232c226548ac408b279f550d424d996f0d83591dd8e",
+        "file_sha256": "0c9b7990ecdca88b676db232c226548ac408b279f550d424d996f0d83591dd8e"
+      }
+    },
+    {
+      "name": "Apache License 2.0",
+      "coordinates": [
+        "androidx.activity:activity-ktx:1.8.1",
+        "androidx.activity:activity:1.8.1",
+        "androidx.annotation:annotation-experimental:1.4.1",
+        "androidx.annotation:annotation-jvm:1.9.1",
+        "androidx.appcompat:appcompat-resources:1.7.1",
+        "androidx.appcompat:appcompat:1.7.1",
+        "androidx.arch.core:core-common:2.2.0",
+        "androidx.arch.core:core-runtime:2.2.0",
+        "androidx.autofill:autofill:1.3.0",
+        "androidx.camera.featurecombinationquery:featurecombinationquery:1.6.0",
+        "androidx.camera.viewfinder:viewfinder-core:1.5.1",
+        "androidx.camera:camera-camera2-pipe:1.6.0",
+        "androidx.camera:camera-camera2:1.6.0",
+        "androidx.camera:camera-core:1.6.0",
+        "androidx.camera:camera-extensions:1.6.0",
+        "androidx.camera:camera-lifecycle:1.6.0",
+        "androidx.camera:camera-mlkit-vision:1.6.0",
+        "androidx.camera:camera-video:1.6.0",
+        "androidx.camera:camera-view:1.6.0",
+        "androidx.cardview:cardview:1.0.0",
+        "androidx.collection:collection-jvm:1.4.4",
+        "androidx.collection:collection-ktx:1.4.4",
+        "androidx.concurrent:concurrent-futures-ktx:1.1.0",
+        "androidx.concurrent:concurrent-futures:1.1.0",
+        "androidx.constraintlayout:constraintlayout-core:1.0.0",
+        "androidx.constraintlayout:constraintlayout:2.1.0",
+        "androidx.coordinatorlayout:coordinatorlayout:1.2.0",
+        "androidx.core:core-backported-fixes:1.0.0",
+        "androidx.core:core-ktx:1.18.0",
+        "androidx.core:core-viewtree:1.0.0",
+        "androidx.core:core:1.18.0",
+        "androidx.cursoradapter:cursoradapter:1.0.0",
+        "androidx.customview:customview:1.1.0",
+        "androidx.documentfile:documentfile:1.1.0",
+        "androidx.drawerlayout:drawerlayout:1.1.1",
+        "androidx.dynamicanimation:dynamicanimation:1.1.0",
+        "androidx.emoji2:emoji2-views-helper:1.3.0",
+        "androidx.emoji2:emoji2:1.3.0",
+        "androidx.exifinterface:exifinterface:1.4.2",
+        "androidx.fragment:fragment-ktx:1.8.9",
+        "androidx.fragment:fragment:1.8.9",
+        "androidx.graphics:graphics-shapes-android:1.0.1",
+        "androidx.interpolator:interpolator:1.0.0",
+        "androidx.lifecycle:lifecycle-common:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata-core-ktx:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata-core:2.6.2",
+        "androidx.lifecycle:lifecycle-livedata:2.6.2",
+        "androidx.lifecycle:lifecycle-process:2.6.2",
+        "androidx.lifecycle:lifecycle-runtime-ktx:2.6.2",
+        "androidx.lifecycle:lifecycle-runtime:2.6.2",
+        "androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2",
+        "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.6.2",
+        "androidx.lifecycle:lifecycle-viewmodel:2.6.2",
+        "androidx.loader:loader:1.0.0",
+        "androidx.media3:media3-common:1.9.0",
+        "androidx.media3:media3-container:1.9.0",
+        "androidx.media3:media3-muxer:1.9.0",
+        "androidx.profileinstaller:profileinstaller:1.3.1",
+        "androidx.recyclerview:recyclerview:1.2.1",
+        "androidx.resourceinspection:resourceinspection-annotation:1.0.1",
+        "androidx.savedstate:savedstate-ktx:1.2.1",
+        "androidx.savedstate:savedstate:1.2.1",
+        "androidx.startup:startup-runtime:1.1.1",
+        "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0",
+        "androidx.tracing:tracing-android:1.3.0",
+        "androidx.tracing:tracing-ktx:1.3.0",
+        "androidx.transition:transition-ktx:1.7.0",
+        "androidx.transition:transition:1.7.0",
+        "androidx.vectordrawable:vectordrawable-animated:1.1.0",
+        "androidx.vectordrawable:vectordrawable:1.1.0",
+        "androidx.versionedparcelable:versionedparcelable:1.1.1",
+        "androidx.viewpager2:viewpager2:1.0.0",
+        "androidx.viewpager:viewpager:1.0.0",
+        "androidx.window:window-core-android:1.5.1",
+        "androidx.window:window:1.5.1",
+        "com.facebook.fbjni:fbjni:0.7.0",
+        "com.facebook.soloader:annotation:0.12.1",
+        "com.facebook.soloader:nativeloader:0.12.1",
+        "com.facebook.soloader:soloader:0.12.1",
+        "com.google.android.datatransport:transport-api:2.2.1",
+        "com.google.android.datatransport:transport-backend-cct:2.3.3",
+        "com.google.android.datatransport:transport-runtime:2.2.6",
+        "com.google.android.material:material:1.13.0",
+        "com.google.auto.value:auto-value-annotations:1.6.3",
+        "com.google.code.findbugs:jsr305:3.0.2",
+        "com.google.code.gson:gson:2.8.6",
+        "com.google.dagger:dagger:2.59",
+        "com.google.errorprone:error_prone_annotations:2.15.0",
+        "com.google.firebase:firebase-annotations:16.0.0",
+        "com.google.firebase:firebase-components:16.1.0",
+        "com.google.firebase:firebase-encoders-json:17.1.0",
+        "com.google.firebase:firebase-encoders:16.1.0",
+        "com.google.guava:failureaccess:1.0.2",
+        "com.google.guava:guava:33.3.1-android",
+        "com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava",
+        "com.squareup.okhttp3:okhttp-urlconnection:4.9.2",
+        "com.squareup.okhttp3:okhttp:4.9.2",
+        "com.squareup.okio:okio-jvm:3.16.0",
+        "com.squareup.zstd:zstd-kmp-android:0.4.0",
+        "com.squareup.zstd:zstd-kmp-okio-android:0.4.0",
+        "commons-codec:commons-codec:1.10",
+        "commons-io:commons-io:2.6",
+        "jakarta.inject:jakarta.inject-api:2.0.1",
+        "javax.inject:javax.inject:1",
+        "net.java.dev.jna:jna:5.18.1",
+        "org.jetbrains.kotlin:kotlin-annotations-jvm:1.3.72",
+        "org.jetbrains.kotlin:kotlin-reflect:2.2.10",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.2.10",
+        "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.22",
+        "org.jetbrains.kotlin:kotlin-stdlib:2.2.20",
+        "org.jetbrains.kotlinx:atomicfu-jvm:0.28.0",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2",
+        "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.10.2",
+        "org.jetbrains:annotations:23.0.0",
+        "org.jspecify:jspecify:1.0.0"
+      ],
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.txt",
+      "source": {
+        "path": "artifact-notice-sources/cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30.txt",
+        "encoding": "plain",
+        "bytes": 11358,
+        "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+        "file_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+      }
+    }
+  ],
+  "supplemental_notices_sha256": "d7f29a1c9630b8aab986199cd91c88d2f4a589c7540ee960724585176b1a3cff"
+}

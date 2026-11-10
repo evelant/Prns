@@ -5,6 +5,7 @@ import json
 import shutil
 import tempfile
 import unittest
+import zipfile
 from validation.security import app_maven
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -17,36 +18,93 @@ class AppMavenEvidenceTests(unittest.TestCase):
         for name in ('android_maven.py', 'android-maven-baseline.json'):
             shutil.copyfile(ROOT/'applications/tools/native-bindings'/name, destination/name)
 
-    def test_actual_closure_retains_nonstandard_terms_and_fails_unapproved_review(self):
-        report=app_maven.report(ROOT)
-        names={d['name'] for p in report['packages'] for d in p['declarations']}
-        self.assertIn('ML Kit Terms of Service', names)
-        self.assertEqual(sum(any(d['name'] == 'ML Kit Terms of Service' for d in p['declarations'])
-                             for p in report['packages']), 8)
-        self.assertEqual(sum(any('Android Software Development Kit' in d['name'] for d in p['declarations'])
-                             for p in report['packages']), 4)
-        self.assertTrue(any('Android Software Development Kit' in name for name in names))
-        self.assertTrue(any(p['declared_at']!=p['coordinate'] for p in report['packages']))
-        review = report['manual_review']
-        coordinates = {item['name']: item['coordinates'] for item in review['declarations']}
-        self.assertEqual(len(coordinates['ML Kit Terms of Service']), 8)
-        self.assertEqual(coordinates['Android Software Development Kit License'], [
+    def test_product_review_covers_each_release_input_and_preserves_actual_declarations(self):
+        report = app_maven.report(ROOT)
+        review = report['release_review']
+        self.assertEqual(len(review['decisions']), 190)
+        self.assertEqual(sum(len(row['artifacts']) for row in review['decisions']), 178)
+        choices = {}
+        for row in review['decisions']:
+            choices.setdefault(row['decision'], []).append(row['coordinate'])
+        self.assertEqual(len(choices['resolution-metadata']), 12)
+        self.assertEqual(len(choices['Google ML Kit']), 8)
+        self.assertEqual(choices['Google Android SDK client terms'], [
             'com.google.android.gms:play-services-base:18.5.0',
             'com.google.android.gms:play-services-basement:18.10.0',
             'com.google.android.gms:play-services-tasks:18.2.1',
             'com.google.android.odml:image:1.0.0-beta1'])
-        self.assertEqual(coordinates['LGPL-2.1-or-later'], ['net.java.dev.jna:jna:5.18.1'])
-        with self.assertRaisesRegex(ValueError,'manual release-policy review pending') as failure:
+        self.assertEqual(choices['JNA / Apache-2.0'], ['net.java.dev.jna:jna:5.18.1'])
+        self.assertTrue(any(row['declared_at'] != row['coordinate'] for row in report['packages']))
+        if review['bases']['Google Android SDK client terms']['status'] == 'reviewed':
             app_maven.audit(report)
-        self.assertIn('com.google.mlkit:barcode-scanning:17.3.0', str(failure.exception))
-        self.assertIn('net.java.dev.jna:jna:5.18.1', str(failure.exception))
-        self.assertNotIn('unresolved', report)
+        else:
+            self.assertEqual(len(review['issues']), 4)
+            for coordinate in choices['Google Android SDK client terms']:
+                self.assertTrue(any(issue.startswith(coordinate + ':') for issue in review['issues']))
+            with self.assertRaisesRegex(ValueError, 'Android Maven release review pending'):
+                app_maven.audit(report)
 
-    def test_manual_review_is_not_cleared_by_absence_of_named_declarations(self):
-        report = app_maven.report(ROOT)
-        report['manual_review']['declarations'] = []
-        with self.assertRaisesRegex(ValueError, 'manual release-policy review pending'):
-            app_maven.audit(report)
+    def test_conditional_review_and_invalid_reclassification(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            self.copy_evidence(root)
+            path = root / app_maven.REVIEW
+            policy = json.loads(path.read_text())
+            decision = policy['decisions']['Google Android SDK client terms']
+            for status in ('pending', 'reviewed'):
+                decision['status'] = status
+                path.write_text(json.dumps(policy))
+                report = app_maven.report(root)
+                if status == 'pending':
+                    with self.assertRaisesRegex(ValueError, 'play-services-base:18.5.0'):
+                        app_maven.audit(report)
+                else:
+                    app_maven.audit(report)
+            policy['coordinates']['com.google.mlkit:barcode-scanning:17.3.0'] = 'MIT'
+            path.write_text(json.dumps(policy))
+            with self.assertRaisesRegex(ValueError, 'barcode-scanning:17.3.0'):
+                app_maven.audit(app_maven.report(root))
+            policy['supplemental_notices'].pop()
+            path.write_text(json.dumps(policy))
+            with self.assertRaisesRegex(ValueError, 'supplemental attribution'):
+                app_maven.report(root)
+
+    def test_binary_origin_rejects_missing_rows_alias_swaps_and_redirects(self):
+        for mutation in ('missing', 'alias', 'redirect'):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.copy_evidence(root)
+                path = root / app_maven.ORIGINS
+                manifest = json.loads(path.read_text())
+                rows = manifest['artifacts']
+                if mutation == 'missing':
+                    rows.pop()
+                elif mutation == 'alias':
+                    next(row for row in rows if 'module_file' in row)['module_file'] = 'other.aar'
+                else:
+                    next(row for row in rows if 'resolved_url' in row)['resolved_url'] = 'https://example.org/binary'
+                path.write_text(json.dumps(manifest))
+                with self.assertRaisesRegex(ValueError, 'Maven'):
+                    app_maven.report(root)
+
+    def test_release_asset_must_match_real_apk_member_bytes(self):
+        expected = app_maven.notice_bytes(app_maven.report(ROOT))
+        self.assertEqual(expected, (ROOT / app_maven.ASSET).read_bytes())
+        for fragment in (b'Google ML Kit', b'JNA / Apache-2.0', b'libffi', b'libjpeg', b'LLVM',
+                         b'com.facebook.hermes:hermes-android:'):
+            self.assertIn(fragment, expected)
+        self.assertNotIn(b'react-android-0.88.1-debug.aar', expected)
+        with tempfile.TemporaryDirectory() as tmp:
+            apk = Path(tmp) / 'app.apk'
+            for member in ['res/raw/appassetslicensesandroidmaven.txt', 'assets/renamed', 'res/raw-v24/maven.txt']:
+                with zipfile.ZipFile(apk, 'w') as archive:
+                    archive.writestr(member, expected)
+                self.assertEqual(app_maven.verify_apk(apk, expected)['member'], member)
+            for member, content in [('assets/renamed', b'wrong'), ('META-INF/test.txt', expected)]:
+                with zipfile.ZipFile(apk, 'w') as archive:
+                    archive.writestr(member, content)
+                with self.assertRaisesRegex(ValueError, 'does not contain'):
+                    app_maven.verify_apk(apk, expected)
 
     def test_changed_baseline_cannot_reuse_old_pom_evidence(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -123,8 +181,6 @@ class AppMavenEvidenceTests(unittest.TestCase):
         self.assertEqual(actual['artifact_evidence'], {'artifacts':180, 'pom_origins':204})
         self.assertTrue(any('Apache-2.0 OR LGPL-2.1-or-later' in row['text'] for row in actual['notices']))
         self.assertTrue(any(row['name'] == 'Android SDK Platforms' for row in actual['notices']))
-        with self.assertRaisesRegex(ValueError, 'manual release-policy review pending'):
-            app_maven.audit(actual)
         for mutation in ('artifact_hash', 'missing_artifact', 'notice_bytes', 'origin_url'):
             with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as tmp:
                 root=Path(tmp);self.copy_evidence(root)

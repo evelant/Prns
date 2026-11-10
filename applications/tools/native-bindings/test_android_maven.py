@@ -14,13 +14,15 @@ class AndroidMavenTests(unittest.TestCase):
                 'project_components': {name: ["project :app"] for name in maven.CONFIGURATIONS},
                 'artifacts': {name: [{'coordinate': 'example:library:1', 'file_name': 'library-1.aar', 'sha256': 'a' * 64}] for name in maven.CONFIGURATIONS}}
 
-    def check(self, actual, baseline=None):
+    def check(self, actual, baseline=None, reviewed=None):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
             raw, expected, output = (root / name for name in ('raw.json', 'baseline.json', 'report.json'))
             raw.write_text(json.dumps(actual))
             expected.write_text(json.dumps(baseline or self.fixture()))
-            return maven.check_report(raw, output, expected)
+            custody = root / 'reviewed.json'
+            custody.write_text(json.dumps(reviewed or baseline or self.fixture()))
+            return maven.check_report(raw, output, expected, custody)
 
     def test_records_separate_profiles_hashes_and_explicit_resolution_limits(self):
         actual = self.fixture()
@@ -66,6 +68,13 @@ class AndroidMavenTests(unittest.TestCase):
         actual['artifacts']['debugRuntimeClasspath'] *= 2
         with self.assertRaisesRegex(ValueError, 'Duplicate artifact'):
             self.check(actual)
+
+    def test_resolved_artifact_bytes_are_bound_for_each_profile(self):
+        for profile in maven.CONFIGURATIONS:
+            actual = self.fixture()
+            actual['artifacts'][profile][0]['sha256'] = 'b' * 64
+            with self.subTest(profile=profile), self.assertRaisesRegex(ValueError, 'reviewed origins'):
+                self.check(actual)
 
     def test_gradle_task_resolves_both_profiles_without_assemble_or_sign_tasks(self):
         script = maven.gradle_init()

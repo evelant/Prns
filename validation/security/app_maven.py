@@ -1,9 +1,7 @@
-"""Verify preserved POM evidence against the app's actual Gradle closure.
-
-POM declarations are evidence, not license approval. Keeping this distinction
-allows reproducible notices while a separate manual review keeps the release gate closed.
-"""
+"""Verify Android runtime custody, apply the app-specific review, and package its notices."""
 from __future__ import annotations
+import argparse
+from collections import defaultdict
 import hashlib
 import gzip
 import io
@@ -11,10 +9,15 @@ import importlib.util
 import json
 from pathlib import Path
 import xml.etree.ElementTree as ET
+import zipfile
 
 BASELINE = 'applications/tools/native-bindings/android-maven-baseline.json'
 EVIDENCE = 'release/licenses/app-maven/pom-license-evidence.json'
 ARTIFACTS = 'release/licenses/app-maven/artifact-notices.json'
+REVIEW = 'release/licenses/app-maven/release-review.json'
+ORIGINS = 'release/licenses/app-maven/artifact-origins.json'
+ASSET = 'applications/prns/app/assets/licenses/android-maven.txt'
+RELEASE = 'releaseRuntimeClasspath'
 MAX_NOTICE_BYTES = 4 * 1024 * 1024
 
 
@@ -92,12 +95,12 @@ def packaged_notices(root: Path, baseline: dict, documents: dict) -> dict:
     if (origins.get('schema') != 1 or origins['pom_evidence_sha256']
             != hashlib.sha256((root / EVIDENCE).read_bytes()).hexdigest()):
         raise ValueError('Maven origin evidence does not bind the preserved POMs')
-    seen_origins = set()
+    pom_origins = {}
     for origin in origins['documents']:
         coordinate = origin['coordinate']
-        if coordinate in seen_origins or coordinate not in documents:
+        if coordinate in pom_origins or coordinate not in documents:
             raise ValueError('Duplicate or foreign Maven POM origin')
-        seen_origins.add(coordinate)
+        pom_origins[coordinate] = origin
         document = documents[coordinate]
         if origin['status'] == 'exact-pom-match':
             verified = origin['verified']
@@ -114,7 +117,7 @@ def packaged_notices(root: Path, baseline: dict, documents: dict) -> dict:
                 raise ValueError('Maven npm origin disagrees with preserved evidence')
         else:
             raise ValueError('Unverified Maven POM origin')
-    if seen_origins != set(documents):
+    if set(pom_origins) != set(documents):
         raise ValueError('Maven POM origin coverage is incomplete')
     expected = {}
     for profile, artifacts in resolution['artifacts'].items():
@@ -129,21 +132,59 @@ def packaged_notices(root: Path, baseline: dict, documents: dict) -> dict:
             expected.setdefault(key, set()).add(profile)
     if set(resolution['artifacts']) != set(baseline):
         raise ValueError('Missing selected Maven artifact profile')
+    custody = json.loads((root / ORIGINS).read_text(), object_pairs_hook=_unique_object)
+    if custody.get('schema') != 1:
+        raise ValueError('Unsupported Maven binary origin schema')
+    origins = {}
+    for origin in custody['artifacts']:
+        key = origin['coordinate'], origin['file_name'], origin['sha256']
+        if key in origins or key not in expected:
+            raise ValueError('Maven binary origin differs from the resolved artifact')
+        origins[key] = origin
+    if set(origins) != set(expected):
+        raise ValueError('Maven binary origin coverage is incomplete')
     seen, notices = set(), []
     for artifact in manifest['artifacts']:
         key = artifact['coordinate'], artifact['file_name'], artifact['sha256']
         if key in seen or key not in expected or set(artifact['profiles']) != expected[key]:
             raise ValueError('Maven notice artifact differs from resolved custody')
         seen.add(key)
+        origin = origins[key]
         if artifact['source_observation'] == 'integrity-checked npm archive':
             source = documents[key[0]]['source']
+            group, artifact_name, version = key[0].split(':')
+            expected_member = '/'.join(('package/local-maven-repo', group.replace('.', '/'),
+                                        artifact_name, version, key[1]))
             if (source['kind'] != 'npm-local-maven-repository'
                     or artifact['npm_integrity'] != source['integrity']
                     or artifact['npm_resolved'] != source['resolved']
-                    or Path(artifact['npm_member']).name != key[1]):
+                    or origin.get('url') != source['resolved']
+                    or origin.get('member') != artifact['npm_member']
+                    or artifact['npm_member'] != expected_member):
                 raise ValueError('Maven packaged notice npm custody disagrees')
         elif artifact['source_observation'] != 'existing Gradle cache':
             raise ValueError('Unknown Maven artifact observation')
+        else:
+            parent = pom_origins[key[0]]['verified']['url'].rsplit('/', 1)[0]
+            filename = key[1]
+            if 'module_file' in origin:
+                module_hash = origin['module_sha256']
+                if len(module_hash) != 64 or any(c not in '0123456789abcdef' for c in module_hash):
+                    raise ValueError('Invalid Maven module digest')
+                raw = (directory / 'artifact-notice-sources' / f'{module_hash}.module').read_bytes()
+                if hashlib.sha256(raw).hexdigest() != module_hash:
+                    raise ValueError('Maven module metadata differs from its observed digest')
+                files = [f for v in json.loads(raw)['variants'] for f in v.get('files', [])]
+                filename = origin['module_file']
+                if Path(filename).name != filename or not any(f['name'] == key[1] and f['url'] == filename
+                        and f.get('sha256') == key[2] for f in files):
+                    raise ValueError('Published Maven variant does not bind the resolved artifact')
+            if origin['url'] != f'{parent}/{filename}' or 'member' in origin:
+                raise ValueError('Maven binary origin must match the official coordinate and filename')
+            if 'resolved_url' in origin:
+                expected_url = origin['url'].replace('https://repo.maven.apache.org/', 'https://repo.reactnative.dev/')
+                if not key[0].startswith('com.facebook.react:react-android:') or origin['resolved_url'] != expected_url:
+                    raise ValueError('Unrecognized Maven binary redirect')
         sources = {}
         for item in artifact['notices']:
             path = item['archive_path']
@@ -164,7 +205,9 @@ def packaged_notices(root: Path, baseline: dict, documents: dict) -> dict:
                             'text': text, 'profiles': sorted(expected[key])})
     if seen != set(expected):
         raise ValueError('Maven artifact notice coverage is incomplete')
-    return {'artifacts': len(seen), 'pom_origins': len(seen_origins),
+    return {'artifacts': len(seen), 'pom_origins': len(pom_origins),
+            'release_artifacts': [dict(item, origin=origins[(item['coordinate'], item['file_name'], item['sha256'])]['url'])
+                                  for item in resolution['artifacts'][RELEASE]],
             'notices': sorted(notices, key=lambda item: (item['coordinate'], item['artifact'], item['name']))}
 
 
@@ -224,29 +267,161 @@ def report(root: Path) -> dict:
                      'declared_at':current,'pom_sha256':documents[coordinate]['pom_sha256'],
                      'provenance':documents[coordinate]['source']})
     attribution = packaged_notices(root, baseline, documents)
-    # These named declarations make the existing manual review actionable. They
-    # are not an exhaustive license classifier or a selection among alternatives.
-    review_terms = ('ML Kit Terms of Service', 'Android Software Development Kit License',
-                    'LGPL-2.1-or-later')
-    declarations = []
-    for name in review_terms:
-        coordinates = [row['coordinate'] for row in rows
-                       if any(item.get('name') == name for item in row['declarations'])]
-        if coordinates:
-            declarations.append({'name': name, 'coordinates': coordinates})
-    return {'schema':2,'configurations':baseline,'packages':rows,
+    reviewed = release_review(root, baseline[RELEASE], rows, attribution)
+    return {'schema': 3, 'configurations': baseline, 'packages': rows,
             'artifact_evidence': {key: attribution[key] for key in ('artifacts', 'pom_origins')},
-            'notices': attribution['notices'],
-            'manual_review': {
-                'summary': 'Complete artifact-origin, bundled-attribution and license-policy review '
-                           'remains pending for the selected Maven closure. Verified evidence is '
-                           'not release approval; the named declarations do not select license alternatives.',
-                'declarations': declarations}}
+            'notices': attribution['notices'], 'release_review': reviewed}
+
+
+def declared_decision(row: dict) -> str | None:
+    names = [term['name'] for term in row['declarations']]
+    if row['coordinate'] == 'net.java.dev.jna:jna:5.18.1' and set(names) == {'LGPL-2.1-or-later', 'Apache-2.0'}:
+        return 'JNA / Apache-2.0'
+    if names == ['ML Kit Terms of Service']:
+        return 'Google ML Kit'
+    if names == ['Android Software Development Kit License']:
+        return 'Google Android SDK client terms'
+    if row['coordinate'] == 'androidx.camera:camera-core:1.6.0' and names == [
+            'The Apache Software License, Version 2.0', 'BSD-3-Clause']:
+        return 'Apache-2.0 AND BSD-3-Clause'
+    if row['coordinate'] == 'com.parse.bolts:bolts-tasks:1.4.0' and names == ['BSD License']:
+        return 'BSD-3-Clause'
+    if len(names) == 1:
+        name = names[0].lower()
+        if name in {'mit', 'mit license', 'the mit license'}:
+            return 'MIT'
+        if name in {'apache-2', 'apache-2.0', 'apache 2.0', 'apache license, version 2.0',
+                    'the apache license, version 2.0', 'the apache software license, version 2.0'}:
+            return 'Apache-2.0'
+    return None
+
+
+def release_review(root: Path, release: list[str], rows: list[dict], attribution: dict) -> dict:
+    policy = json.loads((root / REVIEW).read_text(), object_pairs_hook=_unique_object)
+    if policy.get('schema') != 1 or policy.get('profile') != RELEASE:
+        raise ValueError('Unsupported Maven release review')
+    artifacts = attribution['release_artifacts']
+    packages = [row for row in rows if row['coordinate'] in release]
+    # Bind source and license declarations, including inherited declarations, not just group names.
+    closure = {'artifacts': artifacts, 'declarations': [
+        [r['coordinate'], r['pom_sha256'], r['declared_at'], r['declarations']] for r in packages]}
+    digest = hashlib.sha256(json.dumps(closure, sort_keys=True, separators=(',', ':')).encode()).hexdigest()
+    issues = []
+    if digest != policy['release_inputs_sha256']:
+        issues.append('The selected release artifacts, origins or POM declarations have changed.')
+    by_coordinate = defaultdict(list)
+    for artifact in artifacts:
+        by_coordinate[artifact['coordinate']].append(artifact)
+    decisions = []
+    for row in packages:
+        key = row['coordinate']
+        decision = policy['coordinates'].get(key)
+        if not by_coordinate[key]:
+            classification = 'resolution-metadata'
+        else:
+            classification = declared_decision(row)
+            if classification is None:
+                classification = 'unreviewed'
+                issues.append(f'{key}: no reviewed release license declaration')
+        if decision != classification:
+            issues.append(f'{key}: release decision does not match the artifact and POM declarations')
+        decisions.append({'coordinate': key, 'decision': classification, 'artifacts': by_coordinate[key]})
+    if set(policy['coordinates']) != set(release):
+        issues.append('Recorded Maven review coordinates differ from the release profile.')
+    if any(row['decision'] not in policy['decisions'] for row in decisions):
+        issues.append('A release coordinate has no matching review basis.')
+    for row in decisions:
+        description = policy['decisions'].get(row['decision'], {})
+        if description.get('status') == 'pending':
+            issues.append(f"{row['coordinate']}: {description['basis']}")
+        elif description.get('status') != 'reviewed':
+            issues.append(f"{row['coordinate']}: unrecognized release decision")
+    jna = 'net.java.dev.jna:jna:5.18.1'
+    if jna in release and not any(item['coordinate'] == jna and RELEASE in item['profiles']
+            and 'SPDX-License-Identifier: Apache-2.0 OR LGPL-2.1-or-later' in item['text']
+            for item in attribution['notices']):
+        issues.append(f'{jna}: archive is missing its explicit dual license')
+    supplement_digest = hashlib.sha256(json.dumps(policy['supplemental_notices'], sort_keys=True,
+                                                  separators=(',', ':')).encode()).hexdigest()
+    if supplement_digest != policy['supplemental_notices_sha256']:
+        raise ValueError('Maven supplemental attribution inventory changed')
+    supplements = []
+    for item in policy['supplemental_notices']:
+        text = _source(root, item['source']).decode('utf-8')
+        if not item['coordinates'] or not set(item['coordinates']) <= set(by_coordinate):
+            raise ValueError('Maven supplemental notice has unknown coordinates')
+        supplements.append({'name': item['name'], 'coordinates': item['coordinates'], 'url': item['url'], 'text': text})
+    return {'profile': RELEASE, 'inputs_sha256': digest, 'decisions': decisions,
+            'bases': policy['decisions'], 'supplemental_notices': supplements, 'issues': issues}
 
 
 def audit(report: dict) -> None:
-    review = report['manual_review']
-    details = [review['summary']]
-    details.extend(f"{item['name']}: {', '.join(item['coordinates'])}"
-                   for item in review['declarations'])
-    raise ValueError('App Maven manual release-policy review pending:\n' + '\n'.join(details))
+    review = report['release_review']
+    if not review['decisions']:
+        raise ValueError('Missing Android Maven release decisions')
+    if review['issues']:
+        raise ValueError('Android Maven release review pending:\n' + '\n'.join(review['issues']))
+
+
+def notice_bytes(report: dict) -> bytes:
+    review = report['release_review']
+    lines = ['PRNS Chat for Android', 'Third-party Android runtime notices', '']
+    for item in review['decisions']:
+        if item['artifacts']:
+            lines.append(f"{item['coordinate']} — {item['decision']}")
+    lines.append('')
+    for key, decision in review['bases'].items():
+        if key != 'resolution-metadata':
+            lines.extend([key, decision['basis'], *decision['sources'], ''])
+    grouped = defaultdict(set)
+    for item in report['notices']:
+        if RELEASE in item['profiles']:
+            grouped[item['text'].strip()].add(f"{item['coordinate']} / {item['name']}")
+    for item in review['supplemental_notices']:
+        grouped[item['text'].strip()].add(f"{', '.join(item['coordinates'])} / {item['name']} / {item['url']}")
+    for text, owners in sorted(grouped.items(), key=lambda item: sorted(item[1])):
+        lines.extend([*sorted(owners), '', text, ''])
+    # Keep original custody bytes in the evidence store. Render stable LF text for Android.
+    normalized = (line.rstrip() for block in lines for line in (block.splitlines() or ['']))
+    return ('\n'.join(normalized).rstrip() + '\n').encode('utf-8')
+
+
+def verify_apk(apk: Path, expected: bytes) -> dict:
+    digest = hashlib.sha256(expected).hexdigest()
+    with zipfile.ZipFile(apk) as archive:
+        seen = set()
+        for member in archive.infolist():
+            if member.filename in seen:
+                raise ValueError('Duplicate ZIP member in Android APK')
+            seen.add(member.filename)
+        for member in archive.infolist():
+            resource_directory = member.filename.split('/')[:-1]
+            raw_resource = (len(resource_directory) == 2 and resource_directory[0] == 'res'
+                            and resource_directory[1].split('-')[0] == 'raw')
+            if ((member.filename.startswith('assets/') or raw_resource) and member.file_size == len(expected)
+                    and archive.read(member) == expected):
+                return {'member': member.filename, 'sha256': digest}
+    raise ValueError(f'Android APK does not contain the generated release notices ({digest})')
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description=__doc__)
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument('--write-notices', action='store_true')
+    mode.add_argument('--check-notices', action='store_true')
+    mode.add_argument('--verify-apk', type=Path)
+    args = parser.parse_args()
+    root = Path(__file__).resolve().parents[2]
+    data = notice_bytes(report(root))
+    asset = root / ASSET
+    if args.write_notices:
+        asset.parent.mkdir(parents=True, exist_ok=True)
+        asset.write_bytes(data)
+    elif not asset.is_file() or asset.read_bytes() != data:
+        raise ValueError(f'{ASSET} differs from the selected Android release notices')
+    if args.verify_apk:
+        print(json.dumps(verify_apk(args.verify_apk, data)))
+
+
+if __name__ == '__main__':
+    main()
