@@ -95,14 +95,14 @@ fn options() -> groups::Options {
 }
 fn create(
     client: &owned::Client,
-    nonce: u8,
+    request_number: u8,
     services: core::ServiceSet<4>,
 ) -> owned::IdentityClient {
     let scope = wait(client.creation_scope()).unwrap();
     let result = wait(client.create_or_recover(
         CreateRequestId {
             scope,
-            nonce: [nonce; 32],
+            nonce: [request_number; 32],
         },
         api::CreateRequest {
             source: core::KeySource::Generate,
