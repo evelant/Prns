@@ -1,0 +1,213 @@
+{
+  "schema": 1,
+  "frameworks": {
+    "ExpoCamera": "expo-camera",
+    "ExpoCameraBarcodeScanning": "expo-camera",
+    "ZXingObjC": "expo-camera",
+    "ExpoModulesCore": "expo-modules-core",
+    "ExpoModulesWorklets": "expo-modules-core",
+    "ExpoModulesJSI": "expo-modules-jsi",
+    "ExpoFileSystem": "expo-file-system",
+    "ExpoFont": "expo-font",
+    "React": "react-native",
+    "ReactNativeDependencies": "react-native",
+    "hermesvm": "react-native",
+    "UniffiRuntimeJsi": "@ubjs/react-native",
+    "prns_chat_app": "PRNS chat native image"
+  },
+  "packages": {
+    "expo-camera": {
+      "version": "58.0.14",
+      "integrity": "sha512-yEiMuJ2d7A+EqsP8rlGIvgaUzdk/rW9CXR6R7WKqludxU3H+JcSUbPC3ldr3ZpmaYlgXP3x+oOO9BfQy7yKK2A==",
+      "license_file": "LICENSE",
+      "license_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+    },
+    "expo-file-system": {
+      "version": "58.0.13",
+      "integrity": "sha512-+/1aFErkawyky5UdWI06zYeO2DeHUnfaWnYHeiI8M8Z/sB6L66gI3WUxqtvUvKJoaM0Ti1CximD3x3JwteLYIg==",
+      "license_file": "LICENSE",
+      "license_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+    },
+    "expo-font": {
+      "version": "58.0.11",
+      "integrity": "sha512-6r7s6xk2L2orvum+x+TY1fzEcMtuCBRQTLgC/Su2uLzNPpT4L+E+S4IAGy8ZIjeVvwk2j2pj+HiZ23O7eh1PGQ==",
+      "license_file": "LICENSE",
+      "license_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+    },
+    "expo-modules-core": {
+      "version": "58.0.30",
+      "integrity": "sha512-uIyFJHouaiHwIoDjWSjb1Zg5LMGmkUs7CEp0rzpXvC+SStP/sr+dcjclUYD1ImmngMYuxRcs9soHEuWbcZWr/w==",
+      "license_file": "LICENSE",
+      "license_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+    },
+    "expo-modules-jsi": {
+      "version": "58.0.22",
+      "integrity": "sha512-sWyOUEsRHZdobItrerWxVR32uiABSijoVJGoIW1dubfZuNNaRG+Hgis4u+92Gle1gEdH2Z4qKqm0JxSZCzk9AA==",
+      "license_file": "LICENSE",
+      "license_sha256": "fb3ca4a837f5779e83cef89b78253a8949cfb9429c340309f62d0465ec6610b4"
+    },
+    "react-native": {
+      "version": "0.88.1",
+      "integrity": "sha512-wajWcLZ93GCN7k4Uwh4CS4L2Ah8ohcvkOXnvIYmh4Yvuqho5j3APZ9qozK+nQrHWSgauq4h8D3HN5DKK84SrHA==",
+      "license_file": "LICENSE",
+      "license_sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    "@ubjs/react-native": {
+      "version": "0.31.0-6",
+      "integrity": "sha512-vD1033OqUFy968F/3yUKFfN/Im7sfSM5NXRZcUlpUWwuzC9vQn81vtX9P1Fz/xuLxNc88MnNym3zari7PkClNQ==",
+      "notice": "native-sources.txt"
+    }
+  },
+  "inputs": {
+    "expo-camera/spm.config.json": "91d7cbedfa17e4e13348fcfef1aa0806f895b53bafa492a4591f268de93cdd23",
+    "react-native/scripts/cocoapods/helpers.rb": "963bfd52ed990f2608c1b20c667527e9df2bcfc67075eef5248016bb182eecbd",
+    "react-native/sdks/.hermesv1version": "463236e697985ff0c8bbea7b072c34bb9b77098dad54796ef78179cf7f4b6bf8",
+    "react-native/third-party-podspecs/boost.podspec": "b2e45fe8e2ea15e9a6c9013bb9bf92c094ff0986de0420568a52523b009c177a",
+    "react-native/third-party-podspecs/glog.podspec": "45d03a6b948bd0d81112b1958bd7a2511c91aebf233e404e05b888648ba49c01",
+    "react-native/third-party-podspecs/DoubleConversion.podspec": "807a5e38ab23d4c1bfdaf347c9a5440c943003f37e858a8484616a318af698e0",
+    "react-native/third-party-podspecs/fmt.podspec": "0131c09d7dbeec869a25c9089760d4fc3e0c3fbd1c53e6777c3628723fc6fa42",
+    "react-native/third-party-podspecs/fast_float.podspec": "59294099215845fb148c7bc8ce189379504aabd4abf6d31f3da892bd2198fb34",
+    "react-native/third-party-podspecs/RCT-Folly.podspec": "869c583e9d17c0d3689b70b7b11f772767ceec2d20412f28f147b29b9218f24e",
+    "react-native/third-party-podspecs/ReactNativeDependencies.podspec": "a0f0e94502b436443b5b12938f470bf53435736789f34309ed1b5c06c74094f0",
+    "expo-camera/prebuilds/spm-deps/ZXingObjC/release/ZXingObjC.xcframework/ios-arm64/ZXingObjC.framework/ZXingObjC": "37fe17e1cf55ca63a02c8af25c9831cbfdb2cf6b4d0222789235e297b354bcf4"
+  },
+  "supplemental_notices": [
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "facebook/folly / LICENSE",
+      "url": "https://raw.githubusercontent.com/facebook/folly/v2024.11.18.00/LICENSE",
+      "file": "release/licenses/app-maven/artifact-notice-sources/2206c00af7013581ae0d7c8c8a0089f02fab621913daac019b32336bd4d1e1db.txt",
+      "sha256": "2206c00af7013581ae0d7c8c8a0089f02fab621913daac019b32336bd4d1e1db"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / LICENSE",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/LICENSE",
+      "file": "release/licenses/app-maven/artifact-notice-sources/da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93.txt",
+      "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / external/asmjit/asmjit/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/asmjit/asmjit/LICENSE.md",
+      "file": "release/licenses/app-maven/artifact-notice-sources/c8d30b463d35bd5a14b868bae5d8345a1a77cbc6b4a94669f437c619f2ebef61.txt",
+      "sha256": "c8d30b463d35bd5a14b868bae5d8345a1a77cbc6b4a94669f437c619f2ebef61"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / external/asmjit/asmjit/db/LICENSE.md",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/asmjit/asmjit/db/LICENSE.md",
+      "file": "release/licenses/app-maven/artifact-notice-sources/1f71050137644be1bc1f932e8f943ae21c5b68948c738bb9d15ff528823aed5a.txt",
+      "sha256": "1f71050137644be1bc1f932e8f943ae21c5b68948c738bb9d15ff528823aed5a"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / external/boost/boost_1_86_0/LICENSE_1_0.txt",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/boost/boost_1_86_0/LICENSE_1_0.txt",
+      "file": "release/licenses/app-maven/artifact-notice-sources/c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566.txt",
+      "sha256": "c9bff75738922193e67fa726fa225535870d2aa1059f91452c411736284ad566"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / external/esprima/LICENSE.BSD",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/esprima/LICENSE.BSD",
+      "file": "release/licenses/app-maven/artifact-notice-sources/94bcb9959136723aa4fb36e1a6c4d5c662a2369978cfae344dabfb83ae619e79.txt",
+      "sha256": "94bcb9959136723aa4fb36e1a6c4d5c662a2369978cfae344dabfb83ae619e79"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / external/icu_decls/license.html",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/icu_decls/license.html",
+      "file": "release/licenses/app-maven/artifact-notice-sources/0f6b1df0f0deedbe33e0a371314e9c32249a0a539c5c2be9609211d6dbe0dc10.txt",
+      "sha256": "0f6b1df0f0deedbe33e0a371314e9c32249a0a539c5c2be9609211d6dbe0dc10"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / external/llvh/LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/llvh/LICENSE.txt",
+      "file": "release/licenses/app-maven/artifact-notice-sources/8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee.txt",
+      "sha256": "8d85c1057d742e597985c7d4e6320b015a9139385cff4cbae06ffc0ebe89afee"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / external/llvh/include/llvh/Support/LICENSE.TXT",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/external/llvh/include/llvh/Support/LICENSE.TXT",
+      "file": "release/licenses/app-maven/artifact-notice-sources/a012d664e4e01df52a65b2eeafdfb8aeb856fec0e6c372265d01b0109c3f5e2a.txt",
+      "sha256": "a012d664e4e01df52a65b2eeafdfb8aeb856fec0e6c372265d01b0109c3f5e2a"
+    },
+    {
+      "framework": "hermesvm",
+      "name": "facebook/hermes / include/hermes/Regex/LICENSE.TXT",
+      "url": "https://raw.githubusercontent.com/facebook/hermes/9a115f15785851f4ff2747ebb090ddd066fc8ad2/include/hermes/Regex/LICENSE.TXT",
+      "file": "release/licenses/app-maven/artifact-notice-sources/c1938c0e9e90639d1e8f5a7f6bebaab83a3642e0ee44295a4c69934686d0bda8.txt",
+      "sha256": "c1938c0e9e90639d1e8f5a7f6bebaab83a3642e0ee44295a4c69934686d0bda8"
+    },
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "fastfloat/fast_float / LICENSE-MIT",
+      "url": "https://raw.githubusercontent.com/fastfloat/fast_float/v8.0.0/LICENSE-MIT",
+      "file": "release/licenses/app-maven/artifact-notice-sources/e562f3f974ced7e69dd1db77b820b36bcf8f30377f1aa105723fba449c53c4e6.txt",
+      "sha256": "e562f3f974ced7e69dd1db77b820b36bcf8f30377f1aa105723fba449c53c4e6"
+    },
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "fmtlib/fmt / LICENSE",
+      "url": "https://raw.githubusercontent.com/fmtlib/fmt/12.1.0/LICENSE",
+      "file": "release/licenses/app-maven/artifact-notice-sources/07580f2a3b35709ce703d523f447b242f6dfec7582a8c0df102c7fa2849375f8.txt",
+      "sha256": "07580f2a3b35709ce703d523f447b242f6dfec7582a8c0df102c7fa2849375f8"
+    },
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "google/double-conversion / LICENSE",
+      "url": "https://raw.githubusercontent.com/google/double-conversion/v1.1.6/LICENSE",
+      "file": "release/licenses/app-maven/artifact-notice-sources/4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca.txt",
+      "sha256": "4af93c12062c58058378de2397dc1c92bbff9ddfb1d583a01c84127557ce97ca"
+    },
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "google/glog / COPYING",
+      "url": "https://raw.githubusercontent.com/google/glog/v0.3.5/COPYING",
+      "file": "release/licenses/app-maven/artifact-notice-sources/0fc497129c5c69ff6f22da6933c7e4aaef082fde8437fd57680c2780100772a4.txt",
+      "sha256": "0fc497129c5c69ff6f22da6933c7e4aaef082fde8437fd57680c2780100772a4"
+    },
+    {
+      "framework": "ZXingObjC",
+      "name": "zxingify/zxingify-objc / COPYING",
+      "url": "https://raw.githubusercontent.com/zxingify/zxingify-objc/510db5f6ed293bf2f9e1905d3b8268c502f3fb55/COPYING",
+      "file": "release/licenses/app-ios/zxingify-objc-COPYING.txt",
+      "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4"
+    },
+    {
+      "framework": "ZXingObjC",
+      "name": "zxingify/zxingify-objc / NOTICE",
+      "url": "https://raw.githubusercontent.com/zxingify/zxingify-objc/510db5f6ed293bf2f9e1905d3b8268c502f3fb55/NOTICE",
+      "file": "release/licenses/app-ios/zxingify-objc-NOTICE.txt",
+      "sha256": "51771c45e75552741f1d781a1663b5f144daaf2d4e0e052e4afc091b3c6a58cd"
+    },
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "facebookincubator/SocketRocket / LICENSE",
+      "url": "https://raw.githubusercontent.com/facebookincubator/SocketRocket/21ac000390781823dd4bd87fdc419976e05dd7a6/LICENSE",
+      "file": "release/licenses/app-ios/SocketRocket-LICENSE.txt",
+      "sha256": "41c74b84758ab303b091b0afbf958de909559556c8f1591dc4d687ea184356ab"
+    },
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "facebookincubator/SocketRocket / PATENTS",
+      "url": "https://raw.githubusercontent.com/facebookincubator/SocketRocket/21ac000390781823dd4bd87fdc419976e05dd7a6/PATENTS",
+      "file": "release/licenses/app-ios/SocketRocket-PATENTS.txt",
+      "sha256": "f610c8f07e895f2ba3063e3e1e0a81c37a636f729a55a414a81d0eafa362995e"
+    },
+    {
+      "framework": "ReactNativeDependencies",
+      "name": "react-native-community/boost-for-react-native / LICENSE_1_0.txt",
+      "url": "https://raw.githubusercontent.com/react-native-community/boost-for-react-native/59ed9e589e222fb6d54b3e0a81d510190801b1d9/LICENSE_1_0.txt",
+      "file": "release/licenses/app-ios/boost-for-react-native-LICENSE_1_0.txt",
+      "sha256": "beb8e42e9d6b4284e03304d05a81a0755200a965fc8d0a5e0aea1e84cf805d6e"
+    }
+  ],
+  "device_framework_uuids": {
+    "ZXingObjC": "4e9b3b7c-6961-3be7-8afd-8c71210a55a3"
+  },
+  "supplemental_notices_sha256": "98490ce4c755b869d0fa369ba6e505803997c1a581992317af95308a61b4d425"
+}

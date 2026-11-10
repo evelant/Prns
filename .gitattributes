@@ -25,6 +25,7 @@ release/licenses/app-maven/pom-origins.json linguist-generated=true
 release/licenses/app-maven/resolved-runtime.json linguist-generated=true
 release/licenses/app-maven/artifact-notices.json linguist-generated=true
 release/licenses/app-maven/artifact-origins.json linguist-generated=true
+release/licenses/app-ios/*.txt -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
 release/licenses/app-npm/mobile-bundles.json text eol=lf linguist-generated=true
 applications/prns/app/assets/licenses/*.txt text eol=lf linguist-generated=true
 applications/prns/bindings/typescript/** linguist-generated=true
