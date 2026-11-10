@@ -290,3 +290,6 @@ respective optional peers.
 After building the package, `npm run pack:check:built` packs and verifies the
 actual archive. Packing from the release checkout requires Python 3.11 or newer
 and cargo-about 0.9.1 (`cargo install cargo-about --version 0.9.1 --locked --features cli`).
+A detached copy of the published package can be repacked using npm and Node
+alone. Its packaging hook checks the released payload and notices against
+`SDK-CONTENTS.sha256`.

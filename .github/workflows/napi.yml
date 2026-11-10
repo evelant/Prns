@@ -522,6 +522,9 @@ jobs:
             "$GITHUB_WORKSPACE/dist/npm/personal-rns-linux-x64-gnu-$(cat "$GITHUB_WORKSPACE/VERSION").tgz" \
             "$GITHUB_WORKSPACE/dist/npm/personal-rns-$(cat "$GITHUB_WORKSPACE/VERSION").tgz" \
             "$GITHUB_WORKSPACE/dist/npm/hopspot-$(cat "$GITHUB_WORKSPACE/VERSION").tgz"
+          npm pack ./node_modules/personal-rns --pack-destination "$smoke"
+          python3 "$GITHUB_WORKSPACE/tools/release/verify-js-sdk-pack.py" "$GITHUB_WORKSPACE/prns-js" \
+            --archive "$smoke/personal-rns-$(cat "$GITHUB_WORKSPACE/VERSION").tgz"
           cp "$GITHUB_WORKSPACE/VERSION" VERSION
           mkdir -p prns-js/tests prns-host/conformance
           cp "$GITHUB_WORKSPACE/prns-js/tests/native-consumer.test.mjs" \

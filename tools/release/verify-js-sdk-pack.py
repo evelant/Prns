@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import shutil
 from pathlib import Path
 import subprocess
 import tarfile
@@ -18,6 +19,7 @@ def package_sources(directory):
     common = {"package.json", "README.md", "LICENSE-APACHE", "LICENSE-MIT", NOTICE}
     sources = {name: directory / name for name in common}
     if manifest["name"] == "personal-rns":
+        sources.update({name: directory / name for name in ("SDK-CONTENTS.sha256", "scripts/prepack.mjs")})
         sources.update({"PACKAGE.md": directory / "PACKAGE.md", "native/addon.cjs": ROOT / "prns-napi/index.js"})
         sources.update({"wasm/" + name: ROOT / "prns-wasm/smoke/pkg" / name for name in WASM})
         for export in manifest["exports"].values():
@@ -82,7 +84,7 @@ def adapter_output(path, source):
 
 def prepare_facade(directory):
     for name, source in package_sources(directory).items():
-        if name == NOTICE:
+        if name in {NOTICE, "SDK-CONTENTS.sha256"}:
             continue
         staged = directory / name
         if not staged.is_file() or source != staged and source.read_bytes() != staged.read_bytes():
@@ -120,7 +122,10 @@ def main():
         verify(args.archive, directory)
         return
     with tempfile.TemporaryDirectory(prefix="prns-js-pack-") as temporary:
-        packed = subprocess.check_output(["npm", "pack", "--json", "--pack-destination", temporary], cwd=directory)
+        npm = shutil.which("npm")
+        if not npm:
+            raise ValueError("npm is required to pack the SDK")
+        packed = subprocess.check_output([npm, "pack", "--json", "--pack-destination", temporary], cwd=directory)
         record, = json.loads(packed)
         verify(Path(temporary) / record["filename"], directory)
         print(f"Verified {record['filename']} ({record['entryCount']} files)")
