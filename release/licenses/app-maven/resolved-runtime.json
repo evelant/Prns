@@ -397,10 +397,13 @@
       "project :personal-rns-expo",
       "project :prns-app-platform",
       "project :react-native-async-storage_async-storage",
+      "project :react-native-gesture-handler",
       "project :react-native-masked-view_masked-view",
+      "project :react-native-reanimated",
       "project :react-native-safe-area-context",
       "project :react-native-screens",
       "project :react-native-svg",
+      "project :react-native-worklets",
       "project :ubjs_react-native"
     ],
     "releaseRuntimeClasspath": [
@@ -413,10 +416,13 @@
       "project :personal-rns-expo",
       "project :prns-app-platform",
       "project :react-native-async-storage_async-storage",
+      "project :react-native-gesture-handler",
       "project :react-native-masked-view_masked-view",
+      "project :react-native-reanimated",
       "project :react-native-safe-area-context",
       "project :react-native-screens",
       "project :react-native-svg",
+      "project :react-native-worklets",
       "project :ubjs_react-native"
     ]
   },
@@ -2207,8 +2213,8 @@
     ]
   },
   "baseline": "android-maven-baseline.json",
-  "baseline_sha256": "c3567154ecca0da0521eb70c9f2d0dbda677893c61c1c3a7bc7172552ed86d72",
-  "inventory_sha256": "d5130655e6aea722beaf55f13a28416c2146972255fc2504ac44e861ffa0a581",
+  "baseline_sha256": "4dfe0b07fe154f33fa54248d6a75190a72fabb9f44a18604702f85e7f54b107b",
+  "inventory_sha256": "0dcc07468dd4a3a6fac7aa1675e95944d31cbf69837c10875055f36ceeb6211c",
   "union": [
     "androidx.activity:activity-ktx:1.8.1",
     "androidx.activity:activity:1.8.1",
