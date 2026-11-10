@@ -1444,11 +1444,20 @@ jobs:
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
         with:
           shared-key: react-native-apple-image
-      - name: Record the Apple build toolchain
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199
+        with:
+          ruby-version: "3.4"
+      - name: Install the Apple build toolchain dependencies
         run: |
           xcodebuild -version
-          # The reviewed native toolchain uses CocoaPods 1.16.2 with a compatible modern Ruby.
+          export GEM_HOME="$RUNNER_TEMP/cocoapods-gems"
+          export GEM_PATH="$GEM_HOME"
+          export PATH="$GEM_HOME/bin:$PATH"
+          gem install --no-document cocoapods --version 1.16.2
+          pod --version
           test "$(pod --version)" = "1.16.2"
+          printf 'GEM_HOME=%s\nGEM_PATH=%s\n' "$GEM_HOME" "$GEM_PATH" >> "$GITHUB_ENV"
+          printf '%s\n' "$GEM_HOME/bin" >> "$GITHUB_PATH"
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: "24.18.0"
