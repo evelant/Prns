@@ -17,6 +17,8 @@ import ios_release_notices
 ROOT = Path(__file__).resolve().parents[3]
 NOTICES = ROOT / "applications/prns/app/assets/licenses"
 AUDIT = ROOT / "validation/security"
+sys.path.insert(0, str(AUDIT))
+import app_maven
 
 
 def digest(path):
@@ -57,6 +59,16 @@ def inspect_archive(package, platform, bundle, acknowledgements, source_map, mod
         names = archive.namelist()
         if len(names) != len(set(names)):
             raise ValueError("Duplicate file entries in mobile release archive")
+        android_members = {}
+        if platform == "android" and "resources.arsc" in names:
+            raw = app_maven.apk_raw_resources(package)
+            for checksum, path in expected.items():
+                resource = "assets_licenses_" + path.stem.replace("-", "")
+                member = raw.get(resource)
+                if member not in names or hashlib.sha256(archive.read(member)).hexdigest() != checksum:
+                    raise ValueError(f"Missing or changed Android raw resource: {resource}")
+                android_members[member] = checksum
+            found.update(android_members)
         if platform == "ios":
             plists = [name for name in archive.namelist() if name.startswith("Payload/") and
                       name.endswith(".app/Info.plist") and name.count("/") == 2]

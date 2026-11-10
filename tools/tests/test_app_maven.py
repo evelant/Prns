@@ -5,6 +5,7 @@ import json
 import shutil
 import tempfile
 import unittest
+from unittest import mock
 import zipfile
 from validation.security import app_maven
 
@@ -105,6 +106,19 @@ class AppMavenEvidenceTests(unittest.TestCase):
                     archive.writestr(member, content)
                 with self.assertRaisesRegex(ValueError, 'does not contain'):
                     app_maven.verify_apk(apk, expected)
+
+    def test_r8_shortened_resource_is_bound_to_its_exported_raw_name(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            apk = Path(tmp) / 'app.apk'
+            with zipfile.ZipFile(apk, 'w') as archive:
+                archive.writestr('resources.arsc', b'table')
+                archive.writestr('res/7J.txt', b'license')
+                archive.writestr('assets/unreachable', b'license')
+            with mock.patch.object(app_maven, 'apk_raw_resources', return_value={'assets_licenses_androidmaven': 'res/7J.txt'}):
+                self.assertEqual(app_maven.verify_apk(apk, b'license')['member'], 'res/7J.txt')
+            with mock.patch.object(app_maven, 'apk_raw_resources', return_value={}):
+                with self.assertRaisesRegex(ValueError, 'does not contain'):
+                    app_maven.verify_apk(apk, b'license')
 
     def test_changed_baseline_cannot_reuse_old_pom_evidence(self):
         with tempfile.TemporaryDirectory() as tmp:

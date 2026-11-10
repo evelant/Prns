@@ -7,6 +7,10 @@ import gzip
 import io
 import importlib.util
 import json
+import os
+import re
+import shutil
+import subprocess
 from pathlib import Path
 import xml.etree.ElementTree as ET
 import zipfile
@@ -386,9 +390,27 @@ def notice_bytes(report: dict) -> bytes:
     return ('\n'.join(normalized).rstrip() + '\n').encode('utf-8')
 
 
+def apk_raw_resources(apk: Path) -> dict[str, str]:
+    # R8/AAPT can shorten physical entries to res/XX.txt. The raw resource
+    # table preserves the names Metro and Expo use to load the notice offline.
+    binary = shutil.which('aapt2')
+    if not binary:
+        sdk = os.environ.get('ANDROID_HOME') or os.environ.get('ANDROID_SDK_ROOT')
+        builds = [] if not sdk else [p for p in (Path(sdk) / 'build-tools').glob('*/aapt2')
+                                      if re.fullmatch(r'\d+\.\d+\.\d+', p.parent.name)]
+        if not builds:
+            raise ValueError('Android build-tools aapt2 is required to read the packaged resource table')
+        binary = max(builds, key=lambda p: tuple(map(int, p.parent.name.split('.'))))
+    table = subprocess.check_output([binary, 'dump', 'resources', apk], text=True)
+    return dict(re.findall(
+        r'^\s*resource 0x[0-9a-f]+ raw/(\w+)\s*\n\s*\(\) \(file\) (res/\S+)\s*$',
+        table, re.MULTILINE))
+
+
 def verify_apk(apk: Path, expected: bytes) -> dict:
     digest = hashlib.sha256(expected).hexdigest()
     with zipfile.ZipFile(apk) as archive:
+        raw = apk_raw_resources(apk) if 'resources.arsc' in archive.namelist() else None
         seen = set()
         for member in archive.infolist():
             if member.filename in seen:
@@ -398,8 +420,9 @@ def verify_apk(apk: Path, expected: bytes) -> dict:
             resource_directory = member.filename.split('/')[:-1]
             raw_resource = (len(resource_directory) == 2 and resource_directory[0] == 'res'
                             and resource_directory[1].split('-')[0] == 'raw')
-            if ((member.filename.startswith('assets/') or raw_resource) and member.file_size == len(expected)
-                    and archive.read(member) == expected):
+            selected = (member.filename == raw.get('assets_licenses_androidmaven') if raw is not None
+                        else member.filename.startswith('assets/') or raw_resource)
+            if selected and member.file_size == len(expected) and archive.read(member) == expected:
                 return {'member': member.filename, 'sha256': digest}
     raise ValueError(f'Android APK does not contain the generated release notices ({digest})')
 
