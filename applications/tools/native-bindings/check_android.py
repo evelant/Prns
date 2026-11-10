@@ -62,23 +62,14 @@ def run(name, command, cwd, env, logs):
 
 def unsigned_init():
     # This affects only this qualification invocation, not the product project.
-    tests = ROOT / 'prns-react-native/android/src/test/java'
     return '''allprojects { project ->
   project.plugins.withId('com.android.application') {
     project.extensions.getByName('androidComponents').finalizeDsl { android ->
       android.buildTypes.getByName('debug').signingConfig = null
     }
   }
-  if (project.name == 'personal-rns-expo') {
-    project.plugins.withId('com.android.library') {
-      project.afterEvaluate {
-        project.extensions.getByName('android').sourceSets.getByName('test').java.srcDir(
-          new File(System.getenv('PRNS_QUALIFICATION_SDK_TESTS')))
-      }
-    }
-  }
 }
-''' + android_maven.gradle_init(), str(tests)
+''' + android_maven.gradle_init()
 
 
 def test_counts(directory):
@@ -185,9 +176,8 @@ def main():
             run('prebuild', ['node', '../../node_modules/expo/bin/cli', 'prebuild', '--platform', 'android',
                             '--no-install', '--skip-dependency-update', 'react,react-native,expo'], APP, env, args.logs)
             require(package.read_bytes() == before, 'Expo prebuild changed the product package manifest')
-        init, env['PRNS_QUALIFICATION_SDK_TESTS'] = unsigned_init()
         init_file = args.logs / 'unsigned.gradle'
-        init_file.write_text(init)
+        init_file.write_text(unsigned_init())
         env['PRNS_ANDROID_MAVEN_REPORT'] = str((args.logs / 'maven-runtime.json').resolve())
         tasks = [android_maven.TASK]
         if not args.dependencies_only:
