@@ -388,9 +388,9 @@
     ]
   },
   "source_inputs": {
-    "applications/package.json": "c8c308a568c645e7d9b6925d6e594034b176081c78db1b2f517e7d0c334886e4",
-    "applications/package-lock.json": "23972a10c573496356a51d59959f75e4185ec0c568b23b996f2fedea4c2de8c2",
-    "applications/prns/app/package.json": "4eb63c25135ecc1d19ff48d44a57854af605386a9703ebeba02dd3d7e4b2707c"
+    "applications/package.json": "52b9d8672b99cb2f73fe5412cfaf789c029fae617dcd06175e038aec250eaf51",
+    "applications/package-lock.json": "217fb7f486994c1a6ad825e74a8a836337d8022767195a3b74c852b3618c6974",
+    "applications/prns/app/package.json": "13ae674b6cf17a487d040aedfd0fb6d99be6b0be500f622bc5c95ede4b0de345"
   },
   "resolution_inventory_sha256": "0dcc07468dd4a3a6fac7aa1675e95944d31cbf69837c10875055f36ceeb6211c"
 }

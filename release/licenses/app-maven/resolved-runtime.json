@@ -2213,7 +2213,7 @@
     ]
   },
   "baseline": "android-maven-baseline.json",
-  "baseline_sha256": "4dfe0b07fe154f33fa54248d6a75190a72fabb9f44a18604702f85e7f54b107b",
+  "baseline_sha256": "75660ea52d7ff73f4bbeb1b4c54b825f39b6a83da9337f80775e1957acb825bc",
   "inventory_sha256": "0dcc07468dd4a3a6fac7aa1675e95944d31cbf69837c10875055f36ceeb6211c",
   "union": [
     "androidx.activity:activity-ktx:1.8.1",
