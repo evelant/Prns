@@ -106,7 +106,7 @@
     },
     {
       "path": "prns-react-native/tools/package_notices.py",
-      "sha256": "e706fe6dc69b122090dc959ac9a3e07a1c4e2bc707ec94c218bdd66209903feb"
+      "sha256": "0cc5e350e531d9e9cb691949f23accd682c9efe5feaae1a25b12f6818d4ea921"
     },
     {
       "path": "prns-runtime/core/Cargo.toml",
@@ -154,7 +154,11 @@
     },
     {
       "path": "tools/uniffi/runtime_notices.py",
-      "sha256": "24f540f5d9e8e636fea556e3ae849849619cccad506371fb93bf009687f92b13"
+      "sha256": "926ee00760fc825469a9fafd8d0d771310ffd181ecc59bdc98bd243ce1d46cde"
+    },
+    {
+      "path": "validation/security/npm_lockfile.py",
+      "sha256": "150a2c4d7e7594928ef665a7da0d8cf3c82d3022a3046fd832c80df0410792be"
     }
   ],
   "local_packages": {
@@ -238,9 +242,8 @@
           "repository": "https://github.com/jhugman/uniffi-bindgen-react-native.git",
           "revision": "3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e"
         },
-        "unresolved_policy": [
-          "Existing license policy does not permit 'MPL-2.0'; crate-specific exceptions do not approve this npm package."
-        ]
+        "mobile_runtime_license_exception": true,
+        "unresolved_policy": []
       },
       {
         "name": "@ubjs/react-native",
@@ -255,9 +258,8 @@
           "repository": "https://github.com/jhugman/uniffi-bindgen-react-native.git",
           "revision": "3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e"
         },
-        "unresolved_policy": [
-          "Existing license policy does not permit 'MPL-2.0'; crate-specific exceptions do not approve this npm package."
-        ]
+        "mobile_runtime_license_exception": true,
+        "unresolved_policy": []
       }
     ],
     "source": {
@@ -336,8 +338,8 @@
       }
     ],
     "scope": "These exact published npm packages are required runtime peers. The SDK supplies a text patch for the React Native runtime; consumers apply it before native compilation. Prebuilt Rust binaries are unchanged.",
-    "approval": "Attribution evidence is not release-policy approval. Upstream license material is retained; package-specific Rust exceptions are not reused."
+    "approval": "Mobile runtime license exceptions are scoped to the package name, version, license, registry archive URL and SHA-512 integrity. The source record retains the upstream notices, revision and local patches."
   },
   "scope": "Rust license material follows the selected image closure for the supported runtime targets. Runtime archives are required separately installed peers. Other declared peers are not asserted to be embedded. Native artifact hashes belong to the package qualification receipt.",
-  "notice_sha256": "ed37d4ca6d4aa99808eb5c316840f60f8cbd95b9fd3a4d450f901100b17c5790"
+  "notice_sha256": "c64867060e5d2f09ea58c85fae1496e16d713133ae57207057fb37fb07ca902c"
 }

@@ -462,7 +462,9 @@ upstream runtime revision, original notice, registry tarball integrity and sourc
 patches. Runtime packages are separately installed peers; other peer declarations do not establish
 that their code is embedded in the SDK.
 
-This attribution is not license approval. The two `@ubjs` runtime packages declare
-MPL-2.0, for which the existing npm release policy has no approved exception.
-`npm-production-audit.py` reports that finding explicitly; package, build and
-consumer checks do not waive it or grant distribution acceptance.
+The npm production audit accepts the MPL-2.0 declarations of the published
+`@ubjs/core@0.31.0-6` and `@ubjs/react-native@0.31.0-6` archives under
+package-specific exceptions. Each exception requires its exact registry URL and
+SHA-512 integrity. A version, archive or license change requires a new review.
+The SDK source record includes the upstream license text, source revision and
+patch that consumers apply to the React Native package.

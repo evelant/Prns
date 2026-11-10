@@ -1,7 +1,7 @@
 # Selected SDK image third-party notices
 
 Image: `prns_host_mobile`. Generated with `cargo-about 0.9.1` from locked Cargo graphs.
-This document records attribution, not approval of unresolved runtime policy. See third-party-sources.json for exact image selection, inputs and runtime archive/source custody.
+The third-party-sources.json record identifies the selected image, its inputs, the published runtime archives and their license policy results.
 
 ## Selected Rust graphs
 
@@ -15,12 +15,12 @@ This document records attribution, not approval of unresolved runtime policy. Se
 
 These exact published npm packages are required runtime peers. The SDK supplies a text patch for the React Native runtime; consumers apply it before native compilation. Prebuilt Rust binaries are unchanged.
 
-Attribution evidence is not release-policy approval. Upstream license material is retained; package-specific Rust exceptions are not reused.
+Mobile runtime license exceptions are scoped to the package name, version, license, registry archive URL and SHA-512 integrity. The source record retains the upstream notices, revision and local patches.
 
 - `@ubjs/core 0.31.0-6` — `MPL-2.0`; published archive SHA-256 `a3b946739f4baec75cdf9e98ca780d689ac06d2844595a19a9acdf9ad9c2c48f`.
-  **Unresolved:** Existing license policy does not permit 'MPL-2.0'; crate-specific exceptions do not approve this npm package.
+  Covered by the mobile runtime npm license exception for this archive.
 - `@ubjs/react-native 0.31.0-6` — `MPL-2.0`; published archive SHA-256 `3b27ee9708351db5b6e4baa281af2c802763055086d55db54811b804e2871a87`.
-  **Unresolved:** Existing license policy does not permit 'MPL-2.0'; crate-specific exceptions do not approve this npm package.
+  Covered by the mobile runtime npm license exception for this archive.
 
 Upstream source: https://github.com/jhugman/uniffi-bindgen-react-native.git at `3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e`.
 Exact npm integrity, source licenses and patches are bound by configuration SHA-256 `727f3f1fee8ac80cb08ba4dbcc66e0a1f3def50fc08a9e65ceac09fba0fec372`.

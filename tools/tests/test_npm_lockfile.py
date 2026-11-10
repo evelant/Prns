@@ -1,8 +1,30 @@
 import base64
 import copy
+import json
+from pathlib import Path
 import unittest
 
-from validation.security.npm_lockfile import verify_development_packages
+from validation.security.npm_lockfile import reviewed_mobile_runtime_license, verify_development_packages
+
+
+class MobileRuntimeLicenseTests(unittest.TestCase):
+    def test_exceptions_require_the_complete_reviewed_registry_identity(self):
+        lock = Path(__file__).resolve().parents[2] / "tools/uniffi/react-native.json"
+        packages = json.loads(lock.read_text())["packages"]
+        self.assertEqual({item["name"] for item in packages}, {"@ubjs/core", "@ubjs/react-native"})
+        for item in packages:
+            identity = dict(name=item["name"], version=item["version"],
+                            license_expression=item["license"], integrity=item["integrity"],
+                            archive_url=item["archive"])
+            self.assertTrue(reviewed_mobile_runtime_license(**identity))
+            for field, changed in (
+                ("name", "@ubjs/unreviewed"), ("version", "0.31.0-7"),
+                ("license_expression", "MPL-2.0 OR MIT"),
+                ("integrity", next(p["integrity"] for p in packages if p["name"] != item["name"])),
+                ("archive_url", item["archive"].replace("registry.npmjs.org", "example.com")),
+            ):
+                with self.subTest(package=item["name"], field=field):
+                    self.assertFalse(reviewed_mobile_runtime_license(**{**identity, field: changed}))
 
 
 class NpmBundleProvenanceTests(unittest.TestCase):
