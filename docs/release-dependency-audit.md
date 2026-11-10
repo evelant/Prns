@@ -38,7 +38,7 @@ dependencies, and checks advisories, licenses, sources, and bans with cargo-deny
 The allowlist in `deny.toml` is a permissive-by-default policy: every unlisted expression fails.
 GPL, LGPL, AGPL, and unknown licenses are not accepted. Package-scoped additions are `ksni 0.3.6`
 under Unlicense, `nrf-softdevice-s140 0.1.2` under the hash-pinned Nordic terms, and the exact
-`serialport 4.9.0` transport required by the mandated `espflash 4.5.0` library under file-level
+`serialport 4.9.0` transport required by the mandated `espflash 4.7.0` library under file-level
 MPL-2.0. That narrow hardware boundary is shipped with its source/license notice; MPL is not
 accepted generally. The SoftDevice source remains restricted to revision
 `47d6121c6e823120e8b883a7ac75f44ce7daa3aa`.
