@@ -1,5 +1,10 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": { "types": ["jest", "node"] },
+  "compilerOptions": {
+    "types": ["jest", "node"],
+    "paths": {
+      "@testing-library/react-native": ["../../node_modules/@prns/app-testing-library"]
+    }
+  },
   "include": ["src/**/*.ts", "src/**/*.tsx", "tests/**/*.test.tsx"]
 }

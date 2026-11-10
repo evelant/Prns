@@ -154,9 +154,11 @@ class AppClosureTests(unittest.TestCase):
         names = {p['name'] for p in result['packages']}
         self.assertTrue({'casework', '@ubjs/core', '@ubjs/react-native', 'expo-camera'} <= names)
         self.assertTrue({'vite', '@builder.io/qwik', 'svelte', 'vue'}.isdisjoint(names))
-        # Router's installed testing-library peer reaches its installed Jest peer.
-        # Declaration reachability is deliberately broader than bundled JS.
-        self.assertTrue({'@testing-library/react-native', 'jest'} <= names)
+        # Development resolves the test library by alias. Expo Router's optional
+        # testing entry point must not bring Jest into the app's release graph.
+        self.assertIn(['applications', 'node_modules/expo-router', '@testing-library/react-native'],
+                      result['unselected_optional_peers'])
+        self.assertTrue({'@testing-library/react-native', 'jest', 'jest-config', 'deepmerge'}.isdisjoint(names))
         self.assertTrue({'react-native-gesture-handler', 'react-native-reanimated',
                          'react-native-worklets', '@react-native/metro-config'} <= names)
         self.assertEqual(result['unresolved_required_peers'], [])
