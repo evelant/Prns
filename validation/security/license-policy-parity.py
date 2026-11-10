@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Keep cargo-deny and cargo-about's repository-wide SPDX allowlists identical."""
+"""Check that every release license decision has a matching notice policy and graph."""
 
 from __future__ import annotations
 
 from pathlib import Path
+import runpy
 import sys
 import tomllib
 
@@ -20,9 +21,29 @@ def accepted_licenses(path: Path, key: str) -> set[str]:
     return set(value)
 
 
+def missing_notice_graphs(audited: list[str], graph_definitions: dict) -> list[str]:
+    # A target or feature change can select a different MPL crate. Require the
+    # corresponding notice and source checks for the very same Cargo graph.
+    covered = {(manifest, target, frozenset(graph_definitions["GRAPH_FEATURES"].get(name, ())))
+               for name, manifest, target in graph_definitions["GRAPHS"]}
+    missing = []
+    for row in audited:
+        _, manifest, target, *features = row.split("|")
+        if (manifest, target, frozenset(" ".join(features).split())) not in covered:
+            missing.append(row)
+    return missing
+
+
 def main() -> int:
     deny = accepted_licenses(ROOT / "deny.toml", "licenses.allow")
     notices = accepted_licenses(ROOT / "about.toml", "accepted")
+    if sys.argv[1:]:
+        graphs = runpy.run_path(str(ROOT / "tools/repo/generate-third-party-notices.py"))
+        missing = missing_notice_graphs(sys.argv[1:], graphs)
+        if missing:
+            print("Release Cargo graphs missing corresponding notice/source coverage:", *missing,
+                  sep="\n", file=sys.stderr)
+            return 1
     if deny == notices:
         print("LICENSE_POLICY_PARITY_OK")
         return 0

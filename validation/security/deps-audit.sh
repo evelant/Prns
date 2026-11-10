@@ -12,8 +12,6 @@ if [[ "$(cargo about --version 2>/dev/null || true)" != "cargo-about 0.9.1" ]]; 
     exit 2
 fi
 
-python3 "$root/validation/security/license-policy-parity.py"
-
 graphs=(
     "group-native-local-linux|prns-groups/tests/fixtures/local-consumer/Cargo.toml|x86_64-unknown-linux-gnu"
     "group-native-local-macos|prns-groups/tests/fixtures/local-consumer/Cargo.toml|aarch64-apple-darwin"
@@ -74,6 +72,8 @@ graphs=(
     "expo-android|prns-host/bindings/uniffi/image/Cargo.toml|aarch64-linux-android"
     "expo-ios|prns-host/bindings/uniffi/image/Cargo.toml|aarch64-apple-ios"
 )
+
+python3 "$root/validation/security/license-policy-parity.py" "${graphs[@]}"
 
 for graph in "${graphs[@]}"; do
     IFS='|' read -r name manifest target features <<<"$graph"
