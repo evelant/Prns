@@ -249,7 +249,7 @@ class LicensePolicyTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError,'No verified license'):
                 app_npm.audit_notices(report)
 
-    def test_official_runtime_license_fallback_preserves_unapproved_mpl_policy(self):
+    def test_reviewed_mobile_archives_retain_their_upstream_license_notices(self):
         provenance = json.loads((ROOT / 'release/licenses/app-npm/provenance.json').read_text())
         records = [item for item in provenance['packages'] if item['name'] in {'@ubjs/core', '@ubjs/react-native'}]
         self.assertEqual(len(records), 2)
@@ -264,9 +264,8 @@ class LicensePolicyTests(unittest.TestCase):
             self.assertEqual(package['attribution_issues'], [])
             self.assertEqual(len(package['texts']), 1)
             self.assertIn('Mozilla Public', package['texts'][0]['text'])
-            self.assertTrue(package['policy_issues'])
-        with self.assertRaisesRegex(ValueError, 'MPL-2.0'):
-            app_npm.audit_notices(report)
+            self.assertEqual(package['policy_issues'], [])
+        app_npm.audit_notices(report)
 
     def test_notice_evidence_never_turns_missing_attribution_into_approval(self):
         root = Path(__file__).resolve().parents[2]

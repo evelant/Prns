@@ -7,8 +7,10 @@ Most fallbacks use the registry's exact published Git revision. `bplist-parser` 
 The published `@ubjs/core` and `@ubjs/react-native` `0.31.0-6` archives omit their
 standalone license file. Their registry `gitHead` identifies upstream revision
 `3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e`; the fallback preserves that revision's
-exact `LICENSE` text and its link to the MPL 2.0 terms. This supplies source
-attribution; the existing MPL-2.0 policy finding remains unresolved.
+exact `LICENSE` text and its link to the MPL 2.0 terms. The app and SDK use the same
+package-specific exception for these two registry archives. The audit checks each
+name, version, archive URL, integrity hash, and license. The SDK notice records
+the upstream revision and the patch applied to the React Native runtime.
 
 The preserved fallback reviews for `casework` and `jimp-compact` remain unresolved: `casework` has a license declaration but no complete attributed text at the published revision; `jimp-compact` reproduces its explicitly attributed Jimp 0.16.1 terms, but its bundled dependencies and wrapper are not fully reviewed. Other missing archive notices and unapproved declarations are reported by exact package/version in the generated notice bundle. No copyright holder or legal text is inferred.
 

@@ -18,9 +18,9 @@ import tempfile
 import urllib.request
 
 try:
-    from .npm_lockfile import has_registry_integrity
+    from .npm_lockfile import has_registry_integrity, reviewed_mobile_runtime_license
 except ImportError:  # Direct audit entrypoint.
-    from npm_lockfile import has_registry_integrity
+    from npm_lockfile import has_registry_integrity, reviewed_mobile_runtime_license
 
 SOURCE_MANIFESTS = {
     'prns/app': 'applications/prns/app/package.json',
@@ -345,7 +345,9 @@ def notice_report(root: Path, cache: Path) -> dict:
                     raise ValueError(f'npm license evidence changed: {item["path"]}')
                 texts.append({'source': item['source'], 'text': raw.decode('utf-8-sig').strip()})
         policy = []
-        if not license_permitted(package['license'], allowed):
+        if not license_permitted(package['license'], allowed) and not reviewed_mobile_runtime_license(
+            package['name'], package['version'], package['license'], package['integrity'], package['resolved']
+        ):
             policy.append(f'Existing license policy does not permit {package["license"]!r}')
         if not texts and not issues:
             issues.append('No verified license text or unresolved attribution evidence is present')
