@@ -212,7 +212,7 @@ https://developers.google.com/ml-kit/android-data-disclosure
 https://developers.google.com/android/guides/opensource
 
 Google Android SDK client terms
-The four Google Maven AARs are Android client-library inputs to PRNS Chat. Google documents packaging the client libraries in apps. Android SDK license sections 3.1–3.5 restrict SDK use and redistribution. The project release-policy decision for this app-specific integration is pending.
+PRNS Chat approves the four exact Google client AARs listed here for inclusion in its contact-card scanner on compatible Android devices. This decision follows Google's documented app integration and the Android SDK terms, including sections 3.1–3.5. The scanner displays its on-device processing and Google metrics disclosure, and About provides the packaged notices. Standalone redistribution of these libraries and use in other products require separate review.
 https://developer.android.com/studio/terms.html
 https://developers.google.com/android/guides/overview
 https://developers.google.com/android/guides/setup

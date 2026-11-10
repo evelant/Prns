@@ -1,6 +1,6 @@
 import { StrictMode } from "react";
 import type { ReactElement } from "react";
-import { Linking, View } from "react-native";
+import { Linking, Platform, View } from "react-native";
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import type { CameraViewProps, PermissionResponse } from "expo-camera";
@@ -91,4 +91,20 @@ test("camera failure consumes the attempt once and offers the text fallback", as
 test("development effect replay does not permanently disable a live scanner", async () => {
   const props = callbacks(); await render(<StrictMode><ContactScanner {...props} /></StrictMode>);
   await act(() => cameraProps().onBarcodeScanned!(scanned as never)); expect(props.onScan).toHaveBeenCalledTimes(1);
+});
+
+test("Android shows the ML Kit disclosure with its terms before camera access", async () => {
+  const os = jest.replaceProperty(Platform, "OS", "android");
+  const open = jest.spyOn(Linking, "openURL").mockResolvedValue(undefined);
+  try {
+    permission(denied);
+    await render(<ContactScanner {...callbacks()} />);
+    expect(screen.getByText(/scanner usage and performance metrics/)).toBeOnTheScreen();
+    await fireEvent.press(screen.getByRole("link", { name: "ML Kit privacy information" }));
+    expect(open).toHaveBeenCalledWith("https://developers.google.com/ml-kit/terms");
+    expect(camera).not.toHaveBeenCalled();
+  } finally {
+    open.mockRestore();
+    os.restore();
+  }
 });
