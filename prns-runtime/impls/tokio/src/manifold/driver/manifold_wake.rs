@@ -55,6 +55,13 @@ impl Drop for ManifoldWakeSender {
 }
 
 impl ManifoldWakeSender {
+    #[cfg(all(test, feature = "runtime-metrics"))]
+    pub(super) async fn wait_until_armed(&self) {
+        while !self.state.armed.load(Ordering::Acquire) {
+            tokio::task::yield_now().await;
+        }
+    }
+
     pub fn signal(&self) {
         if self.state.armed.swap(false, Ordering::AcqRel) {
             self.state.notify.notify_one();
