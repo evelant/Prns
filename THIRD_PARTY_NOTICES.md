@@ -2,7 +2,7 @@
 
 This checked bundle covers the shipped and qualification Rust, JavaScript, and Android product graphs.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:5634062c8f50c24302a50ffe13444751d55fa548d2220c8af806c4734161ffec`.
+Notice input fingerprint: `sha256:86a319375c0118f5535e91fcd509db95b9b6d7ef82342bb1f82c250733183c49`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by SPDX identifier and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
@@ -8743,7 +8743,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 License: MIT License
 
-Used by: `pulldown-cmark 0.11.3`, `pulldown-cmark 0.13.5`, `pulldown-cmark-escape 0.11.0`
+Used by: `pulldown-cmark 0.11.3`, `pulldown-cmark 0.13.6`, `pulldown-cmark-escape 0.11.0`
 
 Release graphs: ESP32-S3 Heltec, ESP32-S3 Heltec E290, ESP32-S3 Heltec R8, ESP32-S3 Heltec V3, ESP32-S3 Heltec Wireless Stick Lite V3, ESP32-S3 T-Beam, ESP32-S3 XIAO Wio-SX1262, website Rust/WASM
 
