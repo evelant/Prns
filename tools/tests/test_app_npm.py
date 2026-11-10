@@ -149,7 +149,7 @@ class AppClosureTests(unittest.TestCase):
         self.write()
         self.assertIn('optional-runtime', {p['name'] for p in app_npm.app_closure(self.root)['packages']})
 
-    def test_real_app_root_preserves_selected_optional_and_missing_required_peers(self):
+    def test_real_app_root_preserves_selected_optional_and_drawer_runtime_peers(self):
         result = app_npm.app_closure(ROOT)
         names = {p['name'] for p in result['packages']}
         self.assertTrue({'casework', '@ubjs/core', '@ubjs/react-native', 'expo-camera'} <= names)
@@ -157,11 +157,9 @@ class AppClosureTests(unittest.TestCase):
         # Router's installed testing-library peer reaches its installed Jest peer.
         # Declaration reachability is deliberately broader than bundled JS.
         self.assertTrue({'@testing-library/react-native', 'jest'} <= names)
-        self.assertEqual(result['unresolved_required_peers'], [
-            ['applications', 'node_modules/react-native-drawer-layout', 'react-native-gesture-handler', '>= 2.0.0'],
-            ['applications', 'node_modules/react-native-drawer-layout', 'react-native-reanimated', '>= 2.0.0'],
-        ])
-        self.assert_peer_audit_fails(result, 'missing required peer react-native-gesture-handler')
+        self.assertTrue({'react-native-gesture-handler', 'react-native-reanimated',
+                         'react-native-worklets', '@react-native/metro-config'} <= names)
+        self.assertEqual(result['unresolved_required_peers'], [])
 
 
 class AppArchiveAndAdvisoryTests(unittest.TestCase):
