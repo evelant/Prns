@@ -27,13 +27,13 @@ fn options() -> RunnerOptions {
 fn send(
     group: GroupId,
     original_scope: prns_groups::OriginalScope,
-    nonce: u8,
+    request_number: u8,
     text: &str,
 ) -> support::Prepared {
     support::text_request(
         group,
         original_scope,
-        prns_groups_core::retry::RequestToken::new(NOW, [nonce; 20])
+        prns_groups_core::retry::RequestToken::new(NOW, [request_number; 20])
             .unwrap()
             .into_bytes(),
         text.into(),
