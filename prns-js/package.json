@@ -22,7 +22,8 @@
     "README.md",
     "PACKAGE.md",
     "LICENSE-MIT",
-    "LICENSE-APACHE"
+    "LICENSE-APACHE",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "exports": {
     ".": {
@@ -115,7 +116,8 @@
     "test:browser:built": "node tests/browser-smoke.mjs && node tests/framework-adapters.test.mjs",
     "test:native:built": "node --test tests/native-consumer.test.mjs",
     "test:bun:built": "bun tests/bun-consumer.ts",
-    "pack:check:built": "npm pack --dry-run",
+    "prepack": "python3 ../tools/release/verify-js-sdk-pack.py . --prepare-facade",
+    "pack:check:built": "python3 ../tools/release/verify-js-sdk-pack.py .",
     "stage:browser": "node scripts/stage.mjs browser",
     "stage:package": "node scripts/stage.mjs"
   },

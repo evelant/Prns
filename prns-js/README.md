@@ -278,3 +278,15 @@ The npm manifest overrides Solid's Seroval dependency with 1.6.8 to address
 Remove the override once Solid's dependency range requires a patched version.
 This development override does not control the framework versions installed by
 applications consuming this package.
+
+## Package notices
+
+The published package includes `THIRD_PARTY_NOTICES.md` for the browser WebAssembly
+backend and generated JavaScript. Each optional native platform package includes
+its own notices beside the Node addon. The public tag and matching declarations
+reference the external `casework` package. Framework adapters import their
+respective optional peers.
+
+After building the package, `npm run pack:check:built` packs and verifies the
+actual archive. Packing from the release checkout requires Python 3.11 or newer
+and cargo-about 0.9.1 (`cargo install cargo-about --version 0.9.1 --locked --features cli`).

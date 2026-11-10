@@ -29,6 +29,14 @@ on:
       - "prns-ffi/**"
       - "prns-runtime/**"
       - "prns-interfaces/**"
+      - "tools/release/js_sdk_notices.py"
+      - "tools/release/verify-js-sdk-pack.py"
+      - "tools/release/stage-napi-platform-packages.py"
+      - "tools/repo/generate-third-party-notices.py"
+      - "validation/security/mpl_sources.py"
+      - "release/licenses/rust-mpl-sources.json"
+      - "release/licenses/libdbus-AFL-2.1.txt"
+      - "about.toml"
       - ".github/workflows/napi.yml"
   pull_request:
     paths:
@@ -43,6 +51,14 @@ on:
       - "prns-ffi/**"
       - "prns-runtime/**"
       - "prns-interfaces/**"
+      - "tools/release/js_sdk_notices.py"
+      - "tools/release/verify-js-sdk-pack.py"
+      - "tools/release/stage-napi-platform-packages.py"
+      - "tools/repo/generate-third-party-notices.py"
+      - "validation/security/mpl_sources.py"
+      - "release/licenses/rust-mpl-sources.json"
+      - "release/licenses/libdbus-AFL-2.1.txt"
+      - "about.toml"
       - ".github/workflows/napi.yml"
   workflow_dispatch:
     inputs:
@@ -344,6 +360,8 @@ jobs:
         run: |
           npm run build:code
           npm run test:built
+      - name: Install the SDK notice collector
+        run: cargo install cargo-about --version 0.9.1 --locked --features cli
       - run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
       - name: Build the debug WASM backend
         run: npm run build:wasm
@@ -462,6 +480,8 @@ jobs:
         with:
           workspaces: prns-wasm
           shared-key: javascript-release-package-v1
+      - name: Install the SDK notice collector
+        run: cargo install cargo-about --version 0.9.1 --locked --features cli
       - run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
       - run: npm ci --ignore-scripts
         working-directory: prns-napi
@@ -487,8 +507,11 @@ jobs:
           mkdir -p dist/npm
           for directory in prns-napi/npm/*/; do
             npm pack "$directory" --pack-destination dist/npm
+            name=$(node -p "require('./${directory}package.json').name")
+            python3 tools/release/verify-js-sdk-pack.py "$directory" --archive "dist/npm/$name-$(cat VERSION).tgz"
           done
           npm pack ./prns-js --pack-destination dist/npm
+          python3 tools/release/verify-js-sdk-pack.py prns-js --archive "dist/npm/personal-rns-$(cat VERSION).tgz"
           npm pack ./personal-hopspot/sdk/hopspot --pack-destination dist/npm
       - name: smoke packed Node and Bun consumers
         run: |
@@ -551,6 +574,8 @@ jobs:
         with:
           workspaces: prns-wasm
           shared-key: javascript-release-package-v1
+      - name: Install the SDK notice collector
+        run: cargo install cargo-about --version 0.9.1 --locked --features cli
       - run: cargo install wasm-bindgen-cli --version 0.2.126 --locked
       - run: npm ci --ignore-scripts
         working-directory: prns-napi
@@ -583,6 +608,11 @@ jobs:
         run: >-
           python tools/prns run release.host-sdk.javascript.stage --
           --packages prns-napi/npm
+      - name: Verify platform archives before publication
+        run: |
+          for directory in prns-napi/npm/*/; do
+            python3 tools/release/verify-js-sdk-pack.py "$directory"
+          done
       - name: publish platform packages
         run: npx napi pre-publish -t npm
         working-directory: prns-napi

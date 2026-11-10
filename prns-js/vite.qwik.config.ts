@@ -16,7 +16,20 @@ export default defineConfig({
       fileName: () => "index.qwik.mjs",
     },
     rollupOptions: {
-      external: ["@builder.io/qwik", "personal-rns/browser"],
+      external: ["@builder.io/qwik", "@builder.io/qwik/jsx-runtime", "personal-rns/browser"],
+      plugins: [{
+        name: "verify-external-frameworks",
+        generateBundle(_options, bundle) {
+          for (const chunk of Object.values(bundle)) {
+            if (chunk.type !== "chunk") continue;
+            for (const [id, module] of Object.entries(chunk.modules)) {
+              if (module.renderedLength && id.split(/[\\/]/).includes("node_modules")) {
+                this.error(`Unreviewed npm code bundled in the Qwik facade: ${id}`);
+              }
+            }
+          }
+        },
+      }],
     },
   },
 });

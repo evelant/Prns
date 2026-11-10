@@ -1,20 +1,15 @@
 import argparse
 import json
 import shutil
+import sys
 from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[2]
-PLATFORMS = {
-    "darwin-arm64",
-    "darwin-x64",
-    "linux-arm64-gnu",
-    "linux-arm64-musl",
-    "linux-x64-gnu",
-    "linux-x64-musl",
-    "win32-arm64-msvc",
-    "win32-x64-msvc",
-}
+sys.path.insert(0, str(ROOT / "tools/release"))
+import js_sdk_notices
+
+PLATFORMS = frozenset(js_sdk_notices.TARGETS)
 DOCUMENTS = {
     "README.md": ROOT / "prns-host" / "distribution" / "PACKAGE.md",
     "LICENSE-APACHE": ROOT / "LICENSE-APACHE",
@@ -38,16 +33,18 @@ def stage(packages):
         if (
             manifest.get("version") != version
             or not isinstance(main, str)
-            or not main.endswith(".node")
-            or Path(main).name != main
+            or manifest.get("name") != f"personal-rns-{platform}"
+            or main != f"personal-rns.{platform}.node"
+            or not (directory / main).is_file()
         ):
             raise ValueError(f"invalid generated package manifest: {manifest_path}")
         files = manifest.get("files")
-        staged_files = [main, *DOCUMENTS]
+        staged_files = [main, *DOCUMENTS, js_sdk_notices.NOTICE]
         if not isinstance(files, list) or files not in ([main], staged_files):
             raise ValueError(f"unexpected generated package files: {manifest_path}")
         for name, source in DOCUMENTS.items():
             shutil.copy2(source, directory / name)
+        (directory / js_sdk_notices.NOTICE).write_text(js_sdk_notices.render(platform), encoding="utf-8")
         manifest["files"] = staged_files
         manifest_path.write_text(json.dumps(manifest, indent=2) + "\n")
 
