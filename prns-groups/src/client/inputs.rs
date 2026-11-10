@@ -79,13 +79,21 @@ impl InputBudget {
         if bytes > self.0.max_job {
             return Err(Error::InvalidInput);
         }
-        self.0
-            .used
-            .fetch_update(Ordering::AcqRel, Ordering::Acquire, |used| {
-                used.checked_add(bytes)
-                    .filter(|next| *next <= self.0.max_pending)
-            })
-            .map_err(|_| Error::Busy)?;
+        let mut used = self.0.used.load(Ordering::Acquire);
+        loop {
+            let next = used
+                .checked_add(bytes)
+                .filter(|next| *next <= self.0.max_pending)
+                .ok_or(Error::Busy)?;
+            match self
+                .0
+                .used
+                .compare_exchange_weak(used, next, Ordering::AcqRel, Ordering::Acquire)
+            {
+                Ok(_) => break,
+                Err(current) => used = current,
+            }
+        }
         Ok(InputLease {
             budget: Arc::clone(&self.0),
             bytes,

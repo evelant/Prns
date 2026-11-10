@@ -51,27 +51,20 @@ fn admit(counter: &AtomicU32, enabled: bool) -> Admission {
     if !enabled {
         return Admission::Suppressed;
     }
-    match {
-        let mut previous = counter.load(Ordering::Relaxed);
-        loop {
-            let Some(next) = (previous <= FAMILY_LIMIT).then(|| previous + 1) else {
-                break Err(previous);
-            };
-            match counter.compare_exchange_weak(
-                previous,
-                next,
-                Ordering::Relaxed,
-                Ordering::Relaxed,
-            ) {
-                Ok(previous) => break Ok(previous),
-                Err(current) => previous = current,
-            }
+    let mut previous = counter.load(Ordering::Relaxed);
+    while previous <= FAMILY_LIMIT {
+        match counter.compare_exchange_weak(
+            previous,
+            previous + 1,
+            Ordering::Relaxed,
+            Ordering::Relaxed,
+        ) {
+            Ok(count) if count < FAMILY_LIMIT => return Admission::Record,
+            Ok(_) => return Admission::Limit,
+            Err(current) => previous = current,
         }
-    } {
-        Ok(count) if count < FAMILY_LIMIT => Admission::Record,
-        Ok(_) => Admission::Limit,
-        Err(_) => Admission::Suppressed,
     }
+    Admission::Suppressed
 }
 
 pub(super) fn emit(family: Family, message: fmt::Arguments<'_>) {

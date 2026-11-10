@@ -372,8 +372,8 @@ mod tests {
 
     use crate::{
         prns_command_release, prns_command_wait, prns_readiness_registration_release,
-        AbiBitrateKind, AbiCommandOutcomeKind, CoreLimits, HostConfig, HostRole, IdentityConfig,
-        HostRuntime, PersistenceConfig, PrnsCommandResult,
+        AbiBitrateKind, AbiCommandOutcomeKind, CoreLimits, HostConfig, HostRole, HostRuntime,
+        IdentityConfig, PersistenceConfig, PrnsCommandResult,
     };
 
     unsafe extern "C" fn count_readiness(context: *mut c_void) {

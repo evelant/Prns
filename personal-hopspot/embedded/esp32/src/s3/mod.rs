@@ -401,8 +401,7 @@ static REMOTE_CONTROL_COMMANDS: screen::HopspotCommandMailbox<
 static CORE_ONE_HEARTBEAT: AtomicU64 = AtomicU64::new(0);
 
 #[cfg(not(feature = "remote-control-pairing"))]
-fn firmware_on_event(_event: PrnsEvent<'_>, _state: &RemoteControlHandle) {
-}
+fn firmware_on_event(_event: PrnsEvent<'_>, _state: &RemoteControlHandle) {}
 
 #[cfg(feature = "remote-control-pairing")]
 fn apply_remote_control_effects(effects: RemoteControlCompositionEffects) {

@@ -21,13 +21,21 @@ pub(crate) struct Discovery {
 }
 impl Discovery {
     pub(crate) fn new() -> Result<Self, HostStartError> {
-        let generation = NEXT_GENERATION
-            .fetch_update(Ordering::Relaxed, Ordering::Relaxed, |value| {
-                value.checked_add(1)
-            })
-            .map_err(|_| {
+        let mut generation = NEXT_GENERATION.load(Ordering::Relaxed);
+        loop {
+            let next = generation.checked_add(1).ok_or_else(|| {
                 HostStartError::Runtime("pairing discovery generation exhausted".into())
             })?;
+            match NEXT_GENERATION.compare_exchange_weak(
+                generation,
+                next,
+                Ordering::Relaxed,
+                Ordering::Relaxed,
+            ) {
+                Ok(_) => break,
+                Err(current) => generation = current,
+            }
+        }
         Ok(Self {
             generation,
             evicted: 0,

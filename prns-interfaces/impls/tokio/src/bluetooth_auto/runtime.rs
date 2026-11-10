@@ -487,6 +487,7 @@ struct BluetoothAutoShared {
 }
 
 impl BluetoothAutoStatus {
+    #[cfg(any(test, target_os = "ios", target_os = "macos"))]
     pub(crate) fn new() -> Self {
         Self::new_with_discovery_groups(DiscoveryGroupSet::reticulum())
     }
