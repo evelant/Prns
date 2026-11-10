@@ -1626,6 +1626,32 @@ fn blocking_and_async_snapshots_preserve_unavailable_results() -> Result<(), Str
 }
 
 #[test]
+fn native_owner_has_task_readiness_on_its_worker_thread() -> Result<(), String> {
+    let (report, observed) = std::sync::mpsc::sync_channel(1);
+    let embedding = HostEmbedding {
+        prepare_interfaces: Some(Box::new(move |_| {
+            report
+                .send((std::thread::current().id(), tokio::task::try_id()))
+                .map_err(|_| HostStartError::Runtime("test observer closed".into()))?;
+            Ok(Vec::new())
+        })),
+        ..HostEmbedding::default()
+    };
+    let host = HostRuntime::start_with_embedding(config(), Arc::new(Sink), embedding)
+        .map_err(|error| format!("{error:?}"))?;
+    let (thread, task) = observed.try_recv().map_err(|error| error.to_string())?;
+    assert_eq!(
+        lock(&host.stop)
+            .join
+            .as_ref()
+            .map(|join| join.thread().id()),
+        Some(thread)
+    );
+    assert!(task.is_some(), "the node needs its own scheduled readiness");
+    host.stop_result().map_err(|error| format!("{error:?}"))
+}
+
+#[test]
 fn native_embedding_tracks_prepared_interfaces_in_canonical_snapshot() -> Result<(), String> {
     let embedding = HostEmbedding {
         prepare_interfaces: Some(Box::new(|client| {
