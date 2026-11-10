@@ -22,11 +22,17 @@ fn create(device: &mut Device<'_>, id: u8, profile: crate::GroupProfile) -> Grou
     }
 }
 
-fn joined(owner: &mut Device<'_>, member: &mut Device<'_>, group: GroupId, nonce: u8) {
-    let invitation = offer(owner, member, group, nonce);
+fn joined(owner: &mut Device<'_>, member: &mut Device<'_>, group: GroupId, request_number: u8) {
+    let invitation = offer(owner, member, group, request_number);
     member
         .engine
-        .respond(&mut member.owner, request(nonce + 1), invitation, true, NOW)
+        .respond(
+            &mut member.owner,
+            request(request_number + 1),
+            invitation,
+            true,
+            NOW,
+        )
         .unwrap();
     let work = member.work("join");
     let response = owner.receive(member.identity, &work, NOW);

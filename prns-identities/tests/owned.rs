@@ -89,12 +89,12 @@ fn options() -> Options {
     }
 }
 type Only = Owner<4, 32, 4, 16, IdentityOnly>;
-fn create(client: &Client, nonce: u8, services: ServiceSet<4>) -> IdentityClient {
+fn create(client: &Client, request_number: u8, services: ServiceSet<4>) -> IdentityClient {
     let scope = wait(client.creation_scope()).unwrap();
     let outcome = wait(client.create_or_recover(
         CreateRequestId {
             scope,
-            nonce: [nonce; 32],
+            nonce: [request_number; 32],
         },
         CreateRequest {
             source: KeySource::Generate,
