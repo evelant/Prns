@@ -84,13 +84,13 @@ fn next(peer: usize, coordinator: &Coordinator<RedbBackend<'_>>) -> OperationId 
         .operation_id()
 }
 fn publication<'a>(
-    nonce: u8,
+    record_number: u8,
     namespace: NamespaceId,
     targets: &'a [Endpoint],
     body: &'a [u8],
 ) -> Publication<'a> {
     Publication {
-        nonce: [nonce; 32],
+        nonce: [record_number; 32],
         namespace,
         schema: SchemaId(1),
         validity: PublicationValidity::new(Timestamp(NOW), Timestamp(NOW + 600), Seconds(3600))
@@ -332,13 +332,13 @@ fn pending_delivery_rotates_durable_authored_work_and_stops_only_for_the_receipt
     let peers = Trio::enrolled();
     let targets = [endpoint(1), endpoint(2)];
     let mut records = Vec::new();
-    for nonce in [51, 52] {
+    for record_number in [51, 52] {
         records.push(peers.with_service(0, |service| {
             let operation = next(0, service.coordinator());
             let published = service
                 .publish(
                     operation,
-                    &publication(nonce, CHAT, &targets, b"push once"),
+                    &publication(record_number, CHAT, &targets, b"push once"),
                     clock(),
                 )
                 .unwrap();
@@ -1342,13 +1342,13 @@ fn record_admission_reserves_each_targets_receipt_across_reopen_and_full_quotas(
             _ => unreachable!(),
         }
         let targets = [endpoint(1), endpoint(2)];
-        let publish = |nonce| {
+        let publish = |record_number| {
             peers.with_service(0, |service| {
                 let operation = next(0, service.coordinator());
                 let published = service
                     .publish(
                         operation,
-                        &publication(nonce, CHAT, &targets, b"bounded"),
+                        &publication(record_number, CHAT, &targets, b"bounded"),
                         clock(),
                     )
                     .unwrap();
@@ -1483,13 +1483,13 @@ fn missing_reservations_reconstruct_atomically_from_exact_target_progress() {
     let mut peers = Trio::enrolled();
     peers.service_limits[1].max_envelopes = 3;
     let targets = [endpoint(1), endpoint(2)];
-    let publish = |nonce| {
+    let publish = |record_number| {
         peers.with_service(0, |service| {
             let operation = next(0, service.coordinator());
             let published = service
                 .publish(
                     operation,
-                    &publication(nonce, CHAT, &targets, b"reservation recovery"),
+                    &publication(record_number, CHAT, &targets, b"reservation recovery"),
                     clock(),
                 )
                 .unwrap();
