@@ -1581,7 +1581,7 @@ jobs:
           - platform: macos
             runner: macos-latest
     runs-on: ${{ matrix.runner }}
-    timeout-minutes: 90
+    timeout-minutes: 120
     env:
       RUSTUP_TOOLCHAIN: "1.98.1"
       CARGO_INCREMENTAL: "0"
@@ -1632,12 +1632,29 @@ jobs:
           --suite app-generated
           --suite app-ui
           --expected-sha "$GITHUB_SHA"
+      - name: Verify the production Android and iOS JavaScript inventories
+        if: runner.os == 'Linux'
+        run: python3 validation/security/app_mobile_npm.py --check
       - name: Qualify the actual app Swift image
         if: runner.os == 'macOS'
         run: >-
           python3 validation/run.py run
           --suite app-image-swift
           --expected-sha "$GITHUB_SHA"
+      - uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199
+        if: runner.os == 'macOS'
+        with:
+          ruby-version: "3.4"
+      - name: Build the production iOS app and verify packaged notices
+        if: runner.os == 'macOS'
+        run: |
+          rustup target add aarch64-apple-ios
+          export GEM_HOME="$RUNNER_TEMP/cocoapods-gems"
+          export GEM_PATH="$GEM_HOME"
+          export PATH="$GEM_HOME/bin:$PATH"
+          gem install --no-document cocoapods --version 1.16.2
+          pod _1.16.2_ --version
+          bash applications/tools/native-bindings/check_ios_release_notices.sh
       - name: Retain app validation evidence
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
@@ -1648,9 +1665,15 @@ jobs:
           path: validation-artifacts/results/
 
   app-android-consumer:
+    strategy:
+      fail-fast: false
+      max-parallel: 16
+      matrix:
+        configuration: [debug, release]
     runs-on: ubuntu-24.04
     timeout-minutes: 120
     env:
+      PRNS_ANDROID_CONFIGURATION: ${{ matrix.configuration }}
       CARGO_INCREMENTAL: "0"
       CARGO_PROFILE_DEV_DEBUG: "0"
       CARGO_PROFILE_TEST_DEBUG: "0"
@@ -1711,7 +1734,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
-          name: app-android-consumer-${{ github.sha }}
+          name: app-android-consumer-${{ matrix.configuration }}-${{ github.sha }}
           if-no-files-found: warn
           retention-days: 7
           path: |

@@ -86,6 +86,26 @@ the default `all` scope, which also checks the selected mobile dependencies.
 Mobile policy findings therefore fail the release audit without failing the
 website job.
 
+For PRNS Chat, the default audit checks registry origin, integrity, required peers
+and advisories across the full app declaration graph. The Android and iOS npm
+license gates select the files in each production Metro export, including
+assets, embedded upstream code and required notices. A moved import, new
+package, changed archive or changed release input triggers requalification.
+After staging the selected SDK, installing the application dependencies and
+applying the runtime patch, refresh both production inventories with
+`python3 validation/security/app_mobile_npm.py --write`. Then run
+`python3 validation/security/npm-production-audit.py --write-app-notices`.
+The normal CI commands compare all generated evidence and notices.
+
+The Android release check verifies the resolved Maven artifacts, the packaged
+notices and the final JavaScript against the release build. Maven decisions
+apply to the exact artifacts and product in `release/licenses/app-maven/`.
+The iOS production build checks the target’s CocoaPods acknowledgements and
+JavaScript and native notices in the app bundle. Both platforms expose these
+materials under About. Refresh the native and Maven assets with
+`python3 validation/security/app_native_sources.py --write` and
+`python3 validation/security/app_maven.py --write-notices`.
+
 When the npm audit produces reports, CI uploads
 `validation-artifacts/dependency-audit/*.json` as `dependency-audit-diagnostics`,
 including when the audit fails. These reports describe findings, not policy

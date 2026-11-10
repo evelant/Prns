@@ -15,5 +15,8 @@ test('Metro watches the external linked JavaScript package without broadening to
   const packageRoot = path.dirname(realpathSync(require.resolve('personal-rns/package.json')));
   assert.deepEqual(config.watchFolders, [...new Set([...defaults.watchFolders, packageRoot])]);
   assert.ok(!config.watchFolders.includes(path.resolve(appRoot, '../../..')));
-  assert.deepEqual(config.resolver, defaults.resolver);
+  assert.deepEqual(config.resolver, {
+    ...defaults.resolver,
+    assetExts: [...new Set([...defaults.resolver.assetExts, 'txt'])],
+  });
 });

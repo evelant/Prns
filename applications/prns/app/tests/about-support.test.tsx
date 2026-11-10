@@ -9,6 +9,11 @@ jest.mock("@prns/app-bindings", () => ({
   prns_chat_app: { appApiVersion: () => 3 }, prns_host_uniffi: { HostPhysicalRole: { Member: 2 } },
   prns_service_runtime: { ServiceRuntimePhase: { 1: "Ready" }, ServiceRuntimeNetworkPhase: { Ready: 2, 2: "Ready", 0: "Offline" } },
 }));
+const mockReadNotice = jest.fn();
+jest.mock("expo-file-system", () => ({
+  Paths: { bundle: "file:///app" },
+  File: class { text = mockReadNotice; },
+}));
 let mockActive = true;
 const mockPlatform = jest.fn();
 const mockInspection = jest.fn();
@@ -103,4 +108,15 @@ test.each(["foreground", "owner"])("%s replacement permits a fresh Share and ign
   expect(screen.getByRole("button", { name: "Opening share…" })).toBeDisabled();
   await act(async () => { fresh.resolve({ action: Share.sharedAction, activityType: undefined }); });
   expect(screen.getByRole("button", { name: "Share diagnostics" })).toBeEnabled();
+});
+
+test("About reads the iOS recipient notice from the app and closes it", async () => {
+  mockReadNotice.mockResolvedValue("Copyright example\n\nLicense terms");
+  await render(<AboutScreen />);
+  await press("Open source licenses and notices");
+  await press("iOS libraries");
+  expect(mockReadNotice).toHaveBeenCalled();
+  expect(screen.getByText("License terms")).toBeOnTheScreen();
+  await press("Close");
+  expect(screen.queryByText("License terms")).toBeNull();
 });

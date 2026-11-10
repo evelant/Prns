@@ -11,7 +11,10 @@ from npm_lockfile import verify_development_packages
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--scope', choices=('all', 'web'), default='all', help='web retains the website/WASM-only qualification; release audits use the default all')
+parser.add_argument('--write-app-notices', action='store_true', help='refresh the Android and iOS npm notices from the recorded release inventories')
 arguments = parser.parse_args()
+if arguments.scope == 'web' and arguments.write_app_notices:
+    parser.error('--write-app-notices requires the app scope')
 
 repo = Path(__file__).resolve().parents[2]
 root = repo / "prns-wasm"
@@ -134,6 +137,7 @@ if arguments.scope == 'web':
 # actual application root, not the installer's package-wide `dev` classification.
 import os
 import app_maven
+import app_mobile_npm
 import app_npm
 
 output = repo / 'validation-artifacts/dependency-audit'
@@ -163,12 +167,27 @@ try:
         failures.append(str(error))
     report = app_npm.notice_report(repo, cache)
     (output/'app-npm-notices.json').write_text(json.dumps(report, indent=2)+'\n')
-    app_npm.audit_notices(report)
+    for platform in ('android', 'ios'):
+        selected = app_mobile_npm.shipped_report(repo, cache, report, platform)
+        (output / f'app-npm-{platform}.json').write_text(json.dumps(selected, indent=2) + '\n')
+        try:
+            expected = app_mobile_npm.render_notices(selected).encode('utf-8')
+            destination = repo / 'applications/prns/app/assets/licenses' / f'npm-{platform}.txt'
+            if arguments.write_app_notices:
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                destination.write_bytes(expected)
+            elif not destination.is_file() or destination.read_bytes() != expected:
+                raise ValueError(f'{destination.name} differs from the shipped npm notices; use --write-app-notices')
+            print(f'{platform}: notices verified for {len(selected["packages"])} shipped npm archives')
+        except (OSError, ValueError) as error:
+            failures.append(str(error))
 except (OSError, ValueError) as error:
     failures.append(str(error))
 try:
     report = app_maven.report(repo)
     (output/'app-maven-notices.json').write_text(json.dumps(report, indent=2)+'\n')
+    if (repo / app_maven.ASSET).read_bytes() != app_maven.notice_bytes(report):
+        failures.append('Packaged Android Maven notices are stale; run app_maven.py --write-notices')
     app_maven.audit(report)
 except (OSError, ValueError) as error:
     failures.append(str(error))

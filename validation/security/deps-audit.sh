@@ -113,6 +113,7 @@ for graph in "${graphs[@]}"; do
 done
 
 python3 "$root/validation/security/unsafe-audit.py"
+python3 "$root/validation/security/app_native_sources.py"
 python3 "$root/validation/security/npm-production-audit.py"
 npm --prefix "$root/docs/website" ci --ignore-scripts --no-audit --no-fund
 "$root/tools/prns" repo notices generate

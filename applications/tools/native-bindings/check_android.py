@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build/test the selected Android app and inspect its unsigned arm64 Debug APK."""
+"""Build/test the selected Android app and inspect its unsigned arm64 APK."""
 import argparse
 import hashlib
 import json
@@ -22,7 +22,7 @@ ROOT = HERE.parents[2]
 APPLICATIONS = ROOT / 'applications'
 APP = APPLICATIONS / 'prns/app'
 SDK_PACKAGE = APPLICATIONS / 'target/react-native-sdk'
-APK = APP / 'android/app/build/outputs/apk/debug/app-debug-unsigned.apk'
+BUILD = APP / 'android/app/build'
 MINIMUM_FREE = 5 * 1024 ** 3
 
 
@@ -66,6 +66,7 @@ def unsigned_init():
   project.plugins.withId('com.android.application') {
     project.extensions.getByName('androidComponents').finalizeDsl { android ->
       android.buildTypes.getByName('debug').signingConfig = null
+      android.buildTypes.getByName('release').signingConfig = null
     }
   }
 }
@@ -85,8 +86,9 @@ def test_counts(directory):
     return totals
 
 
-def inspect(sdk, ndk, logs):
-    require(APK.is_file(), f'Unsigned APK missing: {APK}')
+def inspect(sdk, ndk, logs, configuration):
+    apk = BUILD / f'outputs/apk/{configuration}/app-{configuration}-unsigned.apk'
+    require(apk.is_file(), f'Unsigned APK missing: {apk}')
     builds = sorted((path for path in (sdk / 'build-tools').iterdir()
                      if re.fullmatch(r'\d+\.\d+\.\d+', path.name)),
                     key=lambda path: tuple(map(int, path.name.split('.'))))
@@ -94,15 +96,15 @@ def inspect(sdk, ndk, logs):
     build_tools = builds[-1]
     readelfs = list((ndk / 'toolchains/llvm/prebuilt').glob('*/bin/llvm-readelf'))
     require(len(readelfs) == 1, 'Expected one installed NDK llvm-readelf')
-    subprocess.run([str(build_tools / 'zipalign'), '-c', '-P', '16', '4', str(APK)], check=True)
-    with zipfile.ZipFile(APK) as archive:
+    subprocess.run([str(build_tools / 'zipalign'), '-c', '-P', '16', '4', str(apk)], check=True)
+    with zipfile.ZipFile(apk) as archive:
         libraries = [name for name in archive.namelist() if name.startswith('lib/')]
         require({name.split('/')[1] for name in libraries} == {'arm64-v8a'}, 'Unexpected APK ABI')
         require([name for name in libraries if 'prns' in name] == ['lib/arm64-v8a/libprns_chat_app.so'],
                 'APK must contain exactly one PRNS image')
         require(not any(name.startswith('META-INF/') and name.endswith(('.RSA', '.SF', '.DSA', '.EC'))
                         for name in archive.namelist()), 'APK contains signing entries')
-        with APK.open('rb') as source:
+        with apk.open('rb') as source:
             source.seek(archive.start_dir - 16)
             require(source.read(16) != b'APK Sig Block 42', 'APK contains a signing block')
         with tempfile.TemporaryDirectory(prefix='apk-image-', dir=logs) as temporary:
@@ -113,14 +115,15 @@ def inspect(sdk, ndk, logs):
     require(bool(loads) and all(line.split()[-1] == '0x4000' for line in loads),
             'Packaged PRNS image lacks 16 KiB LOAD alignment')
     require('Library soname: [libprns_chat_app.so]' in elf, 'Incorrect packaged image SONAME')
-    signature = subprocess.run([str(build_tools / 'apksigner'), 'verify', str(APK)],
+    signature = subprocess.run([str(build_tools / 'apksigner'), 'verify', str(apk)],
                                capture_output=True, text=True)
     require(signature.returncode != 0, 'APK unexpectedly verifies as signed')
     (logs / 'unsigned-verification.log').write_text(signature.stdout + signature.stderr)
     analyzer = sdk / 'cmdline-tools/latest/bin/apkanalyzer'
-    manifest = ET.fromstring(subprocess.check_output([str(analyzer), 'manifest', 'print', str(APK)]))
+    manifest = ET.fromstring(subprocess.check_output([str(analyzer), 'manifest', 'print', str(apk)]))
     android = '{http://schemas.android.com/apk/res/android}'
-    require(manifest.get('package') == 'rs.reticulum.prns.dev', 'Unexpected application ID')
+    application_id = 'rs.reticulum.prns' if configuration == 'release' else 'rs.reticulum.prns.dev'
+    require(manifest.get('package') == application_id, 'Unexpected application ID')
     require(manifest.find('uses-sdk').get(android + 'minSdkVersion') == '29', 'Unexpected minimum SDK')
     app = manifest.find('application')
     require(app.get(android + 'allowBackup') == 'false', 'Private installation permits backup')
@@ -129,14 +132,22 @@ def inspect(sdk, ndk, logs):
     require(service is not None and service.get(android + 'exported') == 'false'
             and service.get(android + 'foregroundServiceType') in {'connectedDevice', '0x10'}
             and service.get(android + 'stopWithTask') == 'false', 'Incorrect runtime service manifest')
-    with APK.open('rb') as source:
+    with apk.open('rb') as source:
         digest = hashlib.file_digest(source, 'sha256').hexdigest()
-    report = {'apk': str(APK), 'bytes': APK.stat().st_size,
+    report = {'configuration': configuration, 'apk': str(apk), 'bytes': apk.stat().st_size,
               'sha256': digest,
               'abi': 'arm64-v8a', 'signed': False, 'image': 'libprns_chat_app.so',
-              'sdk_tests': test_counts(SDK_PACKAGE / 'android/build/test-results/testDebugUnitTest'),
-              'product_tests': test_counts(APPLICATIONS / 'prns/platform/android/build/test-results/testDebugUnitTest'),
               'maven_runtime': json.loads((logs / 'maven-report.json').read_text())}
+    if configuration == 'release':
+        require(app.get(android + 'debuggable') != 'true', 'Release APK is debuggable')
+        map_path = BUILD / 'generated/sourcemaps/react/release/index.android.bundle.map'
+        bundle = BUILD / 'generated/assets/react/release/index.android.bundle'
+        subprocess.run([sys.executable, HERE / 'check_release_notices.py', apk,
+                        '--bundle', bundle, '--source-map', map_path,
+                        '--output', logs / 'release-notices.json'], check=True)
+    else:
+        report['sdk_tests'] = test_counts(SDK_PACKAGE / 'android/build/test-results/testDebugUnitTest')
+        report['product_tests'] = test_counts(APPLICATIONS / 'prns/platform/android/build/test-results/testDebugUnitTest')
     (logs / 'report.json').write_text(json.dumps(report, indent=2) + '\n')
     print(json.dumps(report, indent=2))
 
@@ -149,7 +160,10 @@ def main():
     mode.add_argument('--inspect-only', action='store_true', help='inspect existing APK/test/dependency reports without rebuilding')
     mode.add_argument('--dependencies-only', action='store_true', help='resolve/check debug and release runtime dependencies without rebuilding or changing the APK/report')
     parser.add_argument('--logs', type=Path, default=APPLICATIONS / 'target/android-qualification')
+    parser.add_argument('--configuration', choices=('debug', 'release'),
+                        default=os.environ.get('PRNS_ANDROID_CONFIGURATION', 'debug'))
     args = parser.parse_args()
+    require(args.configuration in ('debug', 'release'), 'Unknown Android configuration')
     require(os.name == 'posix', 'This qualification recipe requires macOS or Linux')
     sdk = Path(os.environ['ANDROID_HOME']).expanduser().resolve()
     version = json.loads((ROOT / 'tools/uniffi/react-native.json').read_text())['toolchain']['androidNdk']
@@ -164,13 +178,15 @@ def main():
             require(all(os.environ.get(key) for key in ('CARGO_TARGET_DIR', 'PRNS_UBRN_TARGET_DIR')),
                     'Set CARGO_TARGET_DIR and PRNS_UBRN_TARGET_DIR to the shared build cache')
         env = dict(os.environ, ANDROID_HOME=str(sdk), ANDROID_NDK_HOME=str(ndk),
-                   CI='1', EXPO_NO_TELEMETRY='1', PRNS_APP_VARIANT='development',
+                   CI='1', EXPO_NO_TELEMETRY='1',
+                   PRNS_APP_VARIANT='production' if args.configuration == 'release' else 'development',
                    CARGO_INCREMENTAL='0', CARGO_PROFILE_DEV_DEBUG='0', CARGO_PROFILE_TEST_DEBUG='0')
         if args.offline:
             env['CARGO_NET_OFFLINE'] = 'true'
         if not args.dependencies_only:
             run('native-image', [sys.executable, HERE / 'generate.py', '--cache-dir', args.cache_dir.expanduser().resolve(),
-                                'android', '--targets', 'arm64-v8a'], ROOT, env, args.logs)
+                                'android', '--targets', 'arm64-v8a',
+                                *(['--release'] if args.configuration == 'release' else [])], ROOT, env, args.logs)
             package = APP / 'package.json'
             before = package.read_bytes()
             run('prebuild', ['node', '../../node_modules/expo/bin/cli', 'prebuild', '--platform', 'android',
@@ -181,7 +197,10 @@ def main():
         env['PRNS_ANDROID_MAVEN_REPORT'] = str((args.logs / 'maven-runtime.json').resolve())
         tasks = [android_maven.TASK]
         if not args.dependencies_only:
-            tasks += [':personal-rns-expo:testDebugUnitTest', ':prns-app-platform:testDebugUnitTest', ':app:assembleDebug']
+            if args.configuration == 'release':
+                tasks.append(':app:assembleRelease')
+            else:
+                tasks += [':personal-rns-expo:testDebugUnitTest', ':prns-app-platform:testDebugUnitTest', ':app:assembleDebug']
         run('gradle', ['./gradlew', '--no-daemon', *(['--offline'] if args.offline else []), '--max-workers=2',
                        '-Dorg.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=1024m',
                        '-Pkotlin.compiler.execution.strategy=in-process', '--init-script', init_file.resolve(),
@@ -192,7 +211,7 @@ def main():
             return
     if args.inspect_only:
         android_maven.check_report(args.logs / 'maven-runtime.json', args.logs / 'maven-report.json')
-    inspect(sdk, ndk, args.logs)
+    inspect(sdk, ndk, args.logs, args.configuration)
 
 
 if __name__ == '__main__':

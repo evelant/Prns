@@ -25,7 +25,8 @@ release/licenses/app-maven/pom-origins.json linguist-generated=true
 release/licenses/app-maven/resolved-runtime.json linguist-generated=true
 release/licenses/app-maven/artifact-notices.json linguist-generated=true
 release/licenses/app-maven/artifact-origins.json linguist-generated=true
-applications/prns/app/assets/licenses/android-maven.txt text eol=lf linguist-generated=true
+release/licenses/app-npm/mobile-bundles.json text eol=lf linguist-generated=true
+applications/prns/app/assets/licenses/*.txt text eol=lf linguist-generated=true
 applications/prns/bindings/typescript/** linguist-generated=true
 applications/prns/bindings/swift/** linguist-generated=true
 applications/prns/bindings/kotlin/** linguist-generated=true

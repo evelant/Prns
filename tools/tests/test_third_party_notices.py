@@ -235,17 +235,16 @@ class ThirdPartyNoticeTests(unittest.TestCase):
     def test_missing_required_peers_remain_prominent_in_rendered_notices(self) -> None:
             npm = {'packages': [], 'unresolved_optional': [], 'unselected_optional_peers': [],
                    'unresolved_required_peers': [['app', 'node_modules/drawer', 'gesture', '>=2']]}
-            maven = {'packages': [], 'manual_review': {'summary': 'Pending review.',
-                     'declarations': [{'name': 'ML Kit Terms of Service',
-                                       'coordinates': ['com.google.mlkit:common:18.11.0']}]}}
+            maven = {'release_review': {'bases': {}, 'issues': ['Pending review.'],
+                     'decisions': [{'decision': 'ML Kit terms', 'coordinate': 'com.google.mlkit:common:18.11.0'}]}}
             rendered = '\n'.join(notices.app_notice_lines(npm, maven))
-            self.assertIn('**Manual release-policy review pending:** Pending review.', rendered)
-            self.assertIn('**Manual review — ML Kit Terms of Service:** `com.google.mlkit:common:18.11.0`', rendered)
-            self.assertNotIn('**Unresolved release review:**', rendered)
+            self.assertIn('**Pending release review:** Pending review.', rendered)
+            self.assertIn('`com.google.mlkit:common:18.11.0` — ML Kit terms', rendered)
+            maven['release_review']['issues'] = []
+            self.assertNotIn('Pending release review', '\n'.join(notices.app_notice_lines(npm, maven)))
             self.assertIn('1 unresolved required peer declarations', rendered)
             self.assertIn('**Unresolved required peer:** `app/node_modules/drawer` requires `gesture@>=2`', rendered)
             self.assertIn('Missing required peers remain release-audit failures.', rendered)
-            self.assertIn('does not prove runtime dependency completeness', rendered)
 
     def test_packaged_maven_text_is_deduplicated_deterministically_without_license_inference(self) -> None:
             rows = [
@@ -260,7 +259,7 @@ class ThirdPartyNoticeTests(unittest.TestCase):
             self.assertEqual(len(first), 1)
             self.assertEqual(notices.license_text_lines(first), notices.license_text_lines(second))
             rendered='\n'.join(notices.license_text_lines(first))
-            self.assertIn('policy review remains unresolved', rendered)
+            self.assertNotIn('b:two:2', rendered)
             self.assertIn('a:one:1 / Bundled component', rendered)
             self.assertIn('application Android releaseRuntimeClasspath', rendered)
             self.assertNotIn('MIT', rendered)

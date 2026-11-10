@@ -75,11 +75,11 @@ macOS and the Apple toolchain; it does not install the app.
 
 `check_android.py` regenerates the one selected arm64 image, prebuilds only the
 ignored Android project, compiles the complete SDK service and product module,
-runs their maintained JUnit tests, and packages an **unsigned Debug APK**. A
-qualification-only Gradle init file disables Debug signing and includes the SDK's
-maintained tests from the repository; it does not change the product's build
-configuration or publish test sources. This is a build/test gate, not Android
-runtime, radio, release, or device evidence.
+runs their maintained JUnit tests in the Debug configuration, and packages an unsigned APK.
+With `--configuration release`, it builds the production variant with the release
+native image and checks the resources, notices, bundle, and source map from that
+build. CI runs both configurations. A qualification-only Gradle init file disables
+signing and makes the SDK's maintained tests available to the Debug build.
 
 Prerequisites: Python 3.11+, JDK 21, the locked application npm dependencies with
 `npm --prefix applications run patch:runtime` applied, built `prns-js` declarations, Android SDK platform 37.0, build-tools 37.0.0 and current
@@ -104,4 +104,4 @@ one arm64 PRNS image, private-storage backup setting, and the foreground service
 manifest. `--inspect-only` repeats these artifact/report checks without a build;
 it does not establish that existing artifacts match current source. The APK is
 `applications/prns/app/android/app/build/outputs/apk/debug/app-debug-unsigned.apk`.
-No install, signing, release packaging, or upload is performed.
+The Release output is `applications/prns/app/android/app/build/outputs/apk/release/app-release-unsigned.apk`. Its packaging receipt is `release-notices.json` in the qualification log directory.

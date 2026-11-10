@@ -422,6 +422,10 @@ class WorkflowSchedulingTests(unittest.TestCase):
         jobs = self.workflow_jobs("ci.yml")
         self.assertIn("cargo check --locked --manifest-path applications/Cargo.toml --workspace --all-targets --all-features", jobs["msrv"])
         self.assertIn("max-parallel: 16", jobs["app-consumers"])
+        self.assertIn("app_mobile_npm.py --check", jobs["app-consumers"])
+        self.assertIn("check_ios_release_notices.sh", jobs["app-consumers"])
+        self.assertIn("configuration: [debug, release]", jobs["app-android-consumer"])
+        self.assertIn("PRNS_ANDROID_CONFIGURATION: ${{ matrix.configuration }}", jobs["app-android-consumer"])
         for name in ("app-consumers", "app-android-consumer"):
             self.assertIn("      - " + name + "\n", jobs["release-critical"])
             self.assertIn("${{ needs." + name + ".result }}", jobs["release-critical"])
