@@ -1577,8 +1577,9 @@ jobs:
       CARGO_PROFILE_TEST_DEBUG: "0"
       CARGO_TARGET_DIR: ${{ github.workspace }}/target
       PRNS_UBRN_TARGET_DIR: ${{ github.workspace }}/target
-      PRNS_UBRN_CACHE: ${{ runner.temp }}/prns-ubrn
     steps:
+      - name: Set the binding generator cache directory
+        run: printf 'PRNS_UBRN_CACHE=%s/prns-ubrn\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           submodules: false
@@ -1643,11 +1644,12 @@ jobs:
       CARGO_PROFILE_TEST_DEBUG: "0"
       CARGO_TARGET_DIR: ${{ github.workspace }}/target
       PRNS_UBRN_TARGET_DIR: ${{ github.workspace }}/target
-      PRNS_UBRN_CACHE: ${{ runner.temp }}/prns-ubrn
       RUSTUP_TOOLCHAIN: "1.98.1"
     steps:
-      - name: Use the runner temporary directory
-        run: printf 'TMPDIR=%s\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
+      - name: Set the temporary and binding generator cache directories
+        run: |
+          printf 'TMPDIR=%s\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
+          printf 'PRNS_UBRN_CACHE=%s/prns-ubrn\n' "$RUNNER_TEMP" >> "$GITHUB_ENV"
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
           submodules: false
