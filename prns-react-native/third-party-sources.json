@@ -30,11 +30,11 @@
     },
     {
       "path": "about.toml",
-      "sha256": "9de3cd8155665ae7409ea1186df43294fe0cc85262ee59655272143193ca3273"
+      "sha256": "a5f367f9ef6e1fc0b1ad85e55332cee8ac958b48a8166e1453cb7e9eab29694f"
     },
     {
       "path": "deny.toml",
-      "sha256": "eff6d72d6516a4ee1eddb459fbe4114c61a0db0f5514788c0dfc5e568faf3cd6"
+      "sha256": "8d2e465646a45d6218bed887daa93592ac8f3583c6e1af1f441d88bb6ca8161a"
     },
     {
       "path": "personal-rns/Cargo.toml",
@@ -106,7 +106,7 @@
     },
     {
       "path": "prns-react-native/tools/package_notices.py",
-      "sha256": "0cc5e350e531d9e9cb691949f23accd682c9efe5feaae1a25b12f6818d4ea921"
+      "sha256": "0904b84d184f4de5eeaeb15695f3e640be315447fe46ff52b884b6b870bd1ae1"
     },
     {
       "path": "prns-runtime/core/Cargo.toml",
@@ -121,8 +121,12 @@
       "sha256": "1f06fb7b84bc4d83f20ec450411f954b4e76f9972011fa0a3b4208dd72498c09"
     },
     {
+      "path": "release/licenses/rust-mpl-sources.json",
+      "sha256": "551961011c1067075b1ab5c5e4d3e557300cf093cd4877c97984677d79b20ddc"
+    },
+    {
       "path": "tools/repo/generate-third-party-notices.py",
-      "sha256": "2ba1bbea3cf83921255573290eaafca05563a33b6040450dc38060193884394f"
+      "sha256": "fff0d99fcdf0b6220b40df04f7a5a9d24e72eef721d8d87bc72a2e71426bc2a2"
     },
     {
       "path": "tools/uniffi/licenses/ubrn-MPL-2.0.txt",
@@ -146,7 +150,7 @@
     },
     {
       "path": "tools/uniffi/react-native.json",
-      "sha256": "727f3f1fee8ac80cb08ba4dbcc66e0a1f3def50fc08a9e65ceac09fba0fec372"
+      "sha256": "b4142f3c7ade6452e9dea27b3fd3189448484b67235334b6350c2b804713bc51"
     },
     {
       "path": "tools/uniffi/react_native.py",
@@ -154,11 +158,19 @@
     },
     {
       "path": "tools/uniffi/runtime_notices.py",
-      "sha256": "926ee00760fc825469a9fafd8d0d771310ffd181ecc59bdc98bd243ce1d46cde"
+      "sha256": "194f9ab082ed4e385efce67074739ca984eac10bfcab918c55730997ddf1433c"
+    },
+    {
+      "path": "tools/uniffi/runtime_source.py",
+      "sha256": "5c38cdc4e0302d4e1bf7ad10685a1e7eb8ab427d72fe103759b7bb6b164c271c"
+    },
+    {
+      "path": "validation/security/mpl_sources.py",
+      "sha256": "0058192fe81d3c196a52a6c68320beef93592a449c23739d8243a75f2247b8d4"
     },
     {
       "path": "validation/security/npm_lockfile.py",
-      "sha256": "150a2c4d7e7594928ef665a7da0d8cf3c82d3022a3046fd832c80df0410792be"
+      "sha256": "6a3a84267a1e3545e37d669bf98634631b81f7c33a08f0ff732c92f301969af8"
     }
   ],
   "local_packages": {
@@ -242,7 +254,7 @@
           "repository": "https://github.com/jhugman/uniffi-bindgen-react-native.git",
           "revision": "3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e"
         },
-        "mobile_runtime_license_exception": true,
+        "reviewed_source_archive": true,
         "unresolved_policy": []
       },
       {
@@ -258,7 +270,7 @@
           "repository": "https://github.com/jhugman/uniffi-bindgen-react-native.git",
           "revision": "3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e"
         },
-        "mobile_runtime_license_exception": true,
+        "reviewed_source_archive": true,
         "unresolved_policy": []
       }
     ],
@@ -268,6 +280,7 @@
         "repository": "https://github.com/jhugman/uniffi-bindgen-react-native.git",
         "revision": "3dd1cd1353750dc3bfbbf4bb4d4ccde26b0fbd2e"
       },
+      "upstream_source_sha256": "42cc128bad64420ff47514442568c0b5971b34f2ff1d634adbb9b145453670a7",
       "patches": [
         {
           "file": "patches/0001-exact-optional-properties.patch",
@@ -329,7 +342,7 @@
         }
       ]
     },
-    "source_lock_sha256": "727f3f1fee8ac80cb08ba4dbcc66e0a1f3def50fc08a9e65ceac09fba0fec372",
+    "source_lock_sha256": "b4142f3c7ade6452e9dea27b3fd3189448484b67235334b6350c2b804713bc51",
     "source_patches": [
       {
         "file": "prns-react-native/patches/@ubjs+react-native+0.31.0-6.patch",
@@ -338,8 +351,8 @@
       }
     ],
     "scope": "These exact published npm packages are required runtime peers. The SDK supplies a text patch for the React Native runtime; consumers apply it before native compilation. Prebuilt Rust binaries are unchanged.",
-    "approval": "Mobile runtime license exceptions are scoped to the package name, version, license, registry archive URL and SHA-512 integrity. The source record retains the upstream notices, revision and local patches."
+    "approval": "MPL-2.0 distribution requires matching published source, upstream notices and the local runtime changes for each selected package."
   },
   "scope": "Rust license material follows the selected image closure for the supported runtime targets. Runtime archives are required separately installed peers. Other declared peers are not asserted to be embedded. Native artifact hashes belong to the package qualification receipt.",
-  "notice_sha256": "c64867060e5d2f09ea58c85fae1496e16d713133ae57207057fb37fb07ca902c"
+  "notice_sha256": "0dd83f54a0f1c4a2c4508fc757973c38485a1bf2293d652d3e97d35ec30d8732"
 }
