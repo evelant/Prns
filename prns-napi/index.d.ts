@@ -269,6 +269,7 @@ export interface IdentitySpec {
 
 export interface InterfaceConfigSpec {
   kind: string
+  discoveryGroups?: Array<string>
   groupId?: string
   discoveryScope?: string
   discoveryPort?: number

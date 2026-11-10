@@ -524,6 +524,33 @@ enum class EventField(val rawValue: Int) {
     }
 }
 
+enum class InterfaceConfigKind(val rawValue: Int) {
+    AUTO_LAN(1),
+    TCP_CLIENT(2),
+    TCP_SERVER(3),
+    UDP(4),
+    SERIAL(5),
+    KISS(6),
+    AX25_KISS(7),
+    R_NODE(8),
+    MULTI_R_NODE(9),
+    PIPE(10),
+    BACKBONE_CLIENT(11),
+    BACKBONE_SERVER(12),
+    I2P(13),
+    WEAVE(14),
+    AUTOMATIC_USB(15),
+    AUTOMATIC_BLUETOOTH_LE(16),
+    WEB_SOCKET_CLIENT(17),
+    WEB_SOCKET_SERVER(18),
+    BROWSER_RENDEZVOUS(19),
+    CONFIGURED_BLUETOOTH_LE(20);
+
+    companion object {
+        fun fromRawValue(value: Int): InterfaceConfigKind? = entries.firstOrNull { it.rawValue == value }
+    }
+}
+
 class DestinationHash(bytes: ByteArray) {
     private val storage = bytes.copyOf()
 

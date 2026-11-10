@@ -169,6 +169,8 @@ struct NativeInterfaceConfig
     connectable::UInt8
     url::NativeStringView
     websocket_framing_selection::UInt32
+    discovery_groups::Ptr{NativeStringView}
+    discovery_group_count::Csize_t
 end
 
 struct NativeInterfaceRoutingPolicy
@@ -314,6 +316,8 @@ function NativeInterfaceConfig(;
     connectable=false,
     url=NativeStringView(C_NULL, 0),
     websocket_framing_selection=UInt32(0),
+    discovery_groups=Ptr{NativeStringView}(C_NULL),
+    discovery_group_count=0,
 )
     empty_string = NativeStringView(C_NULL, 0)
     NativeInterfaceConfig(
@@ -367,6 +371,8 @@ function NativeInterfaceConfig(;
         UInt8(connectable),
         url,
         UInt32(websocket_framing_selection),
+        discovery_groups,
+        discovery_group_count,
     )
 end
 
@@ -616,7 +622,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
         devices = native_string_array(arena, value.devices)
         ignored = native_string_array(arena, value.ignored_devices)
         return NativeInterfaceConfig(
-            kind=InterfaceKindAutoLan,
+            kind=InterfaceConfigKindAutoLan,
             group_id=value.group_id === nothing ? nothing :
                 native_string_view(arena, value.group_id),
             discovery_scope=value.discovery_scope,
@@ -632,7 +638,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     if value isa InterfaceConfigTcpClient
         kind, bits = native_bitrate(value.bitrate)
         return NativeInterfaceConfig(
-            kind=InterfaceKindTcpClient,
+            kind=InterfaceConfigKindTcpClient,
             target=native_string_view(arena, value.target),
             bitrate_kind=kind,
             bitrate_bps=bits,
@@ -641,7 +647,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     if value isa InterfaceConfigTcpServer
         kind, bits = native_bitrate(value.bitrate)
         return NativeInterfaceConfig(
-            kind=InterfaceKindTcpServer,
+            kind=InterfaceConfigKindTcpServer,
             bind=native_string_view(arena, value.bind),
             bitrate_kind=kind,
             bitrate_bps=bits,
@@ -650,7 +656,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     if value isa InterfaceConfigUdp
         kind, bits = native_bitrate(value.bitrate)
         return NativeInterfaceConfig(
-            kind=InterfaceKindUdp,
+            kind=InterfaceConfigKindUdp,
             local_address=native_string_view(arena, getfield(value, :local)),
             peer=native_string_view(arena, value.peer),
             bitrate_kind=kind,
@@ -659,14 +665,14 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     end
     if value isa InterfaceConfigSerial
         return NativeInterfaceConfig(
-            kind=InterfaceKindSerial,
+            kind=InterfaceConfigKindSerial,
             port=native_string_view(arena, value.port),
             line=native_serial_line(value.line),
         )
     end
     if value isa InterfaceConfigKiss
         return NativeInterfaceConfig(
-            kind=InterfaceKindKiss,
+            kind=InterfaceConfigKindKiss,
             port=native_string_view(arena, value.port),
             line=native_serial_line(value.line),
             flow_control=value.flow_control,
@@ -681,7 +687,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     end
     if value isa InterfaceConfigAx25Kiss
         return NativeInterfaceConfig(
-            kind=InterfaceKindAx25Kiss,
+            kind=InterfaceConfigKindAx25Kiss,
             port=native_string_view(arena, value.port),
             line=native_serial_line(value.line),
             flow_control=value.flow_control,
@@ -695,7 +701,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     end
     if value isa InterfaceConfigRNode
         return NativeInterfaceConfig(
-            kind=InterfaceKindRNode,
+            kind=InterfaceConfigKindRNode,
             port=native_string_view(arena, value.port),
             radio=native_radio(value.radio),
             flow_control=value.flow_control,
@@ -722,7 +728,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
         ]
         push!(arena.member_arrays, members)
         return NativeInterfaceConfig(
-            kind=InterfaceKindMultiRNode,
+            kind=InterfaceConfigKindMultiRNode,
             port=native_string_view(arena, value.port),
             station_callsign=value.station_callsign === nothing ? nothing :
                 native_string_view(arena, value.station_callsign),
@@ -735,7 +741,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     if value isa InterfaceConfigPipe
         command = native_string_array(arena, value.command)
         return NativeInterfaceConfig(
-            kind=InterfaceKindPipe,
+            kind=InterfaceConfigKindPipe,
             command=command,
             command_count=length(value.command),
             respawn_delay_millis=value.respawn_delay_millis,
@@ -744,7 +750,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     if value isa InterfaceConfigBackboneClient
         kind, bits = native_bitrate(value.bitrate)
         return NativeInterfaceConfig(
-            kind=InterfaceKindBackboneClient,
+            kind=InterfaceConfigKindBackboneClient,
             target=native_string_view(arena, value.target),
             bitrate_kind=kind,
             bitrate_bps=bits,
@@ -753,7 +759,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     if value isa InterfaceConfigBackboneServer
         kind, bits = native_bitrate(value.bitrate)
         return NativeInterfaceConfig(
-            kind=InterfaceKindBackboneServer,
+            kind=InterfaceConfigKindBackboneServer,
             bind=native_string_view(arena, value.bind),
             bitrate_kind=kind,
             bitrate_bps=bits,
@@ -762,7 +768,7 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     if value isa InterfaceConfigI2p
         peers = native_string_array(arena, value.peers)
         return NativeInterfaceConfig(
-            kind=InterfaceKindI2p,
+            kind=InterfaceConfigKindI2p,
             peers=peers,
             peer_count=length(value.peers),
             connectable=value.connectable,
@@ -770,33 +776,40 @@ function native_interface(arena::NativeArena, value::InterfaceConfig)
     end
     if value isa InterfaceConfigWeave
         return NativeInterfaceConfig(
-            kind=InterfaceKindWeave,
+            kind=InterfaceConfigKindWeave,
             port=native_string_view(arena, value.port),
         )
     end
     if value isa InterfaceConfigAutomaticUsb
-        return NativeInterfaceConfig(kind=InterfaceKindAutomaticUsb)
+        return NativeInterfaceConfig(kind=InterfaceConfigKindAutomaticUsb)
     end
     if value isa InterfaceConfigAutomaticBluetoothLe
-        return NativeInterfaceConfig(kind=InterfaceKindAutomaticBluetoothLe)
+        return NativeInterfaceConfig(kind=InterfaceConfigKindAutomaticBluetoothLe)
+    end
+    if value isa InterfaceConfigConfiguredBluetoothLe
+        return NativeInterfaceConfig(
+            kind=InterfaceConfigKindConfiguredBluetoothLe,
+            discovery_groups=native_string_array(arena, value.discovery_groups),
+            discovery_group_count=length(value.discovery_groups),
+        )
     end
     if value isa InterfaceConfigWebSocketClient
         return NativeInterfaceConfig(
-            kind=InterfaceKindWebSocketClient,
+            kind=InterfaceConfigKindWebSocketClient,
             target=native_string_view(arena, value.target),
             websocket_framing_selection=value.framing,
         )
     end
     if value isa InterfaceConfigWebSocketServer
         return NativeInterfaceConfig(
-            kind=InterfaceKindWebSocketServer,
+            kind=InterfaceConfigKindWebSocketServer,
             bind=native_string_view(arena, value.bind),
             websocket_framing_selection=value.framing,
         )
     end
     if value isa InterfaceConfigBrowserRendezvous
         return NativeInterfaceConfig(
-            kind=InterfaceKindBrowserRendezvous,
+            kind=InterfaceConfigKindBrowserRendezvous,
             url=native_string_view(arena, value.url),
         )
     end

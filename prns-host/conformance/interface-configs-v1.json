@@ -120,6 +120,10 @@
     {
       "kind": "BrowserRendezvous",
       "url": "ws://fixture.invalid/rendezvous"
+    },
+    {
+      "kind": "ConfiguredBluetoothLe",
+      "discoveryGroups": ["work", "reticulum"]
     }
   ]
 }
