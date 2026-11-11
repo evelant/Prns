@@ -69,3 +69,27 @@ test("both facades preserve the published Casework dispatch contract", async () 
     }
   }
 });
+
+test("dispatch requires an own callable branch for literal, tagged and fallback values", () => {
+  for (const facade of [{ Tag, match, match_into }, commonjs]) {
+    const paths = [
+      ["Ready", (handlers) => facade.match("Ready", handlers), []],
+      ["Ready", (handlers) => facade.match(facade.Tag("Ready", 7), handlers), [7]],
+      ["Ready", (handlers) => facade.match_into().from(facade.Tag("Ready", 7), handlers), [7]],
+      ["UNTAGGED", (handlers) => facade.match(null, handlers), [null]],
+    ];
+    for (const [key, dispatch, expected] of paths) {
+      const inherited = { [key]() { assert.fail("inherited handlers must not run"); } };
+      const handlers = Object.create(inherited);
+      assert.throws(() => dispatch(handlers), TypeError);
+      assert.throws(() => dispatch(Object.create(null)), TypeError);
+      handlers[key] = 12;
+      assert.throws(() => dispatch(handlers), TypeError);
+      handlers[key] = function (...args) {
+        assert.equal(this, handlers);
+        return args;
+      };
+      assert.deepEqual(dispatch(handlers), expected);
+    }
+  }
+});

@@ -26,17 +26,27 @@ export const from: typeof Casework.from = () => ({
 
 type Handlers = Record<string, (...args: unknown[]) => unknown>;
 
+function callHandler(handlers: Handlers, name: string, ...args: unknown[]) {
+  const handler = typeof name === "string" && Object.hasOwn(handlers, name)
+    ? handlers[name]
+    : undefined;
+  if (typeof handler !== "function") {
+    throw new TypeError("Expected an own callable case handler");
+  }
+  return Reflect.apply(handler, handlers, args);
+}
+
 function callTagged(value: Tag<string, unknown>, handlers: Handlers) {
-  return handlers[value.tag]!(value.data);
+  return callHandler(handlers, value.tag, value.data);
 }
 
 export const match_into = (() => ({ from: callTagged })) as typeof Casework.match_into;
 
 export const match = ((value: unknown, handlers: Handlers) => {
-  if (typeof value === "string") return handlers[value]!();
+  if (typeof value === "string") return callHandler(handlers, value);
   if (value && typeof value === "object" && "tag" in value && "data" in value
       && typeof value.tag === "string" && Object.keys(value).length === 2) {
     return callTagged(value as Tag<string, unknown>, handlers);
   }
-  return handlers.UNTAGGED!(value);
+  return callHandler(handlers, "UNTAGGED", value);
 }) as typeof Casework.match;
