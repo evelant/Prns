@@ -2,7 +2,7 @@
 
 This evidence bundle inventories the shipped and qualification Rust, JavaScript, and Android product graphs. Unresolved application attribution, policy and advisory review remains a release blocker; successful generation is not approval.
 It was generated with `cargo-about 0.9.1` by `./tools/prns repo notices generate`.
-Notice input fingerprint: `sha256:48003003df72dec82a8480e24c39b7b8a4d40e6ba28b385573d1861aefb569a8`.
+Notice input fingerprint: `sha256:d7b03cc22c97c4e60f7839f4f9828058293a1890ec411ca5ffa6b84ad04937ce`.
 Each locked Rust manifest closure is fetched into a fresh isolated Cargo home before cargo-about reads its target-filtered packaged license material offline.
 Entries are deduplicated by license identifier or attribution label and canonical notice text; line endings, trailing space, and repeated blank lines are normalized without changing legal words.
 
