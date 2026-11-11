@@ -561,13 +561,24 @@ requires = ["git"]
 
 [[task]]
 id = "release.host-sdk.javascript.stage"
-summary = "Stage canonical package documents into every generated N-API platform package allowlist."
+summary = "Stage target-specific third-party notices and canonical documents in every native npm package."
 domain = "release"
 effect = "workspace-write"
 platforms = ["any"]
 audience = ["developer", "ci", "release"]
 entrypoint = ["python", "tools/release/stage-napi-platform-packages.py"]
-requires = []
+requires = ["cargo", "cargo-about"]
+
+[[task]]
+id = "release.host-sdk.javascript.pack.verify"
+summary = "Inspect the actual JavaScript SDK tarball against its release payload and third-party notices."
+domain = "release"
+effect = "workspace-write"
+platforms = ["any"]
+audience = ["developer", "ci", "release"]
+entrypoint = ["python", "tools/release/verify-js-sdk-pack.py"]
+requires = ["cargo", "cargo-about", "node", "npm"]
+setup = "Install cargo-about 0.9.1 and the locked JavaScript build dependencies before preparing the facade."
 
 [[task]]
 id = "release.host-sdk.sources.package"
@@ -1156,6 +1167,10 @@ reason = "Shared rollback state, record, and compare-and-swap implementation."
 [[internal]]
 path = "tools/release/flasher_sparse_sizes.py"
 reason = "Shared sparse firmware size analysis implementation."
+
+[[internal]]
+path = "tools/release/js_sdk_notices.py"
+reason = "Shared target-specific Rust and generated JavaScript notice collection for SDK packaging."
 
 [[internal]]
 path = "tools/release/source_snapshot.py"

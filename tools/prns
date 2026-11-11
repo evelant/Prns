@@ -151,6 +151,17 @@ def native_platform() -> str:
     return {"darwin": "macos"}.get(name, name)
 
 
+def workflow_caller_lines(source: str):
+    # Trigger paths name files to watch. Only the rest of the workflow can
+    # contain commands or environment variables that invoke repository tools.
+    in_events = False
+    for number, line in enumerate(source.splitlines(), start=1):
+        if line and not line[0].isspace() and not line.startswith("#"):
+            in_events = re.match(r"""^(?:on|"on"|'on')\s*:""", line) is not None
+        if not in_events:
+            yield number, line
+
+
 def validate_manifest(manifest: dict, *, check_callers: bool = True) -> list[str]:
     errors: list[str] = []
     try:
@@ -324,9 +335,7 @@ def validate_manifest(manifest: dict, *, check_callers: bool = True) -> list[str
 
     if check_callers:
         for workflow in sorted((ROOT / ".github" / "workflows").glob("*.yml")):
-            for line_number, line in enumerate(
-                workflow.read_text(encoding="utf-8").splitlines(), start=1
-            ):
+            for line_number, line in workflow_caller_lines(workflow.read_text(encoding="utf-8")):
                 if INTERNAL_CALL_PATTERN.search(line):
                     errors.append(
                         f"{workflow.relative_to(ROOT)}:{line_number} calls an internal tool path; "

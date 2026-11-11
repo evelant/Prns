@@ -122,6 +122,24 @@ class TaskRegistryTests(unittest.TestCase):
             any("implementation must live in its domain directory" in error for error in errors)
         )
 
+    def test_workflow_trigger_paths_are_not_tool_calls(self):
+        path = "tools/release/verify-js-sdk-pack.py"
+        for events_key in ("on", '"on"', "'on'"):
+            workflow = f"""{events_key}:
+  pull_request:
+    paths:
+      - "{path}"
+# job steps still obey the tool registry
+
+jobs:
+  verify:
+    steps:
+      - run: python3 {path}
+"""
+            direct = [line for _, line in runner.workflow_caller_lines(workflow)
+                      if runner.INTERNAL_CALL_PATTERN.search(line)]
+            self.assertEqual(direct, [f"      - run: python3 {path}"])
+
     def test_wasm_bindgen_setup_matches_lockfile_and_release_workflows(self) -> None:
         task = runner.task_map(self.manifest)["build.wasm-docs.stage"]
         lock = tomllib.loads((ROOT / "prns-wasm" / "Cargo.lock").read_text(encoding="utf-8"))

@@ -508,10 +508,10 @@ jobs:
           for directory in prns-napi/npm/*/; do
             npm pack "$directory" --pack-destination dist/npm
             name=$(node -p "require('./${directory}package.json').name")
-            python3 tools/release/verify-js-sdk-pack.py "$directory" --archive "dist/npm/$name-$(cat VERSION).tgz"
+            ./tools/prns run release.host-sdk.javascript.pack.verify -- "$directory" --archive "dist/npm/$name-$(cat VERSION).tgz"
           done
           npm pack ./prns-js --pack-destination dist/npm
-          python3 tools/release/verify-js-sdk-pack.py prns-js --archive "dist/npm/personal-rns-$(cat VERSION).tgz"
+          ./tools/prns run release.host-sdk.javascript.pack.verify -- prns-js --archive "dist/npm/personal-rns-$(cat VERSION).tgz"
           npm pack ./personal-hopspot/sdk/hopspot --pack-destination dist/npm
       - name: smoke packed Node and Bun consumers
         run: |
@@ -523,7 +523,7 @@ jobs:
             "$GITHUB_WORKSPACE/dist/npm/personal-rns-$(cat "$GITHUB_WORKSPACE/VERSION").tgz" \
             "$GITHUB_WORKSPACE/dist/npm/hopspot-$(cat "$GITHUB_WORKSPACE/VERSION").tgz"
           npm pack ./node_modules/personal-rns --pack-destination "$smoke"
-          python3 "$GITHUB_WORKSPACE/tools/release/verify-js-sdk-pack.py" "$GITHUB_WORKSPACE/prns-js" \
+          "$GITHUB_WORKSPACE/tools/prns" run release.host-sdk.javascript.pack.verify -- "$GITHUB_WORKSPACE/prns-js" \
             --archive "$smoke/personal-rns-$(cat "$GITHUB_WORKSPACE/VERSION").tgz"
           cp "$GITHUB_WORKSPACE/VERSION" VERSION
           mkdir -p prns-js/tests prns-host/conformance
@@ -614,7 +614,7 @@ jobs:
       - name: Verify platform archives before publication
         run: |
           for directory in prns-napi/npm/*/; do
-            python3 tools/release/verify-js-sdk-pack.py "$directory"
+            ./tools/prns run release.host-sdk.javascript.pack.verify -- "$directory"
           done
       - name: publish platform packages
         run: npx napi pre-publish -t npm
